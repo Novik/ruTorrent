@@ -1,6 +1,7 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
+require_once( '../../php/torrentfilenames.php' );
 eval( FileUtil::getPluginConf( 'feeds' ) );
 
 $lang = (isset($_REQUEST['lang']) &&
@@ -105,7 +106,7 @@ function formatItemDescription($torrent)
 	if(!empty($torrent["mesage"]))
 		$desc.='<fieldset><legend>'.$theUILang["Track_status"].'</legend>'.htmlspecialchars($torrent["mesage"],ENT_COMPAT,"UTF-8").'</fieldset>';
 	if(!empty($torrent["comment"]))
-		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.htmlspecialchars($torrent["comment"],ENT_COMPAT,"UTF-8").'</fieldset>';
+		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.htmlspecialchars(UTF::display($torrent["comment"]),ENT_COMPAT,"UTF-8").'</fieldset>';
 	return($desc);
 }
 
@@ -193,11 +194,15 @@ if($req->success())
 {
 	$items = array();
 	$fields = count($prm)-1;
+	$titles = array();
+	for($i = 0; $i<count($req->val); $i+=$fields)
+		$titles[$req->val[$i]] = rXMLRPCRequest::unescapeValue($req->val[$i+1]);
+	$titles = TorrentFileNames::titles($titles);
 	for($i = 0; $i<count($req->val); $i+=$fields)
 	{
 		$item = array(
 			"guid"=>$req->val[$i],
-			"title"=>$req->val[$i+1],
+			"title"=>$titles[$req->val[$i]],
 			"category"=>rawurldecode($req->val[$i+5]),
 			"pubDate"=>floatval($req->val[$i+6]) );
 		if(rTorrentSettings::get()->isPluginRegistered('data'))
@@ -268,7 +273,7 @@ if($req->success())
 			if($key=="description")
 				$ret.="\r\n\t<description><![CDATA[".$val.']]></description>';
 			else
-				$ret.="\r\n\t<".$key.'>'.htmlspecialchars($val,ENT_COMPAT,"UTF-8").'</'.$key.'>';
+				$ret.="\r\n\t<".$key.'>'.htmlspecialchars(UTF::display($val),ENT_COMPAT,"UTF-8").'</'.$key.'>';
 		}
 		$ret.="\r\n</item>";
 	}

@@ -133,23 +133,26 @@ theWebUI.rDirBrowser = class {
 
 	requestDir() {
 		$.ajax(
-			`plugins/_getdir/listdir.php?dir=${encodeURIComponent(this.edit.val())}&time=${(new Date()).getTime()}${this.withFiles ? "&withfiles=1" : ""}`,
+			`plugins/_getdir/listdir.php?dir=${pathQuery(getPathInput(this.edit))}&time=${(new Date()).getTime()}${this.withFiles ? "&withfiles=1" : ""}`,
 			{
 				success: (res) => {
 					this.frame.find(".filter-dir").val("").trigger("focus");
-					this.edit.val(res.path).data({cwd:res.path, previousValue:this.edit.val()}).change();
+					setPathInput(this.edit, res.path);
+					this.edit.data({cwd:res.path, previousValue:this.edit.val()}).change();
 					this.frame.find(".rmenuobj").remove();
 					this.frame.append(
 						$("<div>").addClass("rmenuobj").append(
-							$("<div>").addClass("rmenuitem").text("./"),
-							...res.directories.map(ele => $("<div>").addClass("rmenuitem").text(ele + "/")),
-							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(ele)),
+							$("<div>").addClass("rmenuitem").text("./").data({path:res.path, current:true}),
+							...res.directories.map(ele => $("<div>").addClass("rmenuitem").text(pathDisplay(ele) + "/")
+								.data({path:joinPathValue(res.path, ele, true), directory:true})),
+							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(pathDisplay(ele))
+								.data({path:joinPathValue(res.path, ele)})),
 						),
 					);
 					this.frame.find(".rmenuitem").on(
 						"click", (ev) => this.selectItem(ev)
 					).on(
-						"dblclick", (ev) => (ev.currentTarget.innerText === "./") ? this.hide() : (ev.currentTarget.innerText.endsWith("/")) ? this.requestDir() : this.hide()
+						"dblclick", (ev) => $(ev.currentTarget).data("directory") ? this.requestDir() : this.hide()
 					);
 				},
 				error: (res) => console.log(res),
@@ -160,10 +163,7 @@ theWebUI.rDirBrowser = class {
 	selectItem(ev) {
 		this.frame.find(".rmenuitem.active").removeClass("active");
 		$(ev.currentTarget).addClass("active");
-		if (ev.target.innerText === "./")
-			this.edit.val(this.edit.data("cwd"));
-		else
-			this.edit.val(this.edit.data("cwd") + ev.target.innerText);
+		setPathInput(this.edit, $(ev.currentTarget).data("path"));
 	}
 
 	show() {

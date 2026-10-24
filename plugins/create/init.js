@@ -21,7 +21,7 @@ function checkCreate() {
 		{
 			"piece_size" : $('#piece_size').val(),
 			"trackers" : trk,
-			"path_edit" : path_edit,
+			"path_edit" : getPathInput('#path_edit', true),
 			"comment" : $("#comment").val().trim(),
 			"source" : $("#source").val().trim(),
 			"private" : $('#private').prop('checked') ? 1 : 0,

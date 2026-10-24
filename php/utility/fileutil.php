@@ -2,6 +2,7 @@
 
 require_once( 'lfs.php' );
 require_once( 'user.php' );
+require_once(__DIR__.'/utf.php');
 
 class FileUtil
 {
@@ -11,6 +12,34 @@ class FileUtil
 	{
 		$arr = explode('/',$path);
 		return(end($arr));
+	}
+
+	/**
+	 * A path that is not UTF-8 becomes a display name plus a byte key; the key,
+	 * never the name, identifies the path. Without a key the path stays as is.
+	 */
+	public static function displayPath($path)
+	{
+		if(UTF::isValid($path))
+			return $path;
+		try {
+			$key = @rawurlencode($path);
+		} catch(Throwable $error) {
+			$key = null;
+		}
+		return is_string($key) ? array('name' => UTF::display($path), 'pathKey' => $key) : $path;
+	}
+
+	/** Decode a structured form path once, before the caller's usual path checks. */
+	public static function requestPath($value)
+	{
+		if(is_string($value))
+			return $value;
+		if(!is_array($value) || !isset($value['name'], $value['pathKey']) ||
+			!is_string($value['name']) || !is_string($value['pathKey']))
+			return null;
+		$path = rawurldecode($value['pathKey']);
+		return rawurlencode($path) === $value['pathKey'] ? $path : null;
 	}
 
 	public static function addslash( $str )

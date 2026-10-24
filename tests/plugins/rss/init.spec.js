@@ -65,6 +65,26 @@ for (const src of [
 correctContent();
 document.body.appendChild($("<div>").attr("id", "rsslayout")[0]);
 
+test("RSS filter selection, persistence and torrent loading retain raw directory keys", () => {
+  const directory = { name: "/downloads/\\xFF", pathKey: "%2Fdownloads%2F%FF" };
+  const holder = $('<div><input id="FLTdir_edit"><input id="FLT_rss"><input id="RSSdir_edit"><input id="RSS_label"><input id="_fn0"><input id="_fe0" type="checkbox"></div>').appendTo(document.body);
+  theWebUI.filters = [{ name: "filter", pattern: ".*", exclude: "", dir: directory, label: "", hash: "", start: 1, add_path: 1, interval: -1, no: 0 }];
+  theWebUI.curFilter = null;
+  const filter = { id: "flt0" };
+  theWebUI.selectFilter(filter);
+  expect(getPathInput("#FLTdir_edit")).toEqual(directory);
+  const stub = new rTorrentStub("?action=setfilters");
+  expect(stub.content).toContain(`&dir=${directory.pathKey}`);
+  expect(theWebUI.filters[0].dir).toEqual(directory);
+  expect(new rTorrentStub("?action=checkfilter").content).toContain(`&directory=${directory.pathKey}`);
+  setPathInput("#RSSdir_edit", directory);
+  theWebUI.rssArray = [];
+  expect(new rTorrentStub("?action=loadrsstorrents").content).toContain(`&dir_edit=${directory.pathKey}`);
+  $("#FLTdir_edit").val("/manual%2F\\path").trigger("input");
+  expect(new rTorrentStub("?action=setfilters").content).toContain("&dir=%2Fmanual%252F%5Cpath");
+  holder.remove();
+});
+
 describe("rss details", () => {
   beforeEach(() => {
     $("#rsslayout").text("");

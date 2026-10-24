@@ -14,6 +14,11 @@ require_once(__DIR__ . '/TestCase.php');
  */
 class LogHistoryUpgradeTest extends TestCase
 {
+	private function assertSame($expected, $actual, $message)
+	{
+		$this->assertTrue($expected === $actual, $message);
+	}
+
 	private $base;
 
 	public function setUp()
@@ -88,6 +93,18 @@ file_put_contents(getenv("RU_PROFILE_PATH")."/settings/log_history.dat", seriali
 		proc_close($process);
 		@unlink($writer);
 		return $out;
+	}
+
+	public function testLegacyLogBytesRemainReadableWithoutRewritingStoredEntries()
+	{
+		$this->plantPreFixFile("Файл \xFF <b>literal</b>");
+		$file = $this->base.'/profile/settings/log_history.dat';
+		$stored = file_get_contents($file);
+		$first = $this->request('GET');
+		$this->assertSame('Файл \\xFF <b>literal</b>', $first['logs'][0]['message'] ?? null,
+			'cached legacy text is projected before JSON can discard the bytes');
+		$this->assertSame($first, $this->request('GET'), 'repeated reads do not escape the projection twice');
+		$this->assertSame($stored, file_get_contents($file), 'display never replaces the original cached bytes');
 	}
 
 	private function classesInFile()

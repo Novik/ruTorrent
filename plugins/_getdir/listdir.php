@@ -51,9 +51,10 @@ usort($directories, "compareEntries");
 usort($files, "compareEntries");
 
 header("Content-Type: application/json");
+// A name that is not UTF-8 travels with its byte key, which the browser sends back.
 echo JSON::safeEncode(array(
-	"path" => $dir,
-	"directories" => array_values($directories),
-	"files" => array_values($files),
+	"path" => FileUtil::displayPath($dir),
+	"directories" => array_map(array('FileUtil', 'displayPath'), array_values($directories)),
+	"files" => array_map(array('FileUtil', 'displayPath'), array_values($files)),
 ));
 ?>

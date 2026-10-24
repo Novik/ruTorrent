@@ -10,7 +10,7 @@ plugin.theme = 'light'; /* 'light', 'dark', or 'system' to follow the device set
 
 /*** State ***/
 plugin.filters = {status: [], label: [], tracker: []};
-plugin.labelIds = {'': 0};
+plugin.labelIds = {'-_-_-nlb-_-_-': 0};
 plugin.trackerIds = {};
 plugin.nextLabelId = 1;
 plugin.nextTrackerId = 1;
@@ -289,6 +289,47 @@ plugin.showUploadResults = function(results) {
   }
 };
 
+plugin.makeAddRequest = function(frm) {
+  var s = theURLs.AddTorrentURL+"?";
+  if($("#torrents_start_stopped").prop("checked")) {
+    s += 'torrents_start_stopped=1&';
+  }
+  if($("#fast_resume").prop("checked")) {
+    s += 'fast_resume=1&';
+  }
+  if($("#not_add_path").prop("checked")) {
+    s += 'not_add_path=1&';
+  }
+  if($("#randomize_hash").prop("checked")) {
+    s += 'randomize_hash=1&';
+  }
+  var dir = $.trim($("#dir_edit").val());
+  if(dir.length) {
+    s += ('dir_edit='+pathQuery(getPathInput('#dir_edit', true))+'&');
+  }
+  var lbl = getLabelInput('#tadd_label', true);
+  if(labelDisplay(lbl).length) {
+    s += ('label='+labelQuery(lbl));
+  }
+  frm.action = s;
+
+  // Persist add-options like the desktop dialog's beforeHide handler.
+  // Re-fetch the stored settings first and merge them in, so this
+  // long-lived mobile session doesn't overwrite newer settings saved
+  // from the desktop UI (its own snapshot may be stale).
+  theWebUI.requestWithoutTimeout('?action=getuisettings', function(stored) {
+    if (stored) {
+      $.extend(theWebUI.settings, stored);
+    }
+    $.each(['not_add_path', 'torrents_start_stopped', 'fast_resume', 'randomize_hash'], function(i, id) {
+      theWebUI.settings['webui.' + id] = $('#' + id).prop('checked');
+    });
+    theWebUI.save();
+  }, true);
+
+  return(true);
+};
+
 plugin.showPage = function(page) {
   if (window.location.hash == "" && page != 'torrentsList') {
     this.scrollTop = $(window).scrollTop();
@@ -397,8 +438,8 @@ $.each(plugin.statusFilterOptions, function(i, opt) {
 plugin.applyFilters = function() {
   // Drop filters whose label/tracker no longer exists in the torrent list
   // (label/tracker ids are persistent, so check the current lists instead)
-  this.filters.label = $.grep(this.filters.label, function(name) {
-    return $.grep(plugin.labelList, function(o) {return o.name === name;}).length > 0;
+  this.filters.label = $.grep(this.filters.label, function(id) {
+    return $.grep(plugin.labelList, function(o) {return o.id === id;}).length > 0;
   });
   this.filters.tracker = $.grep(this.filters.tracker, function(name) {
     return $.grep(plugin.trackerList, function(o) {return o.name === name;}).length > 0;
@@ -495,8 +536,9 @@ plugin.updateFilterButton = function(matched) {
     }).join('+'));
   }
   if (this.filters.label.length) {
-    parts.push($.map(this.filters.label, function(name) {
-      return (name == '') ? theUILang.No_label : name;
+    parts.push($.map(this.filters.label, function(id) {
+      var label = plugin.labelList.find(entry => entry.id === id);
+      return label && label.name ? label.name : theUILang.No_label;
     }).join('+'));
   }
   if (this.filters.tracker.length) {
@@ -519,6 +561,7 @@ plugin.updateFilterButton = function(matched) {
 };
 
 plugin.setFilter = function(type, value) {
+  if (type === 'label' && value !== null) value = labelId(value);
   if (value === null || value === 'all') {
     // The All rows clear their category
     if (!this.filters[type].length) {
@@ -595,8 +638,8 @@ plugin.renderFilterPage = function() {
   var labelsList = $('#filterLabelsList').empty();
   labelsList.append(plugin.makeFilterItem(theUILang.All, total, !plugin.filters.label.length, 'label', null, 'bi-asterisk'));
   $.each(this.labelList, function(i, l) {
-    var icon = (l.name != '' && trackLabels) ? {img: 'plugins/tracklabels/action.php?label=' + encodeURIComponent(l.name)} : 'bi-tag';
-    labelsList.append(plugin.makeFilterItem((l.name == '') ? theUILang.No_label : l.name, l.count, $.inArray(l.name, plugin.filters.label) >= 0, 'label', l.name, icon));
+    var icon = (l.name != '' && trackLabels) ? {img: 'plugins/tracklabels/action.php?label=' + labelQuery(l.value)} : 'bi-tag';
+    labelsList.append(plugin.makeFilterItem((l.name == '') ? theUILang.No_label : l.name, l.count, $.inArray(l.id, plugin.filters.label) >= 0, 'label', l.value, icon));
   });
 
   var trackersList = $('#filterTrackersList').empty();
@@ -925,10 +968,12 @@ plugin.addTorrent = function() {
   sel.empty();
   sel.append($('<option selected></option>').text(theUILang.No_label));
   sel.append($('<option></option>').text(theUILang.newLabel));
-  for (const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels) {
-    sel.append($('<option></option>').text(torrentLabel));
+  for (const [key, info] of theWebUI.categoryList.torrentLabelTree.torrentLabels) {
+    const value = info.value ?? key;
+    sel.append($('<option></option>').text(labelDisplay(value)).data('labelValue', value));
   }
-  $('#tadd_label').val('').hide();
+  setLabelInput('#tadd_label', '');
+  $('#tadd_label').hide();
   $('#taddReturnSelect').hide();
   sel.show();
 
@@ -1031,13 +1076,14 @@ plugin.changeChannel = function() {
 
 plugin.setTorrentLabel = function(newLabel) {
   plugin.labelInEdit = false;
-  plugin.fillLabel(newLabel);
+  plugin.fillLabel(labelDisplay(newLabel));
 
-  if (plugin.torrent.label != newLabel) {
-    plugin.torrent.label = newLabel;
-    plugin.torrents[plugin.torrent.hash].label = newLabel;
+  if (labelId(getTorrentLabel(plugin.torrent)) !== labelId(newLabel)) {
+    const fields = { label: labelDisplay(newLabel), label_value: newLabel, label_id: labelId(newLabel) };
+    Object.assign(plugin.torrent, fields);
+    Object.assign(plugin.torrents[plugin.torrent.hash], fields);
 
-    plugin.request('?action=setlabel&hash=' + plugin.torrent.hash + '&s=label&v=' + encodeURIComponent(newLabel));
+    plugin.request('?action=setlabel&hash=' + plugin.torrent.hash + '&s=label&v=' + labelQuery(newLabel));
   }
 };
 
@@ -1050,9 +1096,10 @@ plugin.editLabel = function() {
   sel.append($('<option></option>').text(theUILang.newLabel));
   var currentIndex = 0;
   var index = 2;
-  for (const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels) {
-    sel.append($('<option></option>').text(torrentLabel));
-    if (torrentLabel === plugin.torrent.label) {
+  for (const [key, info] of theWebUI.categoryList.torrentLabelTree.torrentLabels) {
+    const value = info.value ?? key;
+    sel.append($('<option></option>').text(labelDisplay(value)).data('labelValue', value));
+    if (labelId(value) === labelId(getTorrentLabel(plugin.torrent))) {
       currentIndex = index;
     }
     index++;
@@ -1065,13 +1112,13 @@ plugin.editLabel = function() {
       sel.off('blur');
       plugin.editLabelText();
     } else {
-      plugin.setTorrentLabel((this.selectedIndex == 0) ? '' : this.options[this.selectedIndex].value);
+      plugin.setTorrentLabel((this.selectedIndex == 0) ? '' : $(this.options[this.selectedIndex]).data('labelValue'));
     }
   });
   sel.blur(function() {
     // Dismissed without picking anything
     if (plugin.labelInEdit) {
-      plugin.setTorrentLabel(plugin.torrent.label);
+      plugin.setTorrentLabel(getTorrentLabel(plugin.torrent));
     }
   });
 
@@ -1084,7 +1131,7 @@ plugin.editLabelText = function() {
   .html('<div class="input-append">' +
   '<input class="form-control" id="labelEdit" type="text"/>' +
   '<button type="button" id="labelEditOk" class="btn btn-outline-secondary btn-sm"><i class="bi bi-check-lg icon-black"></i></button></div>');
-  $('#labelEdit').val(plugin.torrent.label);
+  setLabelInput('#labelEdit', getTorrentLabel(plugin.torrent));
   $('#labelEdit').focus();
   // Only the check button (or the return key) saves; it has to act on
   // touchstart/mousedown, which fire before the input's blur — the
@@ -1092,18 +1139,18 @@ plugin.editLabelText = function() {
   // click could land
   $('#labelEditOk').on('touchstart mousedown', function(e) {
     e.preventDefault();
-    plugin.setTorrentLabel($('#labelEdit').val());
+    plugin.setTorrentLabel(getLabelInput('#labelEdit'));
   });
   $('#labelEdit').on('keydown', function(e) {
     if (e.which == 13) {
-      plugin.setTorrentLabel($('#labelEdit').val());
+      plugin.setTorrentLabel(getLabelInput('#labelEdit'));
     }
   });
   $('#labelEdit').blur(function() {
     // Dismissed by tapping or scrolling away: discard the edit, like
     // the label select above
     if (plugin.labelInEdit) {
-      plugin.setTorrentLabel(plugin.torrent.label);
+      plugin.setTorrentLabel(getTorrentLabel(plugin.torrent));
     }
   });
 };
@@ -1356,7 +1403,7 @@ plugin.refreshTrackers = function() {
 };
 
 /*** Torrent details: Files tab ***/
-plugin.getDir = function(p) {
+plugin.getDir = function(p, onEntry) {
   var path = p.split('/');
   if ((path[0] == '') && (path.length == 1)) {
     path = [];
@@ -1372,6 +1419,7 @@ plugin.getDir = function(p) {
     if (dir.container[path[i]] != undefined) {
       dir = dir.container[path[i]];
       realPath += '/' + path[i];
+      if (onEntry) onEntry(dir, i);
       if (!dir.directory) {
         break;
       }
@@ -1420,8 +1468,8 @@ plugin.drawFiles = function(p) {
       $('<hr>'));
   }
 
-  $.each(dir.container, function(name, entry) {
-    var path = realPath + '/' + name;
+  $.each(dir.container, function(key, entry) {
+    var path = realPath + '/' + key;
     var block = $('<div></div>');
 
     block.append(
@@ -1431,7 +1479,7 @@ plugin.drawFiles = function(p) {
     if (entry.directory) {
       block.append(
         $('<a href="javascript://void();"><i class="bi bi-folder2-open icon-black"></i>&nbsp;</a>')
-          .append(document.createTextNode(name))
+          .append($('<span class="file-name"></span>').text(entry.name))
           .click(function() {mobile.drawFiles(path);}));
     } else {
       // theConverter.round truncates to one decimal, like the desktop's
@@ -1444,7 +1492,7 @@ plugin.drawFiles = function(p) {
         '</tbody></table></div>');
       block.append(
         $('<a href="javascript://void();"><i class="bi bi-file-earmark icon-black"></i>&nbsp;</a>')
-          .append(document.createTextNode(name))
+          .append($('<span class="file-name"></span>').text(entry.name))
           .click(function() {mobile.toggleDisplay(info);}),
         info);
     }
@@ -1504,15 +1552,17 @@ plugin.loadFiles = function() {
       var files = {root: true, directory: true, priority: -1, container: {}};
 
       for (var i = 0; i < rawFiles.length; i++) {
-        var path = rawFiles[i].name.replace(/^\/|\/$/g, '').split('/');
+        var names = rawFiles[i].name.replace(/^\/|\/$/g, '').split('/');
+        var path = filePathKey(rawFiles[i]).replace(/^\/|\/$/g, '').split('/');
         var currDir = files;
         for (var j = 0; j < path.length -1; j++) {
           if (currDir.container[path[j]] == undefined) {
-            currDir.container[path[j]] = {directory: true, root: false, container: {}, priority: -2};
+            currDir.container[path[j]] = {name: names[j], directory: true, root: false, container: {}, priority: -2};
           }
           currDir = currDir.container[path[j]];
         }
         currDir.container[path[path.length - 1]] = {root: false,
+          name: names[names.length - 1],
           directory: false,
           size: rawFiles[i].size,
           done: rawFiles[i].done,
@@ -1529,7 +1579,7 @@ plugin.loadFiles = function() {
   }
 }
 
-// Refresh the per-file done values in place (no DOM rebuild, so expanded
+// Refresh the file values and display labels in place (no DOM rebuild, so expanded
 // rows and open priority selects are left alone)
 plugin.refreshFiles = function() {
   if (this.torrent == undefined) {
@@ -1550,12 +1600,20 @@ plugin.refreshFiles = function() {
         var pct = (rawFiles[i].size > 0) ? theConverter.round(rawFiles[i].done / rawFiles[i].size * 100, 1) : '100.0';
         cell.text(theConverter.bytes(rawFiles[i].done) + ' (' + pct + '%)');
       }
-      // Keep the in-memory tree fresh for navigation
-      var node = plugin.getDir(rawFiles[i].name.replace(/^\/|\/$/g, ''))[1];
+      // Metadata may become available or disappear while the raw path stays
+      // unchanged. Refresh every label along that same path for navigation.
+      var names = rawFiles[i].name.replace(/^\/|\/$/g, '').split('/');
+      var node = plugin.getDir(filePathKey(rawFiles[i]).replace(/^\/|\/$/g, ''), function(entry, depth) {
+        entry.name = names[depth];
+      })[1];
       if (node && !node.directory) {
         node.done = rawFiles[i].done;
       }
     }
+    $('#detailsFilesPage select').each(function() {
+      var entry = plugin.getDir($(this).data('path'))[1];
+      $(this).siblings('a').find('.file-name').text(entry.name);
+    });
   });
 }
 
@@ -1631,29 +1689,26 @@ plugin.deleteConfirmed = function() {
 
 /*** Directory browser and save-path pages ***/
 plugin.chooseGetDir = function(path) {
-  $(plugin.getDirTarget || '#dir_edit').val(path);
+  setPathInput(plugin.getDirTarget || '#dir_edit', path);
   plugin.goBack();
 }
 
 plugin.drawGetDir = function(path, first) {
   $.ajax({
     url: 'plugins/_getdir/listdir.php',
-    data: {
-      'dir': path,
-      'time': ((new Date()).getTime())
-    },
+    data: 'dir=' + pathQuery(path) + '&time=' + (new Date()).getTime(),
     dataType: 'json',
 
     success: function(data) {
       var container = $('#getDirList').empty();
-      container.append($('<h5></h5>').text(data.path));
+      container.append($('<h5></h5>').text(pathDisplay(data.path)));
       container.append($('<button type="button" class="btn btn-' + plugin.appliedAccent + '"></button>').text(theUILang.ok).click(function() {mobile.chooseGetDir(data.path);}));
       container.append($('<button type="button" class="btn btn-outline-secondary"></button>').text(theUILang.Cancel).click(function() {mobile.goBack();}));
 
       var tbody = $('<tbody></tbody>');
       $.each(data.directories, function(i, name) {
-        var cell = $('<td><i class="bi bi-folder2-open icon-black"></i> </td>').append(document.createTextNode(name));
-        tbody.append($('<tr></tr>').append(cell).click(function() {mobile.drawGetDir(data.path + name);}));
+        var cell = $('<td><i class="bi bi-folder2-open icon-black"></i> </td>').append(document.createTextNode(pathDisplay(name)));
+        tbody.append($('<tr></tr>').append(cell).click(function() {mobile.drawGetDir(joinPathValue(data.path, name));}));
       });
       container.append($('<table class="table table-striped"></table>').append(tbody));
 
@@ -1680,7 +1735,7 @@ plugin.showDataDir = function() {
 
   var d = this.torrent;
   var fill = function(savepath) {
-    $('#datadir_edit').val(savepath);
+    setPathInput('#datadir_edit', savepath);
     // Same rules as the desktop dialog (plugins/datadir/init.js):
     // path can't be ignored for single-file torrents, fast resume needs a completed torrent
     $('#datadir_not_add_path').prop('disabled', String(d.multi_file).trim() === '0').prop('checked', false);
@@ -1697,17 +1752,17 @@ plugin.showDataDir = function() {
 
   var savePath = $.trim(d.save_path);
   if (savePath.length) {
-    fill(savePath);
+    fill(d.save_path_value || savePath);
   } else {
     // Torrent is not open; the datadir plugin's getsavepath stub fetches its base path
     this.request('?action=getsavepath&hash=' + d.hash, function(r) {
-      fill($.trim(r.savepath));
+      fill((typeof r.savepath === 'string') ? $.trim(r.savepath) : r.savepath);
     });
   }
 };
 
 plugin.dataDirFormState = function() {
-  return $('#datadir_edit').val() + '|' +
+  return pathQuery(getPathInput('#datadir_edit')) + '|' +
     $('#datadir_not_add_path').prop('checked') + '|' +
     $('#datadir_move').prop('checked') + '|' +
     $('#datadir_fastresume').prop('checked');
@@ -1731,7 +1786,7 @@ plugin.sendDataDir = function() {
     // action.php uses rawurldecode, which doesn't map '+' back to a space,
     // so encode the same way as the desktop setdatadir stub
     data: 'hash=' + this.torrent.hash +
-      '&datadir=' + encodeURIComponent($('#datadir_edit').val()) +
+      '&datadir=' + pathQuery(getPathInput('#datadir_edit')) +
       '&move_addpath=' + ($('#datadir_not_add_path').prop('checked') ? '0' : '1') +
       '&move_datafiles=' + ($('#datadir_move').prop('checked') ? '1' : '0') +
       '&move_fastresume=' + ($('#datadir_fastresume').prop('checked') ? '1' : '0'),
@@ -1845,7 +1900,7 @@ plugin.dynamicSort = function (property) {
 // and the status text key on it, and it can flip with every other field
 // unchanged (file priorities edited from another client on an idle torrent).
 plugin.rowSnapshot = function(v) {
-  return {name: v.name, size: v.size, label: v.label, state: v.state, done: v.done,
+  return {name: v.name, size: v.size, label: v.label, label_id: labelId(getTorrentLabel(v)), state: v.state, done: v.done,
     ul: v.ul, dl: v.dl, eta: v.eta, ratio: v.ratio, msg: v.msg,
     partially_done: v.partially_done};
 };
@@ -1885,17 +1940,17 @@ plugin.processTorrents = function(torrents, singleUpdate) {
   //     torrent is unlabelled, so it is absent when every torrent has a label.
   var plabel = theWebUI.categoryList.panelLabelAttribs.plabel;
   var noLabel = plabel && plabel.get("-_-_-nlb-_-_-");
-  plugin.labelList = [{name: '', count: noLabel ? noLabel.count : 0}];
+  plugin.labelList = [{name: '', value: '', id: labelId(''), count: noLabel ? noLabel.count : 0}];
 
   if (plabel) {
     for (const l of plabel.keys()) {
-      if (l.startsWith("clabel")) {
-        const labelProper = l.replace('clabel__', '');
-        if (plugin.labelIds[labelProper] == undefined) {
-          plugin.labelIds[labelProper] = plugin.nextLabelId++;
+      if (l.startsWith('clabel__') || l.startsWith('blabel__')) {
+        const value = labelValueFromId(theWebUI.categoryList.torrentLabelTree, l);
+        if (plugin.labelIds[l] == undefined) {
+          plugin.labelIds[l] = plugin.nextLabelId++;
         }
 
-        plugin.labelList.push({name: labelProper, count: plabel.get(l).count});
+        plugin.labelList.push({name: labelDisplay(value), value, id: l, count: plabel.get(l).count});
       }
     }
   }
@@ -1929,7 +1984,7 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       var percent = v.done / 10;
 
       // The parts shared by row creation and in-place update
-      var rowClass = 'torrentBlock status' + statusClass + ' state' + stateClass + ' error' + errorClass + ' label' + plugin.labelIds[v.label];
+      var rowClass = 'torrentBlock status' + statusClass + ' state' + stateClass + ' error' + errorClass + ' label' + plugin.labelIds[labelId(getTorrentLabel(v))];
       var statusHtml = v.status +
         ((v.ul) ? ' ↑' + theConverter.speed(v.ul) : '') +
         ((v.dl) ? ' ↓' + theConverter.speed(v.dl) : '') +
@@ -2468,47 +2523,6 @@ plugin.init = function() {
       );
       $('#torrentPriority').change(function(){mobile.changePriority()});
 
-      var makeAddRequest = function(frm)
-      {
-        var s = theURLs.AddTorrentURL+"?";
-        if($("#torrents_start_stopped").prop("checked")) {
-          s += 'torrents_start_stopped=1&';
-        }
-        if($("#fast_resume").prop("checked")) {
-          s += 'fast_resume=1&';
-        }
-        if($("#not_add_path").prop("checked")) {
-          s += 'not_add_path=1&';
-        }
-        if($("#randomize_hash").prop("checked")) {
-          s += 'randomize_hash=1&';
-        }
-        var dir = $.trim($("#dir_edit").val());
-        if(dir.length) {
-          s += ('dir_edit='+encodeURIComponent(dir)+'&');
-        }
-        var lbl = $.trim($("#tadd_label").val());
-        if(lbl.length) {
-          s += ('label='+encodeURIComponent(lbl));
-        }
-        frm.action = s;
-
-        // Persist add-options like the desktop dialog's beforeHide handler.
-        // Re-fetch the stored settings first and merge them in, so this
-        // long-lived mobile session doesn't overwrite newer settings saved
-        // from the desktop UI (its own snapshot may be stale).
-        theWebUI.requestWithoutTimeout('?action=getuisettings', function(stored) {
-          if (stored) {
-            $.extend(theWebUI.settings, stored);
-          }
-          $.each(['not_add_path', 'torrents_start_stopped', 'fast_resume', 'randomize_hash'], function(i, id) {
-            theWebUI.settings['webui.' + id] = $('#' + id).prop('checked');
-          });
-          theWebUI.save();
-        }, true);
-
-        return(true);
-      }
       $("#addTorrentFile").submit(function()
       {
         var files = $("#torrent_file")[0].files;
@@ -2520,12 +2534,12 @@ plugin.init = function() {
         }
         $('#torrentFileSend').prop('disabled', true);
         plugin.createiFrame(this);
-        return(makeAddRequest(this));
+        return(plugin.makeAddRequest(this));
       });
       $("#addTorrentUrl").submit(function() {
         $('#addUrl').prop('disabled', true);
         plugin.createiFrame(this);
-        return(makeAddRequest(this));
+        return(plugin.makeAddRequest(this));
       });
 
       $('#tadd_label_select').change(function() {
@@ -2535,14 +2549,15 @@ plugin.init = function() {
           $('#tadd_label').show();
           $('#taddReturnSelect').show();
         } else if (index == 0) {
-          $('#tadd_label').val('');
+          setLabelInput('#tadd_label', '');
         } else {
-          $('#tadd_label').val(this.options[index].value);
+          setLabelInput('#tadd_label', $(this.options[index]).data('labelValue'));
         }
       });
       $('#taddReturnSelect').click(function() {
         $(this).hide();
-        $('#tadd_label').val('').hide();
+        setLabelInput('#tadd_label', '');
+        $('#tadd_label').hide();
         $('#tadd_label_select').prop('selectedIndex', 0).show();
       });
       $('#torrent_file').change(function() {

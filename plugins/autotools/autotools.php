@@ -87,7 +87,7 @@ class rAutoTools
 				}
 				else if( $parts[0] == "path_to_finished" )
 				{
-					$this->path_to_finished = $parts[1];
+					$this->path_to_finished = rawurldecode($parts[1]);
 					if(!rTorrentSettings::get()->correctDirectory($this->path_to_finished))
 						$this->path_to_finished = '';
 				}
@@ -103,7 +103,7 @@ class rAutoTools
 				}
 				else if( $parts[0] == "path_to_watch" )
 				{
-					$this->path_to_watch = $parts[1];
+					$this->path_to_watch = rawurldecode($parts[1]);
 					if(!rTorrentSettings::get()->correctDirectory($this->path_to_watch))
 						$this->path_to_watch = '';
 				}
@@ -126,21 +126,22 @@ class rAutoTools
 	}
 	public function get()
 	{
-		$ret  = "theWebUI.autotools = { ";
-		$ret .= "EnableLabel: ".$this->enable_label;
-		$ret .= ", LabelTemplate: '".addslashes( $this->label_template )."'";
-		$ret .= ", EnableMove: ".$this->enable_move;
-		$ret .= ", FileOpType: '".$this->fileop_type."'";
-		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
-		$ret .= ", SkipMoveForFiles: '" . addslashes( $this->skip_move_for_files ). "'";
-		$ret .= ", EnableWatch: ".$this->enable_watch;
-		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";
-		$ret .= ", MoveFilter: '".addslashes( $this->automove_filter )."'";
-		$ret .= ", WatchStart: ".$this->watch_start;
-		$ret .= ", AddLabel: ".$this->addLabel;
-		$ret .= ", AddName: ".$this->addName;
-		return $ret." };\n";
+		return("theWebUI.autotools = ".JSON::jsValue(array(
+			'EnableLabel' => intval($this->enable_label),
+			'LabelTemplate' => (string)$this->label_template,
+			'EnableMove' => intval($this->enable_move),
+			'FileOpType' => (string)$this->fileop_type,
+			'PathToFinished' => FileUtil::displayPath((string)$this->path_to_finished),
+			'SkipMoveForFiles' => (string)$this->skip_move_for_files,
+			'EnableWatch' => intval($this->enable_watch),
+			'PathToWatch' => FileUtil::displayPath((string)$this->path_to_watch),
+			'MoveFilter' => (string)$this->automove_filter,
+			'WatchStart' => intval($this->watch_start),
+			'AddLabel' => intval($this->addLabel),
+			'AddName' => intval($this->addName)
+		)).";\n");
 	}
+
 	public function setHandlers()
 	{
 		global $autowatch_interval;

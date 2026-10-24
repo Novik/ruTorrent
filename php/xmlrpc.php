@@ -16,6 +16,30 @@ class rXMLRPCParam
 		$this->type = $aType;
 		if(($this->type=="i8") || ($this->type=="i4"))
 			$this->value = self::integerText($this->type,$aValue);
+		else if($this->type === 'string')
+		{
+			$aValue = (string)$aValue;
+			try {
+				// XML forbids these bytes and normalizes literal CR. Native RPC
+				// accepts binary string parameters without changing their bytes.
+				$binary = @preg_match('/[\x00-\x08\x0B-\x1F]|\xEF\xBF[\xBE\xBF]/', $aValue) !== 0;
+			} catch(Throwable $error) {
+				$binary = true;
+			}
+			if($binary || !UTF::isValid($aValue))
+			{
+				$this->type = 'base64';
+				$this->value = null;
+				try {
+					$encoded = @base64_encode($aValue);
+					if(@is_string($encoded) && @base64_decode($encoded, true) === $aValue)
+						$this->value = $encoded;
+				} catch(Throwable $error) {
+					// The request refuses an unavailable value before sending any command.
+				}
+			}
+			else $this->value = htmlspecialchars($aValue, ENT_NOQUOTES, 'UTF-8');
+		}
 		else
 			$this->value = htmlspecialchars($aValue,ENT_NOQUOTES,"UTF-8");
 	}
@@ -279,6 +303,15 @@ class rXMLRPCRequest
 				{
 					$this->fault = true;
 					$this->faultString = 'Refused: not a number an XMLRPC integer can hold.';
+					$this->commands = array();
+					return(false);
+				}
+		foreach($this->commands as $cmd)
+			foreach($cmd->params as $prm)
+				if($prm->value === null)
+				{
+					$this->fault = true;
+					$this->faultString = 'Refused: could not encode an XMLRPC parameter.';
 					$this->commands = array();
 					return(false);
 				}

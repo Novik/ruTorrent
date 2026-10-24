@@ -2,7 +2,13 @@
 	$path = dirname(realpath($argv[0]));
 	if(chdir($path))
 	{
-		if( count( $argv ) > 13 )
+		// New hooks retain the user slot even when empty, then append source paths.
+		if(count($argv) > 14)
+		{
+			if(strncmp((string)$argv[13], 'u:', 2) !== 0) return;
+			$_SERVER['REMOTE_USER'] = substr($argv[13], 2);
+		}
+		elseif(count($argv) > 13)
 			$_SERVER['REMOTE_USER'] = $argv[13];
 		require_once( './history.php' );
 		$hst = rHistoryData::load();
@@ -38,6 +44,9 @@
 		// the user nothing they did.
 		if(!rHistoryData::isMagnetPlaceholder($data["name"]))
 		{
+			if(isset($argv[14]))
+				$data = rHistoryData::captureTorrentName($data, $argv[14],
+					isset($argv[15], $argv[16]) ? array($argv[15], $argv[16]) : false);
 			if($mgr->log[$actions[$action]])
 			{
 				$hst->add( $data, $mgr->log["limit"] );

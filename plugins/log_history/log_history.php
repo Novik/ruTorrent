@@ -74,10 +74,14 @@ class LogHandler
     public function getLatestLogs(?int $count = null): array
     {
         $count = $count !== null ? max(1, $count) : $this->log_count;
-        return array_values(array_filter(
+        $logs = array_values(array_filter(
             array_slice($this->logs, -$count),
             fn($l) => is_array($l) && isset($l['message'], $l['status'])
         ));
+        foreach($logs as &$log)
+            if(is_string($log['message'])) $log['message'] = UTF::display($log['message']);
+        unset($log);
+        return $logs;
     }
 
     static public function handleRequest()

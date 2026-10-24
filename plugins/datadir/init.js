@@ -16,7 +16,7 @@ theWebUI.EditDataDir = function()
 		if( !save_path.length ) // torrent is not open
 			this.request( "?action=getsavepath&hash=" + torrent.hash, [this.showDataDirDlg, this] );
 		else
-			theWebUI.showDataDirDlg( { hash: torrent.hash, savepath: save_path } );
+			theWebUI.showDataDirDlg( { hash: torrent.hash, savepath: torrent.save_path_value || save_path } );
 	}
 }
 
@@ -30,7 +30,7 @@ theWebUI.showDataDirDlg = function( d )
 		is_done = String(torrent.done).trim() === "1000";
 		is_multy = String(torrent.multi_file).trim() !== "0";
 	}
-	$('#edit_datadir').val( d.savepath.trim() );
+	setPathInput('#edit_datadir', (typeof d.savepath === "string") ? d.savepath.trim() : d.savepath);
 	$('#btn_datadir_ok').prop("disabled",false);
 	// can't ignore torrent's path if not multy
 	$('#move_not_add_path').prop("disabled",!is_multy).prop("checked",false);
@@ -77,9 +77,19 @@ rTorrentStub.prototype.getsavepathResponse = function( xml )
 	{
 		torrent.base_path = base_path;
 		var pos = torrent.base_path.lastIndexOf('/');
-		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ?
+		var path_name = typeof torrent.path_name === "string" ? torrent.path_name : torrent.name;
+		torrent.save_path = (torrent.base_path.substring(pos+1) === path_name) ?
 			torrent.base_path.substring(0,pos) : torrent.base_path;
 		save_path = torrent.save_path;
+		if(Array.isArray(xml) && xml[3] && isPathValue(xml[3].base) && isPathValue(xml[3].save))
+		{
+			torrent.base_path = pathDisplay(xml[3].base);
+			torrent.save_path = pathDisplay(xml[3].save);
+			torrent.save_path_value = xml[3].save;
+			save_path = xml[3].save;
+		}
+		else
+			delete torrent.save_path_value;
 	}
 	return( { hash: this.hashes[0], savepath: save_path } );
 }
@@ -138,7 +148,7 @@ rTorrentStub.prototype.setdatadir = function()
 {
 	var id = theWebUI.DataDirID;
 	this.content = "hash=" + id +
-		"&datadir=" + encodeURIComponent( $('#edit_datadir').val() ) +
+		"&datadir=" + pathQuery(getPathInput('#edit_datadir')) +
 		"&move_addpath=" + ( $$('move_not_add_path').checked  ? '0' : '1' ) +
 		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' ) +
 		"&move_fastresume=" + ( $$('move_fastresume').checked  ? '1' : '0' );

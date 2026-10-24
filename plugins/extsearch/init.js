@@ -199,10 +199,10 @@ rTorrentStub.prototype.loadtegtorrents = function()
 		this.content += '&not_add_path=1';
 	var dir = $("#tegdir_edit").val().trim();
 	if(dir.length)
-		this.content += ('&dir_edit='+encodeURIComponent(dir));
-	var lbl = $("#teglabel").val().trim();
-	if(lbl.length)
-		this.content += '&label='+encodeURIComponent(lbl);
+		this.content += ('&dir_edit='+pathQuery(getPathInput('#tegdir_edit', true)));
+	var lbl = getLabelInput("#teglabel", true);
+	if(labelDisplay(lbl).length)
+		this.content += '&label='+labelQuery(lbl);
 	if($("#tegfast_resume").prop("checked"))
 		this.content += '&fast_resume=1';
 	for(var i = 0; i<plugin.tegArray.length; i++)
@@ -790,31 +790,37 @@ plugin.onLangLoaded = function() {
 	$("#teglabel_select").on("change", function() {
 		switch (this.selectedIndex) {
 			case 0:
-				$("#teglabel").val("");
+				setLabelInput("#teglabel", "");
 				break;
 			case 1:
 				$(this).hide();
-				$("#teglabel").val("").show().trigger("focus");
+				setLabelInput("#teglabel", "");
+				$("#teglabel").show().trigger("focus");
 				$("#teglabel_return_select").show();
 				break;
 			default:
-				$("#teglabel").val(this.value);
+				setLabelInput("#teglabel", $(this.options[this.selectedIndex]).data("labelValue"));
 				break;
 		}
 	});
 	$("#teglabel_return_select").on("click", function() {
 		$(this).hide();
-		$("#teglabel").val("").hide();
+		setLabelInput("#teglabel", "");
+		$("#teglabel").hide();
 		$("#teglabel_select").prop("selectedIndex", 0).show();
 	});
 	theDialogManager.setHandler("tegLoadTorrents", "beforeShow", () => {
-		$("#teglabel").val("").hide();
+		setLabelInput("#teglabel", "");
+		$("#teglabel").hide();
 		$("#teglabel_return_select").hide();
 		$("#teglabel_select").empty().append(
 			$("<option>").text(theUILang.No_label),
 			$("<option>").text(theUILang.newLabel),
-			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels.keys()]
-				.map(lbl => $("<option>").val(lbl).text(lbl)),
+			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels]
+				.map(([key, info]) => {
+					const value = info.value === undefined ? key : info.value;
+					return $("<option>").data("labelValue", value).val(typeof value === "string" ? value : labelId(value)).text(labelDisplay(value));
+				}),
 		).prop("selectedIndex", 0).show();
 	});
 

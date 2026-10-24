@@ -219,6 +219,18 @@ function makeSimpleCall($cmds,$hash)
        	return($req->success(true) ? $req->val : false);
 }
 
+// Display envelopes for a base path that is not UTF-8 and for the save path
+// cut from it the way the WebUI cuts it. The keys name the daemon's bytes, so
+// the reader's escaping of quotes and backslashes is undone first.
+function httprpcPathValues($base, $name)
+{
+	$base = rXMLRPCRequest::unescapeValue($base);
+	$name = rXMLRPCRequest::unescapeValue($name);
+	$pos = strrpos($base, '/');
+	$save = ($pos !== false && substr($base, $pos+1) === $name) ? substr($base, 0, $pos) : $base;
+	return(array('base' => FileUtil::displayPath($base), 'save' => FileUtil::displayPath($save)));
+}
+
 $result = null;
 $refused = false;
 
@@ -268,8 +280,31 @@ switch($mode)
 			// answer is the whole list and carries no deletions -- say so, or a
 			// client that has been running since before the state was lost keeps
 			// torrents rtorrent no longer has, with only a reload to clear them.
+			$rows = $torrents;
 			$hasPrevious = $theCache->calcDifference( $cid, $torrents, $dTorrents );
+			// Side maps for legacy bytes in the rows this answer carries: verified
+			// titles, label keys, and path keys. A save path is cut from the full
+			// row, because the diff can leave out the name or the path.
+			require_once( '../../php/torrentfilenames.php' );
+			$names = array();
+			$labels = array();
+			$pathValues = array();
+			foreach($torrents as $torrentHash => $values)
+			{
+				if(isset($values[4]) && TorrentFileNames::needsTitleMetadata($values[4]))
+					$names[$torrentHash] = rXMLRPCRequest::unescapeValue($values[4]);
+				if(isset($values[14]) && is_array($label = LabelValue::fromEncoded($values[14])))
+					$labels[$torrentHash] = $label;
+				if((isset($values[4]) || isset($values[25])) && !UTF::isValid($rows[$torrentHash][25]))
+					$pathValues[$torrentHash] = httprpcPathValues($rows[$torrentHash][25], $rows[$torrentHash][4]);
+			}
 			$result = array( "t"=>$torrents, "cid"=>$cid );
+			if(count($names))
+				$result["n"] = TorrentFileNames::titles($names);
+			if(count($labels))
+				$result["l"] = $labels;
+			if(count($pathValues))
+				$result["p"] = $pathValues;
 			if(!$hasPrevious)
 				$result["full"] = 1;
 			if(count($dTorrents))
@@ -284,6 +319,28 @@ switch($mode)
 			),$hash[0],$add,'f');
 		if($result === false)
 			$result = array();
+		require_once( '../../php/torrentfilenames.php' );
+		if(TorrentFileNames::needsMetadata($result))
+		{
+			// Byte keys and metadata matching need the daemon's own path bytes.
+			foreach($result as &$row)
+				if(!UTF::isValid($row[0]))
+					$row[0] = rXMLRPCRequest::unescapeValue($row[0]);
+			unset($row);
+			$source = false;
+			try
+			{
+				// The hash names a session file; anything else never reaches the filesystem.
+				require_once( '../../php/rtorrent.php' );
+				if(preg_match('/^[0-9A-F]{40}\z/i', $hash[0]))
+					$source = rTorrent::getSource(strtoupper($hash[0]));
+			}
+			catch(Throwable $error)
+			{
+				// Metadata is optional display evidence; keep the live file rows.
+			}
+			$result = TorrentFileNames::resolve($result, $hash[0], $source);
+		}
 		break;
 	}
 	case "prs":	/**/
@@ -341,6 +398,9 @@ switch($mode)
 				$dht = $req->val[5];
 			}
 			$result = array_slice($req->val, $i, count($cmds));
+			// get_directory: a directory that is not UTF-8 keeps its byte key.
+			if(isset($result[3]) && !UTF::isValid($result[3]))
+				$result[3] = FileUtil::displayPath(rXMLRPCRequest::unescapeValue($result[3]));
 			array_unshift($result, (($dht=="auto") || ($dht=="on")) ? 1 : 0);
 		}
 		break;
@@ -431,10 +491,15 @@ switch($mode)
 			$req = new rXMLRPCRequest( array(
 				new rXMLRPCCommand( "d.open", $hash[0] ),
 				new rXMLRPCCommand( "d.get_base_path", $hash[0] ),
-				new rXMLRPCCommand( "d.close", $hash[0] )
+				new rXMLRPCCommand( "d.close", $hash[0] ),
+				new rXMLRPCCommand( "d.get_name", $hash[0] )
 			) );
 			if($req->success(true))
-				$result = $req->val;
+			{
+				$result = array_slice($req->val, 0, 3);
+				if(isset($result[1], $req->val[3]) && !UTF::isValid($result[1]))
+					$result[] = httprpcPathValues($result[1], $req->val[3]);
+			}
 		}
 		break;
 	}

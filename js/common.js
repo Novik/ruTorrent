@@ -1101,6 +1101,19 @@ function copyToClipboard(text)
 	});
 }
 
+// Match PHP rawurlencode() per path component; labels never identify files.
+function filePathKey(file)
+{
+	return file.pathKey || rawUrlEncode(file.name).replace(/%2F/g, "/");
+}
+
+function fileExtension(file, allowDotfile = false)
+{
+	var name = filePathKey(file).split('/').pop();
+	var dot = name.lastIndexOf('.');
+	return (dot > 0 || (allowDotfile && dot === 0)) ? name.substring(dot+1).toLowerCase() : '';
+}
+
 function rDirectory()
 {
 	this.dirs = new Array();
@@ -1110,11 +1123,15 @@ function rDirectory()
 
 rDirectory.prototype.addFile = function(aData,no)
 {
-	var name = aData.name;
+	// Labels can coincide after conversion. Directory identity keeps the daemon
+	// bytes, with the same per-component encoding as PHP's rawurlencode().
+	var name = filePathKey(aData);
+	var displayName = aData.name;
 	var fileAdded = false;
 	while(name.length)
 	{
 		var file = splitName(name);
+		var display = splitName(displayName);
 		if(!this.dirs[file.path])
 		{
 			this.dirs[file.path] = {};
@@ -1125,7 +1142,7 @@ rDirectory.prototype.addFile = function(aData,no)
 		{
 			var sId = "_f_"+no;
 			var data = cloneObject( aData );
-			data.name = file.name;
+			data.name = display.name;
 		        if(this.dirs[file.path][sId])
 				this.dirs[file.path][sId].data = data;
 			else
@@ -1136,9 +1153,12 @@ rDirectory.prototype.addFile = function(aData,no)
 		{
 			sId = "_d_"+name;
 			if(!this.dirs[file.path][sId])
-				this.dirs[file.path][sId] = { data: { name: file.name, size: 0, done: 0, percent: 0.0, priority: -1, prioritize: -1 }, icon: "Icon_Dir", link: name };
+				this.dirs[file.path][sId] = { data: { name: display.name, size: 0, done: 0, percent: 0.0, priority: -1, prioritize: -1 }, icon: "Icon_Dir", link: name };
+			else
+				this.dirs[file.path][sId].data.name = display.name;
 		}
 		name = file.path;
+		displayName = display.path;
 	}
 
 	function splitName(name)
@@ -1850,3 +1870,133 @@ if (!window.requestIdleCallback) {
 		document.cookie = "browser_timezone="+Intl.DateTimeFormat().resolvedOptions().timeZone
 	} catch(e) {}
 }).apply();
+// Paths selected from the filesystem carry display text separately from bytes.
+// Keys match PHP rawurlencode(), which is what rawUrlEncode() makes of UTF-8 text.
+// Only query construction consumes the key; editing always produces a literal path.
+function rawUrlEncode(text)
+{
+	return encodeURIComponent(text).replace(/[!'()*]/g, char => "%" + char.charCodeAt(0).toString(16).toUpperCase());
+}
+
+function pathDisplay(value)
+{
+	return value && typeof value === "object" ? value.name : (value || "");
+}
+
+function pathQuery(value)
+{
+	return value && typeof value === "object" ? value.pathKey : rawUrlEncode(value || "");
+}
+
+function isPathValue(value)
+{
+	return typeof value === "string" || (value !== null && typeof value === "object" && !Array.isArray(value)
+		&& Object.prototype.hasOwnProperty.call(value, "name") && typeof value.name === "string"
+		&& Object.prototype.hasOwnProperty.call(value, "pathKey") && typeof value.pathKey === "string"
+		&& /^(?:[A-Za-z0-9_.~-]|%[0-9A-F]{2})*$/.test(value.pathKey));
+}
+
+function setPathInput(input, value)
+{
+	const edit = $(input).val(pathDisplay(value));
+	// A text input strips CR/LF; compare with the rendered snapshot, while the
+	// untouched selection still names the exact path returned by the server.
+	edit.data({pathValue: value || "", pathText: edit.val()})
+		.off("input.pathValue").on("input.pathValue", function() { $(this).removeData("pathValue pathText"); });
+}
+
+function getPathInput(input, trim = false)
+{
+	const edit = $(input);
+	const selected = edit.data("pathValue");
+	const text = edit.val() || "";
+	if(selected !== undefined && edit.data("pathText") === text)
+		return selected;
+	return trim ? text.trim() : text;
+}
+
+function joinPathValue(parent, child, directory = false)
+{
+	const separator = pathDisplay(parent).endsWith("/") ? "" : "/";
+	const suffix = directory ? "/" : "";
+	const name = pathDisplay(parent) + separator + pathDisplay(child) + suffix;
+	return typeof parent === "object" || typeof child === "object"
+		? { name, pathKey: pathQuery(parent) + encodeURIComponent(separator) + pathQuery(child) + encodeURIComponent(suffix) }
+		: name;
+}
+
+// Labels keep their stored custom1 bytes separate from the text shown in controls.
+function labelDisplay(value)
+{
+	return value && typeof value === "object" ? value.name : (value || "");
+}
+
+function labelQuery(value)
+{
+	return value && typeof value === "object" ? value.labelKey : rawUrlEncode(value || "");
+}
+
+function isLabelValue(value)
+{
+	return typeof value === "string" || (value !== null && typeof value === "object" && !Array.isArray(value)
+		&& Object.prototype.hasOwnProperty.call(value, "name") && typeof value.name === "string"
+		&& Object.prototype.hasOwnProperty.call(value, "labelKey") && typeof value.labelKey === "string"
+		&& /^(?:[A-Za-z0-9_.~-]|%[0-9A-F]{2})*$/.test(value.labelKey));
+}
+
+function labelId(value)
+{
+	return !labelQuery(value) ? "-_-_-nlb-_-_-" : typeof value === "object"
+		? "blabel__" + value.labelKey : "clabel__" + value;
+}
+
+function getTorrentLabel(torrent)
+{
+	return torrent.label_value === undefined ? torrent.label : torrent.label_value;
+}
+
+function setLabelInput(input, value)
+{
+	const edit = $(input).val(labelDisplay(value));
+	edit.data({labelValue: value || "", labelText: edit.val()})
+		.off("input.labelValue").on("input.labelValue", function() { $(this).removeData("labelValue labelText"); });
+}
+
+function getLabelInput(input, trim = false)
+{
+	const edit = $(input), text = edit.val() || "";
+	if(edit.data("labelValue") !== undefined && edit.data("labelText") === text)
+		return edit.data("labelValue");
+	return trim ? text.trim() : text;
+}
+
+function labelTreePath(value)
+{
+	const names = labelDisplay(value).split("/");
+	const keys = labelQuery(value).split("%2F");
+	return keys.map((key, index) => {
+		const labelKey = keys.slice(0, index + 1).join("%2F");
+		let prefix = {name: names.slice(0, index + 1).join("/"), labelKey};
+		try {
+			prefix = decodeURIComponent(labelKey);
+		} catch(error) {}
+		// The terminal node shares the model's identity even when a server
+		// fallback kept valid text in an opaque value.
+		if(index === keys.length - 1) prefix = value;
+		// A leading slash creates an empty ancestor, not the No label bucket.
+		return {key, name: names[index], value: prefix, panelId: labelKey === "" ? "clabel__" : labelId(prefix)};
+	});
+}
+
+function labelValueFromId(tree, id)
+{
+	if(tree)
+		for(const key of [id, id.substring(8)])
+		{
+			const info = tree.torrentLabels.get(key);
+			if(!info) continue;
+			const value = info.value === undefined ? key : info.value;
+			if((info.panelId || labelId(value)) === id) return value;
+		}
+	return id.startsWith("clabel__") ? id.substring(8) : "nlb";
+}

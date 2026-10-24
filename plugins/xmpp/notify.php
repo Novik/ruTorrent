@@ -50,7 +50,10 @@ if ( $at->message !== '' && isset($at->jabberServer) && isset($at->jabberLogin) 
     }
     try
     {
-	$message = str_replace( "{TORRENT}", $name, $at->message );
+	// Appended arguments keep previously installed two-argument hooks usable.
+	// Missing source paths mean byte escapes, never an extra daemon lookup.
+	$message = $at->notificationMessage($name, $argv[3] ?? '',
+		isset($argv[4], $argv[5]) ? array($argv[4], $argv[5]) : false);
 	$conn->connect();
 	$conn->processUntil('session_start');
 	$conn->presence();

@@ -8,12 +8,12 @@ if (plugin.canChangeOptions()) {
 			$$('label_template').value = theWebUI.autotools.LabelTemplate;
 			linked($$('enable_label'), 0, ['label_template']);
 			$$('enable_move').checked  = (theWebUI.autotools.EnableMove === 1);
-			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
+			setPathInput('#path_to_finished', theWebUI.autotools.PathToFinished);
 			$$('skip_move_for_files').value = theWebUI.autotools.SkipMoveForFiles;
 			linked($$('enable_move'), 0, ['automove_filter', 'path_to_finished', 'skip_move_for_files', 'path_to_finished_btn', 'fileop_type', 'auto_add_label', 'auto_add_name']);
 			$$('fileop_type').value = theWebUI.autotools.FileOpType;
 			$$('enable_watch').checked  = (theWebUI.autotools.EnableWatch === 1);
-			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
+			setPathInput('#path_to_watch', theWebUI.autotools.PathToWatch);
 			linked($$('enable_watch'), 0, ['path_to_watch', 'path_to_watch_btn', 'watch_start']);
 			$$('watch_start').checked  = (theWebUI.autotools.WatchStart === 1);
 			if (plugin.DirBrowser1)
@@ -34,13 +34,13 @@ if (plugin.canChangeOptions()) {
 			return true;
 		if ($$('enable_move').checked !== (theWebUI.autotools.EnableMove === 1))
 			return true;
-		if ($$('path_to_finished').value !== theWebUI.autotools.PathToFinished)
+		if (pathQuery(getPathInput('#path_to_finished')) !== pathQuery(theWebUI.autotools.PathToFinished))
 			return true;
 		if ($$('skip_move_for_files').value !== theWebUI.autotools.SkipMoveForFiles)
 			return true;
 		if ($$('enable_watch').checked !== ( theWebUI.autotools.EnableWatch === 1))
 			return true;
-		if ($$('path_to_watch').value !== theWebUI.autotools.PathToWatch)
+		if (pathQuery(getPathInput('#path_to_watch')) !== pathQuery(theWebUI.autotools.PathToWatch))
 			return true;
 		if ($$('fileop_type').value !== theWebUI.autotools.FileOpType)
 			return true;
@@ -66,13 +66,13 @@ if (plugin.canChangeOptions()) {
 		this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
 			"&label_template=" + $$('label_template').value +
 			"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
-			"&path_to_finished=" + $$('path_to_finished').value +
+			"&path_to_finished=" + pathQuery(getPathInput('#path_to_finished')) +
 			"&skip_move_for_files=" + $$('skip_move_for_files').value +
 			"&fileop_type=" + $$('fileop_type').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
 			"&add_label=" + ( $$('auto_add_label').checked  ? '1' : '0' ) +
 			"&add_name=" + ( $$('auto_add_name').checked  ? '1' : '0' ) +
-			"&path_to_watch=" + $$('path_to_watch').value +
+			"&path_to_watch=" + pathQuery(getPathInput('#path_to_watch')) +
 			"&automove_filter=" + $$('automove_filter').value +
 			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
 		this.contentType = "application/x-www-form-urlencoded";

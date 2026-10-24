@@ -692,7 +692,10 @@ var theWebUI = {
               						v /= 1024;
 	          					v = Math.ceil(v);
 					}
-					o.val(v);
+					if(i === "directory")
+						setPathInput(o, v);
+					else
+						o.val(v);
 				}
 				o.trigger('change');
 			}
@@ -808,6 +811,8 @@ var theWebUI = {
 				o = $(o);
 				var numericInput = o.hasClass("num") || o.is("input[type=number]");
 				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
+				if(i === "directory")
+					nv = getPathInput(o);
 				// Clearing one of these five rTorrent limits is not an instruction to
 				// write zero. Other numeric inputs may use empty as a real UI sentinel.
 				if(nv==="" && emptyLimitLeavesUnchanged[i]===true)
@@ -819,7 +824,7 @@ var theWebUI = {
 					case "download_rate":
 						nv *= 1024;
 				}
-				if(nv!=v)
+				if(i === "directory" ? pathQuery(nv) !== pathQuery(v) : nv!=v)
 				{
 					if((/^webui\./).test(i))
 					{
@@ -916,7 +921,7 @@ var theWebUI = {
 						var k_type = o.is("input:checkbox") || o.is("select") || numericInput ? "n" : "s";
 						if(numericInput && (nv!=="") && (xmlrpcInteger(nv)===null))
 							unrepresentableNumbers.push(nv);
-						req+=("&s="+k_type+i+"&v="+nv);
+						req+=("&s="+k_type+i+"&v="+(i === "directory" ? pathQuery(nv) : nv));
 					}
 				}
 			}
@@ -1621,11 +1626,12 @@ var theWebUI = {
 		{
 			const lblText = this.settings["webui.show_label_path_tree"]
 				? ('│'.repeat(info.level) + info.path.slice(info.level).join("/"))
-				: torrentLabel;
-			if((table.selCount == 1) && (this.torrents[id].label == torrentLabel))
+				: (info.name ?? torrentLabel);
+			const value = info.value === undefined ? torrentLabel : info.value;
+			if((table.selCount == 1) && (labelId(getTorrentLabel(this.torrents[id])) === labelId(value)))
 				_bf.push([CMENU_SEL, lblText]);
 			else
-				_bf.push([lblText, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? () => theWebUI.setLabel(torrentLabel) : null]);
+				_bf.push([lblText, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? () => theWebUI.setLabel(value) : null]);
 		}
    		theContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
    		theContextMenu.add([CMENU_SEP]);
@@ -2175,8 +2181,8 @@ var theWebUI = {
    		var sr = this.getTable("trt").rowSel;
    		for(var k in sr)
    		{
-      			if(sr[k] && (this.torrents[k].label != lbl))
-      				req += ("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
+			if(sr[k] && (labelId(getTorrentLabel(this.torrents[k])) !== labelId(lbl)))
+				req += ("&hash=" + k + "&s=label&v=" + labelQuery(lbl));
 		}
 		if(req.length>0)
 			this.request("?action=setlabel"+req+"&list=1",[this.receiveTorrents, this]);
@@ -2194,30 +2200,18 @@ var theWebUI = {
 		if(table.selCount == 1)
       		{
       		        var k = table.getFirstSelected();
-			var lbl = this.torrents[k].label;
-			if(lbl != "")
-				s = this.torrents[k].label;
+			var lbl = getTorrentLabel(this.torrents[k]);
+			if(labelDisplay(lbl) != "") s = lbl;
 		}
-		$("#txtLabel").val(s);
+		setLabelInput("#txtLabel", s);
 		theDialogManager.show("dlgLabel");
 	},
 
 	createLabel: function()
 	{
-   		var lbl = $("#txtLabel").val().trim();
-		lbl = lbl.replace(/"/g, "'");
-   		if(lbl != "")
-		{
-	   		var sr = this.getTable("trt").rowSel;
-			var req = "";
-			for(var k in sr)
-			{
-      				if(sr[k] && (this.torrents[k].label != lbl))
-	         			req+=("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
-	         	}
-			if(req.length>0)
-				this.request("?action=setlabel"+req+"&list=1",[this.receiveTorrents, this]);
-		}
+		var lbl = getLabelInput("#txtLabel", true);
+		if(typeof lbl === "string") lbl = lbl.replace(/"/g, "'");
+		if(labelDisplay(lbl) !== "") this.setLabel(lbl);
 	},
 
 

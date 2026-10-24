@@ -32,9 +32,9 @@ if(isset($_REQUEST['cmd']))
 						$commands = array();
 						$name = '"${dir}"/frame.png';
 						$commands[] = Utility::getExternal("sox").
-								" ".escapeshellarg($filename)." ".
-								implode( " ", array_map( "escapeshellarg", explode(" ",$arguments) ) ).
-								' -t '.escapeshellarg($mediafile).' -o '.
+								" ".Utility::escapeShellArg($filename)." ".
+								implode( " ", array_map( array('Utility', 'escapeShellArg'), explode(" ",$arguments) ) ).
+								' -t '.Utility::escapeShellArg($mediafile).' -o '.
 								$name;
 						$commands[] = '{';
 						$commands[] = '>-=*=-';

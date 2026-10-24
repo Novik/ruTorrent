@@ -426,35 +426,54 @@ class rTorrent
 		return($hashes);
 	}
 
-	static public function getSource($hash)
+	static public function getSource($hash, $knownPaths = null)
 	{
-		$req = new rXMLRPCRequest( array(
-			new rXMLRPCCommand("get_session"),
-			new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
-		if($req->run() && !$req->fault)
+		// Batched readers pass the paths they already hold; false means none.
+		if($knownPaths === null)
 		{
-			$fname = $req->val[0].$hash.".torrent";
-			if(empty($req->val[0]) || !is_readable($fname))
+			$req = new rXMLRPCRequest( array(
+				new rXMLRPCCommand("get_session"),
+				new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
+			$knownPaths = ($req->run() && !$req->fault) ? $req->val : false;
+		}
+		if(!is_array($knownPaths) || !isset($knownPaths[0], $knownPaths[1]))
+			return(false);
+		$fname = $knownPaths[0].$hash.".torrent";
+		if(empty($knownPaths[0]) || !is_readable($fname))
+		{
+			if(strlen($knownPaths[1]) && is_readable($knownPaths[1]))
+				$fname = $knownPaths[1];
+			else
+				$fname = null;
+		}
+		if($fname)
+		{
+			$torrent = new Torrent( $fname );
+			if( !$torrent->errors() )
 			{
-				if(strlen($req->val[1]) && is_readable($req->val[1]))
-					$fname = $req->val[1];
-				else
-					$fname = null;
-			}
-			if($fname)
-			{
-				$torrent = new Torrent( $fname );
-				if( !$torrent->errors() )
-				{
-					if(isset($torrent->{'libtorrent_resume'}))
-						unset($torrent->{'libtorrent_resume'});
-					if(isset($torrent->{'rtorrent'}))
-						unset($torrent->{'rtorrent'});
-					return($torrent);
-				}
+				if(isset($torrent->{'libtorrent_resume'}))
+					unset($torrent->{'libtorrent_resume'});
+				if(isset($torrent->{'rtorrent'}))
+					unset($torrent->{'rtorrent'});
+				return($torrent);
 			}
 		}
 		return(false);
+	}
+
+	// The session directory and tied file of every loaded torrent, in one
+	// request, for callers that read several sources. Keyed by hash.
+	static public function getSourcePaths()
+	{
+		$req = new rXMLRPCRequest( array(
+			new rXMLRPCCommand("get_session"),
+			new rXMLRPCCommand("d.multicall", array("main", getCmd("d.get_hash="), getCmd("d.get_tied_to_file="))) ) );
+		$paths = array();
+		if($req->run() && !$req->fault && (count($req->val) % 2 == 1))
+			for($i = 1; $i < count($req->val); $i += 2)
+				$paths[$req->val[$i]] = array(rXMLRPCRequest::unescapeValue($req->val[0]),
+					rXMLRPCRequest::unescapeValue($req->val[$i+1]));
+		return($paths);
 	}
 
 	static public function fastResume($torrent, $base, $add_path = true)

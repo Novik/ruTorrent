@@ -144,9 +144,10 @@ if(isset($_REQUEST['cmd']))
 		case "create":
 		{
 			$error = "Invalid parameters";
-			if(isset($_REQUEST['path_edit']) && strlen($_REQUEST['path_edit']))
+			$requestedPath = FileUtil::requestPath($_REQUEST['path_edit'] ?? null);
+			if(is_string($requestedPath) && strlen($requestedPath))
 			{
-				$path_edit = trim($_REQUEST['path_edit']);
+				$path_edit = trim($requestedPath);
 				if(is_dir($path_edit))
 					$path_edit = FileUtil::addslash($path_edit);
 				if(rTorrentSettings::get()->correctDirectory($path_edit))
@@ -195,7 +196,7 @@ if(isset($_REQUEST['cmd']))
 						'arg' => FileUtil::getFileName($path_edit),
 						'requester'=>'create',
 						'name'=>'create',
-						'path_edit'=>$_REQUEST['path_edit'],
+						'path_edit'=>$requestedPath,
 						'trackers'=>$_REQUEST['trackers'],
 						'comment'=>$_REQUEST['comment'],
 						'source'=>$_REQUEST['source'],
@@ -206,15 +207,15 @@ if(isset($_REQUEST['cmd']))
 					) );
 					$commands = array();
 
-					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
+					$commands[] = Utility::escapeShellArg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
 					$task->id." ".
-					escapeshellarg(Utility::getPHP())." ".
-					escapeshellarg($pathToCreatetorrent)." ".
-					escapeshellarg($path_edit)." ".
+					Utility::escapeShellArg(Utility::getPHP())." ".
+					Utility::escapeShellArg($pathToCreatetorrent)." ".
+					Utility::escapeShellArg($path_edit)." ".
 					$piece_size." ".
-					escapeshellarg(User::getUser())." ".
-					escapeshellarg(rTask::formatPath($task->id))." ".
-					escapeshellarg($hybrid);
+					Utility::escapeShellArg(User::getUser())." ".
+					Utility::escapeShellArg(rTask::formatPath($task->id))." ".
+					Utility::escapeShellArg($hybrid);
 
 					$commands[] = '{';
 					$commands[] = 'chmod a+r "${dir}"/result.torrent';

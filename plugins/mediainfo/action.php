@@ -56,9 +56,9 @@ if(isset($_REQUEST['hash']) &&
 					{
 						$randName = $task->makeDirectory()."/opts";
 						file_put_contents( $randName, $st->data["mediainfotemplate"] );
-						$flags = "--Inform=file://".escapeshellarg($randName);
+						$flags = "--Inform=file://".Utility::escapeShellArg($randName);
 					}
-					$commands[] = Utility::getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
+					$commands[] = Utility::getExternal("mediainfo")." ".$flags." ".Utility::escapeShellArg($filename);
 					$ret = $task->start($commands, rTask::FLG_WAIT);
 				}
 			}

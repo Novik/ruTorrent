@@ -142,6 +142,16 @@ class DumpDiagnosticTest extends TestCase
 			'an empty session path is reported as such: ' . $this->describe($run));
 	}
 
+	public function testAMissingNonUtf8TiedFileKeepsItsBytesVisible()
+	{
+		$this->newCase();
+		$run = $this->runDump(array(array('', $this->caseDir . "/missing-\xFF.torrent")));
+		$this->assertEquals('dumpErrorNoFile', $this->reason($run),
+			'the missing raw-byte file is refused before starting a task');
+		$this->assertEquals($this->caseDir . '/missing-\\xFF.torrent', $this->field($run, 'file'),
+			'the JSON diagnostic identifies the original byte instead of replacing it');
+	}
+
 	/** And a request with no hash never reaches the daemon at all. */
 	public function testAMissingHashIsNamedAsSuch()
 	{

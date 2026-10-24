@@ -31,13 +31,18 @@ if(isset($_REQUEST['mode']))
 		{
 			for($i=0; $i<count($req->val); $i++)
 			{
-				$val = trim(rawurldecode($req->val[$i]));
-				if( $val!='' )
-					$labels[$val] = true;
+				// Labels that are not UTF-8 are told apart by their byte key.
+				$val = LabelValue::fromEncoded($req->val[$i]);
+				if(is_array($val))
+					$labels['b:'.$val['labelKey']] = $val;
+				else if(($val !== null) && ($val != ''))
+					$labels['s:'.$val] = $val;
 			}
-			$output["labels"] = array_keys($labels);
-			natcasesort($output["labels"]);
-			$output["labels"] = array_values($output["labels"]);
+			uasort($labels, function($left, $right) {
+				return strnatcasecmp(is_array($left) ? $left['name'] : $left,
+					is_array($right) ? $right['name'] : $right);
+			});
+			$output["labels"] = array_values($labels);
 		}
 	}
 	if(in_array("dirlist",$modes))
@@ -86,8 +91,8 @@ if(isset($_REQUEST['mode']))
 			}
 		        closedir($dh);
 			usort($files,"compareEntries");
-			$output["basedir"] = FileUtil::fullpath($dir);
-			$output["dirlist"] = $files;
+			$output["basedir"] = FileUtil::displayPath(FileUtil::fullpath($dir));
+			$output["dirlist"] = array_map(array('FileUtil', 'displayPath'), $files);
 		}
         }
 	if(in_array("channels",$modes) && $theSettings->isPluginRegistered('throttle'))

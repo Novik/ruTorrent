@@ -92,12 +92,10 @@ if(plugin.canChangeMenu())
 				if((table.selCount == 1)  && (theWebUI.dID.length==40))
 				{
 					var fid = table.getFirstSelected();
-					var ext = '';
 					var s = table.getRawValue(fid,0);
 					var pos = s.lastIndexOf(".");
 					if(pos>0)
 					{
-						ext = s.substring(pos+1);
 						s = s.substring(0,pos);
 					}
 					$('#scimgfile').val(s);
@@ -109,7 +107,10 @@ if(plugin.canChangeMenu())
 					else
 					if(!this.dirs[this.dID].isDirectory(fid))
 						fno = fid.substr(3);
-					if($.inArray( ext.toLowerCase(), plugin.extensions )==-1)
+					var file = (fno!=null && this.files[this.dID]) ? this.files[this.dID][fno] : null;
+					// Flat rows used the full path; tree rows used only the basename.
+					var allowDotfile = file && this.settings["webui.fls.view"] && filePathKey(file).indexOf('/')!=-1;
+					if(!file || $.inArray( fileExtension(file, allowDotfile), plugin.extensions )==-1)
 						fno = null;
 				}
 				theContextMenu.add( [theUILang.exFFMPEG,  (fno==null) ? null : () => theWebUI.fileFFMPEG(theWebUI.dID,fno)] );
@@ -132,7 +133,7 @@ if(plugin.canChangeMenu())
 	        $('#tskcmdlog').addClass('image-cont');
 	}
 
-	plugin.onTaskShowLog = function(task,line,id,ndx)
+	plugin.onTaskShowLog = function(task,line,id,ndx,displayLine)
 	{
 		if(id=='tskcmdlog')
 		{
@@ -147,7 +148,7 @@ if(plugin.canChangeMenu())
 			}
 			return('');
 		}
-		return(escapeHTML(line)+'<br>');
+		return(escapeHTML(displayLine === undefined ? line : displayLine)+'<br>');
 	}
 
 	plugin.onTaskFinished = function(task,onBackground)

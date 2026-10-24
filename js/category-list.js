@@ -50,7 +50,7 @@ export class CategoryList {
       ],
       plabel: [
         (_, torrent) => [
-          torrent.label ? "clabel__" + torrent.label : "-_-_-nlb-_-_-",
+          torrent.label_id || (torrent.label ? "clabel__" + torrent.label : "-_-_-nlb-_-_-"),
         ],
       ],
 
@@ -81,20 +81,19 @@ export class CategoryList {
         ),
       plabel: (attribs) => [
         ...[...attribs.keys()]
-          .filter((labelId) => !labelId.startsWith("clabel__"))
+          .filter((labelId) => !labelId.startsWith("clabel__") && !labelId.startsWith("blabel__"))
           .map((labelId) => this.updatedStatisticEntry("plabel", labelId)),
-        ...[...this.torrentLabelTree.torrentLabels.keys()]
-          .map((torrentLabel) => ["clabel__" + torrentLabel, torrentLabel])
-          .map(([labelId, torrentLabel]) =>
+        ...[...this.torrentLabelTree.torrentLabels]
+          .map(([torrentLabel, info]) =>
             this.updatedStatisticEntry(
               "plabel",
-              labelId,
+              info.panelId,
               this.torrentLabelTree.prefixSuffix(
                 torrentLabel,
                 !this.settings["webui.show_label_path_tree"],
                 !this.settings["webui.show_empty_path_labels"]
               ) ?? {},
-              torrentLabel
+              info.name
             )
           ),
       ],
@@ -406,10 +405,13 @@ export class CategoryList {
 
   syncAfterScan() {
     // Rebuild torrent label tree
+    const paths = new Map(Object.values(this.borrowTorrentsFn())
+      .filter(torrent => torrent.label_id && torrent.label_path)
+      .map(torrent => [torrent.label_id, torrent.label_path]));
     const torrentLabels = this.statistic
       .ids("plabel")
-      .filter((labelId) => labelId.startsWith("clabel__"))
-      .map((labelId) => labelId.substring(8));
+      .filter((labelId) => labelId.startsWith("clabel__") || labelId.startsWith("blabel__"))
+      .map((labelId) => paths.get(labelId) || labelId.substring(8));
     this.torrentLabelTree = new TorrentLabelTree(torrentLabels);
 
     // Refresh all panels affected by the statistic scan

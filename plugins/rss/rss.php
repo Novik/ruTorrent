@@ -623,7 +623,7 @@ class rRSSFilter
 				"chklink"=>intval($this->linkCheck),
 				"no"=>intval($this->no),
 				"interval"=>intval($this->interval),
-				"dir"=>$this->directory
+				"dir"=>FileUtil::displayPath((string)$this->directory)
 			));
 	}
 }

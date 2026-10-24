@@ -1,5 +1,6 @@
 <?php
 require_once( '../../php/xmlrpc.php' );
+require_once( '../../php/torrentfilenames.php' );
 
 if(isset($_REQUEST['result']))
 	CachedEcho::send('noty(theUILang.cantAccessData,"error");',"text/html");
@@ -20,7 +21,7 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 			if($req->success())
 				$filename = $req->val[1];
 		}
-		if(SendFile::send($filename))
+		if(SendFile::send($filename, null, TorrentFileNames::downloadName($_REQUEST['hash'], intval($_REQUEST['no']), $filename)))
 			exit;
 	}
 }

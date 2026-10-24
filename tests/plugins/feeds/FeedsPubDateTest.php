@@ -92,7 +92,7 @@ class FeedsPubDateTest extends TestCase
 	 * in the feed it prints.
 	 */
 	private function feed($descriptions, $server = array(), $public = null, $environment = null,
-		$sessionName = 'fake', $mode = 'all', $reportErrors = false)
+		$sessionName = 'fake', $mode = 'all', $reportErrors = false, $laterReplies = array())
 	{
 		$root = realpath(__DIR__ . '/../../..');
 		$tree = $this->base . '/tree-' . ($descriptions ? 'on' : 'off');
@@ -120,7 +120,7 @@ class FeedsPubDateTest extends TestCase
 		// This script is driven against a profile of its own, so leave one
 		// there rather than have it probe and spend the replies below.
 		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
-		$this->daemon = new FakeRtorrentDaemon(array($values), $this->base . '/calls.log');
+		$this->daemon = new FakeRtorrentDaemon(array_merge(array($values), $laterReplies), $this->base . '/calls.log');
 
 		$driver = $this->base . '/drive-feeds.php';
 		file_put_contents($driver, "<?php\n"
@@ -183,6 +183,31 @@ class FeedsPubDateTest extends TestCase
 			. json_encode($items) . ' ' . substr($output, 0, 300));
 		$this->assertEquals(array('d.multicall'), $this->daemon->calls(),
 			'the feed comes from the one d.multicall');
+	}
+
+	public function testLegacyTitlesUseTheVerifiedAliasOfTheirOwnTorrent()
+	{
+		$info = 'd6:lengthi1e4:name3:cp' . "\xFF" . '10:name.utf-8' . strlen('Серия') . ':Серия'
+			. '12:piece lengthi16384e6:pieces20:' . str_repeat('x', 20) . 'e';
+		$hash = strtoupper(sha1($info));
+		@mkdir($this->base . '/session', 0700, true);
+		chmod($this->base . '/session', 0700);
+		file_put_contents($this->base . '/session/' . $hash . '.torrent', 'd4:info' . $info . 'e');
+		$torrents = $this->torrents;
+		$this->torrents = array(
+			array($hash, "cp\xFF", '1700000000', ''),
+			array('4444444444444444444444444444444444444444', "raw\xFE", '1700000000', ''),
+		);
+		try {
+			list($items, $output) = $this->feed(false, array(), null, null, 'fake', 'all', false,
+				array(array($this->base . '/session/', $hash, '', '4444444444444444444444444444444444444444', '')));
+		} finally {
+			$this->torrents = $torrents;
+		}
+		$this->assertEquals(array('raw\\xFE', 'Серия'), array_keys($items),
+			'a verified alias titles its own torrent; without one the bytes stay visible: ' . substr($output, 0, 300));
+		$this->assertEquals(array('d.multicall', 'session.path', 'd.multicall'), $this->daemon->calls(),
+			'the source paths of every title are read in one more request');
 	}
 
 	public function testEveryTorrentIsReadFromItsOwnRowWithoutDescriptions()

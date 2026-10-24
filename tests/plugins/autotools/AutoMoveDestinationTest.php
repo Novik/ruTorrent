@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/PhpProcess.php');
 
 /**
  * The directory autotools hands rtorrent is the directory the data ends up in.
@@ -95,12 +96,8 @@ class AutoMoveDestinationTest extends TestCase
 
 	private function runPhp($file, $args = array())
 	{
-		$cmd = escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($file);
-		foreach ($args as $a)
-			$cmd .= ' ' . escapeshellarg($a);
-		$out = array();
-		exec($cmd . ' 2>&1', $out, $code);
-		return array('exit' => $code, 'printed' => implode("\n", $out));
+		$result = PhpProcess::run(array_merge(array('-d', 'error_reporting=0', $file), $args));
+		return array('exit'=>$result['code'], 'printed'=>rtrim($result['out']. $result['err'], "\r\n"));
 	}
 
 	/**
@@ -110,20 +107,20 @@ class AutoMoveDestinationTest extends TestCase
 	 * $occupy is the list of names already standing in the destination
 	 * directory when the download finishes.
 	 */
-	private function runTheFinishedHook($occupy)
+	private function runTheFinishedHook($occupy, $finished = 'fin', $label = '', $skip = '', $names = array('1.bin', '2.bin'))
 	{
 		$this->removeTree($this->base);
-		$names = array('1.bin', '2.bin');
+		$finishedPath = $this->base.'/'.$finished;
 		@mkdir($this->base . '/profile/settings', 0700, true);
 		@mkdir($this->base . '/session', 0700, true);
 		@mkdir($this->base . '/dl/mytorrent', 0777, true);
-		@mkdir($this->base . '/fin', 0777, true);
+		@mkdir($finishedPath, 0777, true);
 		foreach ($names as $n)
 			file_put_contents($this->base . '/dl/mytorrent/' . $n, 'download ' . $n);
 		foreach ($occupy as $n)
 		{
-			@mkdir(dirname($this->base . '/fin/mytorrent/' . $n), 0777, true);
-			file_put_contents($this->base . '/fin/mytorrent/' . $n, 'already there');
+			@mkdir(dirname($finishedPath.'/'.($label === '' ? '' : $label.'/').'mytorrent/' . $n), 0777, true);
+			file_put_contents($finishedPath.'/'.($label === '' ? '' : $label.'/').'mytorrent/' . $n, 'already there');
 		}
 		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
 			$this->torrentBytes($names));
@@ -138,12 +135,12 @@ class AutoMoveDestinationTest extends TestCase
 			. '$s->linkExist = true; $s->iVersion = 0x1015; $s->store();' . "\n"
 			. '$at = rAutoTools::load();' . "\n"
 			. '$at->enable_move = 1; $at->fileop_type = "Move";' . "\n"
-			. '$at->path_to_finished = ' . var_export($this->base . '/fin', true) . ";\n"
-			. '$at->automove_filter = "/.*/"; $at->addLabel = 0; $at->addName = 0;' . "\n"
-			. '$at->skip_move_for_files = ""; $at->store();' . "\n"
+			. '$at->path_to_finished = ' . var_export($finishedPath, true) . ";\n"
+			. '$at->automove_filter = "/.*/"; $at->addLabel = '.($label === '' ? '0' : '1').'; $at->addName = 0;' . "\n"
+			. '$at->skip_move_for_files = '.var_export($skip, true).'; $at->store();' . "\n"
 			. 'echo rAutoTools::load()->path_to_finished;' . "\n");
 		$seeded = $this->runPhp($seed);
-		if ($seeded['printed'] !== $this->base . '/fin')
+		if ($seeded['printed'] !== $finishedPath)
 			throw new Exception('the plugin settings did not take: ' . $seeded['printed']);
 
 		// One driver per script, because each is a top level script that reads
@@ -160,10 +157,10 @@ class AutoMoveDestinationTest extends TestCase
 		$basePath = $this->base . '/dl/mytorrent';   // d.get_base_path
 		// d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
 		$check = $this->runPhp($driver['check'],
-			array($basePath, 'mytorrent', '1', '', 'mytorrent', self::USER));
+			array($basePath, 'mytorrent', '1', rawurlencode($label), 'mytorrent', self::USER));
 		// and then, with the hash in front, the same five
 		$move = $this->runPhp($driver['move'],
-			array(self::HASH, $basePath, 'mytorrent', '1', '', 'mytorrent', self::USER));
+			array(self::HASH, $basePath, 'mytorrent', '1', rawurlencode($label), 'mytorrent', self::USER));
 
 		$named = rtrim($check['printed'], '/');
 		return array(
@@ -177,8 +174,8 @@ class AutoMoveDestinationTest extends TestCase
 			'at_source' => array_map(function($n) {
 				return is_file($this->base . '/dl/mytorrent/' . $n);
 			}, $names),
-			'occupants' => array_map(function($n) {
-				return @file_get_contents($this->base . '/fin/mytorrent/' . $n);
+			'occupants' => array_map(function($n) use ($finishedPath, $label) {
+				return @file_get_contents($finishedPath.'/'.($label === '' ? '' : $label.'/').'mytorrent/' . $n);
 			}, $occupy),
 		);
 	}
@@ -235,4 +232,33 @@ class AutoMoveDestinationTest extends TestCase
 			. 'source: ' . json_encode($r['at_source']) . ', at ' . $r['named'] . ': '
 			. json_encode($r['at_named']));
 	}
+	public function testLegacyLabelsAndFinishedPathsKeepTheirOriginalBytes()
+	{
+		foreach(array(array("fin\xFF", "label\xFE"), array('映画', 'серия'), array('literal%FF', 'literal%FE')) as $case)
+		{
+			$r = $this->runTheFinishedHook(array(), $case[0], $case[1]);
+			$this->assertEquals($this->base.'/'.$case[0].'/'.$case[1].'/mytorrent', $r['named'], 'precheck names the exact selected bytes');
+			$this->assertEquals(array(true, true), $r['at_named'], 'move puts the files at the same byte path');
+			$this->assertEquals(array(false, false), $r['at_source'], 'the move consumes only its source files');
+		}
+	}
+
+	public function testSkipFilterKeepsUnicodeSemanticsAndMatchesLegacyBytes()
+	{
+		// skip_move() runs from move.php's own source; only its settings object is a stub.
+		$source = file_get_contents($this->repoRoot().'/plugins/autotools/move.php');
+		$start = strpos($source, 'function skip_move(');
+		$function = substr($source, $start, strpos($source, "\n}\n", $start) - $start + 2);
+		$code = 'require '.var_export($this->repoRoot().'/php/utility/utf.php',true).';'
+			.'function Debug($message) {} $at=new stdClass(); $at->skip_move_for_files="/^.$/"; $results=array();'
+			.$function
+			.'foreach('.var_export(array('雪', "\xFF", '雪雪', 'ab', 'a'),true).' as $name) $results[]=skip_move(array($name));'
+			.'echo json_encode($results);';
+		$result=PhpProcess::run(array('-d','display_errors=stderr','-r',$code));
+		$this->assertEquals(0,$result['code'],'the shared filter owner completes');
+		$this->assertEquals('',$result['err'],'both filter modes emit no diagnostics');
+		$this->assertEquals(array(true,true,false,false,true),json_decode($result['out'],true),
+			'valid Unicode keeps character semantics and raw bytes use byte semantics');
+	}
+
 }

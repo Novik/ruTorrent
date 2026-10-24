@@ -28,7 +28,7 @@ function skip_move($files)
 		Debug("using filter:".$filter);
 		foreach($files as $file)
 		{
-			if ( preg_match($filter.'u',$file)==1)
+			if ( preg_match($filter.(UTF::isValid($file) ? 'u' : ''),$file)==1)
 			{
 				return true;
 			}
@@ -97,7 +97,7 @@ $label	   = rawurldecode($argv[5]);
 $name	   = $argv[6];
 $at = rAutoTools::load();
 
-if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
+if( $at->enable_move && (@preg_match($at->automove_filter.(UTF::isValid($label) ? 'u' : ''),$label)==1) )
 {
 	$path_to_finished = trim( $at->path_to_finished );
 	$fileop_type = $at->fileop_type;
@@ -173,7 +173,7 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 									Debug( "mail bcc         : ".$mail_bcc  );
 									Debug( "mail from        : ".$mail_from );
 									Debug( "mail subject     : ".$subject   );
-									$torrent_name = $torrent->name();
+									$torrent_name = $torrent->displayName();
 									$subject = str_replace( "{TORRENT}", $torrent_name, $subject );
 									$message = implode( '', $lines );
 									$message = str_replace( "{TORRENT}", $torrent_name, $message );

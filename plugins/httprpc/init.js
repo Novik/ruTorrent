@@ -29,7 +29,8 @@ rTorrentStub.prototype.getCommon = function(cmd)
 		for(var i=0; i<this.hashes.length; i++)
 			this.content+=("&hash="+this.hashes[i]);
 		for(i=0; i<this.vs.length; i++)
-		        this.content+=("&v="+encodeURIComponent(this.vs[i]));
+			// The settings dialog already sends the directory as a byte key.
+			this.content+=("&v="+((cmd === "setsettings" && this.ss[i] === "sdirectory") ? this.vs[i] : encodeURIComponent(this.vs[i])));
 		for(i=0; i<this.ss.length; i++)
 		        this.content+=("&s="+encodeURIComponent(this.ss[i]));
 		if($type(theRequestManager[cmd]))

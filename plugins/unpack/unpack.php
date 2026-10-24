@@ -68,8 +68,13 @@ class rUnpack
 	}
 	public function get()
 	{
-		return("theWebUI.unpackData = { enabled: ".$this->enabled.", path : '".addslashes( $this->path ).
-			"', filter : '".addslashes( $this->filter )."', addLabel: ".$this->addLabel.", addName: ".$this->addName." };\n");
+		return("theWebUI.unpackData = ".JSON::jsValue(array(
+			'enabled' => intval($this->enabled),
+			'path' => FileUtil::displayPath((string)$this->path),
+			'filter' => (string)$this->filter,
+			'addLabel' => intval($this->addLabel),
+			'addName' => intval($this->addName)
+		)).";\n");
 	}
 
 	protected static function log( $msg )
@@ -146,8 +151,11 @@ class rUnpack
 
 	protected static function processTask( $task, $commands )
 	{
+		$displayCommands = array();
+		foreach($commands as $command)
+			$displayCommands[] = UTF::display($command);
 		self::log("Start unpack operation as task ".$task->id." with arguments ".
-			json_encode($commands,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+			json_encode($displayCommands,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
 		return( self::isDryRun() ? array
 		(
 			"no"=>$task->id,
@@ -265,13 +273,13 @@ class rUnpack
 			{
 				$randTempDirectory = "";
 			}
-	        	$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
-				escapeshellarg($arh)." ".
-				escapeshellarg($basename)." ".
-				escapeshellarg($outPath)." ".
-				escapeshellarg($pathToUnzip)." ".
-				escapeshellarg($filesToDelete)." ".
-				escapeshellarg($randTempDirectory);
+			$commands[] = Utility::escapeShellArg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+				Utility::escapeShellArg($arh)." ".
+				Utility::escapeShellArg($basename)." ".
+				Utility::escapeShellArg($outPath)." ".
+				Utility::escapeShellArg($pathToUnzip)." ".
+				Utility::escapeShellArg($filesToDelete)." ".
+				Utility::escapeShellArg($randTempDirectory);
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';
 
@@ -340,10 +348,10 @@ class rUnpack
 
 				$commands = array();
 				$arh = Utility::getExternal( ($mode == "zip") ? 'unzip' : 'unrar' );
-				$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.'_file.sh')." ".
-					escapeshellarg($arh)." ".
-					escapeshellarg($filename)." ".
-					escapeshellarg(FileUtil::addslash($outPath));
+				$commands[] = Utility::escapeShellArg($rootPath.'/plugins/unpack/un'.$mode.'_file.sh')." ".
+					Utility::escapeShellArg($arh)." ".
+					Utility::escapeShellArg($filename)." ".
+					Utility::escapeShellArg(FileUtil::addslash($outPath));
 				$taskArgs['arg'] = FileUtil::getFileName($filename);
 
 				self::log("[Manual] Unpack file [$filename] from torrent [$hash] to [$outPath]");
@@ -420,11 +428,11 @@ class rUnpack
 				        	if($this->addName && ($tname!=''))
 				        		$outPath.=FileUtil::addslash($tname);
 
-				        	$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
-							escapeshellarg($arh)." ".
-							escapeshellarg($basename)." ".
-							escapeshellarg($outPath)." ".
-							escapeshellarg($pathToUnzip);
+						$commands[] = Utility::escapeShellArg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+							Utility::escapeShellArg($arh)." ".
+							Utility::escapeShellArg($basename)." ".
+							Utility::escapeShellArg($outPath)." ".
+							Utility::escapeShellArg($pathToUnzip);
 						$taskArgs['arg'] = FileUtil::getFileName(FileUtil::delslash($basename));
 
 						self::log("[Manual] Unpack files from torrent [$tname] at [$basename] to [$outPath]");

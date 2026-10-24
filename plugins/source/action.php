@@ -51,7 +51,8 @@ if(isset($_POST['hash']))
 			$zip->open($zippath, ZipArchive::CREATE);
 			foreach(array_combine($filepaths, $files) as $filepath => $file)
 			{
-				$filename = $file->info['name']."-".$fn.".torrent";
+				// A download label is one ZIP member, including on Windows extractors.
+				$filename = str_replace(array('/', '\\'), '_', $file->displayName())."-".$fn.".torrent";
 				$zip->addFile($filepath, $filename);
 
 				$fn++;

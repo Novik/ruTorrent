@@ -211,8 +211,8 @@ plugin.check = function(data)
         this.foreground.pid = data.pid;
 	this.foreground.status = data.status;
 	this.foreground.params = data.params;
-	this.fillConsole('tskcmdlog',data.log);
-	this.setConsoleControls( this.fillConsole('tskcmderrors',data.errors) );
+	this.fillConsole('tskcmdlog',data.log,data.display && data.display.log);
+	this.setConsoleControls( this.fillConsole('tskcmderrors',data.errors,data.display && data.display.errors) );
 	if(this.foreground.status<0)
 	{
 		var self = this;
@@ -269,15 +269,19 @@ plugin.setConsoleControls = function(errPresent) {
 	}
 }
 
-plugin.fillConsole = function(id,arr)
+plugin.fillConsole = function(id,arr,display)
 {
        	if(arr)
         {
 		var s = '';
 		var requester = thePlugins.get(this.foreground.requester);
 		for(var i = 0; i<arr.length; i++)
+		{
+			var line = display && typeof display[i]=="string" && typeof arr[i]=="string" ? display[i] : arr[i];
+			// Callbacks may use the raw line as a frame identifier or protocol marker.
 			s += (requester && $type(requester["onTaskShowLog"])=="function") ?
-				requester.onTaskShowLog(this.foreground,arr[i],id,i) : escapeHTML(arr[i])+'<br>';
+				requester.onTaskShowLog(this.foreground,arr[i],id,i,line) : escapeHTML(line)+'<br>';
+		}
 		var crc = getCRC( s, 0 );
 		if(plugin.foreground[id]!=crc)
 		{
@@ -523,6 +527,7 @@ plugin.onGetTasks = function(d)
 		for( var id in d )
 		{
 			var item = d[id];
+			var arg = item.display && typeof item.display.arg=="string" ? item.display.arg : (item.params ? item.params['arg'] : '');
 			if(!$type(plugin.background[id]))
 			{
 				table.addRowById(
@@ -530,7 +535,7 @@ plugin.onGetTasks = function(d)
 					name: item.name,
 					status: item.status,
 					plugin: item.requester,
-					arg: item.params ? item.params['arg'] : '',
+					arg: arg,
 					start: item.start,
 					elapsed: item.finish ? iv(item.finish)-iv(item.start) : (new Date().getTime()/1000-(iv(item.start)+theWebUI.deltaTime/1000)),
 					finish: item.finish
@@ -544,7 +549,7 @@ plugin.onGetTasks = function(d)
 					name: item.name,
 					status: item.status,
 					plugin: item.requester,
-					arg: item.params ? item.params['arg'] : '',
+					arg: arg,
 					start: item.start,
 					elapsed: item.finish ? iv(item.finish)-iv(item.start) : (new Date().getTime()/1000-(iv(item.start)+theWebUI.deltaTime/1000)),
 					finish: item.finish

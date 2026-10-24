@@ -8,7 +8,7 @@ eval( FileUtil::getPluginConf( 'dump' ) );
 function dumpError( $reason, $file = '', $user = '' )
 {
 	return( array( "status"=>255, "errors"=>array(
-		array( "reason"=>$reason, "file"=>$file, "user"=>$user ) ) ) );
+		array( "reason"=>$reason, "file"=>UTF::display($file), "user"=>$user ) ) ) );
 }
 
 // The account a reader of the torrent file would have to be. The numeric id
@@ -92,7 +92,7 @@ if(($hash!=='') && ($cmd!==''))
 			{
 				$commands = array();
 				$task = new rTask(array('requester'=>'dump', 'name'=>'dump'));
-				$commands[] = Utility::getExternal("dumptorrent")." ".$arguments." ".escapeshellarg($fname);
+				$commands[] = Utility::getExternal("dumptorrent")." ".$arguments." ".Utility::escapeShellArg($fname);
 				$ret = $task->start($commands, rTask::FLG_WAIT | rTask::FLG_DO_NOT_TRIM);
 			}
 		}

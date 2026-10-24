@@ -118,4 +118,9 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 
 Debug( "--- end ---" );
 
-CachedEcho::send(JSON::safeEncode(array( "errors"=>$errors )),"application/json");
+$answer = array("errors"=>$errors);
+foreach($answer as $kind => $messages)
+	foreach($messages as $index => $message)
+		if(isset($message['prm']) && is_string($message['prm']))
+			$answer[$kind][$index]['prm'] = UTF::display($message['prm']);
+CachedEcho::send(JSON::safeEncode($answer),"application/json");

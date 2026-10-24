@@ -810,7 +810,7 @@ theWebUI.storeFilterParams = function()
 		no = parseInt(this.curFilter.id.substr(3));
 		this.filters[no].pattern = $('#FLT_body').val();
 		this.filters[no].exclude = $('#FLT_exclude').val();
-		this.filters[no].dir = $('#FLTdir_edit').val();
+		this.filters[no].dir = getPathInput('#FLTdir_edit');
 
 		this.filters[no].add_path = $('#FLTnot_add_path').prop("checked") ? 0 : 1;
 		this.filters[no].start = $('#FLTtorrents_start_stopped').prop("checked") ? 0 : 1;
@@ -841,7 +841,7 @@ theWebUI.selectFilter = function( el )
 		var flt = this.filters[no];
 		$('#FLT_body').val(flt.pattern);
 		$('#FLT_exclude').val(flt.exclude);
-		$('#FLTdir_edit').val(flt.dir);
+		setPathInput('#FLTdir_edit', flt.dir);
 		$('#FLTnot_add_path').prop("checked",(flt.add_path==0));
 		$('#FLTtorrents_start_stopped').prop("checked",(flt.start==0));
 		$('#FLTchktitle').prop("checked",(flt.chktitle==1));
@@ -1133,7 +1133,7 @@ rTorrentStub.prototype.setfilters = function()
 			"&chkdesc="+flt.chkdesc+
 		        "&exclude="+encodeURIComponent(flt.exclude)+
 			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.add_path+
-			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&interval="+flt.interval+"&no="+flt.no;
+			"&dir="+pathQuery(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&interval="+flt.interval+"&no="+flt.no;
 		if($type(flt.throttle))
 			content+=("&throttle="+flt.throttle);
 		if($type(flt.ratio))
@@ -1147,7 +1147,7 @@ rTorrentStub.prototype.checkfilter = function()
 	const no = theWebUI.storeFilterParams();
 	const flt = theWebUI.filters[no];
 	let content = "mode=checkfilter&pattern="+encodeURIComponent(flt.pattern)+"&exclude="+encodeURIComponent(flt.exclude)+
-		"&label="+encodeURIComponent(flt.label)+"&directory="+encodeURIComponent(flt.dir)+
+		"&label="+encodeURIComponent(flt.label)+"&directory="+pathQuery(flt.dir)+
 		"&chktitle="+flt.chktitle+"&chklink="+flt.chklink+"&chkdesc="+flt.chkdesc;
 	if(flt.hash.length)
 		content = content+"&rss="+flt.hash;
@@ -1187,7 +1187,7 @@ rTorrentStub.prototype.loadrsstorrents = function()
 		content = content + '&not_add_path=1';
 	const dir = $("#RSSdir_edit").val().trim();
 	if(dir.length)
-		content = content + '&dir_edit='+encodeURIComponent(dir);
+		content = content + '&dir_edit='+pathQuery(getPathInput('#RSSdir_edit', true));
 	const lbl = $("#RSS_label").val().trim();
 	if(lbl.length)
 		content = content + '&label='+encodeURIComponent(lbl);

@@ -4,7 +4,7 @@ plugin.loadLang();
 // carry the values to substitute into it, so the user reads them in their own
 // language instead of the server's. Anything else -- the dumper's own output,
 // and the task layer's own messages -- is shown as it arrived.
-plugin.onTaskShowLog = function(task,line,id,ndx)
+plugin.onTaskShowLog = function(task,line,id,ndx,displayLine)
 {
 	if(($type(line)=="object") && line.reason)
 	{
@@ -14,7 +14,7 @@ plugin.onTaskShowLog = function(task,line,id,ndx)
 			: line.reason;
 		return(escapeHTML(text)+'<br>');
 	}
-	return(escapeHTML(line)+'<br>');
+	return(escapeHTML(displayLine === undefined ? line : displayLine)+'<br>');
 }
 
 if(plugin.canChangeMenu())

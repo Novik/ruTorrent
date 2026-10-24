@@ -88,11 +88,11 @@ class rTask
 						fputs($sh,'if [ $last -ne 0 ] ; then '."\n");
 					else
 					if($cmd[0]=='>')
-						fputs($sh,'echo '.escapeshellarg(substr($cmd,1)).' >> "${dir}"/log'."\n");
+						fputs($sh,'echo '.Utility::escapeShellArg(substr($cmd,1)).' >> "${dir}"/log'."\n");
 					else
 					{
 						if($flags & self::FLG_ECHO_CMD)
-							fputs($sh,'echo '.escapeshellarg($cmd).' >> "${dir}"/log'."\n");
+							fputs($sh,'echo '.Utility::escapeShellArg($cmd).' >> "${dir}"/log'."\n");
                                 	        if($flags & self::FLG_NO_ERR)
 							fputs($sh,$cmd.' >> "${dir}"/log'."\n");
 						else
@@ -283,6 +283,19 @@ class rTask
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII), ($flags & self::FLG_DO_NOT_TRIM) );
 			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII), false);
 		}
+		// Keep task parameters and protocol output intact; only the UI reads this projection.
+		$display = array();
+		if(isset($ret['params']) && is_array($ret['params']) && isset($ret['params']['arg']) &&
+			is_string($ret['params']['arg']) && (UTF::display($ret['params']['arg']) !== $ret['params']['arg']))
+			$display['arg'] = UTF::display($ret['params']['arg']);
+		foreach(array('log', 'errors') as $field)
+		{
+			$lines = $ret[$field];
+			foreach($lines as $index=>$line)
+				if(is_string($line)) $lines[$index] = UTF::display($line);
+			if($lines !== $ret[$field]) $display[$field] = $lines;
+		}
+		if($display) $ret['display'] = $display;
 		return($ret);
 	}
 

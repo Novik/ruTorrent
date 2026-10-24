@@ -20,7 +20,11 @@ if(isset($_REQUEST['cmd']))
 		case "unpack":
 		{
 			$up = rUnpack::load();
-			$ret = $up->startTask( $_REQUEST['hash'], $_REQUEST['dir'], $_REQUEST['mode'], $_REQUEST['no'] );
+			$directory = isset($_REQUEST['dir']) ? FileUtil::requestPath($_REQUEST['dir']) : null;
+			if(($directory !== null) || !isset($_REQUEST['dir']))
+				$ret = $up->startTask( $_REQUEST['hash'], $directory, $_REQUEST['mode'], $_REQUEST['no'] );
+			else
+				$ret = array('no' => -1, 'pid' => 0, 'status' => 255, 'log' => array(), 'errors' => array('Invalid directory.'));
 			break;
 		}
 	}

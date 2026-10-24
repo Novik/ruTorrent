@@ -2,6 +2,11 @@ import { readFileSync } from "fs";
 
 window.$ = require("jquery");
 
+const commonHelpers = document.createElement("script");
+const commonSource = readFileSync("../js/common.js", "utf8");
+commonHelpers.textContent = commonSource.slice(commonSource.indexOf("// Paths selected"));
+document.body.appendChild(commonHelpers);
+
 // js/objects.js builds a context menu entry from a two-element array. When the
 // second element is a string it runs it through eval on click (js/objects.js:400);
 // when it is a function it calls it (js/objects.js:403). This stands in for that

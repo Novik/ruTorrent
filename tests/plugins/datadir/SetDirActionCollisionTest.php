@@ -72,7 +72,7 @@ class SetDirActionCollisionTest extends TestCase
 	 * run state rTorrent reports, and $datadir defaults to a directory that is
 	 * not where the data already is.
 	 */
-	private function setTheDataDirectory($occupy, $isOpen = 1, $datadir = null, $moveFiles = 1)
+	private function setTheDataDirectory($occupy, $isOpen = 1, $datadir = null, $moveFiles = 1, $refuse = false)
 	{
 		$this->removeTree($this->base);
 		if ($this->daemon !== null)
@@ -101,7 +101,7 @@ class SetDirActionCollisionTest extends TestCase
 		// there rather than have it probe and spend the replies below.
 		// action.php runs as REMOTE_USER, so the profile is that user's own.
 		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/tester');
-		$this->daemon = new FakeRtorrentDaemon(array(
+		$this->daemon = new FakeRtorrentDaemon($refuse ? array(FakeRtorrentDaemon::fault('execution refused')) : array(
 			array($isOpen, 'mytorrent', $this->base . '/src/mytorrent', 'mytorrent', 1),
 			$names,
 			array(0), array(0), array(0),
@@ -133,6 +133,7 @@ class SetDirActionCollisionTest extends TestCase
 			'printed' => $printed,
 			'errors' => $answer['errors'],
 			'calls' => $this->daemon->calls(),
+			'bodies' => $this->daemon->bodies(),
 			'started' => in_array('execute', $this->daemon->calls(), true),
 		);
 	}
@@ -235,4 +236,30 @@ class SetDirActionCollisionTest extends TestCase
 		$this->assertTrue($r['started'],
 			'and the directory change is started; calls: ' . implode(', ', $r['calls']));
 	}
+	public function testSelectedDirectoryBytesReachTheDetachedCommand()
+	{
+		foreach(array("legacy\xFF ", '雪 ', 'literal%FF ', "line\n") as $name)
+		{
+			// The typed directory is trimmed like any other; its bytes are kept.
+			$path = $this->base.'/'.trim($name);
+			$result = $this->setTheDataDirectory(array(), 1, $this->base.'/'.$name, 0);
+			$this->assertTrue($result['started'], 'the controller admitted the selected directory');
+			$document = new DOMDocument();
+			$this->assertTrue($document->loadXML(end($result['bodies'])), 'the actual execution request is valid XML');
+			$xpath = new DOMXPath($document);
+			$params = $xpath->query('/methodCall/params/param/value/string | /methodCall/params/param/value/base64');
+			$command = $params->item($params->length-1);
+			$bytes = $command->nodeName === 'base64' ? base64_decode($command->textContent) : $command->textContent;
+			$this->assertTrue(strpos($bytes, " '".$path."' ") !== false, 'the command contains the exact quoted byte path');
+		}
+	}
+
+	public function testRefusedSelectedByteDirectoryRemainsVisible()
+	{
+		$path = $this->base."/legacy\xFF";
+		$result = $this->setTheDataDirectory(array(), 1, $path, 0, true);
+		$this->assertEquals(array(array('desc'=>'theUILang.datadirSetDirFail', 'prm'=>$this->base.'/legacy\\xFF')),
+			$result['errors'], 'a failed byte-path action retains its directory in the JSON diagnostic');
+	}
+
 }

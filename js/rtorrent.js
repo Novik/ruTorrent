@@ -19,6 +19,10 @@ var theRequestManager =
 {
 	aliases: {},
 	torrents: {},
+	torrentNames: Object.create(null),
+	torrentPaths: Object.create(null),
+	torrentLabels: Object.create(null),
+	labelPaths: {},
 	cid: 0,
         trt:
         {
@@ -403,6 +407,17 @@ rTorrentStub.prototype.setsettings = function()
 	{
 		var prmType = "string";
 		var prm = this.vs[i];
+		if(this.ss[i]=="sdirectory")
+		{
+			// The settings dialog sends the directory as a percent-encoded byte key.
+			try {
+				prm = decodeURIComponent(prm).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+			} catch(e) {
+				// Not UTF-8: XML-RPC carries the exact bytes as base64.
+				prmType = "base64";
+				prm = btoa(unescape(prm));
+			}
+		}
 		if(this.ss[i].charAt(0)=='n')
 		{
 			prmType = "i8";
@@ -1145,6 +1160,12 @@ rTorrentStub.prototype.getfilesResponse = function(values)
 	{
 		var data = values[j];
 		var fls = {};
+		if(data[0] && typeof data[0] === "object")
+		{
+			fls.pathKey = data[0].pathKey;
+			data = data.slice();
+			data[0] = data[0].name;
+		}
 		fls.name = data[0];
 		fls.size = iv(data[3]);
 		var get_size_chunks = iv(data[2]);	// f.get_size_chunks
@@ -1354,12 +1375,43 @@ rTorrentStub.prototype.listParseXML = function(xml)
 	};
 }
 
+// A side map may describe only torrents present in the same list delta, and
+// only rows that carry one of the columns it replaces.
+function listSideMapValid(data, key, columns, valid)
+{
+	if(!Object.prototype.hasOwnProperty.call(data, key))
+		return(true);
+	var map = data[key];
+	return map !== null && typeof map === "object" && !Array.isArray(map)
+		&& data.t !== null && typeof data.t === "object"
+		&& Object.keys(map).every(function(hash) {
+			var row = data.t[hash];
+			return /^[a-f0-9]{40}$/i.test(hash) && Object.prototype.hasOwnProperty.call(data.t, hash)
+				&& row !== null && typeof row === "object"
+				&& columns.some((column) => Object.prototype.hasOwnProperty.call(row, column))
+				&& valid(map[hash], row);
+		});
+}
+
 /**
  * @param {Object} xml
  * @returns {ListResponseType}
  */
 rTorrentStub.prototype.listResponse = function(data)
 {
+	// An alias belongs to the raw name emitted in this same delta. Reject an
+	// invalid side map before changing cid, rows, deletions or remembered names.
+	if(data === null || data === undefined ||
+		!listSideMapValid(data, "n", [4], (name, row) => typeof name === "string" && typeof row[4] === "string") ||
+		!listSideMapValid(data, "p", [4, 25], (paths) => paths !== null && typeof paths === "object" && !Array.isArray(paths)
+			&& Object.prototype.hasOwnProperty.call(paths, "base") && isPathValue(paths.base)
+			&& Object.prototype.hasOwnProperty.call(paths, "save") && isPathValue(paths.save)) ||
+		!listSideMapValid(data, "l", [14], (label) => isLabelValue(label)))
+	{
+		this.invalidListResponse = true;
+		this.faultString.push("Invalid list response ["+this.action+"]");
+		return;
+	}
 	/** @type {ListResponseType} */
 	var ret = { labels: {}, labels_size: {}, torrents: {} };
 	theRequestManager.cid = data.cid;
@@ -1367,16 +1419,42 @@ rTorrentStub.prototype.listResponse = function(data)
 	// not mention is gone. Deletions are reported against a previous state the
 	// server no longer has, and would otherwise never arrive.
 	if(data.full)
+	{
+		theRequestManager.torrentNames = Object.create(null);
+		theRequestManager.torrentPaths = Object.create(null);
+		theRequestManager.torrentLabels = Object.create(null);
 		for( var hash in theRequestManager.torrents )
 			if(!(hash in data.t))
 				delete theRequestManager.torrents[hash];
+	}
 	if(data.d)
 		$.each( data.d, function( ndx, hash )
 		{
 			delete theRequestManager.torrents[hash];
+			delete theRequestManager.torrentNames[hash];
+			delete theRequestManager.torrentPaths[hash];
+			delete theRequestManager.torrentLabels[hash];
 		});
 	$.each( data.t, function( hash, values )
 	{
+		if(Object.prototype.hasOwnProperty.call(values, 4))
+		{
+			delete theRequestManager.torrentNames[hash];
+			if(data.n && Object.prototype.hasOwnProperty.call(data.n, hash))
+				theRequestManager.torrentNames[hash] = data.n[hash];
+		}
+		if(Object.prototype.hasOwnProperty.call(values, 4) || Object.prototype.hasOwnProperty.call(values, 25))
+		{
+			delete theRequestManager.torrentPaths[hash];
+			if(data.p && Object.prototype.hasOwnProperty.call(data.p, hash))
+				theRequestManager.torrentPaths[hash] = data.p[hash];
+		}
+		if(Object.prototype.hasOwnProperty.call(values, 14))
+		{
+			delete theRequestManager.torrentLabels[hash];
+			if(data.l && Object.prototype.hasOwnProperty.call(data.l, hash))
+				theRequestManager.torrentLabels[hash] = data.l[hash];
+		}
 		if($type(theRequestManager.torrents[hash]))
 		{
 			$.each( values, function( ndx, value )
@@ -1410,7 +1488,9 @@ rTorrentStub.prototype.listResponse = function(data)
 		if(torrent.msg.length && torrent.msg!="Tracker: [Tried all trackers.]")
 			state|=dStatus.error;
 		torrent.state = state;
-		torrent.name = values[4];
+		torrent.path_name = values[4];
+		torrent.name = Object.prototype.hasOwnProperty.call(theRequestManager.torrentNames, hash)
+			? theRequestManager.torrentNames[hash] : torrent.path_name;
 		torrent.size = iv(values[5]);
 		var get_completed_chunks = iv(values[6]);
 		var get_hashed_chunks = iv(values[24]);
@@ -1424,9 +1504,18 @@ rTorrentStub.prototype.listResponse = function(data)
 		torrent.dl = iv(values[12]);
 		var get_chunk_size = iv(values[13]);
 		torrent.eta = (torrent.dl>0) ? Math.floor((get_size_chunks-get_completed_chunks)*get_chunk_size/torrent.dl) : -1;
-		try {
-		torrent.label = decodeURIComponent(values[14]).trim();
-		} catch(e) { torrent.label = ''; }
+		var labelValue = theRequestManager.torrentLabels[hash];
+		if(labelValue === undefined)
+		{
+			try { labelValue = decodeURIComponent(values[14]).trim(); }
+			catch(error) { labelValue = ''; }
+		}
+		torrent.label_value = labelValue;
+		torrent.label = labelDisplay(labelValue);
+		torrent.label_id = labelId(labelValue);
+		if(!theRequestManager.labelPaths[torrent.label_id])
+			theRequestManager.labelPaths[torrent.label_id] = labelTreePath(labelValue);
+		torrent.label_path = theRequestManager.labelPaths[torrent.label_id];
 
 		var get_peers_not_connected = iv(values[16]);
 		var get_peers_connected = iv(values[17]);
@@ -1441,8 +1530,15 @@ rTorrentStub.prototype.listResponse = function(data)
 		torrent.skip_total = values[22];
 		torrent.base_path = values[25];
 		var pos = torrent.base_path.lastIndexOf('/');
-		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ?
+		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.path_name) ?
 			torrent.base_path.substring(0,pos) : torrent.base_path;
+		if(Object.prototype.hasOwnProperty.call(theRequestManager.torrentPaths, hash))
+		{
+			var pathValues = theRequestManager.torrentPaths[hash];
+			torrent.base_path = pathDisplay(pathValues.base);
+			torrent.save_path = pathDisplay(pathValues.save);
+			torrent.save_path_value = pathValues.save;
+		}
 		torrent.created = values[26];
 		torrent.tracker_size = values[27];
 		try {
@@ -1482,6 +1578,13 @@ rTorrentStub.prototype.logErrorMessages = function()
 function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialData)
 {
 	var stub = URI instanceof rTorrentStub ? URI : new rTorrentStub(URI);
+	// A failed request and a rejected list reach the error callback with the
+	// same arguments, including the daemon state named by X-rTorrent-State.
+	var reportError = function(jqXHR, status, textStatus, response)
+	{
+		onError(status+" ["+textStatus+","+stub.action+"]", response,
+			rTorrentStateHeader(jqXHR));
+	};
 	var request = $.ajax(
 	{
 		type: stub.method,
@@ -1533,8 +1636,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 				response = errorThrown;
 			else
 				response = getXMLRPCFaultString(response);
-			onError(status+" ["+textStatus+","+stub.action+"]",response,
-				rTorrentStateHeader(jqXHR));
+			reportError(jqXHR, status, textStatus, response);
 		}
 		stub.finishSetsettingsFailure();
 		stub = null; // Cleanup memory leak
@@ -1545,7 +1647,10 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		Ajax_UpdateTime(jqXHR);
 
 		var responseText = stub.getResponse(data);
-		stub.logErrorMessages();
+		// The error callback reports a rejected list; a second notice would repeat it.
+		var rejectedList = stub.invalidListResponse && ($type(onError)=="function");
+		if(!rejectedList)
+			stub.logErrorMessages();
 		if(!stub.isError()) {
 			if (partialData) {
 				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
@@ -1580,6 +1685,8 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		}
 		else
 		{
+			if(rejectedList)
+				reportError(jqXHR, jqXHR.status, "parsererror", "Invalid list response");
 			if(stub.xmlRPCFault)
 				stub.finishSetsettingsFailure();
 			stub.finishXMLFailure();

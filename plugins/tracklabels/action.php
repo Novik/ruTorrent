@@ -17,7 +17,7 @@ function bad($message) {
 	http_response_code(400);
 	header('Content-Type: text/plain; charset=UTF-8');
 	header('X-Content-Type-Options: nosniff');
-	echo $message;
+	echo UTF::display($message);
 	exit;
 }
 
@@ -62,7 +62,9 @@ function image_name($prefix, $req_field)
 		if (!is_dir($dir))
 			FileUtil::makeDirectory($dir);
 		$name = rawurldecode($_REQUEST[$req_field]);
-		$name = get_alias(function_exists('mb_strtolower')
+		// Lower case and aliases apply to UTF-8 names; other bytes stay as they are.
+		if(UTF::isValid($name))
+			$name = get_alias(function_exists('mb_strtolower')
 			? mb_strtolower($name, 'utf-8')
 			: strtolower($name));
 		$res = $dir . '/' . $name . '.png';

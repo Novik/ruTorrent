@@ -11,6 +11,11 @@ import { readFileSync } from "fs";
 
 window.$ = window.jQuery = require("jquery");
 
+const commonHelpers = document.createElement("script");
+const commonSource = readFileSync("../js/common.js", "utf8");
+commonHelpers.textContent = commonSource.slice(commonSource.indexOf("// Paths selected"));
+document.body.appendChild(commonHelpers);
+
 // Pull the shipped handlers out of plugins/extsearch/init.js rather than
 // restating them, so this spec cannot drift from the code that ships.
 function extractBlock(src, needle) {

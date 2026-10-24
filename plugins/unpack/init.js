@@ -26,13 +26,15 @@ if(plugin.canChangeMenu())
 							plugin.fno = fid.substr(3);
 					if(plugin.fno!=null)
 					{
+						// Archive matching historically includes names such as .zip.
+						var ext = fileExtension(this.files[this.dID][plugin.fno], true);
 						if(this.files[this.dID][plugin.fno].percent!=100)
 							plugin.fno=null;
 						else
-						if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(this.files[this.dID][plugin.fno].name))
+						if(plugin.useUnrar && (/^(rar|r\d\d|\d\d\d)$/).test(ext))
 							plugin.mode = 'rar';
 						else
-						if(plugin.useUnzip && (/.*\.zip$/i).test(this.files[this.dID][plugin.fno].name))
+						if(plugin.useUnzip && ext=='zip')
 							plugin.mode = 'zip';
 						else
 							plugin.fno=null;
@@ -67,10 +69,11 @@ if(plugin.canChangeMenu())
 				for(var i in this.files[this.uID])
 				{
 					var file = this.files[this.uID][i];
-					if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(file.name))
+					var ext = fileExtension(file, true);
+					if(plugin.useUnrar && (/^(rar|r\d\d|\d\d\d)$/).test(ext))
 						rarPresent = true;
 					else
-					if(plugin.useUnzip && (/.*\.zip$/i).test(file.name))
+					if(plugin.useUnzip && ext=='zip')
 						zipPresent = true;
 					checked = true;
 				}
@@ -89,7 +92,7 @@ if (plugin.canChangeOptions()) {
 			$('#unpack_enabled').prop('checked',(theWebUI.unpackData.enabled == 1));
 			$('#unpack_label').prop('checked',(theWebUI.unpackData.addLabel == 1));
 			$('#unpack_name').prop('checked',(theWebUI.unpackData.addName == 1));
-			$('#edit_unpack1').val( theWebUI.unpackData.path );
+			setPathInput('#edit_unpack1', theWebUI.unpackData.path);
 			$('#edit_filter').val( theWebUI.unpackData.filter );
 			linked($$('unpack_enabled'), 0, ['edit_filter', 'edit_unpack1', 'edit_unpack1_btn'] );
 			if (plugin.btn)
@@ -104,7 +107,7 @@ if (plugin.canChangeOptions()) {
 			(($('#unpack_enabled').prop('checked') != (theWebUI.unpackData.enabled == 1 )) ||
 			($('#unpack_label').prop('checked') != ( theWebUI.unpackData.addLabel == 1 )) ||
 			($('#unpack_name').prop('checked') != ( theWebUI.unpackData.addName == 1 )) ||
-			($('#edit_unpack1').val() != theWebUI.unpackData.path) ||
+			(pathQuery(getPathInput('#edit_unpack1')) !== pathQuery(theWebUI.unpackData.path)) ||
 			($('#edit_filter').val() != theWebUI.unpackData.filter))
 			);
 	}
@@ -123,7 +126,7 @@ if (plugin.canChangeOptions()) {
 			"&unpack_name=" + ( $('#unpack_name').prop('checked')  ? '1' : '0' ) +
 			"&unpack_label=" + ( $('#unpack_label').prop('checked')  ? '1' : '0' ) +
 			"&unpack_filter=" + encodeURIComponent($('#edit_filter').val()) +
-			"&unpack_path=" + encodeURIComponent($('#edit_unpack1').val());
+			"&unpack_path=" + pathQuery(getPathInput('#edit_unpack1'));
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/unpack/action.php";
 		this.dataType = "script";
@@ -136,7 +139,7 @@ theWebUI.unpack = function()
         theWebUI.startConsoleTask( "unpack", plugin.name,
         {
         	hash: theWebUI.uID,
-        	dir: $('#edit_unpack').val(),
+		dir: getPathInput('#edit_unpack'),
         	mode: plugin.mode || '',
         	no: plugin.fno || ''
         },
@@ -204,7 +207,7 @@ plugin.onLangLoaded = function() {
 			)[0],
 			theUILang.unpack,
 		);
-		$('#edit_unpack').val( theWebUI.unpackData.path );
+		setPathInput('#edit_unpack', theWebUI.unpackData.path);
 		if (thePlugins.isInstalled("_getdir")) {
 			new theWebUI.rDirBrowser("edit_unpack");
 			if (plugin.canChangeOptions()) {

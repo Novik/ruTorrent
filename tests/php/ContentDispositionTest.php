@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/TestHttpServer.php');
 
 /** Download headers are checked through the real senders and a loopback HTTP server. */
 class ContentDispositionTest extends TestCase
@@ -35,13 +36,14 @@ class ContentDispositionTest extends TestCase
 	}
 
 	/** The Content-Disposition values a browser receives for each request path. */
-	private function served(array $paths, $userAgent = null)
+	private function served(array $paths, $userAgent = null, $fixture = array())
 	{
 		$root = realpath(__DIR__ . '/../..');
-		$file = $this->base . '/' . self::NAME . '.bin';
+		$file = $this->base . '/' . ($fixture['file'] ?? self::NAME . '.bin');
 		file_put_contents($file, 'data');
-		$name = self::NAME;
+		$name = $fixture['name'] ?? self::NAME;
 		$info = 'd6:lengthi1e4:name' . strlen($name) . ':' . $name
+			. (isset($fixture['alias']) ? '10:name.utf-8' . strlen($fixture['alias']) . ':' . $fixture['alias'] : '')
 			. '12:piece lengthi16384e6:pieces20:' . str_repeat("\x01", 20) . 'e';
 		$torrent = $this->base . '/source.torrent';
 		file_put_contents($torrent, 'd8:announce28:http://example.test/announce4:info' . $info . 'e');
@@ -53,38 +55,14 @@ class ContentDispositionTest extends TestCase
 			. '  SendFile::send(' . var_export($file, true) . ', null, $_GET[\'name\'] ?? null);' . "\n"
 			. '} else {' . "\n"
 			. '  require ' . var_export($root . '/php/Torrent.php', true) . ";\n"
-			. '  (new Torrent(' . var_export($torrent, true) . '))->send($_GET[\'name\'] ?? null);' . "\n"
+			. (!empty($fixture['noHash']) ? 'class ContentDispositionNoHashTorrent extends Torrent { public function hash_info() { throw new RuntimeException("unexpected metadata hash"); } }' : '')
+			. '  (new ' . (!empty($fixture['noHash']) ? 'ContentDispositionNoHashTorrent' : 'Torrent')
+			. '(' . var_export($torrent, true) . '))->send($_GET[\'name\'] ?? null);' . "\n"
 			. "}\n");
-		$listener = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
-		if ($listener === false) {
-			throw new RuntimeException('no port for the web server: ' . $error);
-		}
-		$address = stream_socket_get_name($listener, false);
-		fclose($listener);
-		$log = $this->base . '/server.log';
-		// An argument array: no shell sits between the test and the server.
-		$process = proc_open(array(PHP_BINARY, '-d', 'display_errors=0', '-S', $address,
-			$this->base . '/www/router.php'), array(0 => array('pipe', 'r'),
-			1 => array('file', $log, 'a'), 2 => array('file', $log, 'a')), $pipes, $this->base . '/www');
-		if (!is_resource($process)) {
-			throw new RuntimeException('the web server did not start');
-		}
-		fclose($pipes[0]);
+		$server = TestHttpServer::start($this->base . '/www', array(), array(), $this->base . '/www/router.php');
+		$address = '127.0.0.1:' . $server->port();
 		$values = array();
 		try {
-			$ready = false;
-			for ($i = 0; $i < 50 && !$ready; ++$i) {
-				$socket = @stream_socket_client('tcp://' . $address, $errno, $error, 0.1);
-				if ($socket !== false) {
-					fclose($socket);
-					$ready = true;
-				} else {
-					usleep(100000);
-				}
-			}
-			if (!$ready) {
-				throw new RuntimeException('the web server is unavailable: ' . @file_get_contents($log));
-			}
 			foreach ($paths as $path) {
 				$socket = stream_socket_client('tcp://' . $address, $errno, $error, 5);
 				stream_set_timeout($socket, 5);
@@ -102,8 +80,7 @@ class ContentDispositionTest extends TestCase
 					? rtrim($match[1], "\r") : null;
 			}
 		} finally {
-			proc_terminate($process);
-			proc_close($process);
+			$server->close();
 		}
 		return $values;
 	}
@@ -184,10 +161,43 @@ class ContentDispositionTest extends TestCase
 		$this->same('attachment; filename="plain.torrent"; filename*=UTF-8\'\'plain.torrent',
 			ContentDisposition::attachment('plain.torrent'), 'a plain name keeps its familiar header');
 		$value = ContentDisposition::attachment("cp1251 \xD4\xE8\xEB\xFC\xEC.avi");
-		$this->same('attachment; filename="cp1251 _____.avi"', $value,
-			'a name that is not UTF-8 gets no filename* that would claim it is');
+		$this->same('cp1251 \\xD4\\xE8\\xEB\\xFC\\xEC.avi', self::chosenName($value),
+			'unknown name bytes stay visible in the offered Unicode name');
 		$this->same('attachment; filename="a%22b"; filename*=UTF-8\'\'a%22b',
 			ContentDisposition::attachment('a"b', 'Mozilla/4.0 (compatible; MSIE 8.0)'),
 			'an old MSIE still gets the percent-encoded filename it decodes');
+	}
+
+	public function testLegacyFilePathsKeepTheirPayloadAndOfferVisibleBytes()
+	{
+		$raw = "cp1251 \xD4\xE8\xEB\xFC\xEC.bin";
+		$value = $this->served(array('/file'), null, array('file'=>$raw))['/file'];
+		$this->assertTrue(self::wellFormed($value), 'raw legacy filesystem names produce a valid HTTP header');
+		$this->same('cp1251 \\xD4\\xE8\\xEB\\xFC\\xEC.bin', self::chosenName($value),
+			'unknown filesystem bytes receive an explicit label without changing the read path');
+	}
+
+	public function testTorrentSourceDownloadsPreferTheirOwnUtf8NameAlias()
+	{
+		$raw = "episode \xF1\xE5\xF0\xE8\xFF";
+		$value = $this->served(array('/torrent'), null, array('name'=>$raw, 'alias'=>'episode серия'))['/torrent'];
+		$this->same('episode серия.torrent', self::chosenName($value), 'source metadata supplies the torrent download label');
+		$valid = $this->served(array('/torrent'), null, array('name'=>'中文 🙂 %41', 'alias'=>'different', 'noHash'=>true))['/torrent'];
+		$this->same('中文 🙂 %41.torrent', self::chosenName($valid), 'valid Unicode source names remain unchanged even with an alternative');
+		$unavailable = $this->served(array('/torrent'), null, array('name'=>$raw, 'alias'=>'episode серия', 'noHash'=>true))['/torrent'];
+		$this->same('episode \\xF1\\xE5\\xF0\\xE8\\xFF.torrent', self::chosenName($unavailable),
+			'an unavailable optional metadata hash cannot prevent serving the original torrent');
+	}
+
+	public function testExplicitLegacyAndControlNamesCannotChangeHeadersOrPayload()
+	{
+		foreach(array("cp\xFF \"q\" \\b %41.bin"=>'cp\\xFF "q" \\\\b %41.bin',
+			"name\r\nX-Forged: yes\t%41.bin"=>"name\r\nX-Forged: yes\t%41.bin") as $raw=>$expected) {
+			$paths = array('/file?name='.rawurlencode($raw), '/torrent?name='.rawurlencode($raw));
+			foreach($this->served($paths) as $value) {
+				$this->assertTrue(self::wellFormed($value), 'download labels remain one well-formed header');
+				$this->same($expected, self::chosenName($value), 'literal quotes, backslashes and percent sequences are encoded once');
+			}
+		}
 	}
 }

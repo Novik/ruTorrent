@@ -20,17 +20,17 @@ catlist.refreshPanel.plabel = (attribs) => plabelEntries(attribs)
 	.map(([labelId, aa]) => [
 		labelId,
 		aa,
-		labelId.startsWith('clabel__') ? labelId.substring(8) : 'nlb'
+		labelValueFromId(catlist.torrentLabelTree, labelId)
 	])
-	.map(([labelId, a, label]) => [
-		labelId,
-		labelId === 'plabel_all'
+	.map(([id, a, label]) => [
+		id,
+		id === 'plabel_all'
 		? a
 		: {
 			...a,
 			icon: 'url:'
 				+ plugin.imageURI('label', label)
-				+ (plugin.imageEditSuffix.label[label] ?? '')
+				+ (plugin.imageEditSuffix.label[labelId(label)] ?? '')
 
 	}]);
 
@@ -111,7 +111,7 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 	if (plugin.canChangeMenu() && ['ptrackers', 'plabel'].includes(panelId)) {
 		if (labelId !== `${panelId}_all`) {
 			const lbl = panelId === 'plabel'
-				? (labelId.startsWith('clabel__') ? labelId.substring(8) : 'nlb')
+				? labelValueFromId(catlist.torrentLabelTree, labelId)
 				: labelId.substring(1);
 			return entries.concat([
 				[theUILang.EditIcon, () => theWebUI.showTracklabelsDialog(lbl)]
@@ -123,7 +123,7 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 
 
 theWebUI.showTracklabelsDialog = function(lbl) {
-	$(`#${plugin.dialogId} input[type=text]`).val(lbl);
+	setLabelInput(`#${plugin.dialogId} input[type=text]`, lbl);
 	theDialogManager.show(plugin.dialogId);
 }
 
@@ -163,7 +163,7 @@ theWebUI.rebuildTrackersLabels = function()
 }
 
 plugin.imageURI = function (target, label) {
-	return `plugins/tracklabels/action.php?${target}=${encodeURIComponent(label)}`;
+	return `plugins/tracklabels/action.php?${target}=${target === 'label' ? labelQuery(label) : encodeURIComponent(label)}`;
 }
 
 plugin.onLangLoaded = function() {
@@ -210,10 +210,12 @@ plugin.onLangLoaded = function() {
 	const formEl = $(`#${eid} form`)[0];
 
 	const validFormData = (del) => {
-		const label = labelTxt.val();
+		const value = getLabelInput(labelTxt);
+		const label = labelDisplay(value);
 		const formData = new FormData(formEl);
 		const valid = label && (del || formData.get('uploadfile')?.size);
-		const trackerTarget = label.includes('.') && !label.includes('/');
+		// A label that is not UTF-8 is never a tracker name.
+		const trackerTarget = typeof value === 'string' && label.includes('.') && !label.includes('/');
 		if (valid) {
 			if (trackerTarget) {
 				formData.delete('label');
@@ -243,7 +245,8 @@ plugin.onLangLoaded = function() {
 			submitBtn.prop('disabled', true);
 			const trkTarget = formData.has('tracker');
 			const target = trkTarget ? 'tracker' : 'label';
-			const label = formData.get(target);
+			const label = trkTarget ? formData.get(target) : getLabelInput(labelTxt);
+			const identity = trkTarget ? label : labelId(label);
 			const uri = plugin.imageURI(target, label);
 			formData.delete(target);
 			const request = new XMLHttpRequest();
@@ -252,7 +255,7 @@ plugin.onLangLoaded = function() {
 					// hide dialog if upload successful
 					theDialogManager.hide(plugin.dialogId);
 					// show uploaded image
-					plugin.imageEditSuffix[target][label] = `&t=${new Date().getTime()})`;
+					plugin.imageEditSuffix[target][identity] = `&t=${new Date().getTime()})`;
 					if (trkTarget) {
 						catlist.refreshPanel.ptrackers();
 					} else {
@@ -277,7 +280,7 @@ plugin.onLangLoaded = function() {
 	theDialogManager.setHandler(plugin.dialogId, 'beforeShow', function()
 	{
 		$(`#${eid}-datalist`).empty().append(
-			...[...catlist.torrentLabelTree.torrentLabels.keys()]
+			...[...catlist.torrentLabelTree.torrentLabels].map(([key, info]) => labelDisplay(info.value ?? key))
 				.concat(theWebUI.trackerNames)
 				.map(lbl => $('<option>').attr('value', lbl))
 		);

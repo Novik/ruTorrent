@@ -489,61 +489,44 @@ class TextSearch {
 
 class TorrentLabelTree {
   constructor(torrentLabels) {
-    if (!(torrentLabels instanceof Set)) {
-      torrentLabels = new Set(torrentLabels);
+    // A path descriptor carries raw component keys alongside its display text.
+    // A tree built from plain label strings keeps them as its keys; one built
+    // from descriptors is keyed by panel id, which keeps byte labels distinct.
+    const labels = [...torrentLabels];
+    const typed = labels.some(Array.isArray);
+    const root = new Map();
+    for (const label of labels) {
+      const parts = Array.isArray(label) ? label : label.split("/").map((name, index, names) => {
+        const value = names.slice(0, index + 1).join("/");
+        return {key: encodeURIComponent(name).replace(/[!'()*]/g, char => "%" + char.charCodeAt(0).toString(16).toUpperCase()),
+          name, value, panelId: "clabel__" + value};
+      });
+      let children = root;
+      parts.forEach((part, index) => {
+        if (!children.has(part.key)) children.set(part.key, {part, children: new Map(), terminal: false});
+        const node = children.get(part.key);
+        if (index === parts.length - 1) node.terminal = true;
+        children = node.children;
+      });
     }
-    // Build tree from torrent labels/paths
-    const labelTree = {};
-    for (const label of torrentLabels) {
-      let node = labelTree;
-      for (const pathSegment of label.split("/")) {
-        if (!(pathSegment in node)) {
-          node[pathSegment] = {};
-        }
-        node = node[pathSegment];
-      }
-    }
-    const traverse = (node, path = [], hasNext = [], level = 0) =>
-      Object.keys(node)
-        .sort()
-        .flatMap((name, i) => {
-          const nextPath = path.concat(name);
-          const nextHasNext = hasNext.concat(
-            i !== Object.keys(node).length - 1
-          );
-          const child = node[name];
-          const childCount = Object.keys(child).length;
-
-          return [
-            [
-              nextPath.join("/"),
-              nextPath,
-              nextHasNext,
-              level,
-              /* can be flattened if one child */ childCount === 1,
-            ],
-            ...traverse(
-              node[name],
-              nextPath,
-              nextHasNext,
-              childCount <= 1 ? level : nextPath.length
-            ),
-          ];
+    this.torrentLabels = new Map();
+    const traverse = (children, path = [], hasNext = [], level = 0) => {
+      const nodes = [...children.values()].sort((a, b) =>
+        a.part.name < b.part.name ? -1 : a.part.name > b.part.name ? 1 :
+          a.part.key < b.part.key ? -1 : a.part.key > b.part.key ? 1 : 0);
+      nodes.forEach((node, index) => {
+        const nextPath = path.concat(node.part.name);
+        const nextHasNext = hasNext.concat(index !== nodes.length - 1);
+        const value = node.part.value;
+        const key = typed ? node.part.panelId : value;
+        this.torrentLabels.set(key, {
+          value, panelId: node.part.panelId, name: nextPath.join("/"), path: nextPath,
+          hasNext: nextHasNext, level, oneChild: node.children.size === 1, empty: !node.terminal,
         });
-    this.torrentLabels = new Map(
-      traverse(labelTree).map(
-        ([torrentLabel, path, hasNext, level, oneChild]) => [
-          torrentLabel,
-          {
-            path,
-            hasNext,
-            level,
-            oneChild,
-            empty: !torrentLabels.has(torrentLabel),
-          },
-        ]
-      )
-    );
+        traverse(node.children, nextPath, nextHasNext, node.children.size <= 1 ? level : nextPath.length);
+      });
+    };
+    traverse(root);
   }
 
   /**

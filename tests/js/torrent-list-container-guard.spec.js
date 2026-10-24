@@ -2,6 +2,11 @@ import { readFileSync } from "fs";
 
 window.$ = require("jquery");
 
+const commonHelpers = document.createElement("script");
+const commonSource = readFileSync("../js/common.js", "utf8");
+commonHelpers.textContent = commonSource.slice(commonSource.indexOf("// Paths selected"));
+document.body.appendChild(commonHelpers);
+
 function h(char) {
   return Array.from({ length: 40 }, () => char).join("");
 }

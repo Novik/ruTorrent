@@ -35,9 +35,9 @@ function rtIsDaemon( $args )
 function rtDaemon( $php, $script, $args )
 {
 	if( !$php || $php == '' ) $php = 'php';
-	$params = escapeshellarg( $script ).' --daemon';
+	$params = Utility::escapeShellArg( $script ).' --daemon';
 	foreach( $args as $arg )
-		$params .= ' '.escapeshellarg( $arg );
+		$params .= ' '.Utility::escapeShellArg( $arg );
 	exec( $php.' '.$params.' > /dev/null 2>/dev/null &', $out, $ret );
 	exit( (int)$ret );
 }

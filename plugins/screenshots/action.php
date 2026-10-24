@@ -38,7 +38,7 @@ if(isset($_REQUEST['cmd']))
 							$name = '"${dir}"/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg');
 							$commands[] = Utility::getExternal("ffmpeg").
 								' -ss '.$offs.
-								' -i '.escapeshellarg($filename).
+								' -i '.Utility::escapeShellArg($filename).
 								' -y'.
 								' -vframes 1'.
 								' -an'.

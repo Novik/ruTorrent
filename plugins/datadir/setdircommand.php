@@ -1,24 +1,24 @@
 <?php
 
+require_once(__DIR__.'/../../php/utility/utility.php');
+
 // The command line action.php hands to sh -c to start setdir.php in the
 // background.
 //
-// It lives on its own, with no dependencies, because what is quoted in it and
-// what is not is the whole of its content: seven values go to a shell, and one
-// of them used to go unquoted while its six neighbours were escaped.
+// Every argument uses the shared byte-preserving shell quote owner.
 if( !function_exists( 'rtSetDirCommand' ) )
 {
 	function rtSetDirCommand( $php, $script, $hash, $datadir,
 		$addPath, $moveFiles, $fastResume, $user )
 	{
 		return(
-			escapeshellarg( (string)$php )." ".
-			escapeshellarg( (string)$script )." ".
-			escapeshellarg( (string)$hash )." ".
-			escapeshellarg( (string)$datadir )." ".
-			escapeshellarg( (string)$addPath )." ".
-			escapeshellarg( (string)$moveFiles )." ".
-			escapeshellarg( (string)$fastResume )." ".
-			escapeshellarg( (string)$user )." & exit 0" );
+			Utility::escapeShellArg( (string)$php )." ".
+			Utility::escapeShellArg( (string)$script )." ".
+			Utility::escapeShellArg( (string)$hash )." ".
+			Utility::escapeShellArg( (string)$datadir )." ".
+			Utility::escapeShellArg( (string)$addPath )." ".
+			Utility::escapeShellArg( (string)$moveFiles )." ".
+			Utility::escapeShellArg( (string)$fastResume )." ".
+			Utility::escapeShellArg( (string)$user )." & exit 0" );
 	}
 }

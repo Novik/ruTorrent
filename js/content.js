@@ -184,17 +184,18 @@ function makeContent() {
 				$("#tadd-return-select").show();
 			} break;
 			case 0: {
-				$("#tadd_label").val("");
+				setLabelInput('#tadd_label', '');
 			} break;
 			default: {
-				$("#tadd_label").val(this.options[index].value);
+				setLabelInput('#tadd_label', $(this.options[index]).data('labelValue'));
 			} break;
 		}
 	});
 
 	$("#tadd-return-select").on("click", function(e) {
 		$(this).hide();
-		$("#tadd_label").val("").hide();
+		setLabelInput('#tadd_label', '');
+		$("#tadd_label").hide();
 		$("#tadd_label_select").prop("selectedIndex", 0);
 		$("#tadd_label_select").show();
 	});
@@ -205,8 +206,12 @@ function makeContent() {
 		$("#tadd_label_select").empty().append(
 			$("<option>").attr("selected", "selected").text(theUILang.No_label),
 			$("<option>").text(theUILang.newLabel),
-			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels.keys()]
-				.map(torrentLabel => $("<option>").val(torrentLabel).text(torrentLabel)),
+			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels]
+				.map(([key, info]) => {
+					const value = info.value ?? key;
+					return $('<option>').val(typeof value === 'string' ? value : labelId(value))
+						.text(labelDisplay(value)).data('labelValue', value);
+				}),
 		).show();
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled", true);
@@ -242,13 +247,13 @@ function makeContent() {
 		if (dirEle) {
 			var dir = dirEle.value.trim();
 			if(dir.length)
-				req.push('dir_edit='+encodeURIComponent(dir));
+				req.push('dir_edit='+pathQuery(getPathInput(dirEle, true)));
 		}
 		var lblEle = $$("tadd_label");
 		if (lblEle) {
-			var lbl = lblEle.value.trim();
-			if(lbl.length)
-				req.push('label='+encodeURIComponent(lbl));
+			var lbl = getLabelInput(lblEle, true);
+			if(labelDisplay(lbl).length)
+				req.push('label='+labelQuery(lbl));
 		}
 		if(req.length)
 			s+=('?'+req.join('&'));
