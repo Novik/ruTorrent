@@ -5,6 +5,7 @@ require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/RtorrentProbeFixture.php');
 require_once(__DIR__ . '/TestHttpServer.php');
 require_once(__DIR__ . '/TestTree.php');
+require_once(__DIR__ . '/../../php/Torrent.php');
 
 /**
  * php/addtorrent.php reports a torrent rtorrent already has as a duplicate,
@@ -53,11 +54,14 @@ class AddTorrentDuplicateTest extends TestCase
 		$this->server = null;
 	}
 
-	/** A single file torrent whose info dictionary hashes to the return value. */
-	private function torrent(&$hash)
+	/**
+	 * A single file torrent whose info dictionary hashes to the return value.
+	 * The private flag is a key of that dictionary.
+	 */
+	private function torrent(&$hash, $private = false)
 	{
 		$info = 'd6:lengthi1e4:name5:a.bin12:piece lengthi16384e6:pieces20:'
-			. str_repeat("\x01", 20) . 'e';
+			. str_repeat("\x01", 20) . ($private ? '7:privatei1e' : '') . 'e';
 		$hash = strtoupper(sha1($info));
 		$announce = 'http://127.0.0.1:1/announce';
 		return 'd8:announce' . strlen($announce) . ':' . $announce . '4:info' . $info . 'e';
@@ -127,14 +131,18 @@ class AddTorrentDuplicateTest extends TestCase
 		$this->assertEquals(3, $this->loadCalls(), 'each magnet was still sent');
 	}
 
-	private function upload($loaded, $names, $loads = null)
+	private function upload($loaded, $names, $loads = null, $fields = array(), $private = false)
 	{
 		foreach ($this->kept() as $file) {
 			unlink($this->base . '/profile/torrents/' . $file);
 		}
-		$torrent = $this->torrent($hash);
+		$torrent = $this->torrent($hash, $private);
 		$boundary = 'dup' . md5($torrent);
 		$body = '';
+		foreach ($fields as $field => $value) {
+			$body .= '--' . $boundary . "\r\n"
+				. 'Content-Disposition: form-data; name="' . $field . '"' . "\r\n\r\n" . $value . "\r\n";
+		}
 		foreach ($names as $name) {
 			$body .= '--' . $boundary . "\r\n"
 				. 'Content-Disposition: form-data; name="torrent_file[]"; filename="' . $name . '"' . "\r\n"
@@ -149,6 +157,18 @@ class AddTorrentDuplicateTest extends TestCase
 	private function kept()
 	{
 		return array_values(array_diff(scandir($this->base . '/profile/torrents'), array('.', '..')));
+	}
+
+	/** The info hash of the torrent rtorrent was sent: the load is the only call with a base64 value. */
+	private function sentHash()
+	{
+		foreach ($this->daemon->bodies() as $body) {
+			if (preg_match('`<base64>([^<]*)</base64>`', $body, $match)) {
+				$torrent = new Torrent(base64_decode($match[1]));
+				return $torrent->hash_info();
+			}
+		}
+		return null;
 	}
 
 	public function testAnUploadedTorrentAlreadyLoadedIsADuplicateAndNotKept()
@@ -190,6 +210,32 @@ class AddTorrentDuplicateTest extends TestCase
 		$this->assertEquals(array('Failed'), $results,
 			'a magnet rtorrent refused is a failure: ' . json_encode($results));
 		$this->assertEquals(1, $this->loadCalls(), 'the magnet was still sent');
+	}
+
+	/**
+	 * Randomizing the info hash adds a key to the info dictionary, so the
+	 * torrent gets a new info hash. The tracker of a private torrent knows it
+	 * only by its info hash and refuses a randomized copy as unregistered, so
+	 * a private torrent is sent as it is.
+	 */
+	public function testRandomizingLeavesAPrivateTorrentsHashAlone()
+	{
+		$this->torrent($hash, true);
+		$results = $this->upload(true, array('one.torrent'), null, array('randomize_hash' => '1'), true);
+		$this->assertEquals($hash, $this->sentHash(), 'rtorrent was sent the private torrent with its own hash');
+		$this->assertEquals(array('Duplicate'), $results,
+			'so a loaded one is still a duplicate: ' . json_encode($results));
+	}
+
+	public function testRandomizingStillGivesAPublicTorrentANewHash()
+	{
+		$this->torrent($hash);
+		$results = $this->upload(true, array('one.torrent'), null, array('randomize_hash' => '1'));
+		$sent = $this->sentHash();
+		$this->assertTrue(($sent !== null) && ($sent !== $hash),
+			'rtorrent was sent the public torrent with a new hash: ' . json_encode($sent));
+		$this->assertEquals(array('Success'), $results,
+			'so a loaded one is added as a new torrent: ' . json_encode($results));
 	}
 
 	public function testTheResultPageShowsADuplicateAsAnAlert()
