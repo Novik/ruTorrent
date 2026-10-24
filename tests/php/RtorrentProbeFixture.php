@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/TestTree.php');
 
 /**
  * A daemon that answers rTorrentSettings::obtain() the way rtorrent 0.16.20
@@ -80,32 +81,32 @@ class RtorrentProbeFixture
 	private static function probeForCache()
 	{
 		$base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
-		@mkdir($base . '/settings', 0700, true);
-		$daemon = new FakeRtorrentDaemon(self::responder(), $base . '/calls.log',
-			false, self::replyClassFiles());
-		$root = dirname(__DIR__, 2);
-		$driver = $base . '/probe.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($base, true) . ";\n"
-			. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
-			. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$daemon->port(), true) . ";\n"
-			. 'require_once(' . var_export($root . '/php/xmlrpc.php', true) . ");\n"
-			. 'rTorrentSettings::get(true);' . "\n");
-		$ignored = array();
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
-			escapeshellarg($driver) . ' 2>&1', $ignored);
-		$daemon->stop();
-		$cache = @file_get_contents($base . '/settings/rtorrent.dat');
-		foreach (array($base . '/settings', $base) as $dir) {
-			foreach (glob($dir . '/*') as $entry) {
-				if (!is_dir($entry)) {
-					@unlink($entry);
-				}
+		$daemon = null;
+		try {
+			@mkdir($base . '/settings', 0700, true);
+			$daemon = new FakeRtorrentDaemon(self::responder(), $base . '/calls.log',
+				false, self::replyClassFiles());
+			$root = dirname(__DIR__, 2);
+			$driver = $base . '/probe.php';
+			$source = "<?php\n"
+				. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($base, true) . ";\n"
+				. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
+				. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$daemon->port(), true) . ";\n"
+				. 'require_once(' . var_export($root . '/php/xmlrpc.php', true) . ");\n"
+				. 'rTorrentSettings::get(true);' . "\n";
+			if (file_put_contents($driver, $source) !== strlen($source)) {
+				return false;
 			}
+			$ignored = array();
+			exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
+				escapeshellarg($driver) . ' 2>&1', $ignored);
+			return @file_get_contents($base . '/settings/rtorrent.dat');
+		} finally {
+			if ($daemon !== null) {
+				$daemon->stop();
+			}
+			TestTree::remove($base);
 		}
-		@rmdir($base . '/settings');
-		@rmdir($base);
-		return $cache;
 	}
 
 	/**
