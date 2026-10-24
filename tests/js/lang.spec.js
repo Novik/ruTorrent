@@ -101,16 +101,27 @@ describe("localization", () => {
     // set to check against is core plus every plugin, which is what a running
     // instance has.
     const defined = new Set(Object.keys(keysOf([coreEn, ...pluginEn])));
+    const files = sourceFiles();
     const missing = [];
-    for (const file of sourceFiles()) {
+    let referenced = 0;
+    for (const file of files) {
       const source = fs.readFileSync(file, "utf8");
       for (const match of source.matchAll(/theUILang\.([A-Za-z_][A-Za-z0-9_]*)/g)) {
+        referenced++;
         if (!defined.has(match[1])) {
           missing.push(path.relative(ROOT, file) + " -> theUILang." + match[1]);
         }
       }
     }
     expect(missing).toEqual([]);
+    // An empty report is only worth something once the list it was drawn from
+    // is known not to be empty: a walk that matched no file, a key set that
+    // loaded nothing, or a pattern that stopped matching would each leave
+    // every check above with nothing to say and nothing to fail on. Each case
+    // below closes the same hole for the list it reads.
+    expect(files.length).toBeGreaterThan(0);
+    expect(defined.size).toBeGreaterThan(0);
+    expect(referenced).toBeGreaterThan(0);
   });
 
   it("keeps every translation to the keys en.js defines", () => {
@@ -118,24 +129,31 @@ describe("localization", () => {
     // reads it, and it will never be shown.
     const english = new Set(leafEntries(keysOf([coreEn])).keys());
     const unknown = [];
+    let checked = 0;
     for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
       if (!name.endsWith(".js") || name === "en.js") continue;
       const file = path.join(ROOT, "lang", name);
       for (const key of leafEntries(keysOf([file])).keys()) {
+        checked++;
         if (!english.has(key)) unknown.push("lang/" + name + " -> " + key);
       }
     }
     expect(unknown).toEqual([]);
+    expect(english.size).toBeGreaterThan(0);
+    expect(checked).toBeGreaterThan(0);
   });
 
   it("defines persistent settings-save recovery guidance in every core language", () => {
     const missing = [];
+    let checked = 0;
     for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
       if (!name.endsWith(".js") || name === "langs.js") continue;
+      checked++;
       const value = keysOf([path.join(ROOT, "lang", name)]).Settings_save_indeterminate;
       if (typeof value !== "string" || value.trim() === "") missing.push("lang/" + name);
     }
     expect(missing).toEqual([]);
+    expect(checked).toBeGreaterThan(0);
   });
 
   /**
@@ -156,26 +174,34 @@ describe("localization", () => {
   it("defines every key of core en.js in every core language", () => {
     const en = leafEntries(keysOf([coreEn]));
     const missing = [];
+    let checked = 0;
     for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
       if (!name.endsWith(".js") || name === "en.js" || name === "langs.js") continue;
+      checked++;
       const theirs = leafEntries(keysOf([path.join(ROOT, "lang", name)]));
       shortfall(en, theirs, `lang/${name}`, missing);
     }
     expect(missing).toEqual([]);
+    expect(en.size).toBeGreaterThan(0);
+    expect(checked).toBeGreaterThan(0);
   });
 
   it("defines every key of a plugin's en.js in that plugin's other languages", () => {
     const missing = [];
+    let checked = 0;
     for (const file of pluginEn) {
       const dir = path.dirname(file);
       const en = leafEntries(keysOf([file]));
       for (const name of fs.readdirSync(dir)) {
         if (!name.endsWith(".js") || name === "en.js") continue;
+        checked++;
         const theirs = leafEntries(keysOf([path.join(dir, name)]));
         shortfall(en, theirs, `${path.relative(ROOT, dir)}/${name}`, missing);
       }
     }
     expect(missing).toEqual([]);
+    expect(pluginEn.length).toBeGreaterThan(0);
+    expect(checked).toBeGreaterThan(0);
   });
 
   /**
@@ -186,12 +212,14 @@ describe("localization", () => {
    */
   it("gives the ratio and RSS rules dialogs distinct titles in every language", () => {
     const same = [];
+    let compared = 0;
     const dir = path.join(ROOT, "plugins", "extratio", "lang");
     for (const name of fs.readdirSync(dir)) {
       if (!name.endsWith(".js")) continue;
       const ratioFile = path.join(dir, name);
       const rssFile = path.join(ROOT, "plugins", "rssurlrewrite", "lang", name);
       if (!fs.existsSync(rssFile)) continue;
+      compared++;
       const ratio = keysOf([ratioFile]).ratioRulesManager;
       const rss = keysOf([rssFile]).rssRulesManager;
       // Case and separators do not distinguish one window from another.
@@ -199,16 +227,19 @@ describe("localization", () => {
       if (plain(ratio) === plain(rss)) same.push(`${name}: ${ratio}`);
     }
     expect(same).toEqual([]);
+    expect(compared).toBeGreaterThan(0);
   });
 
   it("keeps every plugin translation to the keys that plugin's en.js defines", () => {
     const unknown = [];
+    let checked = 0;
     for (const file of pluginEn) {
       const dir = path.dirname(file);
       const english = new Set(leafEntries(keysOf([file])).keys());
       for (const name of fs.readdirSync(dir)) {
         if (!name.endsWith(".js") || name === "en.js") continue;
         for (const key of leafEntries(keysOf([path.join(dir, name)])).keys()) {
+          checked++;
           if (!english.has(key)) {
             unknown.push(path.relative(ROOT, path.join(dir, name)) + " -> " + key);
           }
@@ -216,5 +247,7 @@ describe("localization", () => {
       }
     }
     expect(unknown).toEqual([]);
+    expect(pluginEn.length).toBeGreaterThan(0);
+    expect(checked).toBeGreaterThan(0);
   });
 });

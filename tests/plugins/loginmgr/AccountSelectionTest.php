@@ -113,6 +113,7 @@ $tests = array(
         // the path rather than the host -- but an acceptance is always wrong,
         // and this is what catches the next test() written against the raw
         // url string instead of the parsed host.
+        $asked = 0;
         foreach (get_declared_classes() as $class) {
             if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
                 continue;
@@ -122,6 +123,7 @@ $tests = array(
             if (!$host) {
                 continue;
             }
+            $asked++;
             $elsewhere = array(
                 'https://evil.test/x/' . $host . '/forum/dl.php?t=1',
                 'https://evil.test/x/' . $host . '/download.php?id=1',
@@ -136,19 +138,26 @@ $tests = array(
                     $class . ' must not claim ' . var_export($url, true));
             }
         }
+        // The accounts are loaded by the glob at the top of this file, and the
+        // cases that name a class by hand are the only ones that notice when
+        // it matches nothing. This one would simply ask no account anything.
+        selAssertSame(true, $asked > 0, 'accounts were found to ask');
     },
 
     'a url with no host at all matches nothing' => function () {
+        $asked = 0;
         foreach (get_declared_classes() as $class) {
             if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
                 continue;
             }
+            $asked++;
             $account = new $class();
             foreach (array('', 'not a url', '/relative/path', 'javascript:alert(1)') as $url) {
                 selAssertSame(false, (bool) $account->test($url),
                     $class . ' must not claim ' . var_export($url, true));
             }
         }
+        selAssertSame(true, $asked > 0, 'accounts were found to ask');
     },
 );
 
