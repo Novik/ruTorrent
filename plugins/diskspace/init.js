@@ -1,97 +1,115 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-plugin.setValue = function( full, free )
+plugin.setValue = function( full, free, all )
 {
-	var used = full-free;
-	var percent = iv(full ? used/full*100 : 0);
-	if(percent>100)
-		percent = 100;
-	$("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
-		visibility: !percent ? "hidden" : "visible" } );
-	if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
-	else $("#meter-disk-text").text(percent+'%');
-	if(theUILang.diskUsage) {
-		$("#meter-disk-pane").prop("title",
-			theUILang.diskUsage
-				.replace(/%USED%/, theConverter.bytes(used))
-				.replace(/%TOTAL%/, theConverter.bytes(full))
-				.replace(/%FREE%/, theConverter.bytes(free) + ", " + iv(full ? free/full*100 : 0) + "%")
-		);
-	}
+        var used = full-free;
+        var percent = iv(full ? used/full*100 : 0);
+        if(percent>100)
+                percent = 100;
+        $("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
+                visibility: !percent ? "hidden" : "visible" } );
+        if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
+        else $("#meter-disk-text").text(percent+'%');
+        var tooltip = [];
+        if(all && all.length)
+        {
+                for(var i = 0; i < all.length; i++)
+                {
+                        var disk = all[i];
+                        var dUsed = disk.total - disk.free;
+                        tooltip.push(
+                                disk.path + "\n" +
+                                        theUILang.diskUsage
+                                        .replace(/%USED%/, theConverter.bytes(dUsed))
+                                        .replace(/%TOTAL%/, theConverter.bytes(disk.total))
+                                        .replace(/%FREE%/, theConverter.bytes(disk.free) + ", " + iv(disk.total ? disk.free/disk.total*100 : 0) + "%")
+                        );
+                }
+        }
+        else
+        {
+                tooltip.push(
+                        theUILang.diskUsage
+                                .replace(/%USED%/, theConverter.bytes(used))
+                                .replace(/%TOTAL%/, theConverter.bytes(full))
+                                .replace(/%FREE%/, theConverter.bytes(free) + ", " + iv(full ? free/full*100 : 0) + "%")
+                );
+        }
+        $("#meter-disk-pane").prop("title", tooltip.join("\n------------------\n"));
 
-	if($.noty && plugin.allStuffLoaded)
-	{
-		if((free<plugin.notifySpaceLimit) && !plugin.noty)
-			plugin.noty = $.noty(
-			{
-				text: theUILang.diskNotification,
-				layout : 'bottomLeft',
-				type: 'error',
-				timeout : false,
-				closeOnSelfClick: false
-			});
-		if((free>plugin.notifySpaceLimit) && plugin.noty)
-		{
-			$.noty.close(plugin.noty);
-			plugin.noty = null;
-		}
-	}
+        if($.noty && plugin.allStuffLoaded)
+        {
+                if((free<plugin.notifySpaceLimit) && !plugin.noty)
+                        plugin.noty = $.noty(
+                        {
+                                text: theUILang.diskNotification,
+                                layout : 'bottomLeft',
+                                type: 'error',
+                                timeout : false,
+                                closeOnSelfClick: false
+                        });
+                if((free>plugin.notifySpaceLimit) && plugin.noty)
+                {
+                        $.noty.close(plugin.noty);
+                        plugin.noty = null;
+                }
+        }
 }
 
 plugin.init = function()
 {
-	if(getCSSRule("#meter-disk-holder"))
-	{
-		plugin.prgStartColor = new RGBackground("#99D699");
-		plugin.prgEndColor = new RGBackground("#E69999");
-		plugin.addPaneToStatusbar(
-			"meter-disk-pane",
-			$("<div>").append(
-				$("<div>").addClass("icon"),
-				$("<div>").attr({id: "meter-disk-holder"}).append(
-					$("<div>").attr({id: "meter-disk-value"}).width(0),
-					$("<div>").attr({id: "meter-disk-text"}),
-				),
-			),
-			1, true,
-		);
+        if(getCSSRule("#meter-disk-holder"))
+        {
+                plugin.prgStartColor = new RGBackground("#99D699");
+                plugin.prgEndColor = new RGBackground("#E69999");
+                plugin.addPaneToStatusbar(
+                        "meter-disk-pane",
+                        $("<div>").append(
+                                $("<div>").addClass("icon"),
+                                $("<div>").attr({id: "meter-disk-holder"}).append(
+                                        $("<div>").attr({id: "meter-disk-value"}).width(0),
+                                        $("<div>").attr({id: "meter-disk-text"}),
+                                ),
+                        ),
+                        1, true,
+                );
 
-		plugin.check = function()
-		{
-			jQuery.ajax(
-			{
-				type: "GET",
-				timeout: theWebUI.settings["webui.reqtimeout"],
-			        async : true,
-			        cache: false,
-				url : "plugins/diskspace/action.php",
-				dataType : "json",
-				success : function(data)
-				{
-					plugin.setValue( data.total, data.free );
-				},
-				complete : function(jqXHR, textStatus)
-				{
-					plugin.diskTimeout = window.setTimeout(plugin.check,plugin.interval*1000);
-				}
-			});
-		};
-		plugin.check();
-		plugin.markLoaded();
-	}
-	else
-		window.setTimeout(arguments.callee,500);
+                plugin.check = function()
+                {
+                        jQuery.ajax(
+                        {
+                                type: "GET",
+                                timeout: theWebUI.settings["webui.reqtimeout"],
+                                async : true,
+                                cache: false,
+                                url : "plugins/diskspace/action.php",
+                                dataType : "json",
+                                success : function(data)
+                                {
+                                        plugin.setValue( data.total, data.free, data.all );
+                                },
+                                complete : function(jqXHR, textStatus)
+                                {
+                                        plugin.diskTimeout = window.setTimeout(plugin.check,plugin.interval*1000);
+                                }
+                        });
+                };
+                plugin.check();
+                plugin.markLoaded();
+        }
+        else
+                window.setTimeout(arguments.callee,500);
 };
 
 plugin.onRemove = function()
 {
-	plugin.removePaneFromStatusbar("meter-disk-pane");
-	if(plugin.diskTimeout)
-	{
-		window.clearTimeout(plugin.diskTimeout);
-		plugin.diskTimeout = null;
-	}
+        plugin.removePaneFromStatusbar("meter-disk-pane");
+        if(plugin.diskTimeout)
+        {
+                window.clearTimeout(plugin.diskTimeout);
+                plugin.diskTimeout = null;
+        }
 }
 
 plugin.init();
