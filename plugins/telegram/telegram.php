@@ -25,6 +25,10 @@ class rTelegram
 
 	const MAX_TEMPLATE_LENGTH = 4096;
 	const MAX_CHAT_ID_LENGTH = 256;
+	// notify.php runs as the rTorrent user, which is often not the web server user (Swizzin, for example, runs
+	// PHP-FPM as www-data and rTorrent as the user, who is in the www-data group): the file must stay readable by
+	// the group, while other local users still cannot read the bot token.
+	const STORAGE_MODE = 0640;
 
 	public static function eventNames()
 	{
@@ -166,11 +170,18 @@ class rTelegram
 		$link = self::markdownLink($comment);
 		if($link === '')
 			$template = str_replace(array("\r\n{LINK}", "\n{LINK}"), '{LINK}', $template);
-		$message = str_replace(
-			array('{STATE}', '{TORRENT}', '{HASH}', '{LINK}'),
-			array($state, self::escapeMarkdown((string)$torrent), (string)$hash, $link),
-			$template
+		// The template's own text is escaped too: Telegram rejects a MarkdownV2 message with any reserved character
+		// left unescaped (a "!" or a "." in a custom template). {LINK} is already MarkdownV2.
+		$values = array(
+			'{STATE}' => self::escapeMarkdown($state),
+			'{TORRENT}' => self::escapeMarkdown((string)$torrent),
+			'{HASH}' => self::escapeMarkdown((string)$hash),
+			'{LINK}' => $link,
 		);
+		$parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$message = '';
+		foreach($parts as $i => $part)
+			$message .= ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
 		return self::truncateMessage($message);
 	}
 
@@ -280,7 +291,7 @@ class rTelegram
 	{
 		$name = FileUtil::getSettingsPath().'/telegram.dat';
 		if(is_file($name))
-			@chmod($name, 0600);
+			@chmod($name, self::STORAGE_MODE);
 	}
 
 	public static function sanitizeError($message, $token = '')
@@ -369,9 +380,15 @@ class rTelegramClient
 
 	private function parseResponse($body, $httpCode, $token)
 	{
-		if($httpCode < 200 || $httpCode >= 300)
-			return array('ok' => false, 'error' => 'HTTP '.$httpCode, 'http_code' => $httpCode);
 		$data = json_decode($body, true);
+		// Telegram explains a refused request in "description" (a 400 for a MarkdownV2 error, for example)
+		if($httpCode < 200 || $httpCode >= 300)
+		{
+			$error = 'HTTP '.$httpCode;
+			if(is_array($data) && isset($data['description']))
+				$error .= ': '.$data['description'];
+			return array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
+		}
 		if(!is_array($data))
 			return array('ok' => false, 'error' => 'malformed Telegram response', 'http_code' => $httpCode);
 		if(isset($data['ok']) && $data['ok'] === true)
