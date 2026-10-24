@@ -101,6 +101,16 @@ function jarFields($wire)
     return $matches[1];
 }
 
+// A cookie lifetime is counted in whole seconds, so a tuple received at X.95
+// with Max-Age=1 dies 0.05s later: the window a case gets is a random slice of
+// one second, not a second. A case that must still hold a live tuple after
+// doing work starts just after a tick, so the whole lifetime is its own.
+function jarTick()
+{
+    $second = time();
+    while (time() === $second) usleep(5000);
+}
+
 function jarRoundTrip($transport, $cookies, $source, $target, $flat = array(), $explicit = false)
 {
     $client = jarClient($transport, array(jarReply($cookies), jarReply()));
@@ -181,12 +191,13 @@ foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) 
         }
     };
     $tests[$transport . ' equal manual facade stays manual through unrelated deletion expiry and override'] = function () use ($transport, $origin, $scheme) {
-        $client = jarClient($transport, array(jarReply(array('sid=manual; Path=/private; Max-Age=1')), jarReply(array('sid=; Path=/legacy; Max-Age=0')), jarReply(), jarReply()));
+        jarTick();
+        $client = jarClient($transport, array(jarReply(array('sid=manual; Path=/private; Max-Age=2')), jarReply(array('sid=; Path=/legacy; Max-Age=0')), jarReply(), jarReply()));
         $client->cookies = array('sid' => 'manual', 'caller' => 'keep');
         $client->fetch($origin . '/private/login'); $client->setcookies();
         $client->fetch($origin . '/private/login'); $client->setcookies();
         jarSame(array('sid' => 'manual', 'caller' => 'keep'), $client->cookies, 'A later unrelated deletion preserves equal manual input');
-        sleep(2);
+        sleep(3);
         $client->fetch($scheme . '://other.example/public'); $client->setcookies();
         jarSame(array('sid=manual; caller=keep'), jarFields(jarRequests($client)[2]), 'Explicit manual input survives tuple expiry and remains flat on the wire');
         $client->cookies['sid'] = 'changed';
