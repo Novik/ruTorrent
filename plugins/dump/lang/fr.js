@@ -6,13 +6,13 @@
  * Author:
  */
 
-theUILang.dumpTorrent		= "Dump .torrent...";
-theUILang.dumpErrorNoHash			= "Dump plugin: The request carried no torrent hash.";
-theUILang.dumpErrorNoCommand			= "Dump plugin: The request carried no dump command.";
-theUILang.dumpErrorNoAnswer			= "Dump plugin: rTorrent did not answer, so no torrent file could be located.";
-theUILang.dumpErrorNoSessionDirectory		= "Dump plugin: rTorrent reports no session directory, and this torrent has no tied file.";
-theUILang.dumpErrorNoFile			= "Dump plugin: No torrent file at {file}.";
-theUILang.dumpErrorUnreadable			= "Dump plugin: Couldn't read file {file} as user {user}, check file permissions.";
-theUILang.dumpErrorUnreadableUnknownUser	= "Dump plugin: Couldn't read file {file}, check file permissions.";
+theUILang.dumpTorrent		= "Dump du .torrent...";
+theUILang.dumpErrorNoHash			= "Plugin 'Dump' : la requête ne contenait aucun hash de torrent.";
+theUILang.dumpErrorNoCommand			= "Plugin 'Dump' : la requête ne contenait aucune commande de dump.";
+theUILang.dumpErrorNoAnswer			= "Plugin 'Dump' : rTorrent n'a pas répondu, le fichier torrent n'a donc pas pu être trouvé.";
+theUILang.dumpErrorNoSessionDirectory		= "Plugin 'Dump' : rTorrent n'indique aucun répertoire de session, et ce torrent n'a pas de fichier associé.";
+theUILang.dumpErrorNoFile			= "Plugin 'Dump' : aucun fichier torrent à l'emplacement {file}.";
+theUILang.dumpErrorUnreadable			= "Plugin 'Dump' : impossible de lire le fichier {file} en tant qu'utilisateur {user}, vérifiez les droits du fichier.";
+theUILang.dumpErrorUnreadableUnknownUser	= "Plugin 'Dump' : impossible de lire le fichier {file}, vérifiez les droits du fichier.";
 
 thePlugins.get("dump").langLoaded();
