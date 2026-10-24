@@ -44,8 +44,8 @@
  theUILang.rssCheckDescription		= "Regarder dans la description";
  theUILang.rssCheckLink			= "Regarder dans le lien";
  theUILang.rssMinInterval		= "Intervalle minimum";
- theUILang.rssIntervalAlways		= "(Corresponds toujours)";
- theUILang.rssIntervalOnce		= "(Corresponds une seule fois)";
+ theUILang.rssIntervalAlways		= "(Correspond toujours)";
+ theUILang.rssIntervalOnce		= "(Correspond une seule fois)";
  theUILang.rssInterval12h		= "12 heures";
  theUILang.rssInterval1d		= "1 jour";
  theUILang.rssInterval2d		= "2 jours";
@@ -73,9 +73,9 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Êtes-vous sûr de vouloir supprimer ce groupe ainsi que tout son contenu?";
  theUILang.rssAllFiters			= "Tous les filtres";
  theUILang.rssUpdateInterval		= "Intervalle de mise à jour";
- theUILang.rssShowErrorsDelayed		= "Retarder les notifications d'erreurs RSS jusqu'a ce que l'onglet journal ou le flux RSS soit visible";
- theUILang.Directories			= "Annuaires";
+ theUILang.rssShowErrorsDelayed		= "Retarder les notifications d'erreurs RSS jusqu'à ce que l'onglet journal ou le flux RSS soit visible";
+ theUILang.Directories			= "Répertoires";
  theUILang.Labels			= "Étiquettes";
- theUILang.rssPatternExample		= "Regular Expression Example";
+ theUILang.rssPatternExample		= "Exemple d'expression régulière";
 
 thePlugins.get("rss").langLoaded();

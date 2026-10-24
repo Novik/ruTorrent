@@ -9,11 +9,11 @@
  theUILang.tskCommand		= "Commande en cours...";
  theUILang.tskCommandDone	= "Commande terminée.";
  theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostiques";
+ theUILang.tskErrors		= "Diagnostics";
  theUILang.tskBackground	= "Cacher";
  theUILang.tskCopy		= "Copier";
- theUILang.tskLogEmpty		= "Console log is empty.";
- theUILang.tskSaveLog		= "Save Log";
+ theUILang.tskLogEmpty		= "Le journal de la console est vide.";
+ theUILang.tskSaveLog		= "Enregistrer le journal";
  theUILang.tskStart		= "Démarrée";
  theUILang.tskFinish		= "Terminée";
  theUILang.tskElapsed		= "Écoulée";

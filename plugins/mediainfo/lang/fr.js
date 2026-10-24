@@ -6,4 +6,4 @@
  * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.mediainfo		= "Media info";
+ theUILang.mediainfo		= "Infos média";
