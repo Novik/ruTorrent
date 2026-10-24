@@ -40,6 +40,7 @@ var theUILang =
  Enabled			: "Kích hoạt",
  ruTorrent_settings		: "Cài đặt",
  Doesnt_support			: "ruTorrent không hỗ trợ trình duyệt này.",
+ webUIStarted			: "WebUI started.",
  Name				: "Tên",
  Status				: "Trạng Thái",
  Size				: "Kích Thước",

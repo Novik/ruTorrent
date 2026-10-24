@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Povolené",
  ruTorrent_settings		: "Možnosti",
  Doesnt_support			: "ruTorrent nepodporuje tvoj prehliadač.",
+ webUIStarted			: "WebUI started.",
  Name				: "Názov",
  Status				: "Status",
  Size				: "Veľkosť",

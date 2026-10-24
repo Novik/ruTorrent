@@ -40,6 +40,7 @@ var theUILang =
  Enabled			: "Ενεργοποιημένο",
  ruTorrent_settings		: "Ρυθμίσεις",
  Doesnt_support			: "Το ruTorrent δεν υποστηρίζει το πρόγραμμα περιήγησής σας.",
+ webUIStarted			: "WebUI started.",
  Name				: "Όνομα",
  Status				: "Κατάσταση",
  Size				: "Μέγεθος",

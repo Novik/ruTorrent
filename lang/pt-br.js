@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Ativada",
  ruTorrent_settings		: "Preferências",
  Doesnt_support			: "A interface ruTorrent não suporta o seu navegador.",
+ webUIStarted			: "WebUI started.",
  Name				: "Nome",
  Status				: "Status",
  Size				: "Tamanho",

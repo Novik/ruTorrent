@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Engedve",
  ruTorrent_settings		: "Beállítások",
  Doesnt_support			: "A ruTorrent nem támogatja az ön böngészőjét.",
+ webUIStarted			: "WebUI started.",
  Name				: "Név",
  Status				: "Állapot",
  Size				: "Méret",

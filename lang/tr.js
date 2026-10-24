@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Etkin",
  ruTorrent_settings		: "Ayarlar",
  Doesnt_support			: "ruTorrent tarayıcınızı desteklemiyor.",
+ webUIStarted			: "WebUI started.",
  Name				: "İsim",
  Status				: "Durum",
  Size				: "Boyut",

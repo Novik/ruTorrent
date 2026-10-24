@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Ieslēgts",
  ruTorrent_settings		: "Atribūti",
  Doesnt_support			: "ruTorrent neatbalsta tavu interneta pārlūku.",
+ webUIStarted			: "WebUI started.",
  Name				: "Nosaukums",
  Status				: "Statuss",
  Size				: "Izmērs",
