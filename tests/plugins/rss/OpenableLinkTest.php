@@ -28,6 +28,7 @@ declare(strict_types=1);
 @define('WAIT_AFTER_LOADING', 0, true);
 
 require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/PhpProcess.php');
 
 $minInterval = 2;
 $feedsWithIncorrectTimes = array();
@@ -82,6 +83,49 @@ final class OpenableLinkTest extends TestCase
 			}
 		}
 		$this->assertEquals($kept, array_keys($this->feedItems($xml . '</channel></rss>')));
+	}
+
+	// With rawurldecode() disabled (PHP 7.4 returns NULL from it, PHP 8 throws),
+	// a special host that needs decoding cannot be checked and is refused; every
+	// other address keeps the verdict the table records.
+	public function testAnUnavailableDecoderRefusesOnlyHostsThatNeedIt(): void
+	{
+		$rows = $this->addresses();
+		$expected = array(
+			// Only the host is decoded: a percent sign elsewhere needs nothing.
+			'https://example.org/a%20b?q=%41' => true,
+			'https://us%40er@example.org/x' => true,
+			'https://ex%61mple.org/x' => false,
+			'//%41.example.org/dl/x.torrent' => false,
+			// An opaque FTPS host is never decoded.
+			'ftps://host%20.org/x' => true,
+		);
+		$urls = array_merge(array_column($rows, 'url'), array_keys($expected));
+		$run = PhpProcess::run(array_merge(PhpProcess::sameIni(), array(
+			'-d', 'disable_functions=rawurldecode', '-d', 'display_errors=stderr', '-r',
+			'require ' . var_export(__DIR__ . '/../../../php/utility/externalurl.php', true) . ';'
+			. 'echo json_encode(array_map(array("ExternalURL", "isOpenable"), json_decode($argv[1], true)));',
+			'--', json_encode($urls))));
+		$this->assertTrue(!$run['timedOut'] && $run['code'] === 0, 'the child finishes: ' . $run['err']);
+		// Startup diagnostics ("in Unknown on line 0") belong to the PHP build.
+		$errors = implode("\n", preg_grep('/ in Unknown on line 0\s*$/', explode("\n", $run['err']), PREG_GREP_INVERT));
+		$this->assertTrue(trim($errors) === '', 'the child reports nothing: ' . $run['err']);
+		$verdicts = json_decode($run['out'], true);
+		$this->assertTrue(is_array($verdicts) && count($verdicts) === count($urls), 'one verdict per address');
+		foreach ($rows as $i => $row) {
+			$verdict = $verdicts[$i] ?? null;
+			if (strpos($row['url'], '%') === false) {
+				$this->assertTrue($verdict === $row['server'],
+					'nothing to decode, the recorded verdict: ' . json_encode($row['url']));
+			} else {
+				$this->assertTrue($verdict === false || $row['server'],
+					'never kept when the table drops it: ' . json_encode($row['url']));
+			}
+		}
+		foreach (array_keys($expected) as $i => $url) {
+			$this->assertTrue(($verdicts[count($rows) + $i] ?? null) === $expected[$url],
+				($expected[$url] ? 'kept: ' : 'refused: ') . json_encode($url));
+		}
 	}
 
 	// The scheme list lives in js/common.js. Read it from there rather than

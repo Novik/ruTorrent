@@ -322,5 +322,101 @@
         "client": false,
         "server": false,
         "why": "the empty string"
+    },
+    {
+        "url": "https://exa%20mple.org/x",
+        "client": false,
+        "server": false,
+        "why": "a decoded space is forbidden in a special host"
+    },
+    {
+        "url": "http://exa%2fmple.org/x",
+        "client": false,
+        "server": false,
+        "why": "a decoded slash is forbidden in a special host"
+    },
+    {
+        "url": "ftp://exa%40mple.org/x",
+        "client": false,
+        "server": false,
+        "why": "a decoded at sign is forbidden in a special host"
+    },
+    {
+        "url": "https://host%25.org/x",
+        "client": false,
+        "server": false,
+        "why": "a decoded percent is forbidden in a domain"
+    },
+    {
+        "url": "https://host%7f.org/x",
+        "client": false,
+        "server": false,
+        "why": "decoded DEL is forbidden in a domain"
+    },
+    {
+        "url": "https://host%00.org/x",
+        "client": false,
+        "server": false,
+        "why": "a decoded C0 control is forbidden in a domain"
+    },
+    {
+        "url": "https://host%FF.org/x",
+        "client": false,
+        "server": false,
+        "why": "a special host must decode to valid UTF-8"
+    },
+    {
+        "url": "https://host%C3.org/x",
+        "client": false,
+        "server": false,
+        "why": "an incomplete UTF-8 sequence in a special host"
+    },
+    {
+        "url": "https://host%C0%AF.org/x",
+        "client": false,
+        "server": false,
+        "why": "an overlong UTF-8 sequence in a special host"
+    },
+    {
+        "url": "https://ex%61mple.org/x",
+        "client": true,
+        "server": true,
+        "why": "encoded ASCII remains a valid special host"
+    },
+    {
+        "url": "https://example%2eorg/x",
+        "client": true,
+        "server": true,
+        "why": "an encoded dot remains a valid special host"
+    },
+    {
+        "url": "https://b%C3%BCcher.example/x",
+        "client": true,
+        "server": true,
+        "why": "valid encoded UTF-8 remains a valid special host"
+    },
+    {
+        "url": "ftp://ex%61mple.org/x",
+        "client": true,
+        "server": true,
+        "why": "FTP also decodes its special host"
+    },
+    {
+        "url": "ftps://host%20.org/x",
+        "client": true,
+        "server": true,
+        "why": "an opaque FTPS host keeps its percent escapes"
+    },
+    {
+        "url": "ftps://host%zz/x",
+        "client": true,
+        "server": true,
+        "why": "an opaque FTPS host permits malformed percent escapes"
+    },
+    {
+        "url": "ftps://host%FF/x",
+        "client": true,
+        "server": true,
+        "why": "an opaque FTPS host does not UTF-8 decode escape bytes"
     }
 ]
