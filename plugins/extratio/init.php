@@ -9,4 +9,4 @@ if($mngr->setHandlers())
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
 else
-	$jResult .= "plugin.disable(); noty('retrackers: '+theUILang.pluginCantStart,'error');";
+	$jResult .= "plugin.disable(); noty('extratio: '+theUILang.pluginCantStart,'error');";
