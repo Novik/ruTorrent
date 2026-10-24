@@ -349,7 +349,9 @@ $tests = array(
     },
 
     'no account reads an answer that never arrived as a live session' => function () {
-        foreach (caAccountClasses() as $class) {
+        $classes = caAccountClasses();
+        caAssertSame(true, count($classes) > 0, 'the account files were found at all');
+        foreach ($classes as $class) {
             foreach (array(array(200, ''), array(503, caLivePage()), array(302, caLivePage()),
                 array(200, array('gzip: not in gzip format'))) as $answer) {
                 caAssertSame(false, caPostFetch($class, caHolding($answer[0], $answer[1])),
