@@ -78,7 +78,9 @@ switch($cmd)
 	}
 	case "get":
 	{
-		$mngr->update(true);
+		// Don't re-fetch every feed here: the UI request times out after
+		// webui.reqtimeout (10s), so one slow/blocked feed hid the whole list.
+		// Feeds are refreshed by the scheduler or the "Refresh" action instead.
 		break;
 	}
 	case "refreshgroup":
