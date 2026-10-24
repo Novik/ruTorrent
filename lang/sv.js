@@ -40,6 +40,7 @@ var theUILang =
  Enabled			: "Aktiverad",
  ruTorrent_settings		: "Inställningar",
  Doesnt_support			: "ruTorrent har inte stöd för din webbläsare.",
+ webUIStarted			: "WebUI started.",
  Name				: "Namn",
  Status				: "Status",
  Size				: "Storlek",

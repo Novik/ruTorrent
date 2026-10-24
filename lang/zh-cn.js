@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "启用",
  ruTorrent_settings		: "设置",
  Doesnt_support			: "ruTorrent 不支持你使用的浏览器.",
+ webUIStarted			: "WebUI started.",
  Name				: "名称",
  Status				: "状态",
  Size				: "大小",
