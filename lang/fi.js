@@ -42,6 +42,7 @@ var theUILang =
  Enabled			: "Käytössä",
  ruTorrent_settings		: "Asetukset",
  Doesnt_support			: "ruTorrent ei tue käyttämääsi selainta.",
+ webUIStarted			: "WebUI started.",
  Name				: "Nimi",
  Status				: "Tila",
  Size				: "Koko",

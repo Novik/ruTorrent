@@ -227,7 +227,7 @@ var theWebUI = {
 //
 
 	init: function() {
-		log("WebUI started.");
+		log(theUILang.webUIStarted);
 		this.setStatusUpdate();
 		if (browser.isOldIE)
 			this.msg(theUILang.Doesnt_support);
