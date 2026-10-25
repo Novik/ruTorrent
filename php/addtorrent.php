@@ -15,9 +15,8 @@ set_time_limit(0);
  * A unix filename is a string of bytes and need not be valid UTF-8, and it
  * reaches here as name[]. json_encode() answers false for bytes it cannot
  * encode, which concatenates as nothing at all and leaves the call with an
- * argument missing rather than an argument that is a literal. So the invalid
- * bytes become the replacement character, and a refusal for any other reason
- * still yields a literal.
+ * argument missing rather than an argument that is a literal. Callers project
+ * filesystem names before this final JSON guard, which always yields a literal.
  */
 function addtorrent_literal($value)
 {
@@ -53,7 +52,7 @@ if(isset($_REQUEST['result']))
 			? array_values($_REQUEST['name']) : array();
 		$js = '';
 		foreach( $results as $ndx=>$result )
-			$js.= ('noty('.addtorrent_literal(isset($names[$ndx]) ? ($names[$ndx].' - ') : '').
+			$js.= ('noty('.addtorrent_literal(isset($names[$ndx]) ? UTF::display($names[$ndx].' - ') : '').
 				'+theUILang["addTorrent"+'.addtorrent_literal($result).']'.
 				','.addtorrent_literal(($result=='Success') ? 'success' : (($result=='Duplicate') ? 'alert' : 'error')).');');
 		CachedEcho::send($js,"text/html");
