@@ -335,7 +335,9 @@ class rTorrent
 			$directory = self::parseDirectory($directory, $isAddPath);
 			if($directory && (strlen($directory)>0))
 			{
-				if(!rTorrentSettings::get()->correctDirectory($directory))
+				$given = $directory;
+				if(!rTorrentSettings::get()->correctDirectory($directory) ||
+					($isNew && !self::isPossibleDirectory($given, $directory)))
 					return(false);
 				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
@@ -390,7 +392,9 @@ class rTorrent
 				$directory = self::parseDirectory($directory, $isAddPath);
 				if($directory && (strlen($directory)>0))
 				{
-					if(!rTorrentSettings::get()->correctDirectory($directory))
+					$given = $directory;
+					if(!rTorrentSettings::get()->correctDirectory($directory) ||
+						!self::isPossibleDirectory($given, $directory))
 						return(false);
 					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
 					$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
@@ -534,6 +538,28 @@ class rTorrent
 		// would double the backslash that escaping just added, leaving a live
 		// quote behind it -- so the backslash pair has to come first.
 		return('"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $value).'"');
+	}
+
+	// NAME_MAX and PATH_MAX as Linux defines them, in bytes.
+	const DIRECTORY_NAME_MAX = 255;
+	const DIRECTORY_PATH_MAX = 4096;
+
+	/**
+	 * Whether a directory a new download is added into could exist at all.
+	 * $given is the directory as the caller supplied it, $resolved what
+	 * correctDirectory() made of it. A URL in $given is refused because
+	 * resolving it folds the "//" away and leaves an ordinary looking path.
+	 */
+	static public function isPossibleDirectory($given, $resolved)
+	{
+		if((strpos($given, '://')!==false) || preg_match('`(^|/)magnet:\?`i', $given))
+			return(false);
+		if(strlen($resolved)>self::DIRECTORY_PATH_MAX)
+			return(false);
+		foreach(explode('/', $resolved) as $name)
+			if(strlen($name)>self::DIRECTORY_NAME_MAX)
+				return(false);
+		return(true);
 	}
 
 	static protected function parseDirectory($directory, $isAddPath)
