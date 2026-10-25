@@ -62,7 +62,7 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 		foreach($info['files'] as $key=>$file)
 			$files[] = implode('/',$file['path']);
 	else
-		$files[] = $info['name'];
+		$files[] = $base_file;
 
     if (skip_move($files)){
         $ret = false;
