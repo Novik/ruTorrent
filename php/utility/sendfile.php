@@ -66,7 +66,7 @@ class SendFile
 					}
 					$size = $end - $begin;
 					if((PHP_INT_SIZE<=4) && ($size >= 2147483647))
-						passthru('cat '.escapeshellarg($filename));
+						passthru('cat '.Utility::escapeShellArg($filename));
 					else
 					{
 						if(!ini_get("zlib.output_compression"))
