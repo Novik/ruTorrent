@@ -181,6 +181,34 @@ class AddDirectoryOutcomeTest extends TestCase
 		$this->assertEquals(array('execute', 'load_raw_start'), $this->daemon->calls(), 'in one request, as before');
 	}
 
+	public function testAnAmbiguousFastResumeStillLoadsWithoutFabricatedProgress()
+	{
+		$this->daemon(array(array(0), array(0)));
+		$torrent = new Torrent($this->sessionTorrent());
+		$torrent->info['name'] = 'legacy.data';
+		$torrent->info['name.utf-8'] = 'selected.data';
+		$infoHash = $torrent->hash_info();
+		try
+		{
+			file_put_contents($this->top . '/legacy.data', '');
+			$result = rTorrent::sendTorrent($torrent, true, false, $this->top, '', false, true);
+		}
+		finally
+		{
+			@unlink($this->top . '/legacy.data');
+		}
+		$this->assertTrue($result === $infoHash, 'uncertain fast resume still sends an ordinary load');
+		$this->assertEquals(array('execute', 'load_raw_start'), $this->daemon->calls(),
+			'only the normal directory creation and load are sent');
+		$bodies = $this->daemon->bodies();
+		$this->assertTrue(preg_match('~<base64>([^<]+)</base64>~', $bodies[1], $match) === 1,
+			'the actual load carries raw metainfo');
+		$loaded = new Torrent(base64_decode($match[1]));
+		$this->assertTrue(!isset($loaded->libtorrent_resume),
+			'the wire metainfo contains no completed bitfield for a guessed filename');
+		$this->assertTrue($loaded->hash_info() === $infoHash, 'the daemon receives the original filename alternatives');
+	}
+
 	// ---- addtorrent.php ----------------------------------------------------
 
 	/** One request to addtorrent.php; answers the result[] values it redirects with. */
