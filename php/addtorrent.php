@@ -68,7 +68,8 @@ else
 	if(isset($_REQUEST['dir_edit']))
 	{
 		$dir_edit = trim($_REQUEST['dir_edit']);
-		if((strlen($dir_edit)>0) && !rTorrentSettings::get()->correctDirectory($dir_edit))
+		if((strlen($dir_edit)>0) && (!rTorrentSettings::get()->correctDirectory($dir_edit) ||
+			!rTorrent::isInsideTopDirectory($dir_edit)))
 			$uploaded_files = array( array( 'status' => "FailedDirectory" ) );
 	}
 	// No addition is taken from the request. An addition is an rtorrent command

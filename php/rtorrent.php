@@ -337,7 +337,8 @@ class rTorrent
 			{
 				$given = $directory;
 				if(!rTorrentSettings::get()->correctDirectory($directory) ||
-					($isNew && !self::isPossibleDirectory($given, $directory)))
+					($isNew && (!self::isPossibleDirectory($given, $directory) ||
+						!self::isInsideTopDirectory($directory))))
 					return(false);
 				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
@@ -394,7 +395,8 @@ class rTorrent
 				{
 					$given = $directory;
 					if(!rTorrentSettings::get()->correctDirectory($directory) ||
-						!self::isPossibleDirectory($given, $directory))
+						!self::isPossibleDirectory($given, $directory) ||
+						!self::isInsideTopDirectory($directory))
 						return(false);
 					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
 					$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
@@ -560,6 +562,44 @@ class rTorrent
 			if(strlen($name)>self::DIRECTORY_NAME_MAX)
 				return(false);
 		return(true);
+	}
+
+	/**
+	 * Whether $dir, a directory correctDirectory() accepted, is still inside
+	 * $topDirectory once the symbolic links along it are followed.
+	 *
+	 * correctDirectory() compares the path as written; rtorrent's "mkdir -p"
+	 * and its file writes follow links. So the deepest part of $dir that
+	 * exists is resolved and the rest, which mkdir will create, re-attached.
+	 * A part that exists but does not resolve -- a dangling link, or a link
+	 * into a directory this user cannot enter -- is refused rather than read
+	 * as a plain name.
+	 *
+	 * Only a local rtorrent shares this filesystem, so for a remote one the
+	 * text check is all there is. A top directory that does not exist is
+	 * compared as written.
+	 */
+	static public function isInsideTopDirectory($dir)
+	{
+		global $topDirectory;
+		$top = FileUtil::addslash($topDirectory);
+		if(($top === '/') || !User::isLocalMode())
+			return(true);
+		$realTop = realpath($top);
+		$realTop = FileUtil::addslash(($realTop === false) ? $top : $realTop);
+		if(!is_string($dir) || ($dir === '') || ($dir[0] !== '/'))
+			return(false);
+		$path = ($dir === '/') ? '/' : rtrim($dir, '/');
+		$rest = '';
+		while(!file_exists($path) && !is_link($path))
+		{
+			$rest = '/'.basename($path).$rest;
+			$path = dirname($path);
+		}
+		$real = realpath($path);
+		if($real === false)
+			return(false);
+		return(strpos(FileUtil::addslash(rtrim($real, '/').$rest), $realTop) === 0);
 	}
 
 	static protected function parseDirectory($directory, $isAddPath)
