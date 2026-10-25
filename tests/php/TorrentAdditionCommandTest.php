@@ -18,6 +18,11 @@ class AdditionCommandSettings extends rTorrentSettings
 		return true;
 	}
 
+	public function correctReportedDirectory(&$dir)
+	{
+		return true;
+	}
+
 	public function maxContentSize()
 	{
 		return 1048576;
@@ -119,11 +124,11 @@ class TorrentAdditionCommandTest extends TestCase
 	}
 
 	/** Run one add and return what it would have sent. */
-	private function addTorrentWith($addition, $directory = null)
+	private function addTorrentWith($addition, $directory = null, $isNew = true)
 	{
 		$this->takeLog();
 		rTorrent::sendTorrent(new Torrent($this->torrentFile), true, true,
-			$directory, null, true, false, true, $addition);
+			$directory, null, true, false, $isNew, $addition);
 		return $this->takeLog();
 	}
 
@@ -144,7 +149,11 @@ class TorrentAdditionCommandTest extends TestCase
 	 */
 	public function testTheApprovedDirectoryTravelsAsATrailingLoadParameter()
 	{
-		$payload = $this->addTorrentWith(null, '/downloads/approved');
+		// A reload: a new download's directory is made first, in a request of
+		// its own, and with no daemon here that mkdir fails and nothing more is
+		// built. A reload sends the mkdir and the load together, and its load
+		// carries the directory the way a new one's does.
+		$payload = $this->addTorrentWith(null, '/downloads/approved', false);
 
 		$this->assertTrue(strpos($payload, 'load_raw_start') !== false,
 			'the add builds a load call');

@@ -193,18 +193,18 @@ class AddDirectorySymlinkTest extends TestCase
 
 	public function testTheSendersStillLoadThroughALinkThatStaysInside()
 	{
-		$this->daemon();
+		$this->daemon(array(array(0), array(0)));
 		$torrent = new Torrent($this->announceOnlyTorrent());
 		$result = rTorrent::sendTorrent($torrent, true, false, $this->top . '/in/new', '', false, false);
 		$this->assertTrue($result === $torrent->hash_info(), 'sendTorrent() loads into a link that stays inside');
 
-		$this->daemon();
+		$this->daemon(array(array(0), array(0)));
 		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'Movies/2026', '');
 		$this->assertTrue($result === self::HASH, 'sendMagnet() loads into a relative directory not made yet');
 		$bodies = $this->daemon->bodies();
-		$this->assertTrue(count($bodies) === 1 &&
-				strpos($bodies[0], 'd.set_directory_base="' . $this->top . '/plain/Movies/2026"') !== false,
-			'and the load carries the directory as written, not as resolved');
+		$this->assertTrue(count($bodies) === 2 &&
+				strpos($bodies[1], 'd.set_directory_base="' . $this->top . '/plain/Movies/2026"') !== false,
+			'and the load carries the directory as written, not as resolved: ' . json_encode($this->daemon->calls()));
 	}
 
 	public function testAReloadThroughALinkIsNotRefused()
@@ -218,14 +218,18 @@ class AddDirectorySymlinkTest extends TestCase
 
 	// ---- addtorrent.php ----------------------------------------------------
 
-	/** One request to addtorrent.php; answers the result[] values it redirects with. */
-	private function add($query, $loads)
+	/**
+	 * One request to addtorrent.php; answers the result[] values it redirects
+	 * with. $requests is how many requests after the first the daemon answers
+	 * as accepted: a new download's mkdir and its load are one each.
+	 */
+	private function add($query, $requests)
 	{
 		$this->stop();
 		$root = realpath(__DIR__ . '/../..');
 		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon(
-			array_merge(array(array()), array_fill(0, $loads, array(0, 0))), $this->base . '/calls.log');
+			array_merge(array(array()), array_fill(0, $requests, array(0))), $this->base . '/calls.log');
 		$router = $this->base . '/router.php';
 		file_put_contents($router, "<?php\n"
 			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
@@ -251,8 +255,8 @@ class AddDirectorySymlinkTest extends TestCase
 
 	public function testAddTorrentAnswersFailedDirectoryForALinkOut()
 	{
-		// The daemon would accept the load, so only the directory check can refuse it.
-		$results = $this->add('dir_edit=' . rawurlencode($this->top . '/out/new'), 1);
+		// The daemon would accept the mkdir and the load, so only the directory check can refuse it.
+		$results = $this->add('dir_edit=' . rawurlencode($this->top . '/out/new'), 2);
 		$this->assertEquals(array('FailedDirectory'), $results,
 			'a directory behind a link out is the directory failure: ' . json_encode($results));
 		$this->assertEquals(array(), $this->loads(),
@@ -261,7 +265,7 @@ class AddDirectorySymlinkTest extends TestCase
 
 	public function testAddTorrentStillAddsThroughALinkThatStaysInside()
 	{
-		$results = $this->add('dir_edit=' . rawurlencode($this->top . '/in/new'), 1);
+		$results = $this->add('dir_edit=' . rawurlencode($this->top . '/in/new'), 2);
 		$this->assertEquals(array('Success'), $results,
 			'a directory behind a link that stays inside is added: ' . json_encode($results));
 		$loads = $this->loads();

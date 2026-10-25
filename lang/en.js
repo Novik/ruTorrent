@@ -286,7 +286,7 @@ var theUILang =
  phpParameterUnavailable	: "The PHP directive register_argc_argv is set to OFF. Change it to ON; otherwise, some plugins won't work correctly.",
  addTorrentFailedURL		: "Failed to add torrent. Can't retrieve URL.",
  addTorrentFailedFile		: "Failed to add torrent. The retrieved content is not a valid torrent file.",
- addTorrentFailedDirectory	: "Failed to add torrent. An incorrect downloads directory was specified.",
+ addTorrentFailedDirectory	: "Failed to add torrent. The base directory was refused or could not be created. Enter a folder inside your download area: web and magnet links, links that lead outside it, and names longer than 255 characters are refused.",
  addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Launch",
  plgLocked			: "Mandatory",
