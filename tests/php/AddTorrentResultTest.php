@@ -136,6 +136,8 @@ class AddTorrentResultTest extends TestCase
 		$decoded = json_decode($this->firstArgument($result['body']), true);
 		$this->assertTrue(is_string($decoded),
 			'the first argument is one complete string literal: ' . $result['body']);
+		$this->assertEquals('bad\\x80name - ', $decoded,
+			'the notification retains a readable representation of the original byte');
 		$this->assertTrue(substr($decoded, -3) === ' - ',
 			'and it is still the name the template writes: ' . var_export($decoded, true));
 		$this->assertOneWellFormedCall($result);
@@ -243,7 +245,7 @@ class AddTorrentResultTest extends TestCase
 		{
 			if(!mkdir($tree . '/php/utility', 0700, true) && !is_dir($tree . '/php/utility'))
 				throw new Exception('could not create addtorrent fixture tree');
-			foreach(array('php/addtorrent.php', 'php/utility/cachedecho.php') as $relative)
+			foreach(array('php/addtorrent.php', 'php/utility/cachedecho.php', 'php/utility/utf.php') as $relative)
 			{
 				$source = $this->sourceRoot . '/' . $relative;
 				$target = $tree . '/' . $relative;
@@ -268,6 +270,7 @@ class AddTorrentResultTest extends TestCase
 		file_put_contents($tree . '/php/Snoopy.class.inc', "<?php\nclass Snoopy {}\n");
 		file_put_contents($tree . '/php/rtorrent.php', "<?php\n"
 			. "require_once(" . var_export($tree . '/php/utility/cachedecho.php', true) . ");\n"
+			. "require_once(" . var_export($tree . '/php/utility/utf.php', true) . ");\n"
 			. "\$phpUseGzip = false;\n");
 		file_put_contents($tree . '/php/utility/fileutil.php', "<?php\nclass FileUtil {}\n");
 		file_put_contents($tree . '/php/utility/utility.php', "<?php\nclass Utility {}\n");
