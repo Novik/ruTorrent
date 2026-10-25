@@ -274,6 +274,7 @@ class rTorrent
 
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
+		self::$directoryRefused = false;
 		if(!self::areValidAdditions($addition))
 			return(false);
 		$hash = false;
@@ -335,12 +336,8 @@ class rTorrent
 			$directory = self::parseDirectory($directory, $isAddPath);
 			if($directory && (strlen($directory)>0))
 			{
-				$given = $directory;
-				if(!rTorrentSettings::get()->correctDirectory($directory) ||
-					($isNew && (!self::isPossibleDirectory($given, $directory) ||
-						!self::isInsideTopDirectory($directory))))
+				if(!self::prepareDirectory($directory, $isNew, $req))
 					return(false);
-				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
 			}
 			$comment = $torrent->comment();
@@ -373,6 +370,7 @@ class rTorrent
 
 	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label, $addition = null)
 	{
+		self::$directoryRefused = false;
 		if(!self::areValidAdditions($addition))
 			return(false);
 	        $hpos = stripos($magnet,'xt=urn:btih:');
@@ -393,13 +391,9 @@ class rTorrent
 				$directory = self::parseDirectory($directory, $isAddPath);
 				if($directory && (strlen($directory)>0))
 				{
-					$given = $directory;
-					if(!rTorrentSettings::get()->correctDirectory($directory) ||
-						!self::isPossibleDirectory($given, $directory) ||
-						!self::isInsideTopDirectory($directory))
+					if(!self::prepareDirectory($directory, true, $req))
 						return(false);
 					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
-					$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				}
 				if($label && (strlen($label)>0))
 				{
@@ -542,26 +536,53 @@ class rTorrent
 		return('"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $value).'"');
 	}
 
-	// NAME_MAX and PATH_MAX as Linux defines them, in bytes.
-	const DIRECTORY_NAME_MAX = 255;
-	const DIRECTORY_PATH_MAX = 4096;
+	private static $directoryRefused = false;
 
 	/**
-	 * Whether a directory a new download is added into could exist at all.
-	 * $given is the directory as the caller supplied it, $resolved what
-	 * correctDirectory() made of it. A URL in $given is refused because
-	 * resolving it folds the "//" away and leaves an ordinary looking path.
+	 * Whether the last sendTorrent() or sendMagnet() that answered false did
+	 * so because of the download's directory: refused, or rtorrent could not
+	 * make it. addtorrent.php tells the user so rather than that the add
+	 * failed.
 	 */
-	static public function isPossibleDirectory($given, $resolved)
+	static public function refusedDirectory()
 	{
-		if((strpos($given, '://')!==false) || preg_match('`(^|/)magnet:\?`i', $given))
-			return(false);
-		if(strlen($resolved)>self::DIRECTORY_PATH_MAX)
-			return(false);
-		foreach(explode('/', $resolved) as $name)
-			if(strlen($name)>self::DIRECTORY_NAME_MAX)
-				return(false);
+		return(self::$directoryRefused);
+	}
+
+	/**
+	 * Resolve, in place, the directory a download is loaded into, and see
+	 * that it exists. False when it is refused or cannot be made.
+	 *
+	 * A new download's directory is one a user typed: correctDirectory()
+	 * resolves it under the top directory and isInsideTopDirectory() follows
+	 * its links. It is made before the load is sent, in a request of its own,
+	 * so a directory that cannot be made leaves nothing loaded.
+	 *
+	 * A reload sends back the directory rtorrent reported. It is judged as
+	 * one, and its mkdir is added to $req to go with the load: the caller has
+	 * already erased the download, so loading it where it cannot be written
+	 * keeps it, and refusing would lose it.
+	 */
+	static protected function prepareDirectory(&$directory, $isNew, $req)
+	{
+		if($isNew)
+		{
+			if(!rTorrentSettings::get()->correctDirectory($directory) ||
+				!self::isInsideTopDirectory($directory))
+				return(self::directoryFailed());
+			$mkdir = new rXMLRPCRequest( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
+			return($mkdir->success() ? true : self::directoryFailed());
+		}
+		if(!rTorrentSettings::get()->correctReportedDirectory($directory))
+			return(self::directoryFailed());
+		$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 		return(true);
+	}
+
+	static private function directoryFailed()
+	{
+		self::$directoryRefused = true;
+		return(false);
 	}
 
 	/**

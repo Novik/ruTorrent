@@ -28,11 +28,12 @@ function addtorrent_literal($value)
 }
 
 // The result of one load: the hash it returned is a duplicate when it was
-// loaded before this request, or by an earlier item of it.
+// loaded before this request, or by an earlier item of it. A load refused
+// over its directory says so, so the user knows what to change.
 function addtorrent_status($hash, &$loaded)
 {
 	if($hash===false)
-		return("Failed");
+		return(rTorrent::refusedDirectory() ? "FailedDirectory" : "Failed");
 	$hash = strtoupper($hash);
 	if(isset($loaded[$hash]))
 		return("Duplicate");

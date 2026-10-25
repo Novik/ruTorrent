@@ -8,14 +8,14 @@ require_once(__DIR__ . '/../../php/rtorrent.php');
 
 /**
  * rTorrent::sendMagnet() and rTorrent::sendTorrent() refuse to add a
- * download into a directory no POSIX filesystem can hold -- a component
- * longer than NAME_MAX, a path longer than PATH_MAX, or a URL pasted where a
- * directory belongs -- and send rtorrent nothing.
+ * download into a directory no POSIX filesystem can hold -- a name longer
+ * than NAME_MAX, a path longer than PATH_MAX allows, or a URL pasted where a
+ * directory belongs -- and send rtorrent nothing. The rules themselves, byte
+ * for byte, are UserDirectoryTest's; this is what the senders do with them.
  *
- * Every directory accepted before is still accepted and resolves to the same
- * bytes. correctDirectory() itself is unchanged, and so is a reload of a
- * download rtorrent already holds: the callers that reload erase first, and
- * refusing after the erase would lose the download.
+ * A reload of a download rtorrent already holds is not judged by them: the
+ * callers that reload erase first, and refusing after the erase would lose
+ * the download.
  *
  * The senders are driven against FakeRtorrentDaemon, so "sends nothing" is
  * what the daemon saw rather than what the function returned.
@@ -108,20 +108,6 @@ class AddDirectoryLimitTest extends TestCase
 		$GLOBALS['scgi_port'] = $this->daemon->port();
 	}
 
-	/**
-	 * What the senders ask of a directory: correctDirectory() resolves it and
-	 * checks the top directory, isPossibleDirectory() checks what it resolved
-	 * to. Returns [accepted, $dir after].
-	 */
-	private function correct($dir, $top = '/')
-	{
-		$GLOBALS['topDirectory'] = $top;
-		$given = $dir;
-		$result = rTorrentSettings::get()->correctDirectory($dir) &&
-			rTorrent::isPossibleDirectory($given, $dir);
-		return array($result, $dir);
-	}
-
 	/** An absolute path of exactly $length bytes made of 200-byte components. */
 	private function pathOfLength($length)
 	{
@@ -142,112 +128,6 @@ class AddDirectoryLimitTest extends TestCase
 		return $magnet;
 	}
 
-	// ---- what is refused -------------------------------------------------
-
-	public function testAComponentLongerThanNameMaxIsRefused()
-	{
-		list($ok) = $this->correct(self::DEFAULT_DIR . '/' . str_repeat('a', 300));
-		$this->assertTrue($ok === false, 'a 300-byte path component is refused');
-
-		list($ok) = $this->correct(str_repeat('a', 256));
-		$this->assertTrue($ok === false, 'so is a 256-byte relative one');
-	}
-
-	public function testAPathLongerThanPathMaxIsRefused()
-	{
-		$path = $this->pathOfLength(4097);
-		$this->assertTrue(strlen($path) === 4097, 'the fixture is 4097 bytes');
-		list($ok) = $this->correct($path);
-		$this->assertTrue($ok === false, 'a 4097-byte path is refused');
-	}
-
-	public function testARelativeDirectoryThatResolvesPastPathMaxIsRefused()
-	{
-		$relative = substr($this->pathOfLength(4090), 1);
-		list($ok, $dir) = $this->correct($relative);
-		$this->assertTrue(strlen($dir) > 4096, 'joined to the default directory it is over 4096 bytes');
-		$this->assertTrue($ok === false, 'and it is refused on its resolved length');
-	}
-
-	public function testAMagnetLinkIsRefused()
-	{
-		list($ok) = $this->correct($this->magnet());
-		$this->assertTrue($ok === false, 'a short magnet link is refused');
-
-		list($ok) = $this->correct($this->magnet(40));
-		$this->assertTrue($ok === false, 'so is a long one with trackers');
-
-		list($ok) = $this->correct(self::DEFAULT_DIR . '/' . $this->magnet());
-		$this->assertTrue($ok === false, 'and one pasted after a real directory');
-
-		list($ok) = $this->correct('MAGNET:?xt=urn:btih:' . self::HASH);
-		$this->assertTrue($ok === false, 'in any case');
-	}
-
-	public function testAUrlIsRefused()
-	{
-		list($ok) = $this->correct('http://x/y');
-		$this->assertTrue($ok === false, 'http://x/y is refused');
-
-		list($ok) = $this->correct('https://tracker.example/download.php?id=1');
-		$this->assertTrue($ok === false, 'so is an https link');
-
-		list($ok) = $this->correct(self::DEFAULT_DIR . '/ftp://x');
-		$this->assertTrue($ok === false, 'and a scheme after a real directory');
-	}
-
-	// ---- what still passes, byte for byte ----------------------------------
-
-	public function testAnAbsoluteDirectoryStillPassesUnchanged()
-	{
-		list($ok, $dir) = $this->correct('/srv/downloads/Movies/2026');
-		$this->assertTrue($ok === true, 'an ordinary absolute directory passes');
-		$this->assertEquals('/srv/downloads/Movies/2026', $dir, 'and is left as it was');
-
-		list($ok, $dir) = $this->correct('/srv/downloads//Movies/./x/../2026/');
-		$this->assertTrue($ok === true, 'one with redundant parts passes');
-		$this->assertEquals('/srv/downloads/Movies/2026', $dir, 'and is normalised as before');
-	}
-
-	public function testARelativeDirectoryStillResolvesAgainstTheDefault()
-	{
-		list($ok, $dir) = $this->correct('Movies/2026');
-		$this->assertTrue($ok === true, 'an ordinary relative directory passes');
-		$this->assertEquals(self::DEFAULT_DIR . '/Movies/2026', $dir, 'resolved against the default directory');
-
-		list($ok, $dir) = $this->correct('~/incoming');
-		$this->assertTrue($ok === true, 'a home-relative directory passes');
-		$this->assertEquals(self::HOME . '/incoming', $dir, 'resolved against the home directory');
-	}
-
-	public function testTheLimitsThemselvesStillPass()
-	{
-		list($ok, $dir) = $this->correct(self::DEFAULT_DIR . '/' . str_repeat('a', 255));
-		$this->assertTrue($ok === true, 'a 255-byte component passes');
-
-		$path = $this->pathOfLength(4096);
-		list($ok, $dir) = $this->correct($path);
-		$this->assertTrue(strlen($path) === 4096 && $ok === true, 'a 4096-byte path passes');
-		$this->assertEquals($path, $dir, 'unchanged');
-	}
-
-	public function testNamesThatOnlyLookLikeLinksStillPass()
-	{
-		foreach (array('Magnet: The Movie', 'magnet', 'a:b', 'Series: Season 1', 'http:', 'x:/y') as $name) {
-			list($ok, $dir) = $this->correct($name);
-			$this->assertTrue($ok === true, "'{$name}' passes");
-			$this->assertEquals(FileUtil::fullpath($name, self::DEFAULT_DIR), $dir, "'{$name}' resolves as before");
-		}
-	}
-
-	public function testTheTopDirectoryIsStillEnforced()
-	{
-		list($ok) = $this->correct('/etc/passwd-dir', '/srv/');
-		$this->assertTrue($ok === false, 'a directory outside the top directory is still refused');
-		list($ok) = $this->correct('Movies', '/srv/');
-		$this->assertTrue($ok === true, 'and one inside it still passes');
-	}
-
 	// ---- the senders load nothing ------------------------------------------
 
 	public function testSendMagnetLoadsNothingForARefusedDirectory()
@@ -257,6 +137,7 @@ class AddDirectoryLimitTest extends TestCase
 			$GLOBALS['topDirectory'] = '/';
 			$result = rTorrent::sendMagnet($this->magnet(40), true, false, $directory, '');
 			$this->assertTrue($result === false, 'sendMagnet() fails for a ' . strlen($directory) . '-byte bad directory');
+			$this->assertTrue(rTorrent::refusedDirectory() === true, 'and says it was the directory');
 			$this->assertEquals(array(), $this->daemon->calls(),
 				'and rtorrent was sent nothing; it saw ' . json_encode($this->daemon->calls()));
 		}
@@ -265,13 +146,13 @@ class AddDirectoryLimitTest extends TestCase
 	public function testSendMagnetStillLoadsIntoAValidDirectory()
 	{
 		$this->daemon();
-		$GLOBALS['topDirectory'] = '/';
+		$GLOBALS['topDirectory'] = self::DEFAULT_DIR . '/';
 		$result = rTorrent::sendMagnet($this->magnet(2), true, false, 'Movies', '');
 		$this->assertTrue($result === self::HASH, 'sendMagnet() answers the hash for an ordinary directory');
 		$bodies = $this->daemon->bodies();
-		$this->assertTrue(count($bodies) === 1 &&
-				strpos($bodies[0], 'd.set_directory_base="' . self::DEFAULT_DIR . '/Movies"') !== false,
-			'and the load carries the resolved directory');
+		$this->assertTrue(count($bodies) === 2 &&
+				strpos($bodies[1], 'd.set_directory_base="' . self::DEFAULT_DIR . '/Movies"') !== false,
+			'and the load, sent after the mkdir, carries the resolved directory');
 	}
 
 	public function testSendTorrentLoadsNothingForARefusedDirectory()
@@ -282,6 +163,7 @@ class AddDirectoryLimitTest extends TestCase
 			$torrent = new Torrent($this->announceOnlyTorrent());
 			$result = rTorrent::sendTorrent($torrent, true, false, $directory, '', false, false);
 			$this->assertTrue($result === false, 'sendTorrent() fails for a ' . strlen($directory) . '-byte bad directory');
+			$this->assertTrue(rTorrent::refusedDirectory() === true, 'and says it was the directory');
 			$this->assertEquals(array(), $this->daemon->calls(),
 				'and rtorrent was sent nothing; it saw ' . json_encode($this->daemon->calls()));
 		}
@@ -290,23 +172,14 @@ class AddDirectoryLimitTest extends TestCase
 	public function testSendTorrentStillLoadsIntoAValidDirectory()
 	{
 		$this->daemon();
-		$GLOBALS['topDirectory'] = '/';
+		$GLOBALS['topDirectory'] = self::DEFAULT_DIR . '/';
 		$torrent = new Torrent($this->announceOnlyTorrent());
 		$result = rTorrent::sendTorrent($torrent, true, false, 'Movies', '', false, false);
 		$this->assertTrue($result === $torrent->hash_info(), 'sendTorrent() answers the hash for an ordinary directory');
 		$bodies = $this->daemon->bodies();
-		$this->assertTrue(count($bodies) === 1 &&
-				strpos($bodies[0], 'd.set_directory_base="' . self::DEFAULT_DIR . '/Movies"') !== false,
-			'and the load carries the resolved directory');
-	}
-
-	public function testCorrectDirectoryItselfIsUnchanged()
-	{
-		$GLOBALS['topDirectory'] = '/';
-		$dir = $this->magnet(40);
-		$ok = rTorrentSettings::get()->correctDirectory($dir);
-		$this->assertTrue($ok === true, 'correctDirectory() alone still accepts what it accepted before');
-		$this->assertEquals(self::DEFAULT_DIR . '/' . $this->magnet(40), $dir, 'and resolves it the same way');
+		$this->assertTrue(count($bodies) === 2 &&
+				strpos($bodies[1], 'd.set_directory_base="' . self::DEFAULT_DIR . '/Movies"') !== false,
+			'and the load, sent after the mkdir, carries the resolved directory');
 	}
 
 	public function testAReloadIntoTheDirectoryRtorrentReportedIsNotRefused()
