@@ -381,18 +381,27 @@ class rTorrentSettings
 	}
 	public function getRatioGroupCommand($ratio,$cmd,$args)
 	{
-		// Use group.* on every rtorrent. group2.* was a transient alias
-		// experiment: stubbed (non-functional) on 0.15.x and removed in
-		// 0.16. The canonical group.* commands work across the version
-		// range we care to support.
+		// The limits of a ratio group are not reached the same way on
+		// every rtorrent:
 		//
-		// rtorrent 0.16+ tightened the signature on group.NAME.*.set:
-		// it strictly requires (target_string, value), and rejects a
-		// bare value with "invalid parameters: target must be a string".
-		// 0.15.x is the opposite — strictly takes the bare value and
-		// rejects (target, value) with "Wrong object type". Adapt the
-		// args automatically by rtorrent version so callers do not
-		// have to track which signature applies.
+		// Below 0.15 they are group2.NAME.ratio.{min,max,upload}[.set].
+		// Some 0.9.8 builds also define group.NAME.ratio.*, others do
+		// not, so group2.* is the name that works on all of them. It
+		// takes (target, value); patchDeprecatedCommand() prepends the
+		// target.
+		//
+		// 0.15.x stubs group2.*, and group.NAME.*.set takes a bare value,
+		// rejecting (target, value) with "Wrong object type".
+		//
+		// 0.16+ removed group2.*, and group.NAME.*.set requires
+		// (target, value), rejecting a bare value with "invalid
+		// parameters: target must be a string".
+		//
+		// ratio.enable, ratio.disable and ratio.command are group.NAME.*
+		// on every version.
+		if(($this->iVersion >= 0x904) && ($this->iVersion < 0x0f00) &&
+			preg_match('/^ratio\.(min|max|upload)(\.set)?$/', $cmd))
+			return( new rXMLRPCCommand( "group2.".$ratio.".".$cmd, $args ) );
 		if(($this->iVersion >= 0x1000) && (substr($cmd, -4) === ".set"))
 		{
 			if(!is_array($args)) $args = array($args);

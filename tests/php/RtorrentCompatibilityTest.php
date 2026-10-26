@@ -142,6 +142,61 @@ class RtorrentCompatibilityTest extends TestCase
 		$this->assertEquals('100', $command->params[1]->value, 'rTorrent 0.16 group ratio commands keep the requested value');
 	}
 
+	public function testRatioGroupLimitsUseGroup2BelowRtorrent015()
+	{
+		// Below 0.15 a ratio group's limits are group2.NAME.ratio.*, taking
+		// (target, value). Some 0.9.8 builds define no group.NAME.ratio.*
+		// limits at all, and there each such call faults with "Method not
+		// defined", leaving the group on rtorrent's built-in limits.
+		foreach (array(0x904 => '0.9.4', 0x908 => '0.9.8', 0x0a02 => '0.10.2') as $version => $label) {
+			$settings = $this->makeSettings($version);
+			$this->useSettingsSingleton($settings);
+
+			foreach (array('min', 'max', 'upload') as $limit) {
+				$command = $settings->getRatioGroupCommand('rat_0', 'ratio.'.$limit.'.set', 150);
+				$this->assertEquals('group2.rat_0.ratio.'.$limit.'.set', $command->command, 'rTorrent '.$label.' sets the '.$limit.' limit through group2');
+				$this->assertEquals(2, count($command->params), 'rTorrent '.$label.' sends target and value to the group2 '.$limit.' setter');
+				$this->assertEquals('', $command->params[0]->value, 'rTorrent '.$label.' sends an empty target to the group2 '.$limit.' setter');
+				$this->assertEquals('150', $command->params[1]->value, 'rTorrent '.$label.' keeps the requested '.$limit.' value after the target');
+
+				$command = $settings->getRatioGroupCommand('rat_0', 'ratio.'.$limit, null);
+				$this->assertEquals('group2.rat_0.ratio.'.$limit, $command->command, 'rTorrent '.$label.' reads the '.$limit.' limit through group2');
+			}
+
+			foreach (array('ratio.enable', 'ratio.disable', 'ratio.command') as $cmd) {
+				$command = $settings->getRatioGroupCommand('rat_0', $cmd, array(''));
+				$this->assertEquals('group.rat_0.'.$cmd, $command->command, 'rTorrent '.$label.' keeps '.$cmd.' on group');
+			}
+		}
+	}
+
+	public function testRatioGroupLimitsUseGroupOutsideTheGroup2Range()
+	{
+		// 0.15 stubs group2.* and takes a bare value on group.*; 0.16 removed
+		// group2.* and takes (target, value) on group.*. Below 0.9.4 the
+		// command names never went through group2.
+		$expected = array(
+			0x903 => array('0.9.3', array('150')),
+			0x0f07 => array('0.15.7', array('150')),
+			0x1000 => array('0.16.0', array('', '150')),
+			0x101a => array('0.16.26', array('', '150')),
+		);
+		foreach ($expected as $version => list($label, $params)) {
+			$settings = $this->makeSettings($version);
+			$this->useSettingsSingleton($settings);
+
+			foreach (array('min', 'max', 'upload') as $limit) {
+				$command = $settings->getRatioGroupCommand('rat_0', 'ratio.'.$limit.'.set', 150);
+				$this->assertEquals('group.rat_0.ratio.'.$limit.'.set', $command->command, 'rTorrent '.$label.' sets the '.$limit.' limit through group');
+				$values = array();
+				foreach ($command->params as $param) {
+					$values[] = (string)$param->value;
+				}
+				$this->assertEquals($params, $values, 'rTorrent '.$label.' sends the '.$limit.' setter the arguments it takes');
+			}
+		}
+	}
+
 	public function testRtorrent01616UsesCanonicalCommands()
 	{
 		$settings = $this->makeSettings(0x1010);
