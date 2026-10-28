@@ -209,6 +209,23 @@ class TorrentNamesSourceTest extends TestCase
 		}
 	}
 
+	public function testItsOwnRequestUnescapesEachPathOnce()
+	{
+		$info = $this->single('session');
+		$hash = self::hash($info);
+		// A backslash before a quote also shows a second decoding.
+		foreach(array('plain', "x\\\"y") as $name)
+		{
+			$session = $this->store($name, $hash.'.torrent', $info);
+			$this->daemon(array(array($session, '')));
+			$this->assertTrue(self::loaded(rTorrent::getSource($hash)) === 'session', 'its own request finds the session file: '.$name);
+			$tied = $this->store($name, 'tied.torrent', $info).'tied.torrent';
+			unlink($session.$hash.'.torrent');
+			$this->daemon(array(array($this->base.'/none/', $tied)));
+			$this->assertTrue(self::loaded(rTorrent::getSource($hash)) === 'session', 'its own request finds the tied file: '.$name);
+		}
+	}
+
 	public function testFailedOrPartialRepliesGiveNoPaths()
 	{
 		$info = $this->single('session');
