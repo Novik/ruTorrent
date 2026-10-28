@@ -337,9 +337,10 @@ class rTask
 					$flags = intval(file_get_contents($dir.'/flags'));
 				// A pid is a number: it is read from a file and reaches a shell.
 				// 0 is excluded as well, since kill(1) reads it as the whole
-				// process group of the caller.
+				// process group of the caller, and so is 1: no task runs as
+				// init, and pgrep -P 1 would list every child of init.
 				$pid = intval(trim(file_get_contents($dir.'/pid')));
-				if($pid>0)
+				if($pid>1)
 				{
 					self::run("kill -9 `".Utility::getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
 					self::notify($dir,"TaskKill");
