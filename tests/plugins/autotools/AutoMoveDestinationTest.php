@@ -103,7 +103,7 @@ class AutoMoveDestinationTest extends TestCase
 			$files = '';
 			foreach ($names as $n)
 				$files .= 'd' . $this->bstr('length') . 'i12e'
-					. $this->bstr('path') . 'l' . $this->bstr($n) . 'e' . 'e';
+					. $this->bstr('path') . 'l' . implode('', array_map(array($this, 'bstr'), explode('/', $n))) . 'e' . 'e';
 			$layout = $this->bstr('files') . 'l' . $files . 'e'
 				. $this->bstr('name') . $this->bstr($root);
 		}
@@ -159,34 +159,43 @@ class AutoMoveDestinationTest extends TestCase
 	 *
 	 * $occupy is the list of names already standing in the destination
 	 * directory when the download finishes. $root is the download's name.
+	 * $files are its files, or, as a string, the name of a single-file
+	 * download, as torrentBytes() takes them. $skip is the skip filter.
 	 */
-	private function runTheFinishedHook($occupy, $root = 'mytorrent')
+	private function runTheFinishedHook($occupy, $root = 'mytorrent', $files = array('1.bin', '2.bin'), $skip = '')
 	{
 		$this->removeTree($this->base);
-		$names = array('1.bin', '2.bin');
+		$multi = is_array($files);
+		$names = $multi ? $files : array($files);
+		if (!$multi)
+			$root = $files;   // a single file is the download, in the download directory itself
+		$source = $this->base . '/dl' . ($multi ? '/' . $root : '');
+		$destination = $this->base . '/fin' . ($multi ? '/' . $root : '');
 		$this->makeDir($this->base . '/profile/settings');
 		$this->makeDir($this->base . '/session');
-		$this->makeDir($this->base . '/dl/' . $root);
+		$this->makeDir($source);
 		$this->makeDir($this->base . '/fin');
-		$destination = $this->base . '/fin/' . $root;
 		foreach ($names as $n)
-			file_put_contents($this->base . '/dl/' . $root . '/' . $n, 'download ' . $n);
+		{
+			$this->makeDir(dirname($source . '/' . $n));
+			file_put_contents($source . '/' . $n, 'download ' . $n);
+		}
 		foreach ($occupy as $n)
 		{
 			$this->makeDir(dirname($destination . '/' . $n));
 			file_put_contents($destination . '/' . $n, 'already there');
 		}
 		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
-			$this->torrentBytes($names, $root));
-		$this->seed('Move');
+			$this->torrentBytes($files, $root));
+		$this->seed('Move', $skip);
 
 		$basePath = $this->base . '/dl/' . $root;   // d.get_base_path
 		// d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
 		$check = $this->runScript('check',
-			array($basePath, $root, '1', '', $root, self::USER));
+			array($basePath, $root, $multi ? '1' : '0', '', $root, self::USER));
 		// and then, with the hash in front, the same five
 		$move = $this->runScript('move',
-			array(self::HASH, $basePath, $root, '1', '', $root, self::USER));
+			array(self::HASH, $basePath, $root, $multi ? '1' : '0', '', $root, self::USER));
 
 		$named = rtrim($check['printed'], '/');
 		return array(
@@ -197,8 +206,8 @@ class AutoMoveDestinationTest extends TestCase
 			'at_named' => array_map(function($n) use ($named) {
 				return is_file($named . '/' . $n) && file_get_contents($named . '/' . $n) === 'download ' . $n;
 			}, $names),
-			'at_source' => array_map(function($n) use ($basePath) {
-				return is_file($basePath . '/' . $n);
+			'at_source' => array_map(function($n) use ($source) {
+				return is_file($source . '/' . $n);
 			}, $names),
 			'occupants' => array_map(function($n) use ($destination) {
 				return @file_get_contents($destination . '/' . $n);
@@ -311,6 +320,49 @@ class AutoMoveDestinationTest extends TestCase
 			'and both files of the download are in it afterwards');
 		$this->assertEquals(array(false, false), $r['at_source'],
 			'and none is left where the download ran');
+	}
+
+	/**
+	 * move.php leaves a download where it is when skip_move_for_files matches
+	 * the path of one of its files below the download's own directory, so
+	 * check.php must name that directory too.
+	 */
+	public function testAFilteredMultiFileDownloadStaysWithItsData()
+	{
+		$this->assertSkipFilter(array('1.bin', 'extras/cover.rar'), '/\.rar$/', true);
+		$this->assertSkipFilter(array('1.bin', 'extras/notes.txt'), '/^extras\//', true);
+	}
+
+	public function testAFilteredSingleFileDownloadStaysWithItsData()
+	{
+		$this->assertSkipFilter('Film.rar', '/\.rar$/', true);
+		// The filter is matched as UTF-8, so "\xd0\xb6" is one character.
+		$this->assertSkipFilter("\xd0\xb6.rar", '/^.\.rar$/', true);
+	}
+
+	public function testADownloadTheFilterDoesNotMatchIsMoved()
+	{
+		$this->assertSkipFilter(array('1.bin', 'extras/cover.rar'), '/\.zip$/', false);
+		$this->assertSkipFilter('Film.mkv', '/\.rar$/', false);
+		$this->assertSkipFilter('Film.rar', '', false);
+	}
+
+	/**
+	 * Finishes a download of $files, as runTheFinishedHook() takes them, with
+	 * $skip as the skip filter. Whichever directory check.php names, the files
+	 * are there afterwards; they were left where the download ran when
+	 * $skipped, and moved from there otherwise.
+	 */
+	private function assertSkipFilter($files, $skip, $skipped)
+	{
+		$r = $this->runTheFinishedHook(array(), 'mytorrent', $files, $skip);
+		$what = 'filter ' . var_export($skip, true) . ', ' . json_encode($files) . ': ';
+		$this->assertEquals(array_fill(0, count($r['at_named']), true), $r['at_named'],
+			$what . 'the files are at the directory check.php named (' . $r['named'] . ')');
+		$this->assertEquals(array_fill(0, count($r['at_source']), $skipped), $r['at_source'],
+			$what . 'and they were ' . ($skipped ? 'left where the download ran' : 'moved from where the download ran'));
+		$this->assertTrue(strpos($r['check']['errors'], 'preg_match') === false,
+			$what . 'and check.php raises no preg_match diagnostic: ' . $r['check']['errors']);
 	}
 
 	/**

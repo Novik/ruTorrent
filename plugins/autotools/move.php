@@ -26,13 +26,8 @@ function skip_move($files)
 	if(strlen($filter)>0)
     	{
 		Debug("using filter:".$filter);
-		foreach($files as $file)
-		{
-			if ( preg_match($filter.'u',$file)==1)
-			{
-				return true;
-			}
-	    	}
+		if($at->skipsMove($files))
+			return true;
 		Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
 	}
 	return(false);

@@ -41,6 +41,17 @@ class rAutoTools
 		$cache = new rCache();
 		return $cache->set( $this );
 	}
+	// Whether skip_move_for_files matches one of $files, the download's paths
+	// below its own directory. move.php then leaves the download where it is,
+	// so check.php must not point it anywhere else.
+	public function skipsMove( $files )
+	{
+		if(strlen($this->skip_move_for_files)>0)
+			foreach($files as $file)
+				if(preg_match($this->skip_move_for_files.'u',$file)==1)
+					return true;
+		return false;
+	}
 	public function set()
 	{
 		if( !isset( $HTTP_RAW_POST_DATA ) )
