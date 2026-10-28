@@ -320,6 +320,8 @@ var theUILang =
  badTempPath			: "A webszerver felhasználónak nincs olvasási/írási/végrehajtási hozzáférése a tmp könyvtárhoz. A ruTorrent nem fog működni.",
  badTempPath2			: "Az rTorrent felhasználónak read/execute hozzáféréssel kell rendelkeznie a tmp könyvtárhoz. ruTorrent nem fog működni.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "Nem biztonságos PHP-verziót használ. A ruTorrent a közeljövőben megszünteti a PHP 7.x támogatását.",
+ vulnerableRTorrentVersion	: "Az Ön által használt rTorrent-verzió ismert sebezhetőségeket tartalmaz. Kérjük, frissítse a legújabb verzióra. Ha egy tracker egy adott verzió használatát írja elő, kérje meg a csapatát, hogy nézze át az elmúlt hónapok biztonsági javításainak hosszú listáját.",
  doRandomizeHash		: "Véletlenszerű info hash-ok a cross-seed",
  Recreate_files			: "Sorban álló fájlok újbóli létrehozása",
  Address			: "Cím",

@@ -320,6 +320,8 @@ var theUILang =
  badTempPath			: "ওয়েবসার্ভার ব্যবহারকারীর tmp ডিরেক্টরিতে রিড/রাইট/এক্সেকিউট করার অ্যাক্সেস নেই। ruTorrent কাজ করবে না।",
  badTempPath2			: "rTorrent ব্যবহারকারীর অবশ্যই tmp ডিরেক্টরিতে রিড/এক্সেকিউট করার অ্যাক্সেস থাকতে হবে। ruTorrent কাজ করবে না।",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "আপনি PHP-এর একটি অনিরাপদ সংস্করণ ব্যবহার করছেন। ruTorrent শীঘ্রই PHP 7.x সমর্থন করা বন্ধ করবে।",
+ vulnerableRTorrentVersion	: "আপনি rTorrent-এর যে সংস্করণটি ব্যবহার করছেন সেটি ঝুঁকিপূর্ণ বলে পরিচিত। অনুগ্রহ করে সর্বশেষ সংস্করণে আপগ্রেড করুন। কোনো ট্র্যাকার যদি আপনাকে একটি নির্দিষ্ট সংস্করণ ব্যবহার করতে বাধ্য করে, তাহলে গত কয়েক মাসের নিরাপত্তা সংশোধনের বিশাল তালিকাটি দেখার জন্য তাদের কর্মীদের অনুরোধ করুন।",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
  Recreate_files			: "Queue Files Recreation",
  Address			: "এড্রেস",

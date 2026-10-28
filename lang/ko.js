@@ -318,6 +318,8 @@ var theUILang =
  badTempPath			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "안전하지 않은 PHP 버전을 사용하고 있습니다. ruTorrent는 가까운 시일 내에 PHP 7.x 지원을 중단할 예정입니다.",
+ vulnerableRTorrentVersion	: "사용 중인 rTorrent 버전에는 알려진 보안 취약점이 있습니다. 최신 버전으로 업그레이드하세요. 트래커에서 특정 버전 사용을 요구한다면, 해당 트래커 운영진에게 최근 몇 달간 발표된 수많은 보안 수정 사항을 확인해 달라고 요청하세요.",
  doRandomizeHash		: "Cross-seed를 위해 정보 해시값 임의로 재생성",
  Recreate_files			: "대기열 파일 재생성",
  Address			: "주소",
