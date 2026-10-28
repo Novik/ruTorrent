@@ -2,6 +2,65 @@
 
 class UTF
 {
+	// Strict UTF-8: the check of PCRE's u modifier, which json_encode() also
+	// applies. isInvalidUTF8() is looser: it lets through the byte 0x80 on its
+	// own, overlong forms, surrogates and code points above U+10FFFF.
+	public static function isValid($text)
+	{
+		return(is_string($text) && (preg_match('//u', $text) === 1));
+	}
+
+	// The length of the UTF-8 character at $offset, or 0 if none starts there.
+	private static function characterLength($text, $offset)
+	{
+		$first = $text[$offset];
+		if($first <= "\x7F") return(1);
+		if(($first >= "\xC2") && ($first <= "\xDF")) $length = 2;
+		else if(($first >= "\xE0") && ($first <= "\xEF")) $length = 3;
+		else if(($first >= "\xF0") && ($first <= "\xF4")) $length = 4;
+		else return(0);
+		// A byte past the end reads as '', which is below every bound.
+		$minimum = ($first === "\xE0") ? "\xA0" : (($first === "\xF0") ? "\x90" : "\x80");
+		$maximum = ($first === "\xED") ? "\x9F" : (($first === "\xF4") ? "\x8F" : "\xBF");
+		$second = $text[$offset + 1] ?? '';
+		if(($second < $minimum) || ($second > $maximum)) return(0);
+		for($part = 2; $part < $length; $part++)
+			if((($text[$offset + $part] ?? '') < "\x80") || ($text[$offset + $part] > "\xBF")) return(0);
+		return($length);
+	}
+
+	// Text for display. Valid UTF-8 comes back unchanged. Otherwise each byte
+	// that is not part of a character, and each control but tab, CR and LF,
+	// becomes \xNN, and a backslash is doubled. So a valid name that spells
+	// "\xFF" reads like a name holding the byte 0xFF: compare names by their
+	// bytes, never by this label.
+	public static function display($text)
+	{
+		$text = (string)$text;
+		if(self::isValid($text))
+			return($text);
+		$out = '';
+		for($offset = 0; isset($text[$offset]);)
+		{
+			$byte = $text[$offset];
+			$length = self::characterLength($text, $offset);
+			if(($length === 0) || (($byte < "\x20") && ($byte !== "\t") && ($byte !== "\r") && ($byte !== "\n")) || ($byte === "\x7F"))
+			{
+				$out .= sprintf('\\x%02X', ord($byte));
+				$offset++;
+			}
+			else if($byte === '\\')
+			{
+				$out .= '\\\\';
+				$offset++;
+			}
+			else
+				for($part = 0; $part < $length; $part++)
+					$out .= $text[$offset++];
+		}
+		return($out);
+	}
+
 	// What utf8_encode() returns, which PHP 8.2 deprecates: each byte read
 	// as ISO-8859-1.
 	public static function latin1ToUtf8($str)

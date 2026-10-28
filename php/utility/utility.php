@@ -2,6 +2,22 @@
 
 class Utility
 {
+	// Quote one POSIX shell argument byte for byte; escapeshellarg() drops
+	// the bytes the current locale cannot decode.
+	public static function escapeShellArg($value)
+	{
+		$value = (string)$value;
+		$quoted = "'";
+		for($offset = 0; isset($value[$offset]); $offset++)
+		{
+			$byte = $value[$offset];
+			if($byte === "\0")
+				throw new InvalidArgumentException('A shell argument cannot contain a NUL byte.');
+			$quoted .= ($byte === "'") ? "'\\''" : $byte;
+		}
+		return($quoted."'");
+	}
+
 	public static function quoteAndDeslashEachItem($item)
 	{
 		return('"'.addcslashes($item,"\\\'\"\n\r\t").'"');
