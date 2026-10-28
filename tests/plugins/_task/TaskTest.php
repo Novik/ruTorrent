@@ -16,6 +16,10 @@ class TaskPayload
 
 class TaskTest extends TestCase
 {
+	// No system hands out a pid this large: a kill for it reaches the shell
+	// and signals nothing.
+	const UNUSED_PID = '999999999';
+
 	protected $tasks = null;
 	protected $marker = null;
 	protected $outside = null;
@@ -61,12 +65,38 @@ class TaskTest extends TestCase
 
 	public function testKillRunsNothingFromANonNumericPidFile()
 	{
-		list($id, $dir) = $this->makeTask('1$(touch '.$this->marker.')');
+		list($id, $dir) = $this->makeTask(self::UNUSED_PID.'$(touch '.$this->marker.')');
 		rTask::kill($id);
 		sleep(1);
 		$this->assertEquals(false, file_exists($this->marker),
 			'The contents of a pid file cannot reach the shell');
 		$this->assertEquals(false, is_dir($dir), 'The task is still cleaned up');
+	}
+
+	public function testKillRunsNothingForPidOne()
+	{
+		// A stand-in pgrep that records the pids kill asks about. It lists
+		// no children, so nothing is signalled through it.
+		$pgrep = tempnam(sys_get_temp_dir(), 'task-test-pgrep-');
+		$record = $pgrep.'.argv';
+		file_put_contents($pgrep, "#!/bin/sh\nprintf '%s\\n' \"\$*\" >> ".escapeshellarg($record)."\n");
+		chmod($pgrep, 0755);
+		$previous = isset($GLOBALS['pathToExternals']['pgrep']) ? $GLOBALS['pathToExternals']['pgrep'] : null;
+		$GLOBALS['pathToExternals']['pgrep'] = $pgrep;
+		try {
+			list($id, $dir) = $this->makeTask('1');
+			rTask::kill($id);
+			$this->assertEquals(false, is_dir($dir), 'The task of pid 1 is still cleaned up');
+			list($id) = $this->makeTask(self::UNUSED_PID);
+			rTask::kill($id);
+			$this->assertEquals('-P '.self::UNUSED_PID."\n", file_exists($record) ? file_get_contents($record) : '',
+				'Only the pid other than 1 reaches the shell');
+		} finally {
+			if ($previous === null) unset($GLOBALS['pathToExternals']['pgrep']);
+			else $GLOBALS['pathToExternals']['pgrep'] = $previous;
+			foreach (array($pgrep, $record) as $path)
+				if (file_exists($path)) unlink($path);
+		}
 	}
 
 	public function testKillStopsTheProcessThePidFileNames()
