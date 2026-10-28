@@ -96,7 +96,7 @@ class AutoMoveDestinationTest extends TestCase
 	 * names makes a torrent of those files called mytorrent, a string makes a
 	 * single-file torrent of that name.
 	 */
-	private function torrentBytes($names)
+	private function torrentBytes($names, $root = 'mytorrent')
 	{
 		if (is_array($names))
 		{
@@ -105,7 +105,7 @@ class AutoMoveDestinationTest extends TestCase
 				$files .= 'd' . $this->bstr('length') . 'i12e'
 					. $this->bstr('path') . 'l' . $this->bstr($n) . 'e' . 'e';
 			$layout = $this->bstr('files') . 'l' . $files . 'e'
-				. $this->bstr('name') . $this->bstr('mytorrent');
+				. $this->bstr('name') . $this->bstr($root);
 		}
 		else
 			$layout = $this->bstr('length') . 'i12e' . $this->bstr('name') . $this->bstr($names);
@@ -136,13 +136,16 @@ class AutoMoveDestinationTest extends TestCase
 	 *
 	 * The scripts create directories with the umask they inherit, as they do
 	 * under rtorrent, so one is stated here rather than taken from the caller.
+	 * So is the locale: C, which is what they get from an rtorrent started
+	 * without LANG, and the one where PHP 7.4 mishandles non-ASCII names.
 	 */
 	private function runPhp($file, $args = array())
 	{
 		$mask = umask(022);
 		try {
 			$run = PhpProcess::run(array_merge(PhpProcess::sameIni(),
-				array('-d', 'display_errors=stderr', $file), $args));
+				array('-d', 'display_errors=stderr', $file), $args),
+				array('env' => array('LC_ALL' => 'C')));
 		} finally {
 			umask($mask);
 		}
@@ -155,34 +158,35 @@ class AutoMoveDestinationTest extends TestCase
 	 * rtorrent runs them, and reports what each said and what is on disk.
 	 *
 	 * $occupy is the list of names already standing in the destination
-	 * directory when the download finishes.
+	 * directory when the download finishes. $root is the download's name.
 	 */
-	private function runTheFinishedHook($occupy)
+	private function runTheFinishedHook($occupy, $root = 'mytorrent')
 	{
 		$this->removeTree($this->base);
 		$names = array('1.bin', '2.bin');
 		$this->makeDir($this->base . '/profile/settings');
 		$this->makeDir($this->base . '/session');
-		$this->makeDir($this->base . '/dl/mytorrent');
+		$this->makeDir($this->base . '/dl/' . $root);
 		$this->makeDir($this->base . '/fin');
+		$destination = $this->base . '/fin/' . $root;
 		foreach ($names as $n)
-			file_put_contents($this->base . '/dl/mytorrent/' . $n, 'download ' . $n);
+			file_put_contents($this->base . '/dl/' . $root . '/' . $n, 'download ' . $n);
 		foreach ($occupy as $n)
 		{
-			$this->makeDir(dirname($this->base . '/fin/mytorrent/' . $n));
-			file_put_contents($this->base . '/fin/mytorrent/' . $n, 'already there');
+			$this->makeDir(dirname($destination . '/' . $n));
+			file_put_contents($destination . '/' . $n, 'already there');
 		}
 		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
-			$this->torrentBytes($names));
+			$this->torrentBytes($names, $root));
 		$this->seed('Move');
 
-		$basePath = $this->base . '/dl/mytorrent';   // d.get_base_path
+		$basePath = $this->base . '/dl/' . $root;   // d.get_base_path
 		// d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
 		$check = $this->runScript('check',
-			array($basePath, 'mytorrent', '1', '', 'mytorrent', self::USER));
+			array($basePath, $root, '1', '', $root, self::USER));
 		// and then, with the hash in front, the same five
 		$move = $this->runScript('move',
-			array(self::HASH, $basePath, 'mytorrent', '1', '', 'mytorrent', self::USER));
+			array(self::HASH, $basePath, $root, '1', '', $root, self::USER));
 
 		$named = rtrim($check['printed'], '/');
 		return array(
@@ -193,17 +197,17 @@ class AutoMoveDestinationTest extends TestCase
 			'at_named' => array_map(function($n) use ($named) {
 				return is_file($named . '/' . $n) && file_get_contents($named . '/' . $n) === 'download ' . $n;
 			}, $names),
-			'at_source' => array_map(function($n) {
-				return is_file($this->base . '/dl/mytorrent/' . $n);
+			'at_source' => array_map(function($n) use ($basePath) {
+				return is_file($basePath . '/' . $n);
 			}, $names),
-			'occupants' => array_map(function($n) {
-				return @file_get_contents($this->base . '/fin/mytorrent/' . $n);
+			'occupants' => array_map(function($n) use ($destination) {
+				return @file_get_contents($destination . '/' . $n);
 			}, $occupy),
 		);
 	}
 
 	/** Stores the plugin settings check.php and move.php read. */
-	private function seed($operation, $skip = '')
+	private function seed($operation, $skip = '', $addLabel = false)
 	{
 		$seed = $this->base . '/seed.php';
 		file_put_contents($seed, "<?php\n" . $this->prelude()
@@ -216,7 +220,7 @@ class AutoMoveDestinationTest extends TestCase
 			. '$at = rAutoTools::load();' . "\n"
 			. '$at->enable_move = 1; $at->fileop_type = ' . var_export($operation, true) . ";\n"
 			. '$at->path_to_finished = ' . var_export($this->base . '/fin', true) . ";\n"
-			. '$at->automove_filter = "/.*/"; $at->addLabel = 0; $at->addName = 0;' . "\n"
+			. '$at->automove_filter = "/.*/"; $at->addLabel = ' . ($addLabel ? 1 : 0) . '; $at->addName = 0;' . "\n"
 			. '$at->skip_move_for_files = ' . var_export($skip, true) . '; $at->store();' . "\n"
 			. 'echo rAutoTools::load()->path_to_finished;' . "\n");
 		$seeded = $this->runPhp($seed);
@@ -292,6 +296,24 @@ class AutoMoveDestinationTest extends TestCase
 	}
 
 	/**
+	 * A destination that does not exist yet is created by move.php. Its name
+	 * must not depend on the locale: in a non-UTF-8 locale such as C, which
+	 * is what the scripts have when rtorrent runs without LANG, PHP 7.4's
+	 * basename() drops the non-ASCII bytes of a path element.
+	 */
+	public function testANonAsciiDownloadIsMovedToTheDirectoryItIsPointedAt()
+	{
+		$r = $this->runTheFinishedHook(array(), 'Сериал');
+
+		$this->assertEquals($this->base . '/fin/Сериал', $r['named'],
+			'check.php names the download\'s own directory');
+		$this->assertEquals(array(true, true), $r['at_named'],
+			'and both files of the download are in it afterwards');
+		$this->assertEquals(array(false, false), $r['at_source'],
+			'and none is left where the download ran');
+	}
+
+	/**
 	 * A finished single-file download, with move.php run on it alone, as it is
 	 * for every operation but a Move on rtorrent 0.8.8 and above; for that Move
 	 * it is move.php's half of the pair described above. rtorrent passes the
@@ -300,13 +322,13 @@ class AutoMoveDestinationTest extends TestCase
 	 * check.php already tests that name. A file is also left at the metainfo
 	 * name, so operating on it is seen, not just a failure to find the file.
 	 */
-	private function runTheSingleFileHook($operation, $name, $basename, $occupied = false, $skip = '')
+	private function runTheSingleFileHook($operation, $name, $basename, $occupied = false, $skip = '', $label = '')
 	{
 		$this->removeTree($this->base);
 		foreach (array('profile/settings', 'session', 'dl/keep', 'fin') as $dir)
 			$this->makeDir($this->base . '/' . $dir);
 		$source = $this->base . '/dl/' . $basename;
-		$target = $this->base . '/fin/' . $basename;
+		$target = $this->base . '/fin/' . ($label !== '' ? $label . '/' : '') . $basename;
 		file_put_contents($source, self::PAYLOAD);
 		file_put_contents($this->base . '/dl/keep/note.txt', 'unrelated directory');
 		if ($name !== $basename)
@@ -319,10 +341,10 @@ class AutoMoveDestinationTest extends TestCase
 		$metafile = $this->base . '/session/' . self::HASH . '.torrent';
 		$metadata = $this->torrentBytes($name);
 		file_put_contents($metafile, $metadata);
-		$this->seed($operation, $skip);
+		$this->seed($operation, $skip, $label !== '');
 
 		// d.get_hash, d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
-		$move = $this->runScript('move', array(self::HASH, $source, $basename, '0', '', $name, self::USER));
+		$move = $this->runScript('move', array(self::HASH, $source, $basename, '0', rawurlencode($label), $name, self::USER));
 		$this->assertTrue($move['exit'] === 0, $operation . ' hook completed (exit '
 			. var_export($move['exit'], true) . '): ' . $move['printed'] . $move['errors']);
 		clearstatcache();
@@ -344,6 +366,19 @@ class AutoMoveDestinationTest extends TestCase
 	{
 		foreach (array('Move', 'Copy', 'HardLink', 'SoftLink') as $op)
 			$this->assertTransferred($op, 'episode.bin', 'episode.bin');
+	}
+
+	/**
+	 * A single file is carried into the label's directory itself, so that
+	 * directory is the last element of the destination.
+	 */
+	public function testASingleFileUnderANonAsciiLabelIsMovedIntoTheLabelDirectory()
+	{
+		list($out, $source, $target) = $this->runTheSingleFileHook('Move', 'episode.bin', 'episode.bin',
+			false, '', 'Метка');
+		$this->assertEquals($this->base . '/fin/Метка/', $out, 'Move reports the label\'s directory');
+		$this->assertTrue(@file_get_contents($target) === self::PAYLOAD, 'and the file is in it');
+		$this->assertTrue(!file_exists($source), 'and not left at the source');
 	}
 
 	public function testDaemonBasenameSelectsOnlyTheActualPartialFile()
