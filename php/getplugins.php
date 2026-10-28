@@ -219,8 +219,8 @@ if($do_diagnostic && (PHP_VERSION_ID < 80000))
 	$jResult.="log(theUILang.insecurePHPVersion+' (".PHP_VERSION.")');";
 
 // The first rTorrent release with every security fix published so far:
-// 0.16.26, as (major << 16) + (minor << 8) + patch, like iVersion.
-$rtorrentFirstSafeVersion = 0x101A;
+// 0.16.27, as (major << 16) + (minor << 8) + patch, like iVersion.
+$rtorrentFirstSafeVersion = 0x101B;
 
 if($handle = opendir('../plugins'))
 {

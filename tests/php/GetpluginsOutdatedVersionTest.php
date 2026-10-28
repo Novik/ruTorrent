@@ -47,7 +47,7 @@ class GetpluginsOutdatedVersionTest extends TestCase
 
 	public function testAnRtorrentOlderThanTheLatestReleaseIsReportedOnce()
 	{
-		foreach(array('0.9.8', '0.15.7', '0.16.25') as $version)
+		foreach(array('0.9.8', '0.15.7', '0.16.26') as $version)
 		{
 			$output = $this->runWithRtorrent('old', $version);
 			$this->assertEquals(1, self::times($output, 'vulnerableRTorrentVersion'),
@@ -61,7 +61,7 @@ class GetpluginsOutdatedVersionTest extends TestCase
 
 	public function testTheLatestRtorrentReleaseAndLaterAreNotReported()
 	{
-		foreach(array('0.16.26', '0.16.27', '0.17.0') as $version)
+		foreach(array('0.16.27', '0.16.28', '0.17.0') as $version)
 		{
 			$output = $this->runWithRtorrent('current', $version);
 			$this->assertEquals(0, self::times($output, 'vulnerableRTorrentVersion'),
@@ -86,7 +86,7 @@ class GetpluginsOutdatedVersionTest extends TestCase
 	 */
 	public function testPhp7IsReportedOnceAndPhp8IsNot()
 	{
-		$output = $this->runWithRtorrent('php', '0.16.26');
+		$output = $this->runWithRtorrent('php', '0.16.27');
 		if(PHP_VERSION_ID < 80000)
 		{
 			$this->assertEquals(1, self::times($output, 'insecurePHPVersion'),
