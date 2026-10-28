@@ -318,6 +318,8 @@ var theUILang =
  badTempPath			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "Χρησιμοποιείτε μια μη ασφαλή έκδοση της PHP. Το ruTorrent δεν θα υποστηρίζει την PHP 7.x στο εγγύς μέλλον.",
+ vulnerableRTorrentVersion	: "Η έκδοση του rTorrent που χρησιμοποιείτε είναι γνωστό ότι έχει ευπάθειες. Αναβαθμίστε τη στην πιο πρόσφατη έκδοση. Αν κάποιος tracker σας υποχρεώνει να χρησιμοποιείτε συγκεκριμένη έκδοση, ζητήστε από την ομάδα του να δει τη μεγάλη λίστα με τις διορθώσεις ασφαλείας των τελευταίων μηνών.",
  doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding",
  Recreate_files			: "Δρομολόγηση επαναδημιουργίας αρχείων",
  Address			: "Διεύθυνση",

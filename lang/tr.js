@@ -320,6 +320,8 @@ var theUILang =
  badTempPath : "Web sunucusu kullanıcısının tmp dizinine okuma/yazma/çalıştırma erişimi yok. ruTorrent çalışmayacak.",
  badTempPath2 : "rTorrent kullanıcısının tmp dizinine okuma/çalıştırma erişimi olmalıdır. ruTorrent çalışmayacak.",
  worldWritableTempPath : "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "Güvenli olmayan bir PHP sürümü kullanıyorsunuz. ruTorrent yakın gelecekte PHP 7.x desteğini sonlandıracak.",
+ vulnerableRTorrentVersion	: "Kullandığınız rTorrent sürümünün bilinen güvenlik açıkları var. Lütfen en son sürüme yükseltin. Bir tracker sizi belirli bir sürümü kullanmaya zorluyorsa, ekibinden son birkaç ayda yayımlanan uzun güvenlik düzeltmeleri listesine göz atmasını isteyin.",
  doRandomizeHash : "Çapraz seed için info hash'leri rastgele düzenle",
  Recreate_files : "Dosya yeniden oluşturmayı sıraya al",
  Address			: "Adres",

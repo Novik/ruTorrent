@@ -320,6 +320,8 @@ var theUILang =
  badTempPath			: "Веб сервер не имеет доступа к директории tmp на чтение/запись/выполнение. ruTorrent не будет работать.",
  badTempPath2			: "rTorrent должен иметь доступ на чтение/выполнение к директории tmp. ruTorrent не будет работать.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "Вы используете небезопасную версию PHP. В ближайшее время ruTorrent прекратит поддержку PHP 7.x.",
+ vulnerableRTorrentVersion	: "Используемая версия rTorrent содержит известные уязвимости. Пожалуйста, обновите её до последней версии. Если какой-либо трекер требует использовать определённую версию, попросите его администрацию ознакомиться с огромным списком исправлений безопасности за последние месяцы.",
  doRandomizeHash		: "Сделать hash уникальным",
  Recreate_files			: "Воссоздать файлы торрента",
  Address			: "Адрес",

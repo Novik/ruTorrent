@@ -320,6 +320,8 @@ var theUILang =
  badTempPath			: "网页服务器运行用户对 tmp 文件夹没有 读/写/执行 权限. ruTorrent 将不会工作.",
  badTempPath2			: "rTorrent 运行用户必须对 tmp 文件夹有 读/执行 权限. ruTorrent 将不会工作.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "您正在使用不安全的 PHP 版本。ruTorrent 将在不久后停止支持 PHP 7.x。",
+ vulnerableRTorrentVersion	: "您正在使用的 rTorrent 版本存在已知漏洞，请升级到最新版本。如果某个 tracker 要求您使用特定版本，请让其管理团队查看最近几个月发布的大量安全修复。",
  doRandomizeHash		: "为辅种生成随机的 Info Hash",
  Recreate_files			: "排队重建文件",
  Address			: "地址",

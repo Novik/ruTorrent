@@ -92,12 +92,13 @@ class GetpluginsHarness
 	/**
 	 * Makes rTorrent answer, so the script gets past the probe and runs the
 	 * checks that ask what the rTorrent user may reach. Returns the uid the
-	 * daemon reports as that user.
+	 * daemon reports as that user. $version is the rTorrent version it
+	 * reports; null keeps the probe fixture's own.
 	 */
-	public function withRtorrent($uid = 1000, $gids = '1000 1001')
+	public function withRtorrent($uid = 1000, $gids = '1000 1001', $version = null)
 	{
 		$this->daemon = new FakeRtorrentDaemon(
-			new GetpluginsRtorrentResponder($uid, $gids),
+			new GetpluginsRtorrentResponder($uid, $gids, '/home/rtorrent', $version),
 			$this->path('calls.log'), false,
 			array(dirname(__FILE__) . '/GetpluginsRtorrentResponder.php'));
 		$this->port = $this->daemon->port();
@@ -143,6 +144,16 @@ class GetpluginsHarness
 	{
 		preg_match_all('/noty\(\s*theUILang\.([A-Za-z0-9_]+)/', $output, $found);
 		return $found[1];
+	}
+
+	/**
+	 * How many times the run wrote $key to the log alone, with no popup.
+	 * Counted by key rather than collected like diagnostics(): the plugins'
+	 * own scripts are part of the output, and they log messages of their own.
+	 */
+	public static function logged($output, $key)
+	{
+		return preg_match_all('/\blog\(\s*theUILang\.' . preg_quote($key, '/') . '\b/', $output);
 	}
 
 	/** Whether the run reported $key. */

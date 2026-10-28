@@ -371,6 +371,10 @@ var theUILang = {
     "rTorrent-brukaren har ikkje lese- eller køyringstilgang til tmp-mappa. ruTorrent vil ikkje fungere.",
   worldWritableTempPath:
     "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+  insecurePHPVersion:
+    "Du brukar ein usikker versjon av PHP. ruTorrent vil snart slutte å støtte PHP 7.x.",
+  vulnerableRTorrentVersion:
+    "rTorrent-versjonen du brukar har kjende sårbarheiter. Oppgrader til den nyaste versjonen. Viss ein trackar krev at du brukar ein bestemd versjon, be dei som driv han om å sjå på den lange lista over tryggleiksrettingar frå dei siste månadene.",
   doRandomizeHash: "Gjer info-hashar tilfeldige for kryss-seeding",
   Recreate_files: "Lag filer på nytt",
   Address: "Adresse",

@@ -320,6 +320,8 @@ var theUILang =
  badTempPath			: "Utilizador do servidor não tem permissão de leitura/escrita/execução ao diretório tmp. ruTorrent não vai funcionar.",
  badTempPath2			: "Utilizador do rTorrent deve ter permissão de leitura/execução ao diretório tmp. ruTorrent não vai funcionar.",
  worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
+ insecurePHPVersion		: "Está a utilizar uma versão insegura do PHP. O ruTorrent deixará de suportar o PHP 7.x em breve.",
+ vulnerableRTorrentVersion	: "A versão do rTorrent que está a utilizar tem vulnerabilidades conhecidas. Atualize-a para a versão mais recente. Se algum tracker o obrigar a utilizar uma versão específica, peça à respetiva equipa que consulte a enorme lista de correções de segurança dos últimos meses.",
  doRandomizeHash		: "Randomizar informações de hashes para cross-seeding",
  Recreate_files			: "Recriar ficheiros",// Check this
  Address			: "Endereço",
