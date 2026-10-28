@@ -279,7 +279,6 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 			theWebUI.getTable("trt").clearSelection();
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
-			tegList.css( { width: list.width(), height: list.height() } );
 			table.resize(list.width(), list.height());
 			tegList.show();
 		}
@@ -608,21 +607,9 @@ plugin.resizeTop = theWebUI.resizeTop;
 theWebUI.resizeTop = function( w, h )
 {
 	plugin.resizeTop.call(theWebUI,w,h);
-	if(plugin.enabled)
-	{
-		if(w!==null)
-		{
-			$("#TegList").width( w );
-			if(theWebUI.configured)
-		       	       	this.getTable("teg").resize( w );
-		}
-        	if(h!==null)
-		{
-			$("#TegList").height( h );
-			if(theWebUI.configured)
-				this.getTable("teg").resize(null,h);
-	       	}
-	}
+	// #TegList is sized by the layout, as #List is; only the rows need redrawing.
+	if(plugin.enabled && theWebUI.configured)
+		this.getTable("teg").resize(w,h);
 }
 
 plugin.config = theWebUI.config;
