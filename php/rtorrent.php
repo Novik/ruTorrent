@@ -429,12 +429,14 @@ class rTorrent
 	static public function getSource($hash, $knownPaths = null)
 	{
 		// Batched readers pass the paths they already hold; false means none.
+		// The reply reader escapes backslashes and double quotes.
 		if($knownPaths === null)
 		{
 			$req = new rXMLRPCRequest( array(
 				new rXMLRPCCommand("get_session"),
 				new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
-			$knownPaths = ($req->run() && !$req->fault) ? $req->val : false;
+			$knownPaths = ($req->run() && !$req->fault) ?
+				array_map(array('rXMLRPCRequest', 'unescapeValue'), $req->val) : false;
 		}
 		if(!is_array($knownPaths) || !isset($knownPaths[0], $knownPaths[1]))
 			return(false);
