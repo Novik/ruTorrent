@@ -204,7 +204,10 @@ function rtDestinationRoot( $dst )
 		$parent = dirname( $path );
 		if( $parent === $path )
 			return '';
-		array_unshift( $tail, basename( $path ) );
+		// Not basename(): it depends on the locale, and PHP 7.4 in a non-UTF-8
+		// one, such as C when rtorrent runs without LANG, drops non-ASCII names.
+		$slash = strrpos( $path, '/' );
+		array_unshift( $tail, ( $slash === false ) ? $path : substr( $path, $slash + 1 ) );
 		$real = realpath( $parent );
 		if( $real !== false )
 			return rtRemoveTailSlash( $real ).'/'.implode( '/', $tail );
