@@ -623,7 +623,9 @@ class Torrent
 		fclose( $handle );
 		return(array(
             		'length'        => filesize( $file ),
-            		'name'          => basename( $file ),
+			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
+			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
+            		'name'          => FileUtil::getFileName( $file ),
             		'piece length'  => $piece_length,
             		'pieces'        => $pieces
         		));

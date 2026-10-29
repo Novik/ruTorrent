@@ -170,6 +170,51 @@ class AddDirectorySymlinkTest extends TestCase
 		$this->assertTrue($inside === true, 'with "/" as the top directory nothing is outside it');
 	}
 
+	/**
+	 * A top directory that does not exist is compared as written, so the
+	 * names put back after the part that exists have to be the ones in the
+	 * path. In a non-UTF-8 locale, such as C, PHP 7.4's basename() drops a
+	 * non-ASCII name and answers the element before it instead.
+	 */
+	public function testANonAsciiTopDirectoryThatDoesNotExistYetHoldsWhatIsUnderIt()
+	{
+		// setUp() runs once for the whole class, so the top directory goes back.
+		$GLOBALS['topDirectory'] = $this->base . '/Загрузки/';
+		$locale = setlocale(LC_CTYPE, '0');
+		setlocale(LC_CTYPE, 'C');
+		try {
+			$inside = rTorrent::isInsideTopDirectory($this->base . '/Загрузки/new');
+		} finally {
+			setlocale(LC_CTYPE, $locale);
+			$GLOBALS['topDirectory'] = $this->top . '/';
+		}
+		$this->assertTrue($inside === true, 'a directory under it is accepted');
+	}
+
+	/**
+	 * The names put back decide the answer when a link on the way points
+	 * up. A link inside the top directory that has the top directory's own
+	 * name and points at its parent is followed by a name PHP 7.4's
+	 * basename() drops: "\xff" is not a character in C or in any UTF-8
+	 * locale. The link's name came back in its place, and the directory
+	 * read as inside the top directory while mkdir -p makes it beside it.
+	 */
+	public function testALinkOutNamedLikeTheTopDirectoryIsRefused()
+	{
+		$link = $this->top . '/top';
+		symlink($this->base, $link);
+		try {
+			$dir = $link . "/\xff/new";
+			$this->assertTrue(rTorrentSettings::get()->correctDirectory($dir),
+				'it passes the text check');
+			$inside = rTorrent::isInsideTopDirectory($dir);
+		} finally {
+			unlink($link);
+		}
+		$this->assertTrue($inside === false,
+			'but it resolves beside the top directory and is refused');
+	}
+
 	// ---- the senders load nothing through a link out ------------------------
 
 	public function testSendTorrentLoadsNothingThroughALinkOut()

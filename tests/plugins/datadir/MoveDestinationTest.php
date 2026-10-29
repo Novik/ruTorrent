@@ -108,6 +108,35 @@ class MoveDestinationTest extends TestCase
 			'and it is gone from the source');
 	}
 
+	/**
+	 * A multi-file download is moved into a directory of its own name, which
+	 * is not there yet, so util_rt.php names it from its path elements. The
+	 * name must not depend on the locale: setdir.php runs under rtorrent, in
+	 * C when rtorrent runs without LANG, and there PHP 7.4's basename() drops
+	 * the non-ASCII bytes of a path element.
+	 */
+	public function testANonAsciiDestinationThatIsNotThereYetKeepsItsName()
+	{
+		$src = $this->tree . '/locale/src';
+		$this->file($src . '/a.bin', 'AAA');
+		$this->file($src . '/sub/b.bin', 'BBB');
+		$destination = $this->tree . '/locale/fin/Сериал';
+
+		$locale = setlocale(LC_CTYPE, '0');
+		setlocale(LC_CTYPE, 'C');
+		try {
+			$ok = rtOpFiles(array('a.bin', 'sub/b.bin'), $src, $destination . '/', 'Move');
+		} finally {
+			setlocale(LC_CTYPE, $locale);
+		}
+
+		$this->assertTrue($ok === true, 'the move succeeds');
+		$this->assertEquals('AAA', @file_get_contents($destination . '/a.bin'),
+			'the file is in the directory it was moved to');
+		$this->assertEquals('BBB', @file_get_contents($destination . '/sub/b.bin'),
+			'and so is the one in a subdirectory');
+	}
+
 	// -- the destination is not this move's to destroy ----------------------
 
 	public function testAFileAlreadyAtTheDestinationIsNotDestroyed()

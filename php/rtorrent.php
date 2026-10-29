@@ -640,7 +640,9 @@ class rTorrent
 		$rest = '';
 		while(!file_exists($path) && !is_link($path))
 		{
-			$rest = '/'.basename($path).$rest;
+			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
+			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
+			$rest = '/'.FileUtil::getFileName($path).$rest;
 			$path = dirname($path);
 		}
 		$real = realpath($path);

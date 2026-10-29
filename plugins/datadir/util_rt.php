@@ -205,7 +205,10 @@ function rtDestinationRoot( $dst )
 		$parent = dirname( $path );
 		if( $parent === $path )
 			return '';
-		array_unshift( $tail, basename( $path ) );
+		// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
+		// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
+		$slash = strrpos( $path, '/' );
+		array_unshift( $tail, ( $slash === false ) ? $path : substr( $path, $slash + 1 ) );
 		$real = realpath( $parent );
 		if( $real !== false )
 			return rtRemoveTailSlash( $real ).'/'.implode( '/', $tail );
