@@ -28,7 +28,7 @@ class TelegramTest extends TestCase
 		$this->assertTrue($config->enabled, 'enabled is parsed');
 		$this->assertEquals('token', $config->token, 'token is trimmed');
 		$this->assertTrue($config->events['finished'], 'selected events are parsed');
-		$this->assertEquals('finished|name "with" $danger|ABC', $config->render('finished', 'name "with" $danger', 'ABC'), 'placeholders are rendered as plain text');
+		$this->assertEquals('finished\\|name "with" $danger\\|ABC', $config->render('finished', 'name "with" $danger', 'ABC'), 'placeholders are rendered as plain text, and the template\'s "|" is escaped for MarkdownV2');
 		$this->assertTrue(!$config->events['added'], 'unchecked events stay disabled');
 	}
 
@@ -49,6 +49,22 @@ class TelegramTest extends TestCase
 	{
 		$config = new rTelegram();
 		$this->assertEquals('Torrent finished: a\\_b \\[c\\] \\(d\\)\\!', $config->render('finished', 'a_b [c] (d)!', 'ABC'), 'torrent names escape MarkdownV2 punctuation');
+	}
+
+	public function testTemplateTextIsEscapedForMarkdownV2()
+	{
+		$config = new rTelegram();
+		$config->templates['finished'] = "✅ Done! {TORRENT} (100%).\n{LINK}";
+		$this->assertEquals("✅ Done\\! Movie\\_1 \\(100%\\)\\.\n[link](https://example.org/item)", $config->render('finished', 'Movie_1', 'ABC', 'VRS24mrkerhttps%3A%2F%2Fexample.org%2Fitem'), 'reserved characters of the template text are escaped, the link stays MarkdownV2');
+		$config->templates['added'] = '{unknown} {HASH} - {STATE}';
+		$this->assertEquals('\\{unknown\\} ABC \\- added', $config->render('added', 'Movie', 'ABC'), 'an unknown placeholder is escaped as text');
+	}
+
+	public function testStorageStaysReadableByTheGroupOnly()
+	{
+		$this->assertTrue((rTelegram::STORAGE_MODE & 0040) !== 0, 'the rTorrent user can read the settings through the group');
+		$this->assertTrue((rTelegram::STORAGE_MODE & 0007) === 0, 'other local users cannot read the bot token');
+		$this->assertTrue((rTelegram::STORAGE_MODE & 0022) === 0, 'only the owner can write the settings');
 	}
 
 	public function testAnEmptyTokenPreservesTheExistingSecret()
@@ -93,6 +109,25 @@ class TelegramTest extends TestCase
 			$this->assertTrue(!$result['ok'], 'invalid API responses are rejected');
 			$this->assertTrue(strpos(isset($result['error']) ? $result['error'] : '', 'secret-token') === false, 'API errors redact the bot token');
 		}
+	}
+
+	public function testClientReportsTelegramDescription()
+	{
+		$client = new rTelegramClient(function($url, $payload, $options) {
+			return array('http_code' => 400, 'body' => '{"ok":false,"error_code":400,"description":"Bad Request: can\'t parse entities: Character \'!\' is reserved"}');
+		});
+		$result = $client->send('secret-token', '1', 'hello!');
+		$this->assertEquals("HTTP 400: Bad Request: can't parse entities: Character '!' is reserved", $result['error'], 'a refused request reports Telegram\'s description');
+		$client = new rTelegramClient(function($url, $payload, $options) {
+			return array('http_code' => 502, 'body' => '<html>Bad gateway</html>');
+		});
+		$result = $client->send('secret-token', '1', 'hello');
+		$this->assertEquals('HTTP 502', $result['error'], 'a non-JSON error body still gives the HTTP status');
+		$client = new rTelegramClient(function($url, $payload, $options) {
+			return array('http_code' => 404, 'body' => '{"ok":false,"description":"Not Found: secret-token"}');
+		});
+		$result = $client->send('secret-token', '1', 'hello');
+		$this->assertTrue(strpos($result['error'], 'secret-token') === false, 'the description is redacted too');
 	}
 
 	public function testClientRejectsTransportExceptions()
