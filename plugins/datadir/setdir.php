@@ -63,7 +63,13 @@ if( $is_ok && $hash && strlen( $datadir ) > 0 )
 	Debug( "move files  : ".$move_datafiles );
 	Debug( "fast resume : ".$move_fastresume );
 
-	if( !rtMkDir( $datadir, 0777 ) )
+	// Checked again here: this runs detached, possibly after other moves, and
+	// a link made since action.php checked must not be followed either.
+	if( !rTorrent::isInsideTopDirectory( $datadir ) )
+	{
+		Debug( "outside the top directory: ".$datadir );
+	}
+	elseif( !rtMkDir( $datadir, 0777 ) )
 	{
 		Debug( "can't create ".$datadir );
 	}

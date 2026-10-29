@@ -57,7 +57,10 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 	}
 
-	if(!rTorrentSettings::get()->correctDirectory($datadir))
+	// setdir.php's mkdir and moves follow links, so the directory has to stay
+	// inside the top directory once they are followed, not only as written.
+	if(!rTorrentSettings::get()->correctDirectory($datadir) ||
+		!rTorrent::isInsideTopDirectory($datadir))
 	{
 		$datadir = '';
 	}
