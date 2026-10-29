@@ -22,6 +22,9 @@ require_once(__DIR__ . '/../../php/Torrent.php');
  * Torrent::file(), Torrent::files() and Torrent::folder() are the three
  * builders behind plugins/create with the shipped configuration
  * ($useExternal = false selects inner.sh, which runs createtorrent.php).
+ *
+ * One case is about the locale instead: a single file's non-ASCII name in
+ * C, where PHP 7.4's basename() drops it.
  */
 class TorrentZeroNameTest extends TestCase
 {
@@ -287,6 +290,29 @@ class TorrentZeroNameTest extends TestCase
 		$this->assertTrue($info->get('length') === 1, $what . ': its length is one byte: ' . json_encode($info->get('length')));
 		$this->assertTrue(!$info->has('files'), $what . ': it is single-file metainfo');
 		$this->assertPiecesMatch($what, $info, '0');
+	}
+
+	/**
+	 * A single file's name must not depend on the locale: in a non-UTF-8
+	 * one, such as C, PHP 7.4's basename() drops the non-ASCII bytes of a
+	 * name, and Сериал.mkv became .mkv.
+	 */
+	public function testASingleFileWithANonAsciiNameIsTheTorrentName()
+	{
+		$parent = $this->caseDirectory();
+		$name = 'Сериал.mkv';
+		$this->assertTrue(file_put_contents($parent . '/' . $name, 'video') === 5, 'the file is written');
+		$what = 'a single file named ' . $name;
+		$locale = setlocale(LC_CTYPE, '0');
+		setlocale(LC_CTYPE, 'C');
+		try {
+			$bytes = $this->buildAt($parent, $parent . '/' . $name, $what);
+		} finally {
+			setlocale(LC_CTYPE, $locale);
+		}
+		$info = $this->metainfo($bytes, $what);
+		$this->assertTrue($info->get('name') === $name, $what . ': it is named after the file: ' . json_encode($info->get('name')));
+		$this->assertTrue($info->get('length') === 5, $what . ': its length is the file\'s: ' . json_encode($info->get('length')));
 	}
 
 	public function testTheBencodeReaderIsStrict()
