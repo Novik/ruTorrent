@@ -265,6 +265,87 @@ class LogFileModeTest extends TestCase
 		);
 	}
 
+	// With fs.protected_regular (the default on Ubuntu and Debian), an open
+	// that may create the file is refused on a file in a sticky world-writable
+	// directory owned by someone else, whatever its mode. Here root opens a
+	// file owned by nobody in a sticky directory owned by root, the same
+	// shape as the web user and the rTorrent user sharing /tmp/errors.log.
+	public function testAnotherUsersLogInAStickyDirectoryIsStillWritten()
+	{
+		$protected = @file_get_contents('/proc/sys/fs/protected_regular');
+		if (!function_exists('posix_geteuid') || posix_geteuid() !== 0 || intval($protected) < 1) {
+			return;
+		}
+		$sticky = $this->dir . '/sticky';
+		mkdir($sticky);
+		chmod($sticky, 01777);
+		$log = $sticky . '/shared.log';
+		file_put_contents($log, "first\n");
+		chmod($log, 0666);
+		chown($log, 65534);
+		$GLOBALS['log_file'] = $log;
+		set_error_handler(function () { return true; });
+		try {
+			FileUtil::toLog('second user');
+			$body = file_get_contents($log);
+		} finally {
+			restore_error_handler();
+			unlink($log);
+			rmdir($sticky);
+		}
+		$this->assertTrue(
+			strpos($body, "first\n") === 0 && strpos($body, 'second user') !== false,
+			'A log owned by another user in a sticky directory gets the line appended'
+		);
+	}
+
+	// A log the writer may not read is still appended to.
+	public function testAWriteOnlyLogIsStillWritten()
+	{
+		$log = $this->logAfterFirstWrite(0777, 'write-only.log');
+		chmod($log, 0200);
+		FileUtil::toLog('second line');
+		chmod($log, 0600);
+		$body = file_get_contents($log);
+		$this->assertTrue(
+			strpos($body, 'probe') !== false && strpos($body, 'second line') !== false,
+			'A write-only log gets the line appended'
+		);
+	}
+
+	// An existing log is opened without O_APPEND, so concurrent writers rely
+	// on the lock to keep each line whole and in place.
+	public function testConcurrentWritersKeepEveryLine()
+	{
+		if (!function_exists('pcntl_fork')) {
+			return;
+		}
+		$writers = 4;
+		$lines = 200;
+		$log = $this->logAfterFirstWrite(0777, 'concurrent.log');
+		$children = array();
+		for ($i = 0; $i < $writers; $i++) {
+			$pid = pcntl_fork();
+			if ($pid === 0) {
+				for ($n = 0; $n < $lines; $n++) {
+					FileUtil::toLog("writer $i line $n");
+				}
+				posix_kill(getmypid(), SIGKILL);
+			}
+			$children[] = $pid;
+		}
+		foreach ($children as $pid) {
+			pcntl_waitpid($pid, $status);
+		}
+		$written = file($log, FILE_IGNORE_NEW_LINES);
+		$whole = preg_grep('/^\[[0-9-]+ [0-9:]+\] (probe|writer [0-9]+ line [0-9]+)$/', $written);
+		$this->assertEquals(
+			1 + $writers * $lines,
+			count($whole),
+			'Every line from concurrent writers is kept whole'
+		);
+	}
+
 	public function testANonRegularLogKeepsTheNonBlockingReadWriteMode()
 	{
 		LogFileModeStream::reset(0010000); // FIFO
