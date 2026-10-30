@@ -8,6 +8,8 @@ if (plugin.canChangeOptions()) {
 			$('#telegram_chat_id').val(theWebUI.telegram.chatId || '');
 			$('#telegram_token').val('');
 			$('#telegram_token_status').text(theWebUI.telegram.tokenConfigured ? theUILang.telegramTokenConfigured : '');
+			$('#telegram_token_clear').prop('checked', false);
+			$('#telegram_token_clear_row').toggle(!!theWebUI.telegram.tokenConfigured);
 			Object.keys(theWebUI.telegram.events || {}).forEach((event) => {
 				$('#telegram_event_' + event).prop('checked', !!theWebUI.telegram.events[event]);
 				$('#telegram_template_' + event).val((theWebUI.telegram.templates || {})[event] || '');
@@ -21,6 +23,7 @@ if (plugin.canChangeOptions()) {
 		if ($('#telegram_enabled').prop('checked') !== !!cfg.enabled) return true;
 		if ($('#telegram_chat_id').val() !== (cfg.chatId || '')) return true;
 		if ($('#telegram_token').val() !== '') return true;
+		if ($('#telegram_token_clear').prop('checked')) return true;
 		for (const event of ['added', 'finished', 'removed']) {
 			if ($('#telegram_event_' + event).prop('checked') !== !!(cfg.events || {})[event]) return true;
 			if ($('#telegram_template_' + event).val() !== ((cfg.templates || {})[event] || '')) return true;
@@ -39,6 +42,7 @@ if (plugin.canChangeOptions()) {
 		let content = 'enabled=' + ($('#telegram_enabled').prop('checked') ? '1' : '0');
 		const token = $('#telegram_token').val();
 		if (token) content += '&token=' + encodeURIComponent(token);
+		if ($('#telegram_token_clear').prop('checked')) content += '&token_clear=1';
 		content += '&chat_id=' + encodeURIComponent($('#telegram_chat_id').val());
 		for (const event of ['added', 'finished', 'removed']) {
 			content += '&event_' + event + '=' + ($('#telegram_event_' + event).prop('checked') ? '1' : '0');
@@ -100,6 +104,13 @@ plugin.onLangLoaded = function() {
 				$('<div>').addClass('col-12 col-md-3'),
 				$('<div>').addClass('col-12 col-md-5').append(
 					$('<small>').attr({id: 'telegram_token_status'}).addClass('form-text').css({color: 'var(--text-color, inherit)'})
+				)
+			),
+			$('<div>').addClass('row').attr({id: 'telegram_token_clear_row'}).append(
+				$('<div>').addClass('col-12 col-md-3'),
+				$('<div>').addClass('col-12 col-md-5 checkbox').append(
+					$('<input>').attr({type: 'checkbox', id: 'telegram_token_clear'}),
+					$('<label>').attr({for: 'telegram_token_clear'}).text(theUILang.telegramTokenClear)
 				)
 			),
 			$('<div>').addClass('row').append(
