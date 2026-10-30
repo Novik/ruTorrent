@@ -80,7 +80,7 @@ class rTelegram
 			);
 			$key = 'template_'.$event;
 			if(isset($input[$key]) && is_string($input[$key]))
-				$this->templates[$event] = self::truncateMessage($input[$key]);
+				$this->templates[$event] = self::templateOrDefault($event, $input[$key]);
 		}
 		$this->normalize();
 	}
@@ -129,15 +129,21 @@ class rTelegram
 		foreach(self::eventNames() as $event)
 		{
 			$this->events[$event] = !empty($this->events[$event]);
-			if(!isset($this->templates[$event]) || !is_string($this->templates[$event]))
-				$this->templates[$event] = self::defaultTemplate($event);
-			$this->templates[$event] = self::truncateMessage($this->templates[$event]);
+			$this->templates[$event] = self::templateOrDefault($event, isset($this->templates[$event]) ? $this->templates[$event] : null);
 		}
 	}
 
 	public static function defaultTemplate($event)
 	{
 		return "Torrent {STATE}: {TORRENT}\n{LINK}";
+	}
+
+	// An empty message is refused by Telegram, so a cleared template falls back to the default one.
+	private static function templateOrDefault($event, $template)
+	{
+		if(!is_string($template) || trim($template) === '')
+			return self::defaultTemplate($event);
+		return self::truncateMessage($template);
 	}
 
 	public function validationErrors($event = null)
@@ -163,6 +169,23 @@ class rTelegram
 		return $this->enabled && empty($this->validationErrors($event));
 	}
 
+	/**
+	 * Send the notification of an rTorrent event. notify.php runs with stderr sent to /dev/null,
+	 * so a refused message goes to the ruTorrent log, where the user can see it.
+	 */
+	public function notify($event, $torrent, $hash, $comment = '', $client = null)
+	{
+		if(!$this->canNotify($event))
+			return null;
+		if($client === null)
+			$client = new rTelegramClient();
+		$result = $client->send($this->token, $this->chatId, $this->render($event, $torrent, $hash, $comment), 'MarkdownV2');
+		if(empty($result['ok']))
+			FileUtil::toLog('telegram: '.$event.' notification failed: '.
+				self::sanitizeError(isset($result['error']) ? $result['error'] : 'Telegram request failed', $this->token));
+		return $result;
+	}
+
 	public function render($event, $torrent, $hash, $comment = '')
 	{
 		$template = isset($this->templates[$event]) ? $this->templates[$event] : self::defaultTemplate($event);
@@ -181,8 +204,27 @@ class rTelegram
 		$parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
 		$message = '';
 		foreach($parts as $i => $part)
-			$message .= ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
-		return self::truncateMessage($message);
+		{
+			$piece = ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
+			if(strlen($message) + strlen($piece) > self::MAX_TEMPLATE_LENGTH)
+			{
+				// Telegram refuses the whole message if the cut leaves a lone "\" or half a link:
+				// a link that does not fit is left out, and escaped text is cut before an escape.
+				if($part !== '{LINK}')
+					$message .= self::truncateEscaped($piece, self::MAX_TEMPLATE_LENGTH - strlen($message));
+				break;
+			}
+			$message .= $piece;
+		}
+		return $message;
+	}
+
+	private static function truncateEscaped($text, $length)
+	{
+		$text = self::truncateMessage($text, $length);
+		if((strlen($text) - strlen(rtrim($text, '\\'))) % 2)
+			$text = substr($text, 0, -1);
+		return $text;
 	}
 
 	public static function decodeComment($comment)
@@ -212,12 +254,12 @@ class rTelegram
 		);
 	}
 
-	public static function truncateMessage($message)
+	public static function truncateMessage($message, $length = self::MAX_TEMPLATE_LENGTH)
 	{
 		$message = (string)$message;
-		if(strlen($message) <= self::MAX_TEMPLATE_LENGTH)
+		if(strlen($message) <= $length)
 			return $message;
-		$message = substr($message, 0, self::MAX_TEMPLATE_LENGTH);
+		$message = substr($message, 0, $length);
 		// Do not send a partial UTF-8 code point. Telegram counts characters,
 		// while this conservative byte limit also works without mbstring.
 		while($message !== '' && preg_match('//u', $message) !== 1)

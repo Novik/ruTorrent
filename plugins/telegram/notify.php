@@ -15,15 +15,5 @@ if(isset($argv[5]))
 require_once(dirname(__FILE__).'/telegram.php');
 
 $config = rTelegram::load();
-if(!$config->canNotify($event))
-	exit(0);
-
-$message = $config->render($event, $torrent, $hash, $comment);
-$client = new rTelegramClient();
-$result = $client->send($config->token, $config->chatId, $message, 'MarkdownV2');
-if(empty($result['ok']))
-{
-	$error = isset($result['error']) ? $result['error'] : 'Telegram request failed';
-	error_log('telegram: '.rTelegram::sanitizeError($error, $config->token));
-}
+$config->notify($event, $torrent, $hash, $comment);
 exit(0);

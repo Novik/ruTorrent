@@ -1,10 +1,23 @@
 <?php
 
+$_ENV['RU_PROFILE_PATH'] = sys_get_temp_dir().'/rutorrent-telegram-test-'.getmypid();
+
 require_once(__DIR__.'/../../../tests/php/TestCase.php');
 require_once(__DIR__.'/../../../plugins/telegram/telegram.php');
 
 class TelegramTest extends TestCase
 {
+	public function tearDown()
+	{
+		$settings = FileUtil::getSettingsPath();
+		if(is_dir($settings))
+		{
+			array_map('unlink', glob($settings.'/telegram.dat*'));
+			@rmdir($settings);
+		}
+		@rmdir($_ENV['RU_PROFILE_PATH']);
+	}
+
 	public function testDefaultsAndSecretsAreNotExported()
 	{
 		$config = new rTelegram();
@@ -158,5 +171,76 @@ class TelegramTest extends TestCase
 		$this->assertTrue(strpos($command, '$d.name=') === false, 'the command does not use inert name substitution');
 		$this->assertTrue(strpos($command, '$d.get_hash=') === false, 'the command does not use inert hash substitution');
 		$this->assertTrue(strpos($command, '$d.get_custom2=') === false, 'the command does not use inert comment substitution');
+	}
+
+	public function testAClearedTemplateUsesTheDefault()
+	{
+		$config = new rTelegram();
+		$config->updateFromInput(array('template_finished' => '', 'template_added' => " \n "));
+		$this->assertEquals(rTelegram::defaultTemplate('finished'), $config->templates['finished'], 'an empty template is saved as the default one');
+		$this->assertEquals(rTelegram::defaultTemplate('added'), $config->templates['added'], 'a template of only spaces is saved as the default one');
+		$this->assertEquals('Torrent finished: Movie', $config->render('finished', 'Movie', 'ABC'), 'the message is not empty');
+		$config->templates['removed'] = '';
+		$config->normalize();
+		$this->assertEquals(rTelegram::defaultTemplate('removed'), $config->templates['removed'], 'an empty template already stored also falls back to the default one');
+	}
+
+	public function testTheCutNeverLeavesALoneBackslashOrHalfALink()
+	{
+		$config = new rTelegram();
+		$config->templates['finished'] = '{TORRENT}';
+		$message = $config->render('finished', str_repeat('a', 4095).'!', 'ABC');
+		$this->assertEquals(str_repeat('a', 4095), $message, 'an escape that does not fit is left out as a whole');
+		$config->templates['finished'] = "{TORRENT}\n{LINK}";
+		$message = $config->render('finished', str_repeat('a', 4080), 'ABC', 'VRS24mrkerhttps%3A%2F%2Fexample.org%2Fitem');
+		$this->assertEquals(str_repeat('a', 4080)."\n", $message, 'a link that does not fit is left out as a whole');
+		$message = $config->render('finished', 'a'.str_repeat('_', 3000), 'ABC');
+		$this->assertTrue(strlen($message) <= rTelegram::MAX_TEMPLATE_LENGTH, 'the message stays within the limit');
+		$this->assertTrue((strlen($message) - strlen(rtrim($message, '\\'))) % 2 === 0, 'the message never ends on a lone backslash');
+	}
+
+	public function testStoredSettingsAreReadableByTheGroupOnly()
+	{
+		FileUtil::makeDirectory(FileUtil::getSettingsPath());
+		$name = FileUtil::getSettingsPath().'/telegram.dat';
+		$config = new rTelegram();
+		$config->token = 'secret-token';
+		$this->assertTrue($config->store(), 'the settings are stored');
+		clearstatcache();
+		$this->assertEquals('640', sprintf('%o', fileperms($name) & 0777), 'the stored file is readable by the group, not by other users');
+		chmod($name, 0666);
+		rTelegram::load();
+		clearstatcache();
+		$this->assertEquals('640', sprintf('%o', fileperms($name) & 0777), 'loading the settings protects a file stored with wider rights');
+		unlink($name);
+	}
+
+	public function testAFailedNotificationIsLogged()
+	{
+		global $log_file;
+		$saved = $log_file;
+		$log_file = sys_get_temp_dir().'/rutorrent-telegram-test-'.getmypid().'.log';
+		@unlink($log_file);
+		$config = new rTelegram();
+		$config->enabled = true;
+		$config->token = 'secret-token';
+		$config->chatId = '1';
+		$config->events['finished'] = true;
+		$client = new rTelegramClient(function($url, $payload, $options) {
+			return array('http_code' => 400, 'body' => '{"ok":false,"description":"Bad Request: chat secret-token not found"}');
+		});
+		$result = $config->notify('finished', 'Movie', 'ABC', '', $client);
+		$this->assertTrue(!$result['ok'], 'the refused notification is reported');
+		$log = is_file($log_file) ? file_get_contents($log_file) : '';
+		$this->assertTrue(strpos($log, 'telegram: finished notification failed: HTTP 400: Bad Request: chat [redacted] not found') !== false, 'the ruTorrent log gets Telegram\'s explanation');
+		$this->assertTrue(strpos($log, 'secret-token') === false, 'the log does not get the bot token');
+		$sent = false;
+		$client = new rTelegramClient(function($url, $payload, $options) use (&$sent) {
+			$sent = true;
+			return array('http_code' => 200, 'body' => '{"ok":true}');
+		});
+		$this->assertTrue($config->notify('added', 'Movie', 'ABC', '', $client) === null && !$sent, 'a disabled event sends nothing');
+		@unlink($log_file);
+		$log_file = $saved;
 	}
 }
