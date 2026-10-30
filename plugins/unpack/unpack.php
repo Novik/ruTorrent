@@ -139,6 +139,157 @@ class rUnpack
 		}
 	}
 
+	// A refusal is logged whatever $unpack_debug_enabled says, since an
+	// automatic unpack has no one to answer.
+	protected static function logRefusal( $how, $hash, $reason, $entries )
+	{
+		// A manual unpack's hash comes from the request: only a well-formed
+		// one is copied into the log.
+		$hash = preg_match('/^[0-9A-Fa-f]{40}$/D', $hash) ? strtoupper($hash) : "invalid";
+		FileUtil::toLog("unpack: ".$how." unpack refused hash=".$hash." reason=".$reason." entries=".$entries);
+	}
+
+	// The unpack scripts' arguments 7-10, for place.php (see stage.sh).
+	protected static function placeArguments( $how, $hash )
+	{
+		return(" ".Utility::escapeShellArg(Utility::getPHP())." ".Utility::escapeShellArg($how)." ".
+			Utility::escapeShellArg($hash)." ".Utility::escapeShellArg(User::getUser()));
+	}
+
+	// What place() calls: place.php refuses to start when one is disabled,
+	// which PHP 7.4 would answer with null, "not a link", and PHP 8 with an
+	// Error half way through.
+	const PLACEMENT_FUNCTIONS = array('scandir', 'lstat', 'is_link', 'is_dir', 'file_exists', 'unlink', 'rename',
+		'mkdir', 'filemtime', 'touch');
+
+	// Moves what one extractor run wrote into its private directory $stage
+	// into $output (place.php, run by the unpack scripts). Every symbolic
+	// link the archive brought is dropped first, even one that resolves
+	// inside for now, since a directory is then moved whole; $skipped more
+	// symbolic links were left out by the extractor itself (unrar -ol-) and
+	// count the same. Nothing is written into or through a symbolic link in
+	// $output. Each refusal is named on stderr, the task's output, and
+	// counted by reason in the log. Returns the exit status.
+	public static function place( $how, $hash, $stage, $output, $skipped )
+	{
+		$refused = ($skipped > 0) ? array("archive-symbolic-link"=>$skipped) : array();
+		if(self::dropLinks($stage, '', $refused))
+			self::placeEntries($stage, $output, '', $refused);
+		foreach($refused as $reason=>$entries)
+			self::logRefusal($how, $hash, $reason, $entries);
+		return(empty($refused) ? 0 : 1);
+	}
+
+	// A refusal the unpack scripts meet outside a placement: named on stderr
+	// and logged.
+	public static function report( $how, $hash, $reason, $name )
+	{
+		self::tellRefusal($reason, $name);
+		self::logRefusal($how, $hash, $reason, 1);
+	}
+
+	// Names a refusal on stderr, the task's output.
+	protected static function tellRefusal( $reason, $name )
+	{
+		fwrite(STDERR, "unpack: refused ".$reason.": ".addcslashes($name, "\0..\37\177\\")."\n");
+	}
+
+	protected static function refusePlacement( &$refused, $reason, $name )
+	{
+		$refused[$reason] = (isset($refused[$reason]) ? $refused[$reason] : 0) + 1;
+		self::tellRefusal($reason, $name);
+	}
+
+	// The names in $directory, or null after a refusal.
+	protected static function placementNames( $directory, $shown, &$refused )
+	{
+		$names = @scandir($directory);
+		if($names === false)
+		{
+			self::refusePlacement($refused, "move-failed", ($shown === '') ? '.' : $shown);
+			return(null);
+		}
+		return(array_diff($names, array('.', '..')));
+	}
+
+	// Removes every symbolic link under $directory; false if one stays or
+	// an entry cannot be told a link or not.
+	protected static function dropLinks( $directory, $shown, &$refused )
+	{
+		$names = self::placementNames($directory, $shown, $refused);
+		if($names === null)
+			return(false);
+		$dropped = true;
+		foreach($names as $name)
+		{
+			$path = $directory.'/'.$name;
+			$stat = @lstat($path);
+			if($stat === false)
+			{
+				self::refusePlacement($refused, "move-failed", $shown.$name);
+				$dropped = false;
+			}
+			else
+			if(($stat['mode'] & 0170000) === 0120000)
+			{
+				self::refusePlacement($refused, "archive-symbolic-link", $shown.$name);
+				$dropped = @unlink($path) && $dropped;
+			}
+			else
+			if(($stat['mode'] & 0170000) === 0040000)
+				$dropped = self::dropLinks($path, $shown.$name.'/', $refused) && $dropped;
+		}
+		return($dropped);
+	}
+
+	protected static function placeEntries( $from, $to, $shown, &$refused )
+	{
+		$names = self::placementNames($from, $shown, $refused);
+		if($names === null)
+			return;
+		foreach($names as $name)
+		{
+			$source = $from.'/'.$name;
+			$target = $to.'/'.$name;
+			$entry = $shown.$name;
+			// A copy to another filesystem gets the time of the copy.
+			$mtime = @filemtime($source);
+			if(!is_dir($source))
+			{
+				if(is_dir($target) && !is_link($target))
+					self::refusePlacement($refused, "output-type-conflict", $entry);
+				else
+				// unlink() first: rename() to another filesystem copies, and
+				// the copy would write into the file or through the link there.
+				if(((is_link($target) || file_exists($target)) && !@unlink($target)) || !@rename($source, $target))
+					self::refusePlacement($refused, "move-failed", $entry);
+				else
+					@touch($target, $mtime);
+			}
+			else
+			if(is_link($target))
+				self::refusePlacement($refused, "output-symbolic-link", $entry);
+			else
+			if(is_dir($target))
+				self::placeEntries($source, $target, $entry.'/', $refused);
+			else
+			if(file_exists($target))
+				self::refusePlacement($refused, "output-type-conflict", $entry);
+			else
+			// rename() does not move a directory to another filesystem.
+			if(!@rename($source, $target))
+			{
+				if(@mkdir($target))
+				{
+					self::placeEntries($source, $target, $entry.'/', $refused);
+					@touch($target, $mtime);
+				}
+				else
+					self::refusePlacement($refused, "move-failed", $entry);
+			}
+		}
+	}
+
 	protected static function isDryRun()
 	{
 		global $unpack_debug_enabled;
@@ -277,7 +428,8 @@ class rUnpack
 				escapeshellarg($outPath)." ".
 				escapeshellarg($pathToUnzip)." ".
 				escapeshellarg($filesToDelete)." ".
-				escapeshellarg($randTempDirectory);
+				escapeshellarg($randTempDirectory).
+				self::placeArguments("automatic", $hash);
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';
 
@@ -355,7 +507,8 @@ class rUnpack
 				$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.'_file.sh')." ".
 					escapeshellarg($arh)." ".
 					escapeshellarg($filename)." ".
-					escapeshellarg(FileUtil::addslash($outPath));
+					escapeshellarg(FileUtil::addslash($outPath))." '' '' ''".
+					self::placeArguments("manual", $hash);
 				$taskArgs['arg'] = FileUtil::getFileName($filename);
 
 				self::log("[Manual] Unpack file [$filename] from torrent [$hash] to [$outPath]");
@@ -442,7 +595,8 @@ class rUnpack
 							escapeshellarg($arh)." ".
 							escapeshellarg($basename)." ".
 							escapeshellarg($outPath)." ".
-							escapeshellarg($pathToUnzip);
+							escapeshellarg($pathToUnzip)." '' ''".
+							self::placeArguments("manual", $hash);
 						$taskArgs['arg'] = FileUtil::getFileName(FileUtil::delslash($basename));
 
 						self::log("[Manual] Unpack files from torrent [$tname] at [$basename] to [$outPath]");
