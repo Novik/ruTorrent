@@ -641,6 +641,9 @@ class rTorrent
 	 * correctDirectory() compares the path as written; rtorrent's "mkdir -p"
 	 * and its file writes follow links. So the deepest part of $dir that
 	 * exists is resolved and the rest, which mkdir will create, re-attached.
+	 * That rest is compared as written, so it has to be plain names: a "."
+	 * or ".." in it is refused. So is a path no part of which can be seen to
+	 * exist, as under an open_basedir that hides the root.
 	 * A part that exists but does not resolve -- a dangling link, or a link
 	 * into a directory this user cannot enter -- is refused rather than read
 	 * as a plain name.
@@ -655,6 +658,8 @@ class rTorrent
 		$top = FileUtil::addslash($topDirectory);
 		if(($top === '/') || !User::isLocalMode())
 			return(true);
+		// The realpath cache outlives a request in PHP-FPM; links may have changed since.
+		clearstatcache(true);
 		$realTop = realpath($top);
 		$realTop = FileUtil::addslash(($realTop === false) ? $top : $realTop);
 		if(!is_string($dir) || ($dir === '') || ($dir[0] !== '/'))
@@ -663,10 +668,19 @@ class rTorrent
 		$rest = '';
 		while(!file_exists($path) && !is_link($path))
 		{
+			$parent = dirname($path);
+			// Only the root is its own parent; open_basedir can hide even that.
+			if($parent === $path)
+				return(false);
 			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
 			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
-			$rest = '/'.FileUtil::getFileName($path).$rest;
-			$path = dirname($path);
+			$name = FileUtil::getFileName($path);
+			// The rest is compared as written, so a "." or ".." in it is
+			// refused rather than resolved.
+			if(($name === '.') || ($name === '..'))
+				return(false);
+			$rest = '/'.$name.$rest;
+			$path = $parent;
 		}
 		$real = realpath($path);
 		if($real === false)

@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/PhpProcess.php');
 require_once(__DIR__ . '/GlobalSettingsFixture.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/RtorrentProbeFixture.php');
@@ -153,6 +154,33 @@ class AddDirectorySymlinkTest extends TestCase
 		}
 	}
 
+	/**
+	 * What does not exist yet is put back as written, and mkdir -p follows a
+	 * ".." in it only once it has made the directory before it. With "zz"
+	 * missing, <top>/plain/zz/../../../outside reads as under the top
+	 * directory and is made beside it.
+	 */
+	public function testADotOrDotDotAfterADirectoryThatDoesNotExistYetIsRefused()
+	{
+		foreach (array('/plain/zz/../../../outside', '/plain/zz/../../../outside/new/', '/zz/../..',
+				'/plain/zz/./new') as $tail) {
+			$this->assertTrue(rTorrent::isInsideTopDirectory($this->top . $tail) === false,
+				"'{$tail}' is refused");
+		}
+	}
+
+	/**
+	 * Only a name that is "." or ".." is refused, and only where nothing
+	 * exists yet; a ".." among directories that exist is resolved as before.
+	 */
+	public function testOtherNamesAfterADirectoryThatDoesNotExistYetAreAccepted()
+	{
+		foreach (array('/plain/.new/..new/...', '/plain/../plain/new') as $tail) {
+			$this->assertTrue(rTorrent::isInsideTopDirectory($this->top . $tail) === true,
+				"'{$tail}' is accepted");
+		}
+	}
+
 	public function testADanglingLinkIsRefused()
 	{
 		$this->assertTrue(rTorrent::isInsideTopDirectory($this->top . '/dangle/x') === false,
@@ -234,6 +262,55 @@ class AddDirectorySymlinkTest extends TestCase
 		$this->assertTrue($result === false, 'sendMagnet() fails for a directory behind a link out');
 		$this->assertEquals(array(), $this->daemon->calls(),
 			'and rtorrent was sent nothing; it saw ' . json_encode($this->daemon->calls()));
+	}
+
+	/**
+	 * With an open_basedir that hides every directory above a top directory
+	 * that does not exist, no part of the path can be seen to exist, not even
+	 * the root. The child is stopped after fifteen seconds if it does not end,
+	 * and does not log the open_basedir warnings util.php sends to standard
+	 * error: a walk that never ends would log without end.
+	 */
+	public function testAnInaccessibleRootRefusesInsteadOfLooping()
+	{
+		$missing = $this->base . '/not-created';
+		$root = dirname(__DIR__, 2);
+		$code = 'require ' . var_export($root . '/php/rtorrent.php', true) . ';'
+			. 'ini_set("log_errors", "0");'
+			. '$topDirectory = ' . var_export($missing, true) . ';'
+			. 'ini_set("open_basedir", ' . var_export($root . PATH_SEPARATOR . $missing, true) . ');'
+			. '$scgi_host = "127.0.0.1"; $scgi_port = 0;'
+			. 'echo rTorrent::isInsideTopDirectory($topDirectory . "/new") ? "allowed" : "refused";';
+		$result = PhpProcess::run(array_merge(PhpProcess::sameIni(), array('-r', $code)), array('timeout' => 15));
+		$this->assertTrue($result['timedOut'] === false, 'a root hidden by open_basedir ends the walk');
+		$this->assertTrue($result['code'] === 0, 'and is not a PHP error');
+		$this->assertTrue($result['out'] === 'refused', 'nothing that can be seen to exist means refusal');
+	}
+
+	/**
+	 * PHP keeps what realpath() resolved for realpath_cache_ttl seconds, and
+	 * in PHP-FPM across requests. Another process that swaps a directory the
+	 * check has already seen for a link out must not find it still inside.
+	 */
+	public function testADirectorySwappedForALinkOutByAnotherProcessIsRefused()
+	{
+		$dir = $this->top . '/swapped';
+		mkdir($dir);
+		try {
+			$before = rTorrent::isInsideTopDirectory($dir . '/new');
+			$swap = PhpProcess::run(array_merge(PhpProcess::sameIni(),
+				array('-r', 'rename($argv[1], $argv[2]); symlink($argv[3], $argv[1]);',
+				$dir, $this->top . '/aside', $this->base . '/outside')), array('timeout' => 15));
+			$after = rTorrent::isInsideTopDirectory($dir . '/new');
+			$swapped = is_link($dir);
+		} finally {
+			@unlink($dir);
+			@rmdir($dir);
+			@rmdir($this->top . '/aside');
+		}
+		$this->assertTrue($before === true, 'the directory is inside before the swap');
+		$this->assertTrue(($swap['code'] === 0) && $swapped, 'another process swaps it for a link out: ' . $swap['err']);
+		$this->assertTrue($after === false, 'and once it is a link out, it is refused');
 	}
 
 	public function testTheSendersStillLoadThroughALinkThatStaysInside()
