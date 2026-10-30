@@ -62,10 +62,11 @@ class UnpackTopDirectoryTest extends TestCase
 
 	/**
 	 * Drives $call against an rUnpack whose output directory setting is $path,
-	 * with rtorrent answering f.get_frozen_path with $frozen. Returns what the
-	 * call returned and what unpack logged.
+	 * with rtorrent answering f.get_frozen_path with $frozen, and the label
+	 * added to that directory when $addLabel. Returns what the call returned
+	 * and what unpack logged.
 	 */
-	private function drive($path, $call, $frozen = '', $replies = null)
+	private function drive($path, $call, $frozen = '', $replies = null, $addLabel = false)
 	{
 		$root = realpath(__DIR__ . '/../../..');
 		if ($this->daemon !== null) {
@@ -88,7 +89,8 @@ class UnpackTopDirectoryTest extends TestCase
 			. 'chdir(' . var_export($root . '/plugins/unpack', true) . ");\n"
 			. 'require_once(' . var_export($root . '/plugins/unpack/unpack.php', true) . ");\n"
 			. '$unpack_debug_enabled = "dry-run";' . "\n"
-			. '$up = new rUnpack(); $up->path = ' . var_export($path, true) . ";\n"
+			. '$up = new rUnpack(); $up->path = ' . var_export($path, true) . ';'
+				. ' $up->addLabel = ' . ($addLabel ? 1 : 0) . ";\n"
 			. '$ret = ' . $call . ";\n"
 			. 'echo json_encode($ret);' . "\n");
 
@@ -102,10 +104,11 @@ class UnpackTopDirectoryTest extends TestCase
 		);
 	}
 
-	private function silent($path, $basename)
+	private function silent($path, $basename, $label = '')
 	{
 		return $this->drive($path, '$up->startSilentTask(' . var_export($basename, true)
-			. ', ' . var_export(dirname($basename), true) . ', "", "a", "' . self::HASH . '")');
+			. ', ' . var_export(dirname($basename), true) . ', ' . var_export($label, true)
+			. ', "a", "' . self::HASH . '")', '', null, $label !== '');
 	}
 
 	private function manual($dir, $frozen)
@@ -118,10 +121,11 @@ class UnpackTopDirectoryTest extends TestCase
 	 * A manual unpack of the whole download: rtorrent reports its base path,
 	 * label and name, then its files.
 	 */
-	private function whole($dir, $basePath)
+	private function whole($dir, $basePath, $label = '')
 	{
 		return $this->drive('', '$up->startTask("' . self::HASH . '", ' . var_export($dir, true)
-			. ', "", 0)', '', array(array($basePath, '', 'a'), array(basename($basePath))));
+			. ', "", 0)', '', array(array($basePath, rawurlencode($label), 'a'), array(basename($basePath))),
+			$label !== '');
 	}
 
 	private function started($r)
@@ -193,5 +197,42 @@ class UnpackTopDirectoryTest extends TestCase
 		$r = $this->manual($this->top . '/plain/new', $this->top . '/plain/a.zip');
 		$this->assertTrue($this->started($r),
 			'a manual unpack inside the top directory is started: ' . $r['log']);
+	}
+
+	/**
+	 * With addLabel the label is added to the directory as written, and a
+	 * label is free text. "zz" does not exist yet, so nothing the check can
+	 * resolve shows where the ".." after it leads; the archive tool makes
+	 * "zz" and then climbs out of it, beside the top directory.
+	 */
+	public function testAutoUnpackIntoALabelThatClimbsOutIsNotStarted()
+	{
+		$r = $this->silent('', $this->top . '/plain/a.zip', 'zz/../../../outside');
+		$this->assertTrue(!$this->started($r),
+			'a label that leads out of the top directory is not unpacked into: ' . $r['log']);
+	}
+
+	public function testAutoUnpackIntoANewLabelIsStarted()
+	{
+		$r = $this->silent('', $this->top . '/plain/a.zip', 'Фильмы/2026');
+		$this->assertTrue($this->started($r) && (strpos($r['log'], '/plain/Фильмы/2026/') !== false),
+			'an archive is unpacked into its label, made under the directory: ' . $r['log']);
+	}
+
+	public function testManualUnpackOfAWholeDownloadIntoALabelThatClimbsOutIsRefused()
+	{
+		$r = $this->whole('', $this->top . '/plain/a.zip', 'zz/../../../outside');
+		$this->assertTrue(!$this->started($r),
+			'a whole download is not unpacked into a label that leads out: ' . $r['log']);
+		$this->assertTrue(is_array($r['ret']) && count($r['ret']['errors']) > 0
+			&& ($r['ret']['errors'] !== array('Dry-run operation, no real task start')),
+			'and is answered with an error of its own: ' . $r['printed']);
+	}
+
+	public function testManualUnpackOfAWholeDownloadIntoANewLabelIsStarted()
+	{
+		$r = $this->whole('', $this->top . '/plain/a.zip', 'Фильмы/2026');
+		$this->assertTrue($this->started($r) && (strpos($r['log'], '/plain/Фильмы/2026/') !== false),
+			'a whole download is unpacked into its label, made under the directory: ' . $r['log']);
 	}
 }
