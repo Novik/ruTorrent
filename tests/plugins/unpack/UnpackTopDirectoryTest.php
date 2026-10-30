@@ -15,10 +15,16 @@ require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
  * it, a link out and a link that stays inside. unpack runs in dry-run mode,
  * so what is read is whether it went as far as starting the extraction,
  * from its own log.
+ *
+ * It runs as a user, as behind a login, and the log also has the command
+ * the task would run: its last arguments are what place.php needs.
  */
 class UnpackTopDirectoryTest extends TestCase
 {
 	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	const USER = 'unpacktest';
+	// $pathToExternals['php']: what unpack hands the unpack scripts.
+	const PHP = '/opt/php-cli/bin/php';
 	const STARTED = 'Start unpack operation';
 
 	private $base;
@@ -72,7 +78,7 @@ class UnpackTopDirectoryTest extends TestCase
 		if ($this->daemon !== null) {
 			$this->daemon->stop();
 		}
-		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/' . self::USER);
 		$this->daemon = new FakeRtorrentDaemon(($replies === null) ? array(array($frozen)) : $replies,
 			$this->base . '/calls.log');
 		$log = $this->base . '/unpack.log';
@@ -81,9 +87,11 @@ class UnpackTopDirectoryTest extends TestCase
 		$driver = $this->base . '/drive-unpack.php';
 		file_put_contents($driver, "<?php\n"
 			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+			. '$_SERVER[\'REMOTE_USER\'] = ' . var_export(self::USER, true) . ";\n"
 			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
 			. '$scgi_host = "127.0.0.1"; $scgi_port = ' . $this->daemon->port() . ';'
 				. ' $rpcTimeOut = 10; $rpcLogCalls = false;' . "\n"
+			. '$pathToExternals["php"] = ' . var_export(self::PHP, true) . ";\n"
 			. '$topDirectory = ' . var_export($this->top . '/', true) . ";\n"
 			. '$log_file = ' . var_export($log, true) . ";\n"
 			. 'chdir(' . var_export($root . '/plugins/unpack', true) . ");\n"
@@ -234,5 +242,35 @@ class UnpackTopDirectoryTest extends TestCase
 		$r = $this->whole('', $this->top . '/plain/a.zip', 'Фильмы/2026');
 		$this->assertTrue($this->started($r) && (strpos($r['log'], '/plain/Фильмы/2026/') !== false),
 			'a whole download is unpacked into its label, made under the directory: ' . $r['log']);
+	}
+
+	/**
+	 * The unpack script the task starts gets PHP, "automatic" or "manual",
+	 * the hash and the user as its arguments 7-10, for place.php.
+	 */
+	private function assertPlaceArguments($r, $how)
+	{
+		preg_match('/ with arguments (\[.*\])$/m', $r['log'], $started);
+		$commands = isset($started[1]) ? json_decode($started[1], true) : null;
+		preg_match_all("~'(?:[^']|'\\\\'')*'~", (string)($commands[0] ?? ''), $arguments);
+		$arguments = $arguments[0];
+		$this->assertTrue((count($arguments) === 11) && (array_slice($arguments, 7) === array("'" . self::PHP . "'",
+			"'" . $how . "'", "'" . self::HASH . "'", "'" . self::USER . "'")),
+			'the script gets PHP, "' . $how . '", the hash and the user: ' . $r['log']);
+	}
+
+	public function testAutoUnpackHandsPlacePhpItsContext()
+	{
+		$this->assertPlaceArguments($this->silent('', $this->top . '/plain/a.zip'), 'automatic');
+	}
+
+	public function testManualUnpackHandsPlacePhpItsContext()
+	{
+		$this->assertPlaceArguments($this->manual($this->top . '/plain/new', $this->top . '/plain/a.zip'), 'manual');
+	}
+
+	public function testManualUnpackOfAWholeDownloadHandsPlacePhpItsContext()
+	{
+		$this->assertPlaceArguments($this->whole($this->top . '/plain/new', $this->top . '/plain/a.zip'), 'manual');
 	}
 }
