@@ -298,15 +298,39 @@ class FileUtil
 				touch( $logTarget );
 				chmod( $logTarget, (isset($profileMask) ? $profileMask : 0777) & 0666 );
 			}
+			$line = "[".date_create()->format('Y-m-d H:i:s')."] {$str}\n";
+			$isRegular = $isFilesystem && is_file( $logTarget );
+			// fs.protected_regular refuses an open that may create the file when
+			// another user owns it in a sticky directory such as /tmp, whatever
+			// its mode, so an existing log is first opened without O_CREAT.
+			if( $isRegular && self::appendToExistingLog( $logTarget, $line ) )
+				return;
 			// Regular and unstatable stream logs only need write access. Keep the
 			// old mode for FIFOs, where a write-only open blocks until a reader appears.
 			$w = fopen( $logTarget, (!$isFilesystem && !$exists) || is_file( $logTarget ) ? "ab" : "ab+" );
 			if( $w )
 			{
-				fputs( $w, "[".date_create()->format('Y-m-d H:i:s')."] {$str}\n" );
+				if( $isRegular )
+					flock( $w, LOCK_EX );
+				fputs( $w, $line );
 				fclose( $w );
 			}
 		}
+	}
+
+	// Without O_APPEND, the lock keeps a concurrent toLog() line from being
+	// overwritten between the seek and the write.
+	private static function appendToExistingLog( $path, $line )
+	{
+		$w = @fopen( $path, "r+b" );
+		if( !$w )
+			return false;
+		flock( $w, LOCK_EX );
+		fseek( $w, 0, SEEK_END );
+		fputs( $w, $line );
+		fflush( $w );
+		fclose( $w );
+		return true;
 	}
 
 	public static function getMinFilePerms( $file, $chmod = 0755 )
