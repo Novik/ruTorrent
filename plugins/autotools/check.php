@@ -70,7 +70,10 @@ $source_path = $base_path.$sub_dir;
 if( $dest_path != $source_path )
 {
 	$files = $is_multy ? rtScanFiles( $source_path, '/.*/' ) : array( $base_name );
-	if( $at->skipsMove( $files ) || rtTakenDestination( $files, $dest_path ) != '' )
+	// The move follows links, so the destination has to stay inside the top
+	// directory once they are followed, not only as the settings wrote it.
+	if( !rTorrent::isInsideTopDirectory( $dest_path ) ||
+		$at->skipsMove( $files ) || rtTakenDestination( $files, $dest_path ) != '' )
 		$dest_path = $source_path;
 }
 
