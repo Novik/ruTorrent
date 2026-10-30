@@ -33,7 +33,10 @@ if( $is_ok )
 		$auto_start = $at->watch_start;
 		$path_to_watch = rtAddTailSlash( trim( $at->path_to_watch ) );
 		Debug( "path_to_watch    : ".$path_to_watch );
-		if( $path_to_watch == '' || $path_to_watch == '/' )
+		// The scan, the touch and the load follow links, so the directory has
+		// to stay inside the top directory once they are followed.
+		if( $path_to_watch == '' || $path_to_watch == '/' ||
+			!rTorrent::isInsideTopDirectory( $path_to_watch ) )
 			$is_ok = false;
 	}
 	else $is_ok = false;
@@ -59,6 +62,13 @@ if( $is_ok )
 		Debug( "torrent file     : ".$torrent_file );
 		Debug( "save data to     : ".$dest_path );
 
+		// A link inside the watch directory is followed by the scan.
+		if( !rTorrent::isInsideTopDirectory( $torrent_file ) )
+		{
+			Debug( "outside the top directory: ".$torrent_file );
+			continue;
+		}
+
 		$is_ok = true;
 		// rTorrent store info about all added torrents,
 		// so we must change $torrent_file's time to trick rTorrent.
@@ -66,6 +76,12 @@ if( $is_ok )
 		if( $is_ok && ( !is_writeable( $torrent_file ) || !touch( $torrent_file ) ) )
 		{
 			Debug( "no access to ".$torrent_file );
+			$is_ok = false;
+		}
+
+		if( $is_ok && !rTorrent::isInsideTopDirectory( $dest_path ) )
+		{
+			Debug( "outside the top directory: ".$dest_path );
 			$is_ok = false;
 		}
 
