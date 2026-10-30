@@ -149,7 +149,10 @@ if(isset($_REQUEST['cmd']))
 				$path_edit = trim($_REQUEST['path_edit']);
 				if(is_dir($path_edit))
 					$path_edit = FileUtil::addslash($path_edit);
-				if(rTorrentSettings::get()->correctDirectory($path_edit))
+				// What is hashed here is served once it is seeded, so it has to
+				// stay inside the top directory once links are followed.
+				if(rTorrentSettings::get()->correctDirectory($path_edit) &&
+					rTorrent::isInsideTopDirectory($path_edit))
 				{
 					$rt = recentTrackers::load();
 					$trackers = array();
