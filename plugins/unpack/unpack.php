@@ -1,5 +1,6 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( dirname(__FILE__)."/../../php/rtorrent.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php");
 require_once( dirname(__FILE__)."/../../php/settings.php");
 require_once( dirname(__FILE__).'/../_task/task.php' );
@@ -256,6 +257,11 @@ class rUnpack
         			$outPath.=FileUtil::addslash($label);
 	        	if($this->addName && ($name!=''))
 				$outPath.=FileUtil::addslash($name);
+			if(!rTorrent::isInsideTopDirectory($outPath))
+			{
+				self::log("[Auto] Not unpacked: [$outPath] is outside the top directory");
+				return;
+			}
 			if($unpackToTemp)
 			{
 				$randTempDirectory = FileUtil::addslash( FileUtil::getTempFilename('unpack') );
@@ -337,6 +343,12 @@ class rUnpack
 
 				if($outPath=='')
 					$outPath = dirname($filename);
+				if(!rTorrent::isInsideTopDirectory($outPath))
+				{
+					self::log("[Manual] Not unpacked: [$outPath] is outside the top directory");
+					$ret["errors"] = array("The directory is outside the top directory. Unpack failed.");
+					return($ret);
+				}
 
 				$commands = array();
 				$arh = Utility::getExternal( ($mode == "zip") ? 'unzip' : 'unrar' );
@@ -419,6 +431,12 @@ class rUnpack
 				        		$outPath.=FileUtil::addslash($label);
 				        	if($this->addName && ($tname!=''))
 				        		$outPath.=FileUtil::addslash($tname);
+						if(!rTorrent::isInsideTopDirectory($outPath))
+						{
+							self::log("[Manual] Not unpacked: [$outPath] is outside the top directory");
+							$ret["errors"] = array("The directory is outside the top directory. Unpack failed.");
+							return($ret);
+						}
 
 				        	$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
 							escapeshellarg($arh)." ".
