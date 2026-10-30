@@ -746,7 +746,11 @@ class Torrent
 	        	        if( $item != '.' && $item != '..')
 				{
 					$path = $dir . DIRECTORY_SEPARATOR . $item;
-					if(is_link($path) && (strpos(realpath( $path ),$this->basedir.'/')===0))
+					// A link back into the folder would be read twice, and one out
+					// of the top directory would be read, and served once seeded,
+					// from wherever it points.
+					if(is_link($path) && ((strpos(realpath( $path ),$this->basedir.'/')===0) ||
+						!self::isInsideTopDirectory(realpath( $path ))))
 						continue;
 					if(is_dir( $path ))
 						$paths = array_merge( self::scandir( $path ), $paths );
@@ -755,6 +759,22 @@ class Torrent
 							$paths[] = $path;
 				}
         	return $paths;
+	}
+
+	/** Whether $real, a resolved path, is inside $topDirectory
+	 * @param string|false resolved path
+	 * @return boolean
+	 */
+	static private function isInsideTopDirectory( $real )
+	{
+		global $topDirectory;
+		if(!isset($topDirectory) || (FileUtil::addslash($topDirectory) === '/'))
+			return(true);
+		if($real === false)
+			return(false);
+		$top = realpath($topDirectory);
+		$top = FileUtil::addslash(($top === false) ? $topDirectory : $top);
+		return(strpos(FileUtil::addslash($real), $top) === 0);
 	}
 
 	/** Helper to pack data hash
