@@ -63,38 +63,51 @@ if(plugin.canChangeColumns())
 	};
 	dxSTable.prototype.setRowById = plugin.wrappedSetRowById;
 
-	plugin.config = theWebUI.config;
-	theWebUI.config = function()
-	{
-		this.tables.trt.columns.push({text: 'SeedingTime', width: '100px', id: 'seedingtime', type: TYPE_NUMBER});
-		this.tables.trt.columns.push({text: 'AddTime', width: '110px', id: 'addtime', type: TYPE_NUMBER});
-		plugin.trtFormat = this.tables.trt.format;
-		this.tables.trt.format = function(table,arr)
-		{
-			for(var i in arr)
-			{
-			        var s = table.getIdByCol(i);
-				if(s=="seedingtime")
-					arr[i] = arr[i] != -1 ? theConverter.time(arr[i],true) : "";
-				else
-				if(s=="addtime")
-					arr[i] = arr[i] != -1 ? theConverter.date(arr[i]) : "";
-		        }
-			return(plugin.trtFormat(table,arr));
-		}
-		plugin.config.call(this);
-		plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
-		{
-			const epochSeconds = iv(value);
-			torrent.seedingtime = (epochSeconds > 3600*24*365) ? Math.max(0, new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000)) : -1;
-		});
-		plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
-		{
-			const epochSeconds = iv(value);
-			torrent.addtime = (epochSeconds > 3600*24*365) ? epochSeconds : -1;
-		});
-		plugin.trtRenameColumn();
-	}
+        plugin.config = theWebUI.config;
+        theWebUI.config = function()
+        {
+                this.tables.trt.columns.push({text: 'SeedingTime', width: '100px', id: 'seedingtime', type: TYPE_NUMBER});
+                this.tables.trt.columns.push({text: 'AddTime', width: '110px', id: 'addtime', type: TYPE_NUMBER});
+                plugin.trtFormat = this.tables.trt.format;
+                this.tables.trt.format = function(table,arr)
+                {
+                        for(var i in arr)
+                        {
+                                var s = table.getIdByCol(i);
+                                if(s=="seedingtime")
+                                        arr[i] = arr[i] != -1 ? theConverter.time(arr[i],true) : "";
+                                else
+                                if(s=="addtime")
+                                        arr[i] = arr[i] != -1 ? theConverter.date(arr[i]) : "";
+                        }
+                        return(plugin.trtFormat(table,arr));
+                }
+                plugin.config.call(this);
+                plugin.reqId4 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_timestamp_finished="),function(hash,torrent,value)
+                {
+                        torrent.timestamp_finished = iv(value);
+                });
+                plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
+                {
+                        const epochSeconds = iv(value);
+                        if(epochSeconds > 3600*24*365){
+                                torrent.seedingtime = new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000);
+                        } else if (torrent.timestamp_finished && torrent.timestamp_finished > 0){
+                                torrent.seedingtime = new Date().getTime()/1000-(torrent.timestamp_finished+theWebUI.deltaTime/1000);
+                        } else { torrent.seedingtime = -1; }
+                });
+                plugin.reqId3 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_state_changed="),function(hash, torrent, value)
+                {
+                        torrent.state_changed = iv(value);
+                });
+                plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
+                {
+                        const epochSeconds = iv(value);
+                        if(epochSeconds > 3600*24*365){ torrent.addtime = epochSeconds; } else if(torrent.state_changed > 0) { torrent.addtime = torrent.state_changed; } else { torrent.addtime = -1; }
+                });
+                plugin.trtRenameColumn();
+        }
+
 
 	plugin.trtRenameColumn = function()
 	{
@@ -204,4 +217,6 @@ plugin.onRemove = function()
 	}
 	theRequestManager.removeRequest( "trt", plugin.reqId1 );
 	theRequestManager.removeRequest( "trt", plugin.reqId2 );
+	theRequestManager.removeRequest( "trt", plugin.reqId3 );
+	theRequestManager.removeRequest( "trt", plugin.reqId4 );
 }
