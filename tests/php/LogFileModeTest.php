@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/../../php/utility/fileutil.php');
+require_once(__DIR__ . '/PhpProcess.php');
 
 class LogFileModeStream
 {
@@ -76,6 +77,13 @@ class LogFileModeStream
  */
 class LogFileModeTest extends TestCase
 {
+	// Logs each remaining argument through FileUtil::toLog(), keeping any
+	// Throwable alive the way an error handler or a debugger may, and prints
+	// how many milliseconds the calls took.
+	const LOG_CHILD = '$GLOBALS["log_file"] = $argv[2]; require $argv[1]; $kept = array(); $start = microtime(true);
+foreach (array_slice($argv, 3) as $str) { try { FileUtil::toLog($str); } catch (Throwable $e) { $kept[] = $e; } }
+echo (int)((microtime(true) - $start) * 1000);';
+
 	private $dir;
 
 	public function setUp()
@@ -343,6 +351,48 @@ class LogFileModeTest extends TestCase
 			1 + $writers * $lines,
 			count($whole),
 			'Every line from concurrent writers is kept whole'
+		);
+	}
+
+	private function logInChild($log, $ini, $lines)
+	{
+		return PhpProcess::run(
+			array_merge(PhpProcess::sameIni(), $ini, array('-r', self::LOG_CHILD,
+				realpath(__DIR__ . '/../../php/utility/fileutil.php'), $log), $lines),
+			array('timeout' => 10, 'env' => array('XDEBUG_MODE' => 'develop'))
+		);
+	}
+
+	// A writer that stops while holding the lock must not hang every request
+	// that logs: toLog() waits a bounded time and writes the line anyway.
+	public function testAHeldLockDoesNotHangTheWriter()
+	{
+		$log = $this->logAfterFirstWrite(0777, 'held-lock.log');
+		$holder = fopen($log, 'rb');
+		flock($holder, LOCK_EX);
+		try {
+			$result = $this->logInChild($log, array(), array('past the held lock'));
+		} finally {
+			fclose($holder);
+		}
+		$this->assertTrue(!$result['timedOut'] && $result['code'] === 0, 'A held lock does not hang the writer');
+		$this->assertTrue(
+			strpos(file_get_contents($log), 'past the held lock') !== false,
+			'The line is written after the bounded wait'
+		);
+	}
+
+	// A write that throws (fputs() disabled is an Error on PHP 8) must still
+	// release the lock, even when the Error outlives the call; under Xdebug
+	// it keeps the open handle alive too.
+	public function testAThrowingWriteReleasesTheLock()
+	{
+		$log = $this->logAfterFirstWrite(0777, 'throwing-write.log');
+		$result = $this->logInChild($log, array('-d', 'disable_functions=fputs'), array('first', 'second'));
+		$this->assertTrue(!$result['timedOut'] && $result['code'] === 0, 'A second line after a throwing write does not hang');
+		$this->assertTrue(
+			(int)$result['out'] < FileUtil::LOG_LOCK_ATTEMPTS * FileUtil::LOG_LOCK_WAIT_US / 2000,
+			'The lock is released at once, not after the bounded wait: ' . $result['out'] . ' ms'
 		);
 	}
 

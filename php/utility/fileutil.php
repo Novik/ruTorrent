@@ -5,6 +5,9 @@ require_once( 'user.php' );
 
 class FileUtil
 {
+	const LOG_LOCK_ATTEMPTS = 100;
+	const LOG_LOCK_WAIT_US = 10000;
+
 	private static $profilePathInstance = null;
 
 	public static function getFileName($path)
@@ -310,27 +313,52 @@ class FileUtil
 			$w = fopen( $logTarget, (!$isFilesystem && !$exists) || is_file( $logTarget ) ? "ab" : "ab+" );
 			if( $w )
 			{
-				if( $isRegular )
-					flock( $w, LOCK_EX );
-				fputs( $w, $line );
-				fclose( $w );
+				try
+				{
+					if( $isRegular )
+						self::lockLog( $w );
+					fputs( $w, $line );
+				}
+				finally
+				{
+					fclose( $w );
+				}
 			}
 		}
 	}
 
 	// Without O_APPEND, the lock keeps a concurrent toLog() line from being
-	// overwritten between the seek and the write.
+	// overwritten between the seek and the write. Closing the handle releases
+	// the lock even when the write throws.
 	private static function appendToExistingLog( $path, $line )
 	{
 		$w = @fopen( $path, "r+b" );
 		if( !$w )
 			return false;
-		flock( $w, LOCK_EX );
-		fseek( $w, 0, SEEK_END );
-		fputs( $w, $line );
-		fflush( $w );
-		fclose( $w );
+		try
+		{
+			self::lockLog( $w );
+			fseek( $w, 0, SEEK_END );
+			fputs( $w, $line );
+			fflush( $w );
+		}
+		finally
+		{
+			fclose( $w );
+		}
 		return true;
+	}
+
+	// Waits a bounded time, so a writer stopped while holding the lock cannot
+	// hang every request that logs; the line is written either way.
+	private static function lockLog( $w )
+	{
+		for( $attempt = 0; $attempt < self::LOG_LOCK_ATTEMPTS; $attempt++ )
+		{
+			if( flock( $w, LOCK_EX | LOCK_NB, $wouldBlock ) || !$wouldBlock )
+				return;
+			usleep( self::LOG_LOCK_WAIT_US );
+		}
 	}
 
 	public static function getMinFilePerms( $file, $chmod = 0755 )
