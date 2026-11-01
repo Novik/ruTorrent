@@ -31,6 +31,8 @@ window.theConverter = window.theConverter || {};
 
 // The plugin loader normally supplies `plugin`; expose ours so the test can
 // call the real fillDetails afterwards.
+window.theDialogManager = { addHandler: function () {} };
+
 window.__mobile = {
   loadLang: function () {},
   attachPageToMenu: function () {},

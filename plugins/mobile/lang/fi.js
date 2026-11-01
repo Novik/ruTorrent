@@ -12,5 +12,9 @@
  theUILang.Mobile_theme    = "Theme";
  theUILang.Accent_color    = "Accent color";
  theUILang.Server          = "Server";
+ theUILang.Mobile_interface = "Käyttöliittymä";
+ theUILang.Mobile_auto     = "Tunnista automaattisesti";
+ theUILang.Mobile_desktop  = "Työpöytäversio";
+ theUILang.Mobile_mobile   = "Mobiiliversio";
 
 thePlugins.get("mobile").langLoaded();

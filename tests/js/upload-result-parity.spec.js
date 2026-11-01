@@ -104,7 +104,8 @@ function runDesktop() {
 const CLASS_TO_KIND = { "alert-success": "success", "alert-danger": "error", "alert-warning": "alert" };
 
 function runMobile() {
-  window.plugin = { disable: jest.fn() };
+  window.plugin = { disable: jest.fn(), loadLang: jest.fn() };
+  window.theDialogManager = { addHandler: jest.fn() };
   window.theWebUI = { getTrackerName: () => "" };
   const el = document.createElement("script");
   el.textContent = read("../plugins/mobile/init.js");

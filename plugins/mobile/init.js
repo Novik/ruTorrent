@@ -2168,13 +2168,141 @@ plugin.update = function(singleUpdate) {
   });
 };
 
+/*** Desktop or mobile UI, as chosen on this device ***/
+
+// The choice belongs to the device, not to the user: one account is often
+// used from a phone and from a desktop, so it is kept in this browser
+// rather than in the per-user settings blob. With nothing stored, the
+// device is detected (plugin.enableAutodetect, plugin.tabletsDetect).
+plugin.uiModeKey = 'mobile-ui';
+
+plugin.isUIMode = function(mode) {
+  return (mode === 'mobile') || (mode === 'desktop');
+};
+
+plugin.storedUIMode = function() {
+  var mode = null;
+  try {
+    mode = window.localStorage.getItem(this.uiModeKey);
+  } catch (e) {
+    // Storage blocked for this page: nothing is stored
+  }
+  return this.isUIMode(mode) ? mode : null;
+};
+
+// Stores 'mobile' or 'desktop', or forgets the choice for null. Returns
+// false when the browser keeps no storage for this page.
+plugin.storeUIMode = function(mode) {
+  try {
+    if (mode) {
+      window.localStorage.setItem(this.uiModeKey, mode);
+    } else {
+      window.localStorage.removeItem(this.uiModeKey);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+// ?mobile=1 asks for the mobile UI, ?mobile=0 for the desktop UI; any
+// other value asks for nothing
+plugin.requestedUIMode = function(search) {
+  var value = new URLSearchParams(search).get('mobile');
+  return (value === '1') ? 'mobile' : ((value === '0') ? 'desktop' : null);
+};
+
+// The UI this page load starts with. An address argument wins and is
+// remembered, then the stored choice, then detection.
+plugin.startUIMode = function(search, detectedMobile) {
+  var mode = this.requestedUIMode(search);
+  if (mode) {
+    this.storeUIMode(mode);
+  } else {
+    mode = this.storedUIMode();
+  }
+  if (!mode) {
+    mode = (this.enableAutodetect && detectedMobile) ? 'mobile' : 'desktop';
+  }
+  return mode;
+};
+
+// Remember the choice ('mobile', 'desktop', or null to detect again) and
+// load the page again without the address argument, which would
+// otherwise override it. Where the browser keeps no storage, the choice
+// can only travel in the address.
+plugin.switchUI = function(mode) {
+  var url = new URL(window.location.href);
+  url.searchParams.delete('mobile');
+  url.hash = '';
+  if (!this.storeUIMode(mode) && mode) {
+    url.searchParams.set('mobile', (mode == 'mobile') ? '1' : '0');
+  }
+  this.navigate(url.href);
+};
+
+plugin.navigate = function(url) {
+  window.location.assign(url);
+};
+
+// Settings > General in the desktop UI offers the same choice, including
+// going back to detection
+plugin.addUIModeSetting = function() {
+  // Only the strings are wanted: langLoaded skips onLangLoaded while
+  // this plugin is disabled
+  this.loadLang();
+
+  theDialogManager.addHandler('stg', 'beforeShow', function() {
+    if (!$$('mobile_ui')) {
+      $($$('webui.lang')).closest('.row').append(
+        $('<div>').addClass('col-6 col-md-3').append(
+          $('<label>').attr({for: 'mobile_ui'}).text(theUILang.Mobile_interface + ': ')
+        ),
+        $('<div>').addClass('col-6 col-md-3').append(
+          $('<select>').attr({id: 'mobile_ui'}).append(
+            $('<option>').val('').text(theUILang.Mobile_auto),
+            $('<option>').val('desktop').text(theUILang.Mobile_desktop),
+            $('<option>').val('mobile').text(theUILang.Mobile_mobile)
+          )
+        )
+      );
+    }
+    $($$('mobile_ui')).val(plugin.storedUIMode() || '');
+  });
+
+  plugin.desktopSetSettings = theWebUI.setSettings;
+  theWebUI.setSettings = function() {
+    plugin.desktopSetSettings.call(this);
+    var select = $$('mobile_ui');
+    if (select) {
+      var mode = $(select).val();
+      mode = plugin.isUIMode(mode) ? mode : null;
+      if (mode !== plugin.storedUIMode()) {
+        plugin.whenIdle(function() {
+          plugin.switchUI(mode);
+        });
+      }
+    }
+  };
+};
+
+// Wait for the settings save started alongside a switch, so leaving the
+// page does not cancel it
+plugin.whenIdle = function(func) {
+  var deadline = Date.now() + 5000;
+  var wait = function() {
+    if ((($.active > 0) || theWebUI.settingsSavePending) && (Date.now() < deadline)) {
+      setTimeout(wait, 100);
+    } else {
+      func();
+    }
+  };
+  wait();
+};
+
 /*** Bootstrapping: device detection, plugin takeover and initialization ***/
 plugin.disableOthers = function() {
-  var start = (window.location.href.indexOf('mobile=1') > 0);
-
-  if ((!start) && this.enableAutodetect) {
-    start = jQuery.browser.mobile;
-  }
+  var start = (this.startUIMode(window.location.search, jQuery.browser.mobile) == 'mobile');
 
   if (start) {
     dxSTable.prototype.renameColumn = function(no,name) { }
@@ -2269,6 +2397,7 @@ plugin.disableOthers = function() {
     }
   } else {
     this.disable();
+    this.addUIModeSetting();
   }
 };
 
@@ -2638,6 +2767,7 @@ plugin.onLangLoaded = function() {
   $('#ulLimit').parent().children('label').children('h5').text(theUILang.Global_max_upl);
   $('#themeSelect').parent().children('label').children('h5').text(theUILang.Mobile_theme);
   $('#accentSelect').parent().children('label').children('h5').text(theUILang.Accent_color);
+  $('#desktopVersion').text(theUILang.Mobile_desktop);
   $('#serverInfoHeader').text(theUILang.Server);
   $('#verRutorrent td:first').text('ruTorrent');
   $('#verRtorrent td:first').text('rTorrent');

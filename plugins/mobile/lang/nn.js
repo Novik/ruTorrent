@@ -12,5 +12,9 @@
  theUILang.Mobile_theme    = "Tema";
  theUILang.Accent_color    = "Framhevingsfarge";
  theUILang.Server          = "Tenar";
+ theUILang.Mobile_interface = "Grensesnitt";
+ theUILang.Mobile_auto     = "Oppdag automatisk";
+ theUILang.Mobile_desktop  = "Skrivebordsversjon";
+ theUILang.Mobile_mobile   = "Mobilversjon";
 
 thePlugins.get("mobile").langLoaded();
