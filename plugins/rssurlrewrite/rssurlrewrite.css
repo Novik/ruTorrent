@@ -1,8 +1,8 @@
 #dlgEditRules-header {background-image: url(./images/rss.gif)}
 
 .lf_rur {
-  background-color: #FFFFFF;
-  border: 1px solid #D0D0D0;
+  background-color: var(--menu-background-color);
+  border: 1px solid var(--menu-border-color);
   border-radius: 3px;
   flex: 1 0 160px;
   overflow-y: auto;
@@ -26,8 +26,8 @@
 .lf_rur input[type=text] {
   flex: 1 1 auto;
 }
-.lf_rur input.TextboxFocus {background-color: #CFDEEF;}
-.lf_rur input.TextboxNormal {background-color: #FFFFFF;}
+.lf_rur input.TextboxFocus {background-color: var(--menu-highlight-background-color);}
+.lf_rur input.TextboxNormal {background-color: var(--menu-background-color);}
 
 #chkRuleBtn {width: 50px}
 
