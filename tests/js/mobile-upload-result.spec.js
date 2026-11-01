@@ -10,7 +10,8 @@ for (const src of ["../lang/en.js", "../js/common.js"]) {
   el.textContent = readFileSync(src, { encoding: "utf-8" });
   document.body.appendChild(el);
 }
-window.plugin = { disable: jest.fn() };
+window.plugin = { disable: jest.fn(), loadLang: jest.fn() };
+window.theDialogManager = { addHandler: jest.fn() };
 window.theWebUI = { getTrackerName: () => "" };
 const pluginEl = document.createElement("script");
 pluginEl.textContent = readFileSync("../plugins/mobile/init.js", "utf8");
