@@ -109,6 +109,72 @@ class TaskTest extends TestCase
 		$this->assertEquals(false, posix_kill($pid, 0), 'The named process is gone');
 	}
 
+	// A process counts as stopped once it is gone or a zombie.
+	protected function running($pid)
+	{
+		$stat = @file_get_contents('/proc/'.$pid.'/stat');
+		if ($stat === false) {
+			return false;
+		}
+		$state = substr($stat, strrpos($stat, ')') + 2, 1);
+		return $state !== 'Z';
+	}
+
+	// Starts a task shell whose processes write their pids to a file, and
+	// returns those pids, the task shell last.
+	protected function startTree($script)
+	{
+		$pids = tempnam(sys_get_temp_dir(), 'task-test-pids-');
+		exec('sh -c '.escapeshellarg('sh -c '.escapeshellarg($script).' > '.$pids.' 2>&1 &').'; sleep 1');
+		$lines = array_map('intval', file($pids, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		unlink($pids);
+		return $lines;
+	}
+
+	// Kills the task of $parent through a stand-in pgrep -P that reads
+	// /proc (the test images have no procps), then checks every pid.
+	protected function assertKillStops($parent, $pids)
+	{
+		$pgrep = tempnam(sys_get_temp_dir(), 'task-test-pgrep-');
+		file_put_contents($pgrep, "#!/bin/sh\n".
+			"awk -v p=\"\$2\" '{ sub(/.*\\) /, \"\"); if (\$2 == p) { n = split(FILENAME, f, \"/\"); print f[3] } }' /proc/[0-9]*/stat 2>/dev/null\n");
+		chmod($pgrep, 0755);
+		$previous = isset($GLOBALS['pathToExternals']['pgrep']) ? $GLOBALS['pathToExternals']['pgrep'] : null;
+		$GLOBALS['pathToExternals']['pgrep'] = $pgrep;
+		try {
+			list($id) = $this->makeTask($parent);
+			rTask::kill($id);
+			sleep(1);
+			foreach ($pids as $pid) {
+				$this->assertEquals(false, $this->running($pid), 'Process '.$pid.' is stopped');
+			}
+		} finally {
+			if ($previous === null) unset($GLOBALS['pathToExternals']['pgrep']);
+			else $GLOBALS['pathToExternals']['pgrep'] = $previous;
+			unlink($pgrep);
+			foreach ($pids as $pid) {
+				@posix_kill($pid, 9);
+			}
+		}
+	}
+
+	public function testKillStopsEveryChildOfTheTask()
+	{
+		// A task shell with three children, as a pipeline would have.
+		$pids = $this->startTree('sleep 31 & echo $!; sleep 32 & echo $!; sleep 33 & echo $!; echo $$; wait');
+		$this->assertEquals(4, count($pids), 'A task shell and three children were started');
+		$this->assertKillStops(end($pids), $pids);
+	}
+
+	public function testKillStopsTheProgramsAPluginScriptStarts()
+	{
+		// A task shell running a plugin script, which runs the program
+		// that does the work, as create's inner.sh runs createtorrent.php.
+		$pids = $this->startTree('echo $$; sh -c '.escapeshellarg('echo $$; sleep 34 & echo $!; wait').'; sleep 35');
+		$this->assertEquals(3, count($pids), 'A task shell, a script and its program were started');
+		$this->assertKillStops($pids[0], $pids);
+	}
+
 	public function testCheckDoesNotConstructClassesNamedByTheParamsFile()
 	{
 		list($id, $dir) = $this->makeTask('999999', serialize(new TaskPayload()));
