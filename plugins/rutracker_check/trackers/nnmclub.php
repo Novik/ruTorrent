@@ -129,8 +129,12 @@ class NNMClubCheckImpl
 
         $announces = [$url];
         if (is_object($old_torrent)) {
-            if (method_exists($old_torrent, 'announce')) { $announces[] = $old_torrent->announce(); }
-            if (method_exists($old_torrent, 'announce_list')) { $announces[] = $old_torrent->announce_list(); }
+            if (method_exists($old_torrent, 'announce')) {
+                $announces[] = $old_torrent->announce();
+            }
+            if (method_exists($old_torrent, 'announce_list')) {
+                $announces[] = $old_torrent->announce_list();
+            }
         }
         // The passkey this torrent itself announces with is the account's own
         // key (see the file header), so one credential serves both the scrape
@@ -277,10 +281,14 @@ class NNMClubCheckImpl
      */
     private static function parseTopicRef($url)
     {
-        if (!is_string($url) || $url === '') { return null; }
+        if (!is_string($url) || $url === '') {
+            return null;
+        }
 
         $parts = @parse_url(trim($url));
-        if (!is_array($parts)) { return null; }
+        if (!is_array($parts)) {
+            return null;
+        }
 
         if (isset($parts['scheme']) && !preg_match('`^https?$`i', $parts['scheme'])) {
             return null;
@@ -294,7 +302,9 @@ class NNMClubCheckImpl
 
         if (isset($parts['port'])) {
             $port = (int) $parts['port'];
-            if ($port < 1 || $port > 65535) { return null; }
+            if ($port < 1 || $port > 65535) {
+                return null;
+            }
             $host .= ':' . $port;
         }
 
@@ -343,7 +353,9 @@ class NNMClubCheckImpl
      */
     private static function parseAuthUrl($url)
     {
-        if (!is_string($url) || $url === '') { return null; }
+        if (!is_string($url) || $url === '') {
+            return null;
+        }
 
         $url = trim($url);
         $parts = @parse_url($url);
@@ -354,7 +366,9 @@ class NNMClubCheckImpl
             return null;
         }
         $path = isset($parts['path']) ? $parts['path'] : '';
-        if (!preg_match(self::ANNOUNCE_PATH_RE, $path, $match)) { return null; }
+        if (!preg_match(self::ANNOUNCE_PATH_RE, $path, $match)) {
+            return null;
+        }
 
         $query = [];
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
@@ -389,16 +403,22 @@ class NNMClubCheckImpl
      */
     private static function extractAuth($announce, $requiredMode = null)
     {
-        if ($announce === null) { return null; }
+        if ($announce === null) {
+            return null;
+        }
 
         if (is_array($announce)) {
             foreach ($announce as $value) {
                 $auth = self::extractAuth($value, $requiredMode);
-                if ($auth !== null) { return $auth; }
+                if ($auth !== null) {
+                    return $auth;
+                }
             }
             return null;
         }
-        if (!is_string($announce)) { return null; }
+        if (!is_string($announce)) {
+            return null;
+        }
 
         $auth = self::parseAuthUrl($announce);
         if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
@@ -463,7 +483,9 @@ class NNMClubCheckImpl
     private static function rebuildTrackerUrl($parts, $path, $query)
     {
         $url = strtolower($parts['scheme']) . '://' . strtolower($parts['host']);
-        if (isset($parts['port'])) { $url .= ':' . (int) $parts['port']; }
+        if (isset($parts['port'])) {
+            $url .= ':' . (int) $parts['port'];
+        }
         $url .= $path;
         if (count($query)) {
             $url .= '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
@@ -542,7 +564,9 @@ class NNMClubCheckImpl
      */
     private static function injectAuthIntoUrl($url, $token)
     {
-        if (!is_string($url)) { return null; }
+        if (!is_string($url)) {
+            return null;
+        }
         $parts = @parse_url($url);
         if (!is_array($parts)
             || !isset($parts['scheme'], $parts['host'], $parts['path'])
@@ -597,7 +621,9 @@ class NNMClubCheckImpl
         }
 
         $path = preg_replace('`/announce/?$`', '/scrape', $parts['path'], 1, $count);
-        if ($count !== 1 || $path === null) { return null; }
+        if ($count !== 1 || $path === null) {
+            return null;
+        }
 
         $query = [];
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
@@ -630,7 +656,9 @@ class NNMClubCheckImpl
 
         $urls = [];
         $primary = self::buildScrapeUrl($auth, $binary);
-        if ($primary !== null) { $urls[] = $primary; }
+        if ($primary !== null) {
+            $urls[] = $primary;
+        }
         $mode = isset($auth['mode']) ? $auth['mode'] : null;
         if (isset($auth['token']) && ($mode === 'query' || $mode === 'path')) {
             $fallback = self::buildScrapeUrl([
@@ -640,9 +668,13 @@ class NNMClubCheckImpl
                     ? 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token'])
                     : 'http://bt.searchtor.to/' . rawurlencode($auth['token']) . '/announce',
             ], $binary);
-            if ($fallback !== null && !in_array($fallback, $urls, true)) { $urls[] = $fallback; }
+            if ($fallback !== null && !in_array($fallback, $urls, true)) {
+                $urls[] = $fallback;
+            }
         }
-        if (!count($urls)) { return self::SCRAPE_RESULT_FAILED; }
+        if (!count($urls)) {
+            return self::SCRAPE_RESULT_FAILED;
+        }
 
         $sawNotFound = false;
 

@@ -26,7 +26,9 @@ define('LM_AUTH', 'Authorization: Basic ' . base64_encode(LM_USER . ':' . LM_PAS
 
 function lmAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function lmHeaderBlock($wire)
@@ -84,24 +86,35 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     lmAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
         $address = fgets($pipes[1]);
-        lmAssert(is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+        lmAssert(
+            is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
+            'The peer announces its local port',
+        );
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
+        while (($line = fgets($pipes[1])) !== false) {
+            $json .= $line;
+        }
         $requests = json_decode(trim($json), true);
         lmAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         proc_close($process);
     }
 }
@@ -136,7 +149,9 @@ function nnmLogin($scriptValue, callable $check)
         $account->url = 'http://127.0.0.1:' . $port;
         $client = lmClient();
         $method = new ReflectionMethod('NNMClubAccount', 'login');
-        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $url = $verb = $type = $body = $fetched = null;
         $method->invokeArgs($account, [$client, LM_USER, LM_PASS,
             &$url, &$verb, &$type, &$body, &$fetched]);
@@ -160,7 +175,9 @@ function lostfilmRetry($tokenValue, callable $check)
         $client->results = 'a page with no guest marker';
         $client->lastredirectaddr = 'http://127.0.0.1:' . $port . '/browse.php?cat=1';
         $method = new ReflectionMethod('LostFilmAccount', 'isOKPostFetch');
-        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $method->invoke($account, $client, 'http://127.0.0.1:' . $port . $download, 'GET', '', '');
         return $check;
     });
@@ -173,10 +190,14 @@ $tests = [
         nnmLogin("tok=v1", function ($requests) {
             lmAssert(count($requests) === 2, 'The login is the second request');
             lmWellFormed($requests[1], 'the credential POST');
-            lmAssert(in_array('Cookie: _ddn_tok=v1', lmFieldLines($requests[1]), true),
-                'The token is one field line of the header block');
-            lmAssert(in_array(LM_AUTH, lmFieldLines($requests[1]), true),
-                'The credentials stay inside the header block');
+            lmAssert(
+                in_array('Cookie: _ddn_tok=v1', lmFieldLines($requests[1]), true),
+                'The token is one field line of the header block',
+            );
+            lmAssert(
+                in_array(LM_AUTH, lmFieldLines($requests[1]), true),
+                'The credentials stay inside the header block',
+            );
         });
     },
     // A CRLF inside the value: the value ends the Cookie line, and what
@@ -185,11 +206,15 @@ $tests = [
         nnmLogin("tok=v1\r\nX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the terminator reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the terminator reaches request $index",
+                );
             }
-            lmAssert(in_array(LM_AUTH, lmFieldLines($requests[count($requests) - 1]), true),
-                'The credentials stay inside the header block');
+            lmAssert(
+                in_array(LM_AUTH, lmFieldLines($requests[count($requests) - 1]), true),
+                'The credentials stay inside the header block',
+            );
         });
     },
     // A blank line inside the value ends the header block of the request that
@@ -200,11 +225,15 @@ $tests = [
         nnmLogin("tok=v1\r\n\r\nGET /smuggled HTTP/1.0\r\nHost: 127.0.0.1\r\n", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, '/smuggled') === false,
-                    "No second request line reaches request $index");
+                lmAssert(
+                    strpos($wire, '/smuggled') === false,
+                    "No second request line reaches request $index",
+                );
             }
-            lmAssert(in_array(LM_AUTH, lmFieldLines($requests[count($requests) - 1]), true),
-                'The credentials stay inside the header block');
+            lmAssert(
+                in_array(LM_AUTH, lmFieldLines($requests[count($requests) - 1]), true),
+                'The credentials stay inside the header block',
+            );
         });
     },
     // A body carries a lone LF as readily as a CRLF, which is the part of
@@ -214,8 +243,10 @@ $tests = [
         nnmLogin("tok=v1\nX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the line feed reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the line feed reaches request $index",
+                );
             }
         });
     },
@@ -223,8 +254,10 @@ $tests = [
         nnmLogin("tok=v1\rX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the carriage return reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the carriage return reaches request $index",
+                );
             }
         });
     },
@@ -232,8 +265,10 @@ $tests = [
         nnmLogin("tok\r\nX-Injected: yes=v1", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the terminator reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the terminator reaches request $index",
+                );
             }
         });
     },
@@ -241,18 +276,24 @@ $tests = [
         lostfilmRetry('abc123', function ($requests) {
             lmAssert(count($requests) === 2, 'The download is retried');
             lmWellFormed($requests[1], 'the retried download');
-            lmAssert(in_array('Cookie: dlt_2=abc123', lmFieldLines($requests[1]), true),
-                'The token is one field line of the header block');
-            lmAssert(in_array(LM_AUTH, lmFieldLines($requests[1]), true),
-                'The credentials stay inside the header block');
+            lmAssert(
+                in_array('Cookie: dlt_2=abc123', lmFieldLines($requests[1]), true),
+                'The token is one field line of the header block',
+            );
+            lmAssert(
+                in_array(LM_AUTH, lmFieldLines($requests[1]), true),
+                'The credentials stay inside the header block',
+            );
         });
     },
     'a line terminator in the dlt token reaches no request' => function () {
         lostfilmRetry("abc\r\nX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the terminator reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the terminator reaches request $index",
+                );
             }
         });
     },
@@ -260,8 +301,10 @@ $tests = [
         lostfilmRetry("abc\nX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the line feed reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the line feed reaches request $index",
+                );
             }
         });
     },
@@ -269,8 +312,10 @@ $tests = [
         lostfilmRetry("abc\rX-Injected: yes", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, 'X-Injected') === false,
-                    "Nothing behind the carriage return reaches request $index");
+                lmAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    "Nothing behind the carriage return reaches request $index",
+                );
             }
         });
     },
@@ -278,8 +323,10 @@ $tests = [
         lostfilmRetry("abc\r\n\r\nGET /smuggled HTTP/1.0\r\nHost: 127.0.0.1\r\n", function ($requests) {
             foreach ($requests as $index => $wire) {
                 lmWellFormed($wire, "request $index");
-                lmAssert(strpos($wire, '/smuggled') === false,
-                    "No second request line reaches request $index");
+                lmAssert(
+                    strpos($wire, '/smuggled') === false,
+                    "No second request line reaches request $index",
+                );
             }
         });
     },
@@ -287,8 +334,13 @@ $tests = [
 
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

@@ -85,7 +85,7 @@ class YggTorrentEngine extends commonEngine
             return;
         }
 
-        if($useGlobalCats) {
+        if ($useGlobalCats) {
             $categories = ['all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140"];
             $defaultCat = 'all';
         } else {
@@ -93,7 +93,7 @@ class YggTorrentEngine extends commonEngine
             $defaultCat = 'Tout';
         }
 
-        if(!array_key_exists($cat,$categories)) {
+        if (!array_key_exists($cat, $categories)) {
             $catParameters = $categories[$defaultCat];
         } else {
             $catParameters = $categories[$cat];
@@ -107,23 +107,22 @@ class YggTorrentEngine extends commonEngine
         $cli = $this->fetch($search);
         // Check if we have results
         if ($cli == false) {
-	    $item = $this->getNewEntry();
-	    $item["name"] = "Fetch Error";
-	    $ret[""] = $item;
+            $item = $this->getNewEntry();
+            $item["name"] = "Fetch Error";
+            $ret[""] = $item;
             return;
-	} elseif (strpos($cli->results, "Aucun résultat !") !== false) {
-	    $item = $this->getNewEntry();
-	    $item["name"] = "No result found";
-	    $ret[""] = $item;
+        } elseif (strpos($cli->results, "Aucun résultat !") !== false) {
+            $item = $this->getNewEntry();
+            $item["name"] = "No result found";
+            $ret[""] = $item;
             return;
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
-	if (!$nbRet)
-	{
-	    $item = $this->getNewEntry();
-	    $item["name"] = "No result found";
-	    $ret[""] = $item;
+        if (!$nbRet) {
+            $item = $this->getNewEntry();
+            $item["name"] = "No result found";
+            $ret[""] = $item;
             return;
         }
         $nbResults = $retPage['results'][0];
@@ -145,14 +144,14 @@ class YggTorrentEngine extends commonEngine
             }
 
             $res = preg_match_all(
-                '`<td>\s*<div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)\s*</td>.*'.
-                '<a target="(?P<id>.*)".*'.
-                '<div class="hidden">(?P<timestamp>.*)</div>.*'.
-                '<td>(?P<size>.*)</td>.*'.
-                '<td>(?P<completed>.*)</td>.*'.
-                '<td>(?P<seeder>.*)</td>.*'.
-                '<td>(?P<leecher>.*)</td>'.
-                '`siU',
+                '`<td>\s*<div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)\s*</td>.*'
+                . '<a target="(?P<id>.*)".*'
+                . '<div class="hidden">(?P<timestamp>.*)</div>.*'
+                . '<td>(?P<size>.*)</td>.*'
+                . '<td>(?P<completed>.*)</td>.*'
+                . '<td>(?P<seeder>.*)</td>.*'
+                . '<td>(?P<leecher>.*)</td>'
+                . '`siU',
                 $cli->results,
                 $matches,
             );

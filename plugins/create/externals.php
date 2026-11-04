@@ -4,10 +4,10 @@
 // default, the program that wrapper runs. Map the backends whose program is
 // spelled differently from the backend itself.
 
-function createExternalEXE( $external )
+function createExternalEXE($external)
 {
-	$programs = [
-		'transmissioncreate' => 'transmission-create',
-	];
-	return( isset($programs[$external]) ? $programs[$external] : $external );
+    $programs = [
+        'transmissioncreate' => 'transmission-create',
+    ];
+    return(isset($programs[$external]) ? $programs[$external] : $external);
 }

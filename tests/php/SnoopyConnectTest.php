@@ -20,12 +20,16 @@ function stream_socket_client($address, &$errno, &$error, $timeout, $flags, $con
 }
 $source = file_get_contents(__DIR__ . '/../../php/Snoopy.class.inc');
 $start = strpos($source, 'class Snoopy');
-if ($start === false) { throw new \RuntimeException('Production class not found'); }
+if ($start === false) {
+    throw new \RuntimeException('Production class not found');
+}
 eval('namespace SnoopyConnectFixture; ' . substr($source, $start));
 
 function connectAssert($condition, $message)
 {
-    if (!$condition) { throw new \RuntimeException($message); }
+    if (!$condition) {
+        throw new \RuntimeException($message);
+    }
 }
 
 function connectFailure($errno, $error, $expectedStatus, $expectedError)
@@ -57,10 +61,18 @@ $tests = [
         }
     },
     'errno zero recognizes only the PHP resolver prefix without exposing raw text' => function () {
-        connectFailure(0, 'php_network_getaddresses: getaddrinfo for private-host.test failed: Name or service not known',
-            0, 'dns lookup failure (0)');
-        connectFailure(0, 'Unclassified failure mentioning php_network_getaddresses: private-host.test',
-            0, 'connection failed (0)');
+        connectFailure(
+            0,
+            'php_network_getaddresses: getaddrinfo for private-host.test failed: Name or service not known',
+            0,
+            'dns lookup failure (0)',
+        );
+        connectFailure(
+            0,
+            'Unclassified failure mentioning php_network_getaddresses: private-host.test',
+            0,
+            'connection failed (0)',
+        );
         connectFailure(0, '', 0, 'connection failed (0)');
     },
 ];

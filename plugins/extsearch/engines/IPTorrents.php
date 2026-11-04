@@ -3,16 +3,16 @@
 class IPTorrentsEngine extends commonEngine
 {
     public $defaults = ["public" => false, "page_size" => 50, "cookies" => "iptorrents.com|pass=XXX;uid=XXX;"];
-    public $categories = ['all'    => '',
-                          'Movies' => '72', 'TV' => '73', 'Games' => '74', 'Music' => '75', 'Miscellaneous' => '76', 'XXX' => '88'];
+    public $categories = ['all' => '',
+        'Movies' => '72', 'TV' => '73', 'Games' => '74', 'Music' => '75', 'Miscellaneous' => '76', 'XXX' => '88'];
 
     protected static $seconds = [
         'minutes' => 60,
-        'hours'   => 3600,
-        'days'    => 86400,
-        'weeks'   => 604800,
-        'months'  => 2592000,
-        'years'   => 31536000,
+        'hours' => 3600,
+        'days' => 86400,
+        'weeks' => 604800,
+        'months' => 2592000,
+        'years' => 31536000,
     ];
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
@@ -20,21 +20,24 @@ class IPTorrentsEngine extends commonEngine
         $url = 'https://iptorrents.com';
         $now = time();
         if ($useGlobalCats) {
-            $categories = ['all'    => '',
-                           'movies' => '72', 'tv' => '73', 'music' => '75', 'games' => '74',
-                           'anime'  => '60', 'software' => '1;86', 'pictures' => '36', 'books' => '35;64;94']; }
-        else {
-            $categories = &$this->categories; }
+            $categories = ['all' => '',
+                'movies' => '72', 'tv' => '73', 'music' => '75', 'games' => '74',
+                'anime' => '60', 'software' => '1;86', 'pictures' => '36', 'books' => '35;64;94'];
+        } else {
+            $categories = &$this->categories;
+        }
         if (!array_key_exists($cat, $categories)) {
-            $cat = $categories['all']; }
-        else {
-            $cat = $categories[$cat]; }
+            $cat = $categories['all'];
+        } else {
+            $cat = $categories[$cat];
+        }
         self::disableEntityLoader();
         for ($pg = 1; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/t?' . $cat . ';o=seeders;q=' . $what . ';p=' . $pg);
-            if (($cli == false) || (strpos($cli->results, ">No Torrents Found!<") !== false) ||
-                (strpos($cli->results, 'name="password') !== false)) {
-                break; }
+            if (($cli == false) || (strpos($cli->results, ">No Torrents Found!<") !== false)
+                || (strpos($cli->results, 'name="password') !== false)) {
+                break;
+            }
 
             $doc = new DOMDocument();
             @$doc->loadHTML($cli->results);
@@ -50,10 +53,13 @@ class IPTorrentsEngine extends commonEngine
                     }
 
                     $tds = $tr->getElementsByTagName('td');
-                    if (($tds->length < 9) && ($tds->length > 10)) { continue; } //bail if table rows isn't as expected
+                    if (($tds->length < 9) && ($tds->length > 10)) {
+                        continue;
+                    } //bail if table rows isn't as expected
 
                     try {
-                        preg_match('/.*(\d+\.\d) (minutes|hours|days|weeks|months|years) ago/',
+                        preg_match(
+                            '/.*(\d+\.\d) (minutes|hours|days|weeks|months|years) ago/',
                             $tds[1]->textContent,
                             $ago_matches,
                         );
@@ -81,9 +87,8 @@ class IPTorrentsEngine extends commonEngine
 
     protected static function disableEntityLoader()
     {
-        if( (PHP_VERSION_ID < 80000) && function_exists('libxml_disable_entity_loader') )
-        {
-            libxml_disable_entity_loader( true );
+        if ((PHP_VERSION_ID < 80000) && function_exists('libxml_disable_entity_loader')) {
+            libxml_disable_entity_loader(true);
         }
     }
 

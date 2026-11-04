@@ -343,8 +343,11 @@ $tests = [
         $classes = caAccountClasses();
         caAssertSame(true, count($classes) > 0, 'the account files were found at all');
         foreach ($classes as $class) {
-            caAssertSame(true, caPostFetch($class, caHolding(200, caLivePage())),
-                $class . ' must accept an answer that did arrive');
+            caAssertSame(
+                true,
+                caPostFetch($class, caHolding(200, caLivePage())),
+                $class . ' must accept an answer that did arrive',
+            );
         }
     },
 
@@ -354,8 +357,11 @@ $tests = [
         foreach ($classes as $class) {
             foreach ([[200, ''], [503, caLivePage()], [302, caLivePage()],
                 [200, ['gzip: not in gzip format']]] as $answer) {
-                caAssertSame(false, caPostFetch($class, caHolding($answer[0], $answer[1])),
-                    $class . ' on status ' . $answer[0]);
+                caAssertSame(
+                    false,
+                    caPostFetch($class, caHolding($answer[0], $answer[1])),
+                    $class . ' on status ' . $answer[0],
+                );
             }
         }
     },
@@ -364,10 +370,16 @@ $tests = [
         // LostFilm is the only override in accounts/, and its fallthrough used
         // to answer true on its own -- the one way to skip the base verdict,
         // which on the cached path skipped isOK() with it.
-        caAssertSame(false, caPostFetch('LostFilmAccount', caHolding(200, '')),
-            'LostFilm is not exempt from the guard its siblings get');
-        caAssertSame(false, caPostFetch('LostFilmAccount', caHolding(503, caLivePage())),
-            'nor from the status half of it');
+        caAssertSame(
+            false,
+            caPostFetch('LostFilmAccount', caHolding(200, '')),
+            'LostFilm is not exempt from the guard its siblings get',
+        );
+        caAssertSame(
+            false,
+            caPostFetch('LostFilmAccount', caHolding(503, caLivePage())),
+            'nor from the status half of it',
+        );
     },
 
     'the override judges the answer the caller asked for' => function () {
@@ -379,9 +391,11 @@ $tests = [
         // pass on its own.
         $client = caHolding(200, caGuestPage(), '/browse.php?cat=1');
         $client->queueAnswers([[200, caLivePage()]]);
-        caAssertSame(false,
+        caAssertSame(
+            false,
             caPostFetch('LostFilmAccount', $client, 'https://lostfilm.tv/download.php?id=7&x'),
-            'the guest answer to the download url decides, not details.php');
+            'the guest answer to the download url decides, not details.php',
+        );
     },
 
     'the override does not accept a download by its headers alone' => function () {
@@ -395,9 +409,11 @@ $tests = [
             // the retried download: a filename header, but an error page
             [500, '<html>error</html>'],
         ]);
-        caAssertSame(false,
+        caAssertSame(
+            false,
             caPostFetch('LostFilmAccount', $client, 'https://lostfilm.tv/download.php?id=7&x'),
-            'a 500 carrying a filename header is not a torrent');
+            'a 500 carrying a filename header is not a torrent',
+        );
     },
 
     // ---- one tracker-specific claim worth pinning ---------------------------
@@ -407,8 +423,11 @@ $tests = [
         // torrent may legitimately carry in its comment field.
         $torrent = 'd8:announce31:http://tr.kinozal.guru/ann?uk=X7:comment28:see /signup.php to register'
             . '4:infod6:lengthi1e4:name9:movie.mkv12:piece lengthi16384eee';
-        caAssertSame(true, caPostFetch('KinozalTVAccount', caHolding(200, $torrent)),
-            'a torrent whose comment names /signup.php is still a torrent');
+        caAssertSame(
+            true,
+            caPostFetch('KinozalTVAccount', caHolding(200, $torrent)),
+            'a torrent whose comment names /signup.php is still a torrent',
+        );
     },
 ];
 

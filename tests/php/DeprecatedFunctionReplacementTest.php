@@ -14,21 +14,21 @@ require_once(__DIR__ . '/TestCase.php');
  */
 class DeprecatedFunctionReplacementTest extends TestCase
 {
-	private $root = null;
+    private $root = null;
 
-	public function setUp()
-	{
-		$this->root = realpath(__DIR__ . '/../..');
-	}
+    public function setUp()
+    {
+        $this->root = realpath(__DIR__ . '/../..');
+    }
 
-	// ---- extsearch: utf8_encode() / utf8_decode() --------------------------
+    // ---- extsearch: utf8_encode() / utf8_decode() --------------------------
 
-	public function testLatin1HelpersMatchUtf8EncodeAndDecode()
-	{
-		// commonEngine falls back to these when neither iconv nor mbstring is
-		// loaded. They are compared directly, because whether either
-		// extension can be left out depends on how PHP was built.
-		list($result, $other) = $this->run_isolated('
+    public function testLatin1HelpersMatchUtf8EncodeAndDecode()
+    {
+        // commonEngine falls back to these when neither iconv nor mbstring is
+        // loaded. They are compared directly, because whether either
+        // extension can be left out depends on how PHP was built.
+        list($result, $other) = $this->run_isolated('
 			$samples = array("", "plain", "caf\xE9", "\xFF\x80\x00\xA0", "caf\xC3\xA9", "\xE2\x82\xAC 5",
 				"\xF0\x9F\x98\x80", "\xC3", "\xE2\x82", "\xED\xA0\x80", "\xC0\xAF", "&amp; <b>", "\xC2\xA9\xC3\xBF\xC4\x80");
 			mt_srand(3);
@@ -52,19 +52,20 @@ class DeprecatedFunctionReplacementTest extends TestCase
 			}
 			return array("same" => $same, "differ" => array_slice($differ, 0, 5));
 		', ['php/utility/utf.php']);
-		$this->assertTrue(is_array($result), 'the ISO-8859-1 helpers ran: ' . $this->brief($other));
-		if(!is_array($result)) {
-			return; }
-		$this->assertEquals(3013, $result['same'], 'latin1ToUtf8/utf8ToLatin1 give what utf8_encode/utf8_decode gave, for '
-			. $result['same'] . ' of 3013 strings; first to differ: ' . implode(', ', $result['differ']));
-		$this->assertQuiet($other, 'the ISO-8859-1 helpers');
-	}
+        $this->assertTrue(is_array($result), 'the ISO-8859-1 helpers ran: ' . $this->brief($other));
+        if (!is_array($result)) {
+            return;
+        }
+        $this->assertEquals(3013, $result['same'], 'latin1ToUtf8/utf8ToLatin1 give what utf8_encode/utf8_decode gave, for '
+            . $result['same'] . ' of 3013 strings; first to differ: ' . implode(', ', $result['differ']));
+        $this->assertQuiet($other, 'the ISO-8859-1 helpers');
+    }
 
-	// ---- extsearch: PirateBay's strptime() -------------------------------
+    // ---- extsearch: PirateBay's strptime() -------------------------------
 
-	public function testPirateBayUploadedTimeMatchesStrptime()
-	{
-		list($result, $other) = $this->run_isolated('
+    public function testPirateBayUploadedTimeMatchesStrptime()
+    {
+        list($result, $other) = $this->run_isolated('
 			$old = function($tms)
 			{
 				if(strpos($tms,":")!==false)
@@ -97,19 +98,20 @@ class DeprecatedFunctionReplacementTest extends TestCase
 					$differ[] = $s . " => " . var_export(PirateBayEngine::uploadedTime($s), true) . " vs " . var_export($old($s), true);
 			return array("count" => count($samples), "differ" => $differ);
 		', ['plugins/extsearch/engines.php', 'plugins/extsearch/engines/PirateBay.php']);
-		$this->assertTrue(is_array($result), 'the PirateBay date parser ran: ' . $this->brief($other));
-		if(!is_array($result)) {
-			return; }
-		$this->assertEquals([], $result['differ'], 'uploadedTime() reads each of ' . $result['count']
-			. ' listing dates as strptime() did; differ: ' . implode('; ', $result['differ']));
-		$this->assertQuiet($other, 'PirateBay date parsing');
-	}
+        $this->assertTrue(is_array($result), 'the PirateBay date parser ran: ' . $this->brief($other));
+        if (!is_array($result)) {
+            return;
+        }
+        $this->assertEquals([], $result['differ'], 'uploadedTime() reads each of ' . $result['count']
+            . ' listing dates as strptime() did; differ: ' . implode('; ', $result['differ']));
+        $this->assertQuiet($other, 'PirateBay date parsing');
+    }
 
-	// ---- strftime() / gmstrftime() ---------------------------------------
+    // ---- strftime() / gmstrftime() ---------------------------------------
 
-	public function testTimeFormatMatchesStrftime()
-	{
-		list($result, $other) = $this->run_isolated('
+    public function testTimeFormatMatchesStrftime()
+    {
+        list($result, $other) = $this->run_isolated('
 			$convs = str_split("aAbBcCdDeFgGhHIjklmMnpPrRsStTuUVwWxXyYzZ%qfiJ");
 			$specs = array();
 			foreach($convs as $c)
@@ -191,29 +193,30 @@ class DeprecatedFunctionReplacementTest extends TestCase
 				$differ[] = "no timestamp means now";
 			return array("checked" => $checked, "differ" => array_slice($differ, 0, 10));
 		', ['php/util.php']);
-		$this->assertTrue(is_array($result), 'TimeFormat ran: ' . $this->brief($other));
-		if(!is_array($result)) {
-			return; }
-		$this->assertEquals([], $result['differ'], 'TimeFormat renders ' . $result['checked']
-			. ' formats as strftime/gmstrftime did and %s as the timestamp; differ: ' . implode('; ', $result['differ']));
-		$this->assertQuiet($other, 'TimeFormat');
-	}
+        $this->assertTrue(is_array($result), 'TimeFormat ran: ' . $this->brief($other));
+        if (!is_array($result)) {
+            return;
+        }
+        $this->assertEquals([], $result['differ'], 'TimeFormat renders ' . $result['checked']
+            . ' formats as strftime/gmstrftime did and %s as the timestamp; differ: ' . implode('; ', $result['differ']));
+        $this->assertQuiet($other, 'TimeFormat');
+    }
 
-	public function testFeedsPubDateFormatIsRfc822()
-	{
-		list($result, $other) = $this->run_isolated('
+    public function testFeedsPubDateFormatIsRfc822()
+    {
+        list($result, $other) = $this->run_isolated('
 			date_default_timezone_set("America/New_York");
 			return TimeFormat::gmstrftime("%a, %d %b %Y %T %Z", 1767225599);
 		', ['php/util.php']);
-		$this->assertEquals('Wed, 31 Dec 2025 23:59:59 GMT', $result, 'the feeds pubDate is RFC 822 in GMT');
-		$this->assertQuiet($other, 'the feeds pubDate format');
-	}
+        $this->assertEquals('Wed, 31 Dec 2025 23:59:59 GMT', $result, 'the feeds pubDate is RFC 822 in GMT');
+        $this->assertQuiet($other, 'the feeds pubDate format');
+    }
 
-	// ---- xmpp: xml_set_object() ------------------------------------------
+    // ---- xmpp: xml_set_object() ------------------------------------------
 
-	public function testXmppStreamParsesWithoutXmlSetObject()
-	{
-		list($result, $other) = $this->run_isolated('
+    public function testXmppStreamParsesWithoutXmlSetObject()
+    {
+        list($result, $other) = $this->run_isolated('
 			$probe = new class extends XMPPHP_XMLStream
 			{
 				public function feed($xml)
@@ -228,23 +231,25 @@ class DeprecatedFunctionReplacementTest extends TestCase
 			return $probe->feed("<stream:stream xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\">"
 				. "<message to=\"a@b\"><body>hi");
 		', ['plugins/xmpp/XMPPHP/XMLStream.php']);
-		$this->assertEquals(['depth' => 3, 'names' => [1 => 'stream@http://etherx.jabber.org/streams',
-			2 => 'message@jabber:client', 3 => 'body@jabber:client']], $result, 'the stream parser still reaches its own handlers: '
-			. json_encode($result) . ' ' . $this->brief($other));
-		$this->assertTrue(strpos($other, 'Deprecated') === false,
-			'setting up the stream parser raises no deprecation: ' . $this->brief($other));
-	}
+        $this->assertEquals(['depth' => 3, 'names' => [1 => 'stream@http://etherx.jabber.org/streams',
+            2 => 'message@jabber:client', 3 => 'body@jabber:client']], $result, 'the stream parser still reaches its own handlers: '
+            . json_encode($result) . ' ' . $this->brief($other));
+        $this->assertTrue(
+            strpos($other, 'Deprecated') === false,
+            'setting up the stream parser raises no deprecation: ' . $this->brief($other),
+        );
+    }
 
-	// ---- cache: SplObjectStorage::contains() / attach() -------------------
+    // ---- cache: SplObjectStorage::contains() / attach() -------------------
 
-	public function testCacheWalkOverObjectsRaisesNoDeprecation()
-	{
-		// rCache::get() walks every value it unserializes and remembers the
-		// objects it has met, so an object met twice is the path that both
-		// asks whether it was seen and records that it was. PHP 8.5
-		// deprecates SplObjectStorage::contains() and attach() in favour of
-		// offsetExists() and offsetSet(), which exist since PHP 5.3.
-		list($result, $other) = $this->run_isolated('
+    public function testCacheWalkOverObjectsRaisesNoDeprecation()
+    {
+        // rCache::get() walks every value it unserializes and remembers the
+        // objects it has met, so an object met twice is the path that both
+        // asks whether it was seen and records that it was. PHP 8.5
+        // deprecates SplObjectStorage::contains() and attach() in favour of
+        // offsetExists() and offsetSet(), which exist since PHP 5.3.
+        list($result, $other) = $this->run_isolated('
 			// Bound to rCache rather than a subclass of it, because
 			// constructing an rCache creates the settings directory.
 			$walk = Closure::bind(function($value)
@@ -257,102 +262,107 @@ class DeprecatedFunctionReplacementTest extends TestCase
 			$second->peer = $first;
 			return $walk(array($first, $second));
 		', ['php/cache.php']);
-		$this->assertTrue($result === false, 'a cycle between two objects is walked to the end, not refused: '
-			. json_encode($result) . ' ' . $this->brief($other));
-		$this->assertQuiet($other, 'walking objects for a refused class');
-	}
+        $this->assertTrue($result === false, 'a cycle between two objects is walked to the end, not refused: '
+            . json_encode($result) . ' ' . $this->brief($other));
+        $this->assertQuiet($other, 'walking objects for a refused class');
+    }
 
-	// ---- extsearch: libxml_disable_entity_loader() -----------------------
+    // ---- extsearch: libxml_disable_entity_loader() -----------------------
 
-	public function testHtmlEnginesDoNotCallTheEntityLoaderSwitch()
-	{
-		foreach(['mTeam', 'IPTorrents'] as $engine)
-		{
-			list($result, $other) = $this->run_isolated('
+    public function testHtmlEnginesDoNotCallTheEntityLoaderSwitch()
+    {
+        foreach (['mTeam', 'IPTorrents'] as $engine) {
+            list($result, $other) = $this->run_isolated('
 				$method = new ReflectionMethod("' . $engine . 'Engine", "disableEntityLoader");
 				if(PHP_VERSION_ID < 80100)
 					$method->setAccessible(true);
 				$method->invoke(null);
 				return true;
 			', ['plugins/extsearch/engines.php', 'plugins/extsearch/engines/' . $engine . '.php']);
-			$this->assertTrue($result === true, $engine . ' ran: ' . $this->brief($other));
-			$this->assertQuiet($other, $engine . '::disableEntityLoader()');
-		}
-	}
+            $this->assertTrue($result === true, $engine . ' ran: ' . $this->brief($other));
+            $this->assertQuiet($other, $engine . '::disableEntityLoader()');
+        }
+    }
 
-	// ---- nothing else in the tree calls them -----------------------------
+    // ---- nothing else in the tree calls them -----------------------------
 
-	public function testNoShippedCodeCallsTheDeprecatedFunctions()
-	{
-		$deprecated = ['utf8_encode', 'utf8_decode', 'strptime', 'strftime', 'gmstrftime', 'xml_set_object'];
-		$found = [];
-		foreach(['/php', '/plugins', '/conf'] as $sub)
-		{
-			$walk = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
-				$this->root . $sub, FilesystemIterator::SKIP_DOTS));
-			foreach($walk as $file)
-			{
-				if(substr($file->getFilename(), -4) !== '.php') {
-					continue; }
-				$tokens = token_get_all(file_get_contents($file->getPathname()));
-				foreach($tokens as $i => $token)
-				{
-					if(!is_array($token) || ($token[0] !== T_STRING) ||
-						!in_array(strtolower($token[1]), $deprecated)) {
-						continue; }
-					$prev = $i - 1;
-					while(($prev >= 0) && is_array($tokens[$prev]) && ($tokens[$prev][0] === T_WHITESPACE)) {
-						$prev--; }
-					$next = $i + 1;
-					while(isset($tokens[$next]) && is_array($tokens[$next]) && ($tokens[$next][0] === T_WHITESPACE)) {
-						$next++; }
-					// A call, not a method or a declaration of the same name.
-					$method = ($prev >= 0) && is_array($tokens[$prev]) &&
-						in_array($tokens[$prev][0], [T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_FUNCTION]);
-					if(!$method && isset($tokens[$next]) && ($tokens[$next] === '(')) {
-						$found[] = substr($file->getPathname(), strlen($this->root) + 1) . ':' . $token[2]
-							. ' ' . $token[1]; }
-				}
-			}
-		}
-		$this->assertEquals([], $found, 'no shipped code calls a deprecated date, encoding or XML function: '
-			. implode(', ', $found));
-	}
+    public function testNoShippedCodeCallsTheDeprecatedFunctions()
+    {
+        $deprecated = ['utf8_encode', 'utf8_decode', 'strptime', 'strftime', 'gmstrftime', 'xml_set_object'];
+        $found = [];
+        foreach (['/php', '/plugins', '/conf'] as $sub) {
+            $walk = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
+                $this->root . $sub,
+                FilesystemIterator::SKIP_DOTS,
+            ));
+            foreach ($walk as $file) {
+                if (substr($file->getFilename(), -4) !== '.php') {
+                    continue;
+                }
+                $tokens = token_get_all(file_get_contents($file->getPathname()));
+                foreach ($tokens as $i => $token) {
+                    if (!is_array($token) || ($token[0] !== T_STRING)
+                        || !in_array(strtolower($token[1]), $deprecated)) {
+                        continue;
+                    }
+                    $prev = $i - 1;
+                    while (($prev >= 0) && is_array($tokens[$prev]) && ($tokens[$prev][0] === T_WHITESPACE)) {
+                        $prev--;
+                    }
+                    $next = $i + 1;
+                    while (isset($tokens[$next]) && is_array($tokens[$next]) && ($tokens[$next][0] === T_WHITESPACE)) {
+                        $next++;
+                    }
+                    // A call, not a method or a declaration of the same name.
+                    $method = ($prev >= 0) && is_array($tokens[$prev])
+                        && in_array($tokens[$prev][0], [T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_FUNCTION]);
+                    if (!$method && isset($tokens[$next]) && ($tokens[$next] === '(')) {
+                        $found[] = substr($file->getPathname(), strlen($this->root) + 1) . ':' . $token[2]
+                            . ' ' . $token[1];
+                    }
+                }
+            }
+        }
+        $this->assertEquals([], $found, 'no shipped code calls a deprecated date, encoding or XML function: '
+            . implode(', ', $found));
+    }
 
-	/**
-	 * Run $code after the given sources are loaded, with every error shown,
-	 * and return [what the code returned, everything PHP reported]. $options
-	 * go on the php command line, before the script.
-	 */
-	private function run_isolated($code, $requires, $options = '')
-	{
-		$prelude = "<?php\nerror_reporting(E_ALL);\n"
-			. "chdir(" . var_export($this->root . '/php', true) . ");\n";
-		foreach($requires as $file) {
-			$prelude .= 'require_once(' . var_export($this->root . '/' . $file, true) . ");\n"; }
-		$script = tempnam(sys_get_temp_dir(), 'deprecated-');
-		file_put_contents($script, $prelude . "\$result = json_encode(call_user_func(function() {\n"
-			. $code . "\n}));\nfwrite(STDOUT, \$result);\n");
-		$command = escapeshellarg(PHP_BINARY) . ' ' . $options
-			. ' -d error_reporting=-1 -d display_errors=stderr -d log_errors=0 ' . escapeshellarg($script)
-			. ' > ' . escapeshellarg($script . '.out') . ' 2> ' . escapeshellarg($script . '.err');
-		shell_exec($command);
-		$result = json_decode((string)@file_get_contents($script . '.out'), true);
-		$other = (string)@file_get_contents($script . '.err');
-		foreach([$script, $script . '.out', $script . '.err'] as $file) {
-			@unlink($file); }
-		return [$result, $other];
-	}
+    /**
+     * Run $code after the given sources are loaded, with every error shown,
+     * and return [what the code returned, everything PHP reported]. $options
+     * go on the php command line, before the script.
+     */
+    private function run_isolated($code, $requires, $options = '')
+    {
+        $prelude = "<?php\nerror_reporting(E_ALL);\n"
+            . "chdir(" . var_export($this->root . '/php', true) . ");\n";
+        foreach ($requires as $file) {
+            $prelude .= 'require_once(' . var_export($this->root . '/' . $file, true) . ");\n";
+        }
+        $script = tempnam(sys_get_temp_dir(), 'deprecated-');
+        file_put_contents($script, $prelude . "\$result = json_encode(call_user_func(function() {\n"
+            . $code . "\n}));\nfwrite(STDOUT, \$result);\n");
+        $command = escapeshellarg(PHP_BINARY) . ' ' . $options
+            . ' -d error_reporting=-1 -d display_errors=stderr -d log_errors=0 ' . escapeshellarg($script)
+            . ' > ' . escapeshellarg($script . '.out') . ' 2> ' . escapeshellarg($script . '.err');
+        shell_exec($command);
+        $result = json_decode((string) @file_get_contents($script . '.out'), true);
+        $other = (string) @file_get_contents($script . '.err');
+        foreach ([$script, $script . '.out', $script . '.err'] as $file) {
+            @unlink($file);
+        }
+        return [$result, $other];
+    }
 
-	private function brief($output)
-	{
-		$output = trim($output);
-		return (strlen($output) > 400) ? substr($output, 0, 400) . '...' : $output;
-	}
+    private function brief($output)
+    {
+        $output = trim($output);
+        return (strlen($output) > 400) ? substr($output, 0, 400) . '...' : $output;
+    }
 
-	private function assertQuiet($other, $what)
-	{
-		$this->assertEquals('', trim($other), $what . ' runs without any notice, warning or deprecation: '
-			. $this->brief($other));
-	}
+    private function assertQuiet($other, $what)
+    {
+        $this->assertEquals('', trim($other), $what . ' runs without any notice, warning or deprecation: '
+            . $this->brief($other));
+    }
 }

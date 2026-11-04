@@ -25,7 +25,9 @@ define('TT_PASS', 'fakepass');
 
 function ttAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function ttRequestLine($wire)
@@ -67,24 +69,35 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     ttAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
         $address = fgets($pipes[1]);
-        ttAssert(is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+        ttAssert(
+            is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
+            'The peer announces its local port',
+        );
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
+        while (($line = fgets($pipes[1])) !== false) {
+            $json .= $line;
+        }
         $requests = json_decode(trim($json), true);
         ttAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         proc_close($process);
     }
 }
@@ -108,7 +121,9 @@ function ttLogin($sessionId, callable $check)
         $client->_fp_timeout = 3;
         $client->use_gzip = false;
         $method = new ReflectionMethod('TorrentechAccount', 'login');
-        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $url = $verb = $type = $body = $fetched = null;
         $method->invokeArgs($account, [$client, TT_USER, TT_PASS,
             &$url, &$verb, &$type, &$body, &$fetched]);
@@ -122,10 +137,14 @@ function ttEveryRequestWellFormed($requests)
 {
     foreach ($requests as $index => $wire) {
         $line = ttRequestLine($wire);
-        ttAssert(count(explode(' ', $line)) === 3,
-            "Request $index has a request line of three parts: " . var_export($line, true));
-        ttAssert(preg_match('/[[:cntrl:]]/', $line) !== 1,
-            "Request $index has no control character in its request line");
+        ttAssert(
+            count(explode(' ', $line)) === 3,
+            "Request $index has a request line of three parts: " . var_export($line, true),
+        );
+        ttAssert(
+            preg_match('/[[:cntrl:]]/', $line) !== 1,
+            "Request $index has no control character in its request line",
+        );
     }
 }
 
@@ -136,9 +155,11 @@ $tests = [
         ttLogin('3f6a1c0e9b', function ($requests) {
             ttAssert(count($requests) === 2, 'The credential POST is made');
             ttEveryRequestWellFormed($requests);
-            ttAssert(ttRequestLine($requests[1])
+            ttAssert(
+                ttRequestLine($requests[1])
                 === 'POST /index.php?s=3f6a1c0e9b&act=Login&CODE=01&CookieDate=1 HTTP/1.0',
-                'The session id reaches the target exactly as the form named it');
+                'The session id reaches the target exactly as the form named it',
+            );
         });
     },
     // A space needs no control character to break the request line: it is
@@ -147,8 +168,11 @@ $tests = [
         ttLogin('3f6a HTTP/1.0', function ($requests) {
             ttEveryRequestWellFormed($requests);
             foreach ($requests as $wire) {
-                ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name'); }
+                ttAssert(
+                    strpos($wire, 'UserName=') === false,
+                    'No credentials are posted to a target the form did not name',
+                );
+            }
         });
     },
     // parse_url() replaces a control character in the target with "_" and
@@ -157,16 +181,22 @@ $tests = [
         ttLogin("3f6a\rX-Injected: yes", function ($requests) {
             ttEveryRequestWellFormed($requests);
             foreach ($requests as $wire) {
-                ttAssert(strpos($wire, 'X-Injected') === false,
-                    'Nothing behind the carriage return reaches the wire'); }
+                ttAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    'Nothing behind the carriage return reaches the wire',
+                );
+            }
         });
     },
     'a tab in the session id reaches no request line' => function () {
         ttLogin("3f6a\tmore", function ($requests) {
             ttEveryRequestWellFormed($requests);
             foreach ($requests as $wire) {
-                ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name'); }
+                ttAssert(
+                    strpos($wire, 'UserName=') === false,
+                    'No credentials are posted to a target the form did not name',
+                );
+            }
         });
     },
     // A control character that is not whitespace leaves the request line
@@ -178,10 +208,14 @@ $tests = [
         ttLogin("3f6a\x01tail", function ($requests) {
             ttEveryRequestWellFormed($requests);
             foreach ($requests as $wire) {
-                ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name');
-                ttAssert(strpos($wire, '3f6a_tail') === false,
-                    'No request names the session the rewriting produced');
+                ttAssert(
+                    strpos($wire, 'UserName=') === false,
+                    'No credentials are posted to a target the form did not name',
+                );
+                ttAssert(
+                    strpos($wire, '3f6a_tail') === false,
+                    'No request names the session the rewriting produced',
+                );
             }
         });
     },
@@ -189,8 +223,11 @@ $tests = [
         ttLogin("3f6a\x7ftail", function ($requests) {
             ttEveryRequestWellFormed($requests);
             foreach ($requests as $wire) {
-                ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name'); }
+                ttAssert(
+                    strpos($wire, 'UserName=') === false,
+                    'No credentials are posted to a target the form did not name',
+                );
+            }
         });
     },
     // A path written in UTF-8 is a target servers accept today, and the bound
@@ -199,16 +236,23 @@ $tests = [
         ttLogin("3f6a\xc3\xa9", function ($requests) {
             ttAssert(count($requests) === 2, 'The credential POST is made');
             ttEveryRequestWellFormed($requests);
-            ttAssert(strpos($requests[1], "s=3f6a\xc3\xa9&act=Login") !== false,
-                'The high bytes reach the target as the form named them');
+            ttAssert(
+                strpos($requests[1], "s=3f6a\xc3\xa9&act=Login") !== false,
+                'The high bytes reach the target as the form named them',
+            );
         });
     },
 ];
 
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

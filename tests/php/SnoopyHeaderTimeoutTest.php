@@ -35,15 +35,21 @@ PHP;
         [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
         $pipes,
     );
-    if (!is_resource($process)) { throw new RuntimeException('Could not start the HTTP peer'); }
+    if (!is_resource($process)) {
+        throw new RuntimeException('Could not start the HTTP peer');
+    }
     $socket = false;
     try {
         fclose($pipes[0]);
         stream_set_timeout($pipes[1], 5);
         $address = fgets($pipes[1]);
-        if ($address === false) { throw new RuntimeException('The HTTP peer did not announce its address'); }
+        if ($address === false) {
+            throw new RuntimeException('The HTTP peer did not announce its address');
+        }
         $socket = stream_socket_client('tcp://' . trim($address), $errno, $error, 5);
-        if ($socket === false) { throw new RuntimeException('Could not connect to the HTTP peer: ' . $error); }
+        if ($socket === false) {
+            throw new RuntimeException('Could not connect to the HTTP peer: ' . $error);
+        }
         $client->read_timeout = 1;
         $client->host = '127.0.0.1';
         $fetched = $client->_httprequest('/', $socket, 'http://' . trim($address) . '/', 'GET');
@@ -55,14 +61,21 @@ PHP;
         $exit = proc_close($process);
         $process = null;
         if ($exit !== 0 || $stderr !== '') {
-            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr); }
+            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr);
+        }
         return ['fetched' => $fetched, 'status' => $client->status,
             'timed_out' => $client->timed_out, 'body' => $client->results, 'error' => $client->error];
     } finally {
-        if (is_resource($socket)) { fclose($socket); }
+        if (is_resource($socket)) {
+            fclose($socket);
+        }
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+            foreach ($pipes as $pipe) {
+                if (is_resource($pipe)) {
+                    fclose($pipe);
+                }
+            }
             proc_close($process);
         }
     }
@@ -101,13 +114,15 @@ foreach ($cases as $name => $case) {
             $seedExpected = ['fetched' => true, 'status' => '200', 'timed_out' => false,
                 'body' => 'previous', 'error' => ''];
             if ($seed !== $seedExpected) {
-                throw new RuntimeException('The first response must seed a real successful body: ' . json_encode($seed)); }
+                throw new RuntimeException('The first response must seed a real successful body: ' . json_encode($seed));
+            }
         }
         list($first, $late, $delay, $want) = $case;
         $seen = snoopyTimeoutResponse($client, $first, $late, $delay);
         $expected = array_combine(['fetched', 'status', 'timed_out', 'body', 'error'], $want);
         if ($seen !== $expected) {
-            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen)); }
+            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen));
+        }
         echo 'ok - ', $name, "\n";
     } catch (Throwable $error) {
         $failures++;

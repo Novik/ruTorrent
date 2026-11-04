@@ -1,4 +1,5 @@
 <?php
+
 require_once(dirname(__FILE__) . "/../../php/cache.php");
 require_once(dirname(__FILE__) . "/../../php/utility/json.php");
 require_once(dirname(__FILE__) . "/../../php/utility/fileutil.php");
@@ -45,7 +46,7 @@ class LogHandler
         }
 
         $handler->max_entries = max(1, intval($LogTab_array['max_entries']));
-        $handler->log_count   = max(1, intval($LogTab_array['log_count']));
+        $handler->log_count = max(1, intval($LogTab_array['log_count']));
 
         return $handler;
     }
@@ -92,9 +93,9 @@ class LogHandler
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $msg  = trim($_POST['message'] ?? '');
-            $st   = trim($_POST['status'] ?? '');
-            $ts   = $_POST['timestamp'] ?? null;
+            $msg = trim($_POST['message'] ?? '');
+            $st = trim($_POST['status'] ?? '');
+            $ts = $_POST['timestamp'] ?? null;
             $resp = $handler->saveLog($msg, $st, $ts);
         } else {
             global $LogTab_array;

@@ -97,8 +97,10 @@ $suite->test('no request is made in the clear', function () {
 
     strictAssertTrue(count(Snoopy::$requests) > 0, 'the handler asked for something');
     foreach (Snoopy::$requests as $request) {
-        strictAssertTrue(stripos($request[1], 'http://') !== 0,
-            'an http request carries no account, so it is not one this handler makes: ' . $request[1]);
+        strictAssertTrue(
+            stripos($request[1], 'http://') !== 0,
+            'an http request carries no account, so it is not one this handler makes: ' . $request[1],
+        );
     }
 });
 
@@ -113,8 +115,11 @@ $suite->test('the comment url a torrent already carries is still matched', funct
     // torrent identifies itself, and the torrents that exist say http.
     $result = AniDUBCheckImpl::download_torrent(anidubCommentUrl(), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_UPTODATE, $result,
-        'an http comment url still reaches the handler');
+    strictAssertSame(
+        ruTrackerChecker::STE_UPTODATE,
+        $result,
+        'an http comment url still reaches the handler',
+    );
 });
 
 $suite->test('the topic the comment url names is the topic read', function () {
@@ -126,8 +131,11 @@ $suite->test('the topic the comment url names is the topic read', function () {
 
     AniDUBCheckImpl::download_torrent(anidubCommentUrl(7), $hash, $torrent);
 
-    strictAssertSame(['fetchComplex', anidubTopicUrl(7)], Snoopy::$requests[0],
-        'the news id of the comment url is the one asked for');
+    strictAssertSame(
+        ['fetchComplex', anidubTopicUrl(7)],
+        Snoopy::$requests[0],
+        'the news id of the comment url is the one asked for',
+    );
 });
 
 $suite->test('a torrent with no quality tag is not looked up at all', function () {
@@ -136,8 +144,11 @@ $suite->test('a torrent with no quality tag is not looked up at all', function (
 
     $result = AniDUBCheckImpl::download_torrent(anidubCommentUrl(), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_NOT_NEED, $result,
-        'the handler has no way to pick a torrent without one');
+    strictAssertSame(
+        ruTrackerChecker::STE_NOT_NEED,
+        $result,
+        'the handler has no way to pick a torrent without one',
+    );
     strictAssertSame([], Snoopy::$requests, 'and asks for nothing');
 });
 
@@ -145,8 +156,11 @@ $suite->test('a url on another host is not this handler\'s', function () {
     ruTrackerChecker::reset();
     list($raw, $hash, $torrent) = anidubTorrent();
 
-    $result = AniDUBCheckImpl::download_torrent('http://evil.test/x/tr.anidub.com/?newsid=1',
-        $hash, $torrent);
+    $result = AniDUBCheckImpl::download_torrent(
+        'http://evil.test/x/tr.anidub.com/?newsid=1',
+        $hash,
+        $torrent,
+    );
 
     strictAssertSame(ruTrackerChecker::STE_NOT_NEED, $result, 'the handler declines it');
     strictAssertSame([], Snoopy::$requests, 'and asks nobody about it');

@@ -4,7 +4,9 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function bodyBytesAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // Use a real HTTP peer and the installed curl: a scripted curl would not
@@ -35,12 +37,15 @@ fclose($socket);
 fclose($server);
 echo json_encode(array('headers' => $headers, 'body' => base64_encode($body)));
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer, $response],
-        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer, $response],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     bodyBytesAssert(is_resource($process), 'The loopback peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
-        $address = trim((string)fgets($pipes[1]));
+        $address = trim((string) fgets($pipes[1]));
         bodyBytesAssert(preg_match('/^127\.0\.0\.1:[0-9]+$/D', $address) === 1, 'The peer announces its listener');
         $client = new Snoopy();
         $client->proxy_host = $client->proxy_port = '';
@@ -71,13 +76,17 @@ PHP;
         $code = proc_close($process);
         $process = null;
         bodyBytesAssert($code === 0 && $errors === '', 'The peer completes without errors: ' . $errors);
-        bodyBytesAssert($ok && (int)$client->status === 200, 'The request succeeds: ' . $client->error);
+        bodyBytesAssert($ok && (int) $client->status === 200, 'The request succeeds: ' . $client->error);
         $request = json_decode($capture, true);
         bodyBytesAssert(is_array($request) && isset($request['headers'], $request['body']), 'The peer captured a request');
         $request['body'] = base64_decode($request['body'], true);
         return [$client, $request];
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         if (is_resource($process)) {
             proc_terminate($process);
             proc_close($process);
@@ -147,20 +156,30 @@ $tests = [
                         throw new RuntimeException('The ' . $transport . ' transport did not complete '
                             . $label . ' (' . bin2hex($body) . '): ' . $error->getMessage());
                     }
-                    bodyBytesAssert($request['body'] === $body,
+                    bodyBytesAssert(
+                        $request['body'] === $body,
                         'The ' . $transport . ' transport must send ' . $label . ' unchanged: sent '
-                        . bin2hex($body) . ', received ' . bin2hex($request['body']));
-                    bodyBytesAssert(preg_match('/^Content-Length: ' . strlen($body) . '\r?$/mi',
-                        $request['headers']) === 1,
+                        . bin2hex($body) . ', received ' . bin2hex($request['body']),
+                    );
+                    bodyBytesAssert(
+                        preg_match(
+                            '/^Content-Length: ' . strlen($body) . '\r?$/mi',
+                            $request['headers'],
+                        ) === 1,
                         'The ' . $transport . ' transport must declare ' . strlen($body) . ' bytes for '
-                        . $label . ': ' . json_encode($request['headers']));
+                        . $label . ': ' . json_encode($request['headers']),
+                    );
                     $sent[$transport] = $request['body'];
                 }
-                bodyBytesAssert($sent['socket'] === $sent['curl'],
+                bodyBytesAssert(
+                    $sent['socket'] === $sent['curl'],
                     'The transports must agree on the bytes of ' . $label . ': socket sent '
-                    . bin2hex($sent['socket']) . ', curl sent ' . bin2hex($sent['curl']));
-                bodyBytesAssert(file_get_contents($file) === 'canary',
-                    'No transport may read or write a local file for ' . $label);
+                    . bin2hex($sent['socket']) . ', curl sent ' . bin2hex($sent['curl']),
+                );
+                bodyBytesAssert(
+                    file_get_contents($file) === 'canary',
+                    'No transport may read or write a local file for ' . $label,
+                );
             }
         } finally {
             unlink($file);

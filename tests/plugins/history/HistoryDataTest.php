@@ -45,16 +45,22 @@ function historyLoaded($records)
 function historyRecordAddition($object, $record, $limit)
 {
     $object->data[$record['hash']] = $record;
-    historySetProtected($object, 'ownAdditions',
-        historyGetProtected($object, 'ownAdditions') + [$record['hash'] => $record]);
+    historySetProtected(
+        $object,
+        'ownAdditions',
+        historyGetProtected($object, 'ownAdditions') + [$record['hash'] => $record],
+    );
     historySetProtected($object, 'limit', $limit);
 }
 
 function historyRecordRemoval($object, $key)
 {
     unset($object->data[$key]);
-    historySetProtected($object, 'ownRemovals',
-        historyGetProtected($object, 'ownRemovals') + [$key => true]);
+    historySetProtected(
+        $object,
+        'ownRemovals',
+        historyGetProtected($object, 'ownRemovals') + [$key => true],
+    );
 }
 
 function historyGetProtected($object, $property)
@@ -90,8 +96,11 @@ $tests = [
         ]);
 
         historyAssertSame(true, $ours->merge($onDisk, null), 'merge reports success');
-        historyAssertSame(['c', 'b', 'a'], array_keys($ours->data),
-            'both writers keep their row, newest first');
+        historyAssertSame(
+            ['c', 'b', 'a'],
+            array_keys($ours->data),
+            'both writers keep their row, newest first',
+        );
     },
 
     'a row this process deleted does not come back from the fresher copy' => function () {
@@ -107,8 +116,11 @@ $tests = [
         ]);
 
         $ours->merge($onDisk, null);
-        historyAssertSame(['a'], array_keys($ours->data),
-            'the deletion is replayed on top of the fresher copy');
+        historyAssertSame(
+            ['a'],
+            array_keys($ours->data),
+            'the deletion is replayed on top of the fresher copy',
+        );
     },
 
     'a delete never trims a history longer than the default cap' => function () {
@@ -120,8 +132,11 @@ $tests = [
         historyRecordRemoval($ours, 'k0');
 
         $ours->merge(historyLoaded($records), null);
-        historyAssertSame(599, count($ours->data),
-            'a delete carries no configured limit and must not impose the default one');
+        historyAssertSame(
+            599,
+            count($ours->data),
+            'a delete carries no configured limit and must not impose the default one',
+        );
     },
 
     'a recorded event still applies the configured cap' => function () {
@@ -150,7 +165,8 @@ $tests = [
             'a mixed-case placeholder' => str_repeat('cD', 20) . '.meta',
         ];
         foreach ($placeholders as $label => $name) {
-            historyAssertSame(true, rHistoryData::isMagnetPlaceholder($name), $label . ' must be recognised'); }
+            historyAssertSame(true, rHistoryData::isMagnetPlaceholder($name), $label . ' must be recognised');
+        }
 
         $real = [
             'a normal download' => 'Some Release 1080p',
@@ -162,7 +178,8 @@ $tests = [
             'a name with a non-hex character' => str_repeat('A', 39) . 'Z.meta',
         ];
         foreach ($real as $label => $name) {
-            historyAssertSame(false, rHistoryData::isMagnetPlaceholder($name), $label . ' must be kept'); }
+            historyAssertSame(false, rHistoryData::isMagnetPlaceholder($name), $label . ' must be kept');
+        }
     },
 
     'the stored format carries nothing but what it always carried' => function () {
@@ -170,12 +187,21 @@ $tests = [
         historyRecordAddition($ours, historyRecord('b', 101), 500);
 
         $restored = unserialize(serialize($ours));
-        historyAssertSame(['hash', 'modified', 'data'], $ours->__sleep(),
-            'only the three long-standing properties are serialised');
-        historyAssertSame(['a', 'b'], array_keys($restored->data),
-            'the records survive a round trip');
-        historyAssertSame([], historyGetProtected($restored, 'ownAdditions'),
-            'bookkeeping does not outlive the process that did the writing');
+        historyAssertSame(
+            ['hash', 'modified', 'data'],
+            $ours->__sleep(),
+            'only the three long-standing properties are serialised',
+        );
+        historyAssertSame(
+            ['a', 'b'],
+            array_keys($restored->data),
+            'the records survive a round trip',
+        );
+        historyAssertSame(
+            [],
+            historyGetProtected($restored, 'ownAdditions'),
+            'bookkeeping does not outlive the process that did the writing',
+        );
     },
 ];
 

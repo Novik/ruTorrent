@@ -12,7 +12,8 @@ class RequestStateClient extends Snoopy
     {
         ++$this->connections;
         if ($this->connections === $this->throwOnConnect) {
-            throw new RuntimeException('Controlled connector exception'); }
+            throw new RuntimeException('Controlled connector exception');
+        }
         $this->_pinnedaddr = '127.0.0.1';
         return parent::connect();
     }
@@ -20,7 +21,9 @@ class RequestStateClient extends Snoopy
 
 function stateAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function stateHeader($wire, $name)
@@ -74,15 +77,20 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     stateAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 5);
         $address = fgets($pipes[1]);
-        stateAssert(is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+        stateAssert(
+            is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
+            'The peer announces its local port',
+        );
         $client = new RequestStateClient();
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
@@ -94,15 +102,23 @@ PHP;
         fclose($pipes[0]);
         $requests = json_decode(stream_get_contents($pipes[1]), true);
         $errors = stream_get_contents($pipes[2]);
-        fclose($pipes[1]); fclose($pipes[2]);
-        $exit = proc_close($process); $process = null;
-        stateAssert($exit === 0 && $errors === '' && is_array($requests),
-            'The peer finishes successfully: ' . $exit . ' ' . $errors);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exit = proc_close($process);
+        $process = null;
+        stateAssert(
+            $exit === 0 && $errors === '' && is_array($requests),
+            'The peer finishes successfully: ' . $exit . ' ' . $errors,
+        );
         $check($requests);
     } finally {
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+            foreach ($pipes as $pipe) {
+                if (is_resource($pipe)) {
+                    fclose($pipe);
+                }
+            }
             proc_close($process);
         }
     }
@@ -125,7 +141,8 @@ $tests = [
     },
     'URL credentials restore caller configured credentials' => function () use ($redirect, $ok) {
         statePeer([$redirect, $ok, $ok], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             stateAssert($client->fetch('http://temporary:secret@first.test:' . $port . '/start'), 'The temporary request succeeds');
             stateAssert($client->user === 'configured-user' && $client->pass === 'configured-pass', 'Caller credentials are restored');
             stateAssert($client->fetch('http://second.test:' . $port . '/file'), 'The later configured request succeeds');
@@ -139,7 +156,8 @@ $tests = [
     },
     'a username-only URL does not borrow a configured password' => function () use ($ok) {
         statePeer([$ok], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             stateAssert($client->fetch('http://temporary@first.test:' . $port . '/start'), 'The username-only request succeeds');
             stateAssert($client->pass === 'configured-pass', 'The configured password is retained for its caller');
             return function ($requests) {
@@ -149,7 +167,8 @@ $tests = [
     },
     'empty URL userinfo is scoped without erasing caller credentials' => function () use ($ok) {
         statePeer([$ok], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             stateAssert($client->fetch('http://@first.test:' . $port . '/start'), 'The explicitly anonymous request succeeds');
             stateAssert($client->user === 'configured-user' && $client->pass === 'configured-pass', 'Caller credentials survive empty userinfo');
             return function ($requests) {
@@ -159,25 +178,34 @@ $tests = [
     },
     'a failed URL-authenticated request restores caller credentials' => function () {
         statePeer([['wire' => "HTTP/1.0 200 OK\r\n\r\nlate", 'delay' => 1300000]], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             stateAssert($client->fetch('http://temporary:secret@first.test:' . $port . '/start') === false && $client->status === -100, 'The real delayed peer causes a read timeout');
             stateAssert($client->user === 'configured-user' && $client->pass === 'configured-pass', 'Failure still restores caller credentials');
-            return function ($requests) { stateAssert(count($requests) === 1, 'The timed-out request reached the peer'); };
+            return function ($requests) {
+                stateAssert(count($requests) === 1, 'The timed-out request reached the peer');
+            };
         });
     },
     'exceptions unwind both URL credentials and redirect depth' => function () use ($redirect, $ok) {
         statePeer([$redirect, $ok], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             $client->throwOnConnect = 2;
             $caught = false;
-            try { $client->fetch('http://temporary:secret@first.test:' . $port . '/start'); }
-            catch (RuntimeException $error) { $caught = $error->getMessage() === 'Controlled connector exception'; }
+            try {
+                $client->fetch('http://temporary:secret@first.test:' . $port . '/start');
+            } catch (RuntimeException $error) {
+                $caught = $error->getMessage() === 'Controlled connector exception';
+            }
             stateAssert($caught, 'The original connector exception propagates');
             stateAssert($client->_redirectdepth === 0, 'A failed nested connection releases its recursion depth');
             stateAssert($client->user === 'configured-user' && $client->pass === 'configured-pass', 'The exceptional chain restores caller credentials');
             $client->throwOnConnect = null;
             stateAssert($client->fetch('http://first.test:' . $port . '/recovery'), 'The same client remains usable');
-            return function ($requests) { stateAssert(count($requests) === 2, 'Only the first and recovery requests reached the peer'); };
+            return function ($requests) {
+                stateAssert(count($requests) === 2, 'Only the first and recovery requests reached the peer');
+            };
         });
     },
     'each explicit request has its own redirect allowance' => function () use ($redirect, $ok) {
@@ -187,7 +215,9 @@ $tests = [
                 stateAssert($client->fetch('http://first.test:' . $port . '/start') && (int) $client->status === 200, 'Each chain reaches its final response');
             }
             stateAssert($client->_redirectdepth === 0, 'Each finished chain releases its recursion depth');
-            return function ($requests) { stateAssert(count($requests) === 4, 'Both explicit requests followed one redirect'); };
+            return function ($requests) {
+                stateAssert(count($requests) === 4, 'Both explicit requests followed one redirect');
+            };
         });
     },
     'a capped chain stays bounded and its last redirect does not leak' => function () use ($redirect, $ok) {
@@ -198,13 +228,16 @@ $tests = [
             stateAssert($client->lastredirectaddr !== '', 'The chain reports its followed redirect');
             stateAssert($client->fetch('http://first.test:' . $port . '/plain'), 'The next plain request succeeds');
             stateAssert($client->lastredirectaddr === '', 'The previous redirect is not reported for this request');
-            return function ($requests) { stateAssert(count($requests) === 3, 'The cap allows two requests, then the independent request'); };
+            return function ($requests) {
+                stateAssert(count($requests) === 3, 'The cap allows two requests, then the independent request');
+            };
         });
     },
     'configured credentials still drop on a foreign redirect' => function () use ($ok) {
         $foreign = ['wire' => "HTTP/1.0 302 Found\r\nLocation: http://second.test:{PORT}/file\r\n\r\n"];
         statePeer([$foreign, $ok], function ($client, $port) {
-            $client->user = 'configured-user'; $client->pass = 'configured-pass';
+            $client->user = 'configured-user';
+            $client->pass = 'configured-pass';
             stateAssert($client->fetch('http://first.test:' . $port . '/start'), 'The foreign redirect completes');
             stateAssert($client->user === '' && $client->pass === '', 'Existing foreign-origin credential removal is retained');
             return function ($requests) {
@@ -233,7 +266,8 @@ $tests = [
             $settings->hooks['HostConnect'] = [['name' => $name, 'level' => 10]];
             $GLOBALS['requestStateHookSaw'] = [];
             statePeer([$ok], function ($client, $port) {
-                $client->user = 'configured-user'; $client->pass = 'configured-pass';
+                $client->user = 'configured-user';
+                $client->pass = 'configured-pass';
                 stateAssert($client->fetch('http://url-user:url-pass@first.test:' . $port . '/start'), 'The hook-enabled request succeeds');
                 $seen = $GLOBALS['requestStateHookSaw'];
                 return function ($requests) use ($seen) {
@@ -244,7 +278,9 @@ $tests = [
         } finally {
             $settings->hooks = $previous;
             unset($GLOBALS['requestStateHookSaw']);
-            if ($linked) { unlink($plugin); }
+            if ($linked) {
+                unlink($plugin);
+            }
             @unlink($temporary . '/hooks.php');
             rmdir($temporary);
         }
@@ -263,21 +299,27 @@ $tests = [
             foreach ($refusals as $name => $case) {
                 $client->block_private = false;
                 stateAssert($client->fetch('http://first.test:' . $port . '/ok'), 'The seed request succeeds before ' . $name);
-                stateAssert($client->results === 'ok' && (int) $client->status === 200 && $client->headers !== [],
-                    'The seed response is a complete success before ' . $name);
+                stateAssert(
+                    $client->results === 'ok' && (int) $client->status === 200 && $client->headers !== [],
+                    'The seed response is a complete success before ' . $name,
+                );
                 $connections = $client->connections;
                 $client->block_private = $case['block'];
                 stateAssert($client->fetch($case['url']) === false, $name . ' is refused');
                 stateAssert($client->connections === $connections, $name . ' opens no connection');
                 stateAssert($client->status === Snoopy::RESPONSE_BODY_FAILED, $name . ' replaces the earlier status');
                 stateAssert($client->results === '', $name . ' discards the earlier body');
-                stateAssert($client->headers === [] && $client->response_code === '',
-                    $name . ' discards the earlier headers');
+                stateAssert(
+                    $client->headers === [] && $client->response_code === '',
+                    $name . ' discards the earlier headers',
+                );
                 stateAssert($client->_redirectaddr === false, $name . ' discards the earlier redirect');
                 stateAssert($client->error !== '', $name . ' states its own reason');
             }
-            stateAssert(strpos($client->error, 'invalid-protocol') === 0 && strpos($client->error, 'ftp') !== false,
-                'The refused protocol stays readable in the reason');
+            stateAssert(
+                strpos($client->error, 'invalid-protocol') === 0 && strpos($client->error, 'ftp') !== false,
+                'The refused protocol stays readable in the reason',
+            );
             return function ($requests) {
                 stateAssert(count($requests) === 2, 'Only the two seed requests reach the peer');
             };
@@ -291,18 +333,28 @@ $tests = [
         $closed = stateClosedPort();
         statePeer([$ok], function ($client, $port) use ($closed) {
             stateAssert($client->fetch('http://first.test:' . $port . '/ok'), 'The seed request succeeds');
-            stateAssert($client->results === 'ok' && (int) $client->status === 200
+            stateAssert(
+                $client->results === 'ok' && (int) $client->status === 200
                 && $client->headers !== [] && $client->response_code !== '',
-                'The seed response is a complete success');
-            stateAssert(@$client->fetch('http://first.test:' . $closed . '/gone') === false,
-                'The closed port refuses the connection');
-            stateAssert($client->status === Snoopy::SOCKET_CONNECT_FAILED,
-                'A failed connection reports the transport status');
+                'The seed response is a complete success',
+            );
+            stateAssert(
+                @$client->fetch('http://first.test:' . $closed . '/gone') === false,
+                'The closed port refuses the connection',
+            );
+            stateAssert(
+                $client->status === Snoopy::SOCKET_CONNECT_FAILED,
+                'A failed connection reports the transport status',
+            );
             stateAssert($client->results === '', 'A failed connection discards the earlier body');
-            stateAssert($client->headers === [] && $client->response_code === '',
-                'A failed connection discards the earlier headers');
-            stateAssert($client->_redirectaddr === false,
-                'A failed connection discards the earlier redirect');
+            stateAssert(
+                $client->headers === [] && $client->response_code === '',
+                'A failed connection discards the earlier headers',
+            );
+            stateAssert(
+                $client->_redirectaddr === false,
+                'A failed connection discards the earlier redirect',
+            );
             return function ($requests) {
                 stateAssert(count($requests) === 1, 'Only the seed request reaches the peer');
             };
@@ -317,16 +369,22 @@ $tests = [
             . "Location: http://first.test:{PORT}/next\r\n\r\n"];
         statePeer([$capped, $ok], function ($client, $port) {
             $client->maxredirs = 0;
-            stateAssert($client->fetch('http://first.test:' . $port . '/start') && (int) $client->status === 302,
-                'The capped redirect is answered but not followed');
-            stateAssert($client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
-                'The independent request succeeds');
+            stateAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && (int) $client->status === 302,
+                'The capped redirect is answered but not followed',
+            );
+            stateAssert(
+                $client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
+                'The independent request succeeds',
+            );
             stateAssert($client->cookies === [], 'The independent request absorbs no cookie of its own');
             return function ($requests) {
                 stateAssert(count($requests) === 2, 'Both requests reach the peer');
                 stateAssert(stateHeader($requests[0], 'Cookie') === [], 'The first request carries no cookie');
-                stateAssert(stateHeader($requests[1], 'Cookie') === [],
-                    'A different host receives no cookie set by the previous response');
+                stateAssert(
+                    stateHeader($requests[1], 'Cookie') === [],
+                    'A different host receives no cookie set by the previous response',
+                );
             };
         });
     },
@@ -336,12 +394,16 @@ $tests = [
         $handover = ['wire' => "HTTP/1.0 302 Found\r\nSet-Cookie: session=abc; path=/\r\n"
             . "Location: http://first.test:{PORT}/next\r\n\r\n"];
         statePeer([$handover, $ok], function ($client, $port) {
-            stateAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            stateAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) {
                 stateAssert(count($requests) === 2, 'The chain is two requests long');
-                stateAssert(stateHeader($requests[1], 'Cookie') === ['session=abc'],
-                    'The followed hop carries the cookie its redirect set');
+                stateAssert(
+                    stateHeader($requests[1], 'Cookie') === ['session=abc'],
+                    'The followed hop carries the cookie its redirect set',
+                );
             };
         });
     },
@@ -352,29 +414,42 @@ $tests = [
         $undecodable = ['wire' => "HTTP/1.0 302 Found\r\nSet-Cookie: stale=yes; path=/\r\n"
             . "Location: http://first.test:{PORT}/next\r\nContent-Encoding: gzip\r\n\r\nnotgzipdata-notgzipdata"];
         statePeer([$ok, $undecodable, $ok], function ($client, $port) {
-            stateAssert($client->fetch('http://first.test:' . $port . '/ok') && $client->results === 'ok',
-                'The seed request succeeds');
+            stateAssert(
+                $client->fetch('http://first.test:' . $port . '/ok') && $client->results === 'ok',
+                'The seed request succeeds',
+            );
             stateAssert($client->fetch('http://first.test:' . $port . '/start') === false
                 && $client->status === Snoopy::RESPONSE_BODY_FAILED, 'The undecodable reply fails the request');
-            stateAssert($client->results === '' && $client->headers === [] && $client->response_code === '',
-                'The refused reply reports no response');
+            stateAssert(
+                $client->results === '' && $client->headers === [] && $client->response_code === '',
+                'The refused reply reports no response',
+            );
             stateAssert($client->_redirectaddr === false, 'The refused reply reports no redirect');
             $client->setcookies();
             stateAssert($client->cookies === [], 'A refused reply is no source of cookies');
-            stateAssert($client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
-                'The next independent request succeeds');
+            stateAssert(
+                $client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
+                'The next independent request succeeds',
+            );
             return function ($requests) {
                 stateAssert(count($requests) === 3, 'All three requests reach the peer');
-                stateAssert(stateHeader($requests[2], 'Cookie') === [],
-                    'No cookie from the refused reply reaches the wire');
+                stateAssert(
+                    stateHeader($requests[2], 'Cookie') === [],
+                    'No cookie from the refused reply reaches the wire',
+                );
             };
         });
     },
 ];
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

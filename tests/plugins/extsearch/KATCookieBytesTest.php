@@ -45,15 +45,23 @@ class commonEngine
             'link' => '', 'desc' => '', 'seeds' => 0, 'peers' => 0];
     }
 
-    public static function removeTags($value) { return strip_tags($value); }
-    public static function formatSize($value) { return 0; }
+    public static function removeTags($value)
+    {
+        return strip_tags($value);
+    }
+    public static function formatSize($value)
+    {
+        return 0;
+    }
 }
 
 require_once(__DIR__ . '/../../../plugins/extsearch/engines/KAT.php');
 
 function katAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // Every field line of the header block, the request line excluded.
@@ -100,24 +108,35 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     katAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
         $address = fgets($pipes[1]);
-        katAssert(is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+        katAssert(
+            is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
+            'The peer announces its local port',
+        );
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
+        while (($line = fgets($pipes[1])) !== false) {
+            $json .= $line;
+        }
         $requests = json_decode(trim($json), true);
         katAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         proc_close($process);
     }
 }
@@ -145,12 +164,18 @@ $tests = [
         katSearch("Set-Cookie: sess=abc\r\n", function ($requests) {
             katAssert(count($requests) === 2, 'The search is the second request');
             $wire = $requests[1];
-            katAssert(preg_match('/\r(?!\n)/', $wire) !== 1 && preg_match('/(?<!\r)\n/', $wire) !== 1,
-                'Every CR and LF of the search request is part of a CRLF pair');
-            katAssert(strpos($wire, "\r\n\r\n") + 4 === strlen($wire),
-                'The first blank line of the request is the end of the request');
-            katAssert(in_array('Cookie: sess=abc', katFieldLines($wire), true),
-                'The cookie is one field line of the header block');
+            katAssert(
+                preg_match('/\r(?!\n)/', $wire) !== 1 && preg_match('/(?<!\r)\n/', $wire) !== 1,
+                'Every CR and LF of the search request is part of a CRLF pair',
+            );
+            katAssert(
+                strpos($wire, "\r\n\r\n") + 4 === strlen($wire),
+                'The first blank line of the request is the end of the request',
+            );
+            katAssert(
+                in_array('Cookie: sess=abc', katFieldLines($wire), true),
+                'The cookie is one field line of the header block',
+            );
         });
     },
     // Two attributeless cookies: the "; " the writer puts between crumbs
@@ -159,10 +184,13 @@ $tests = [
     'two attributeless cookies ride one Cookie line' => function () {
         katSearch("Set-Cookie: a=x\r\nSet-Cookie: b=y\r\n", function ($requests) {
             $wire = $requests[1];
-            katAssert(in_array('Cookie: a=x; b=y', katFieldLines($wire), true),
-                'Both crumbs ride one Cookie line');
+            katAssert(
+                in_array('Cookie: a=x; b=y', katFieldLines($wire), true),
+                'Both crumbs ride one Cookie line',
+            );
             foreach (katFieldLines($wire) as $line) {
-                katAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator'); }
+                katAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator');
+            }
         });
     },
     // fgets() splits the header stream on LF, so a bare CR is what a value can
@@ -174,20 +202,28 @@ $tests = [
     'a control character inside the value never reaches the wire' => function () {
         katSearch("Set-Cookie: a=x\rX-Injected: 1\r\n", function ($requests) {
             foreach ($requests as $wire) {
-                katAssert(preg_match('/\r(?!\n)/', $wire) !== 1,
-                    'Every CR of every request is part of a CRLF pair');
-                katAssert(strpos($wire, 'X-Injected') === false,
-                    'Nothing the value carried after its control character reaches the wire');
+                katAssert(
+                    preg_match('/\r(?!\n)/', $wire) !== 1,
+                    'Every CR of every request is part of a CRLF pair',
+                );
+                katAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    'Nothing the value carried after its control character reaches the wire',
+                );
             }
         });
     },
     'a control character inside the name never reaches the wire' => function () {
         katSearch("Set-Cookie: a\rX-Injected: 1=v\r\n", function ($requests) {
             foreach ($requests as $wire) {
-                katAssert(preg_match('/\r(?!\n)/', $wire) !== 1,
-                    'Every CR of every request is part of a CRLF pair');
-                katAssert(strpos($wire, 'X-Injected') === false,
-                    'Nothing the name carried after its control character reaches the wire');
+                katAssert(
+                    preg_match('/\r(?!\n)/', $wire) !== 1,
+                    'Every CR of every request is part of a CRLF pair',
+                );
+                katAssert(
+                    strpos($wire, 'X-Injected') === false,
+                    'Nothing the name carried after its control character reaches the wire',
+                );
             }
         });
     },
@@ -195,16 +231,23 @@ $tests = [
     // honours is honoured here too.
     'a cookie with attributes still reaches the search request' => function () {
         katSearch("Set-Cookie: sess=abc; path=/; HttpOnly\r\n", function ($requests) {
-            katAssert(in_array('Cookie: sess=abc', katFieldLines($requests[1]), true),
-                'A cookie that ends at an attribute is sent as the attribute left it');
+            katAssert(
+                in_array('Cookie: sess=abc', katFieldLines($requests[1]), true),
+                'A cookie that ends at an attribute is sent as the attribute left it',
+            );
         });
     },
 ];
 
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

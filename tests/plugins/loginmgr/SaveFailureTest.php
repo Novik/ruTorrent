@@ -8,16 +8,22 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 
 function saveAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function saveRemoveTree($path)
 {
     if (!is_dir($path) || is_link($path)) {
-        if (file_exists($path) || is_link($path)) { unlink($path); }
+        if (file_exists($path) || is_link($path)) {
+            unlink($path);
+        }
         return;
     }
-    foreach (array_diff(scandir($path), ['.', '..']) as $name) { saveRemoveTree($path . '/' . $name); }
+    foreach (array_diff(scandir($path), ['.', '..']) as $name) {
+        saveRemoveTree($path . '/' . $name);
+    }
     rmdir($path);
 }
 
@@ -28,7 +34,10 @@ class SaveFailureManager extends accountManager
     public $handlerCalls = 0;
     public $persistedAtForget = [];
 
-    public function setHandlers() { ++$this->handlerCalls; }
+    public function setHandlers()
+    {
+        ++$this->handlerCalls;
+    }
 
     protected function forgetSession($name)
     {
@@ -88,7 +97,9 @@ function saveAction($blocked, $check)
         $session->cookies = ['sid' => 'session-' . $name];
         file_put_contents($directory . '/profile/settings/accounts/' . $name . '.dat', serialize($session));
     }
-    if ($blocked) { mkdir($directory . '/profile/settings/loginmgr.dat.lock', 0700); }
+    if ($blocked) {
+        mkdir($directory . '/profile/settings/loginmgr.dat.lock', 0700);
+    }
     $router = '<?php $_ENV["RU_PROFILE_PATH"] = ' . var_export($directory . '/profile', true)
         . '; $_ENV["RU_LOG_FILE"] = ' . var_export($directory . '/application.log', true)
         . '; require ' . var_export($root . '/plugins/loginmgr/accounts.php', true) . ';'
@@ -102,15 +113,21 @@ function saveAction($blocked, $check)
     fclose($listener);
     $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
         $directory . '/router.php'], [0 => ['file', '/dev/null', 'r'],
-        1 => ['file', $directory . '/server.log', 'a'],
-        2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
+            1 => ['file', $directory . '/server.log', 'a'],
+            2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
     saveAssert(is_resource($process), 'The HTTP fixture starts without a shell');
     try {
         $ready = false;
         for ($attempt = 0; $attempt < 100; ++$attempt) {
             $peer = @stream_socket_client('tcp://' . $address, $errno, $error, 0.05);
-            if ($peer !== false) { fclose($peer); $ready = true; break; }
-            if (!proc_get_status($process)['running']) { break; }
+            if ($peer !== false) {
+                fclose($peer);
+                $ready = true;
+                break;
+            }
+            if (!proc_get_status($process)['running']) {
+                break;
+            }
             usleep(10000);
         }
         saveAssert($ready, 'The HTTP fixture is ready: ' . file_get_contents($directory . '/server.log'));
@@ -168,8 +185,10 @@ $tests = [
         $_REQUEST = ['Alpha_login' => 'new-user'];
         $saved = $manager->set();
         $expected = $manager->accounts;
-        saveAssert($manager->persistedAtForget === ['Alpha' => $expected, 'Beta' => $expected],
-            'Every session is retired only after the complete new credentials are readable');
+        saveAssert(
+            $manager->persistedAtForget === ['Alpha' => $expected, 'Beta' => $expected],
+            'Every session is retired only after the complete new credentials are readable',
+        );
         saveAssert($saved === true && $manager->handlerCalls === 1, 'Success is explicit and updates handlers once');
         saveAssert($expected['Alpha']['login'] === 'new-user' && $expected['Alpha']['password'] === 'saved-value'
             && $expected['Beta']['login'] === 'old-Beta', 'Omitted values and other accounts keep their prior values');

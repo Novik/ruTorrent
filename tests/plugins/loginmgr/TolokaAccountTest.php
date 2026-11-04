@@ -130,8 +130,11 @@ $suite->test('the login post carries only fields the form has', function () {
     // copied from, where login() assigns it. Here nothing ever did, so the
     // field went out empty; it is dropped rather than filled in, because this
     // account never lets the login answer stand in for the requested page.
-    strictAssertSame(false, array_key_exists('redirect', $fields),
-        'the form must not carry a field the account cannot fill: ' . $request['body']);
+    strictAssertSame(
+        false,
+        array_key_exists('redirect', $fields),
+        'the form must not carry a field the account cannot fill: ' . $request['body'],
+    );
     strictAssertSame(
         ['username', 'password', 'login', 'autologin', 'ssl'],
         array_keys($fields),
@@ -155,10 +158,16 @@ $suite->test('the account does not claim the requested page was fetched', functi
     // login() sets this; the login answer here is the forum index, never the
     // torrent that was asked for.
     $run = tolokaLogin('user', 'secret');
-    strictAssertSame(false, $run['is_result_fetched'],
-        'the caller still has to fetch the requested page itself');
-    strictAssertSame('https://toloka.to/download.php?id=7', $run['url'],
-        'login() must leave the requested url alone');
+    strictAssertSame(
+        false,
+        $run['is_result_fetched'],
+        'the caller still has to fetch the requested page itself',
+    );
+    strictAssertSame(
+        'https://toloka.to/download.php?id=7',
+        $run['url'],
+        'login() must leave the requested url alone',
+    );
     strictAssertSame(1, $run['client']->cookiesStored, 'the session cookies are stored once');
 });
 

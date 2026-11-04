@@ -1,609 +1,622 @@
 <?php
 
-require_once( dirname(__FILE__)."/../../php/util.php" );
-require_once( dirname(__FILE__)."/../../php/cache.php" );
-require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc");
-require_once( dirname(__FILE__)."/../../php/utility/json.php");
+require_once(dirname(__FILE__) . "/../../php/util.php");
+require_once(dirname(__FILE__) . "/../../php/cache.php");
+require_once(dirname(__FILE__) . "/../../php/Snoopy.class.inc");
+require_once(dirname(__FILE__) . "/../../php/utility/json.php");
 // The plugin configuration is read into the scope this file is first
 // included from, and that is not always the global one: on the download
 // path it is Snoopy::fetchComplex(), a method. The accounts read their
 // settings as globals, so the settings are declared global here first.
 global $yggTorrentOrigin, $abTorrentsOrigin, $revolutionTTOrigin, $tfileOrigin, $redactedOrigin;
-eval( FileUtil::getPluginConf( 'loginmgr' ) );
+eval(FileUtil::getPluginConf('loginmgr'));
 
 class privateData
 {
-	public $hash = '';
-	public $modified = false;
-	public $cookies = null;
-	public $referer = null;
-	public $loaded = false;
+    public $hash = '';
+    public $modified = false;
+    public $cookies = null;
+    public $referer = null;
+    public $loaded = false;
 
-	public function __construct( $owner )
-	{
-		$this->hash = $owner.".dat";
-		$this->loaded = false;
-	}
+    public function __construct($owner)
+    {
+        $this->hash = $owner . ".dat";
+        $this->loaded = false;
+    }
 
-	public static function load( $owner, $client = null )
-	{
-		$rt = new privateData($owner);
-		if($client)
-		{
-			$cache = new rCache('/accounts');
-			if($cache->get($rt))
-			{
-				$client->cookies = $rt->cookies;
-//				$client->referer = $rt->referer;
-				$rt->loaded = true;
-			}
-		}
-		return($rt);
-	}
+    public static function load($owner, $client = null)
+    {
+        $rt = new privateData($owner);
+        if ($client) {
+            $cache = new rCache('/accounts');
+            if ($cache->get($rt)) {
+                $client->cookies = $rt->cookies;
+                //				$client->referer = $rt->referer;
+                $rt->loaded = true;
+            }
+        }
+        return($rt);
+    }
 
-	// True when this account holds no stored session afterwards. The cache
-	// refuses a removal it cannot make safely -- it needs the writer lock the
-	// stores take, and the unlink itself can fail -- so the answer belongs to
-	// the caller, which has no other way to tell.
-	public function remove()
-	{
-		$cache = new rCache('/accounts');
-		return($cache->remove($this));
-	}
+    // True when this account holds no stored session afterwards. The cache
+    // refuses a removal it cannot make safely -- it needs the writer lock the
+    // stores take, and the unlink itself can fail -- so the answer belongs to
+    // the caller, which has no other way to tell.
+    public function remove()
+    {
+        $cache = new rCache('/accounts');
+        return($cache->remove($this));
+    }
 
-	public function store( $client )
-	{
-	        $this->cookies = $client->cookies;
-		$this->referer = $client->referer;
-		$cache = new rCache('/accounts');
-		return($cache->set($this));
-	}
+    public function store($client)
+    {
+        $this->cookies = $client->cookies;
+        $this->referer = $client->referer;
+        $cache = new rCache('/accounts');
+        return($cache->set($this));
+    }
 
-	public static function getModified($owner)
-	{
-		$rt = new privateData($owner);
-		$cache = new rCache('/accounts');
-		return($cache->getModified($rt));
-	}
+    public static function getModified($owner)
+    {
+        $rt = new privateData($owner);
+        $cache = new rCache('/accounts');
+        return($cache->getModified($rt));
+    }
 }
 
 abstract class commonAccount
 {
+    // Three answers, not two. They call for three different repairs, and this
+    // class used to make only two of them:
+    //
+    //   ANSWER_LIVE   the tracker answered from behind the login wall.
+    //   ANSWER_GUEST  the tracker answered, and answered as a guest. The
+    //                 session is dead and logging in again is the repair.
+    //   ANSWER_NONE   nothing usable arrived. This says NOTHING about the
+    //                 session, so logging in again is not a repair: it spends
+    //                 a credential POST on a tracker that is already failing
+    //                 and then throws away cookies never shown to be stale.
+    //
+    // Every isOK() under accounts/ tells the first two apart by looking for a
+    // guest marker -- a login form, a registration link, a "you must log in"
+    // line -- and none of them can answer the third, because a page that never
+    // arrived carries no marker either. That is why all three used to collapse
+    // into "the session is live", and why a 5xx error page went back to the
+    // caller as the page or the torrent it had asked for.
+    public const ANSWER_NONE = 0;
+    public const ANSWER_GUEST = 1;
+    public const ANSWER_LIVE = 2;
+    // The site this account logs in at, as "scheme://host". Each account under
+    // accounts/ names its own; the base class names none, and an account that
+    // leaves this empty claims no URL and is never logged in to. It used to be
+    // a placeholder, "http://abstract.com", and check() posted the credentials
+    // of an account that had not overridden it to that host.
+    public $url = '';
 
-	// Three answers, not two. They call for three different repairs, and this
-	// class used to make only two of them:
-	//
-	//   ANSWER_LIVE   the tracker answered from behind the login wall.
-	//   ANSWER_GUEST  the tracker answered, and answered as a guest. The
-	//                 session is dead and logging in again is the repair.
-	//   ANSWER_NONE   nothing usable arrived. This says NOTHING about the
-	//                 session, so logging in again is not a repair: it spends
-	//                 a credential POST on a tracker that is already failing
-	//                 and then throws away cookies never shown to be stale.
-	//
-	// Every isOK() under accounts/ tells the first two apart by looking for a
-	// guest marker -- a login form, a registration link, a "you must log in"
-	// line -- and none of them can answer the third, because a page that never
-	// arrived carries no marker either. That is why all three used to collapse
-	// into "the session is live", and why a 5xx error page went back to the
-	// caller as the page or the torrent it had asked for.
-	public const ANSWER_NONE = 0;
-	public const ANSWER_GUEST = 1;
-	public const ANSWER_LIVE = 2;
-	// The site this account logs in at, as "scheme://host". Each account under
-	// accounts/ names its own; the base class names none, and an account that
-	// leaves this empty claims no URL and is never logged in to. It used to be
-	// a placeholder, "http://abstract.com", and check() posted the credentials
-	// of an account that had not overridden it to that host.
-	public $url = '';
+    // The accounts refuseUnconfigured() has already reported, by name.
+    private static $unconfiguredLogged = [];
 
-	// The accounts refuseUnconfigured() has already reported, by name.
-	private static $unconfiguredLogged = [];
+    public function getName()
+    {
+        $className = get_class($this);
+        $pos = strpos($className, "Account");
+        if ($pos !== false) {
+            $className = substr($className, 0, $pos);
+        }
+        return($className);
+    }
 
-	public function getName()
-	{
-		$className = get_class($this);
-		$pos = strpos($className, "Account");
-		if($pos!==false) {
-			$className = substr($className,0,$pos); }
-		return($className);
-	}
+    // Prefix-matching the URL string is not the same as matching the site.
+    // "https://tracker.example" is a prefix of "https://tracker.example@evil.test/"
+    // (the tracker name is userinfo, the host is the attacker's) and of
+    // "https://tracker.example.evil.test/" (the tracker name is one label of a
+    // longer domain). Either would have handed this account's cookies to
+    // whoever controls that host, and the URL does not have to come from the
+    // user -- plugins/rss follows links out of a feed.
+    public function test($url)
+    {
+        if ($this->refuseUnconfigured()) {
+            return(false);
+        }
+        $site = parse_url((string) $this->url);
+        return(self::urlAddresses($url, [$site["host"]], $site["scheme"]));
+    }
 
-	// Prefix-matching the URL string is not the same as matching the site.
-	// "https://tracker.example" is a prefix of "https://tracker.example@evil.test/"
-	// (the tracker name is userinfo, the host is the attacker's) and of
-	// "https://tracker.example.evil.test/" (the tracker name is one label of a
-	// longer domain). Either would have handed this account's cookies to
-	// whoever controls that host, and the URL does not have to come from the
-	// user -- plugins/rss follows links out of a feed.
-	public function test($url)
-	{
-		if($this->refuseUnconfigured()) {
-			return(false); }
-		$site = parse_url((string) $this->url);
-		return(self::urlAddresses($url,[$site["host"]],$site["scheme"]));
-	}
+    public function fetch($client, $url, $login, $password, $method, $content_type, $body)
+    {
+        $is_result_fetched = false;
+        $data = $this->loadData($client);
+        if ($data->loaded
+            && $this->updateCached($client, $url, $method, $content_type, $body)) {
+            if (!$client->fetch($url, $method, $content_type, $body)) {
+                return(false);
+            }
+            // Taken before isOKPostFetch(), because an override may fetch
+            // further pages onto this client and the question here is about
+            // the answer to the caller's own URL.
+            $answer = $this->classifyAnswer($client);
+            if ($this->isOKPostFetch($client, $url, $method, $content_type, $body)) {
+                return(true);
+            }
+            // Only a guest answer is evidence that the session died. Anything
+            // else leaves that unproven, so report the failure and keep the
+            // cookies rather than log in again against a tracker that is not
+            // answering: one outage would otherwise cost a credential POST per
+            // call for every caller looping over a torrent list, which is how
+            // an account gets locked out.
+            if ($answer !== self::ANSWER_GUEST) {
+                return(false);
+            }
+        }
+        $ret = ($this->login($client, $login, $password, $url, $method, $content_type, $body, $is_result_fetched)
+            && $this->loginWasNotRefused($client)
+            && ($is_result_fetched || $client->fetch($url, $method, $content_type, $body))
+            && $this->isOKPostFetch($client, $url, $method, $content_type, $body)
+            && $data->store($client));
+        if (!$ret) {
+            $data->remove();
+        }
+        return($ret);
+    }
 
-	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
-	{
-		$is_result_fetched = false;
-		$data = $this->loadData($client);
-		if($data->loaded &&
-			$this->updateCached($client,$url,$method,$content_type,$body))
-		{
-			if(!$client->fetch($url,$method,$content_type,$body)) {
-				return(false); }
-			// Taken before isOKPostFetch(), because an override may fetch
-			// further pages onto this client and the question here is about
-			// the answer to the caller's own URL.
-			$answer = $this->classifyAnswer($client);
-			if($this->isOKPostFetch($client,$url,$method,$content_type,$body)) {
-				return(true); }
-			// Only a guest answer is evidence that the session died. Anything
-			// else leaves that unproven, so report the failure and keep the
-			// cookies rather than log in again against a tracker that is not
-			// answering: one outage would otherwise cost a credential POST per
-			// call for every caller looping over a torrent list, which is how
-			// an account gets locked out.
-			if($answer!==self::ANSWER_GUEST) {
-				return(false); }
-		}
-		$ret = ( $this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
-			$this->loginWasNotRefused($client) &&
-			($is_result_fetched || $client->fetch($url,$method,$content_type,$body)) &&
-			$this->isOKPostFetch($client,$url,$method,$content_type,$body) &&
-			$data->store($client) );
-		if(!$ret) {
-			$data->remove(); }
-		return($ret);
-	}
+    public function check($client, $login, $password, $auto)
+    {
+        // No URL selects the account here: the refresh logs in at the
+        // account's own site, and one without a site has nowhere to send
+        // the credentials.
+        if ($this->refuseUnconfigured()) {
+            return;
+        }
+        $modified = privateData::getModified($this->getName());
+        if (($modified === false) || ((time() - $modified) >= $auto)) {
+            // login() takes these by reference and several accounts read them
+            // before writing: undeclared, they arrived as null, and an account
+            // whose login() starts by fetching $url could never authenticate
+            // from here at all.
+            $url = $this->url;
+            $method = "GET";
+            $content_type = "";
+            $body = "";
+            $is_result_fetched = false;
+            $data = $this->loadData();
+            if ($this->login($client, $login, $password, $url, $method, $content_type, $body, $is_result_fetched)
+                && $this->loginWasNotRefused($client)) {
+                $data->store($client);
+            }
+            // A login that did not come back is not evidence that the stored
+            // session is stale, and this job exists to REFRESH a session:
+            // deleting one it merely failed to renew leaves the user worse off
+            // than not running at all. A session that really has died is
+            // discovered, and replaced, by the next fetch().
+        }
+    }
 
-	public function check( $client, $login, $password, $auto )
-	{
-		// No URL selects the account here: the refresh logs in at the
-		// account's own site, and one without a site has nowhere to send
-		// the credentials.
-		if($this->refuseUnconfigured()) {
-			return; }
-		$modified = privateData::getModified($this->getName());
-		if( ($modified===false) || ((time()-$modified)>=$auto))
-		{
-			// login() takes these by reference and several accounts read them
-			// before writing: undeclared, they arrived as null, and an account
-			// whose login() starts by fetching $url could never authenticate
-			// from here at all.
-			$url = $this->url;
-			$method = "GET";
-			$content_type = "";
-			$body = "";
-			$is_result_fetched = false;
-			$data = $this->loadData();
-			if($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
-				$this->loginWasNotRefused($client)) {
-				$data->store($client); }
-			// A login that did not come back is not evidence that the stored
-			// session is stale, and this job exists to REFRESH a session:
-			// deleting one it merely failed to renew leaves the user worse off
-			// than not running at all. A session that really has died is
-			// discovered, and replaced, by the next fetch().
-		}
-	}
+    abstract protected function isOK($client);
+    abstract protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched);
 
-	abstract protected function isOK($client);
-	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched);
+    // Why this account cannot be used, or '' when it can. The base rule is
+    // that $url parses into a scheme and a host; an account that takes its
+    // site from configuration says here what is missing.
+    protected function unconfigured()
+    {
+        $site = @parse_url((string) $this->url);
+        if (!is_array($site) || empty($site["host"]) || empty($site["scheme"])) {
+            return('the account names no site');
+        }
+        return('');
+    }
 
-	// Why this account cannot be used, or '' when it can. The base rule is
-	// that $url parses into a scheme and a host; an account that takes its
-	// site from configuration says here what is missing.
-	protected function unconfigured()
-	{
-		$site = @parse_url((string) $this->url);
-		if(!is_array($site) || empty($site["host"]) || empty($site["scheme"])) {
-			return('the account names no site'); }
-		return('');
-	}
+    // True when the account cannot be used, in which case the reason is
+    // logged once per account and process -- the alternative was a credential
+    // POST that quietly went to a placeholder.
+    protected function refuseUnconfigured()
+    {
+        $reason = $this->unconfigured();
+        if ($reason === '') {
+            return(false);
+        }
+        $name = $this->getName();
+        if (!isset(self::$unconfiguredLogged[$name])) {
+            self::$unconfiguredLogged[$name] = true;
+            FileUtil::toLog('loginmgr: ' . $name . ' is not used: ' . $reason);
+        }
+        return(true);
+    }
 
-	// True when the account cannot be used, in which case the reason is
-	// logged once per account and process -- the alternative was a credential
-	// POST that quietly went to a placeholder.
-	protected function refuseUnconfigured()
-	{
-		$reason = $this->unconfigured();
-		if($reason==='') {
-			return(false); }
-		$name = $this->getName();
-		if(!isset(self::$unconfiguredLogged[$name]))
-		{
-			self::$unconfiguredLogged[$name] = true;
-			FileUtil::toLog('loginmgr: '.$name.' is not used: '.$reason);
-		}
-		return(true);
-	}
+    // $value as "https://host[:port]", or '' with the reason in $error. An
+    // origin is a scheme, an ASCII host and at most a port: no userinfo, path,
+    // query or fragment, since those would go into every URL built on it. A
+    // trailing slash is allowed; case and a trailing dot in the host are
+    // folded. parse_url() alone accepts "https://a b.example" and
+    // "https://a..example" as hosts, hence the host pattern.
+    protected static function configuredOrigin($value, &$error)
+    {
+        if (!is_string($value)) {
+            $error = 'is not a string';
+            return('');
+        }
+        if ($value === '') {
+            $error = 'is not set';
+            return('');
+        }
+        $error = 'is not an https origin ("https://host" with an ASCII host, optionally a port, and nothing else)';
+        $parts = @parse_url($value);
+        if (!is_array($parts) || empty($parts["scheme"]) || empty($parts["host"])
+            || strtolower($parts["scheme"]) !== 'https'
+            || isset($parts["user"]) || isset($parts["pass"]) || isset($parts["query"]) || isset($parts["fragment"])
+            || (isset($parts["path"]) && $parts["path"] !== '' && $parts["path"] !== '/')) {
+            return('');
+        }
+        $host = rtrim(strtolower($parts["host"]), '.');
+        if (!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)*[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/', $host)) {
+            return('');
+        }
+        if (isset($parts["port"]) && (($parts["port"] < 1) || ($parts["port"] > 65535))) {
+            return('');
+        }
+        $error = '';
+        return('https://' . $host . (isset($parts["port"]) ? ':' . $parts["port"] : ''));
+    }
 
-	// $value as "https://host[:port]", or '' with the reason in $error. An
-	// origin is a scheme, an ASCII host and at most a port: no userinfo, path,
-	// query or fragment, since those would go into every URL built on it. A
-	// trailing slash is allowed; case and a trailing dot in the host are
-	// folded. parse_url() alone accepts "https://a b.example" and
-	// "https://a..example" as hosts, hence the host pattern.
-	protected static function configuredOrigin($value,&$error)
-	{
-		if(!is_string($value))
-		{
-			$error = 'is not a string';
-			return('');
-		}
-		if($value==='')
-		{
-			$error = 'is not set';
-			return('');
-		}
-		$error = 'is not an https origin ("https://host" with an ASCII host, optionally a port, and nothing else)';
-		$parts = @parse_url($value);
-		if(!is_array($parts) || empty($parts["scheme"]) || empty($parts["host"]) ||
-			strtolower($parts["scheme"])!=='https' ||
-			isset($parts["user"]) || isset($parts["pass"]) || isset($parts["query"]) || isset($parts["fragment"]) ||
-			(isset($parts["path"]) && $parts["path"]!=='' && $parts["path"]!=='/')) {
-			return(''); }
-		$host = rtrim(strtolower($parts["host"]),'.');
-		if(!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)*[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/',$host)) {
-			return(''); }
-		if(isset($parts["port"]) && (($parts["port"]<1) || ($parts["port"]>65535))) {
-			return(''); }
-		$error = '';
-		return('https://'.$host.(isset($parts["port"]) ? ':'.$parts["port"] : ''));
-	}
+    // The reason an account that takes its site from configuration cannot be
+    // used, naming the setting that carries it and where to set it. The value
+    // is never quoted: a mistyped setting can hold a password.
+    protected static function unconfiguredOrigin($setting, $error)
+    {
+        return('$' . $setting . ' ' . $error
+            . '; set it to the tracker\'s origin in plugins/loginmgr/conf.local.php'
+            . ' or conf/users/<user>/plugins/loginmgr/conf.php');
+    }
 
-	// The reason an account that takes its site from configuration cannot be
-	// used, naming the setting that carries it and where to set it. The value
-	// is never quoted: a mistyped setting can hold a password.
-	protected static function unconfiguredOrigin($setting,$error)
-	{
-		return('$'.$setting.' '.$error
-			.'; set it to the tracker\'s origin in plugins/loginmgr/conf.local.php'
-			.' or conf/users/<user>/plugins/loginmgr/conf.php');
-	}
+    // True when $url's host is one of $hosts, or a subdomain of one, and its
+    // scheme is $scheme when a scheme is named. Subclasses that accept several
+    // domains, or a whole domain's subdomains, say so here instead of matching
+    // the name anywhere in the URL string -- which also accepts
+    // "https://evil.test/path/tracker.example/x", whose host is the attacker's.
+    protected static function urlAddresses($url, $hosts, $scheme = null, $pathPrefix = null)
+    {
+        $parts = @parse_url((string) $url);
+        if (!is_array($parts) || empty($parts["host"])) {
+            return(false);
+        }
+        // The URL may not weaken the site's scheme. An https site matched over
+        // http would have this account's cookies put on the wire in clear by
+        // the very first request, before any redirect could upgrade it, and a
+        // feed link is not written by the user. The other direction is allowed:
+        // an https URL to a site still configured http simply fails to
+        // connect, and costs nothing to permit.
+        if ($scheme !== null) {
+            $urlScheme = strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '');
+            if (($urlScheme !== strtolower($scheme)) && ($urlScheme !== 'https')) {
+                return(false);
+            }
+        }
+        if ($pathPrefix !== null) {
+            $path = isset($parts["path"]) ? $parts["path"] : '/';
+            if (strncasecmp($path, $pathPrefix, strlen($pathPrefix)) !== 0) {
+                return(false);
+            }
+        }
+        $host = strtolower($parts["host"]);
+        foreach ($hosts as $candidate) {
+            $candidate = strtolower($candidate);
+            if (($host === $candidate) || (substr($host, -strlen($candidate) - 1) === '.' . $candidate)) {
+                return(true);
+            }
+        }
+        return(false);
+    }
 
-	// True when $url's host is one of $hosts, or a subdomain of one, and its
-	// scheme is $scheme when a scheme is named. Subclasses that accept several
-	// domains, or a whole domain's subdomains, say so here instead of matching
-	// the name anywhere in the URL string -- which also accepts
-	// "https://evil.test/path/tracker.example/x", whose host is the attacker's.
-	protected static function urlAddresses($url,$hosts,$scheme = null,$pathPrefix = null)
-	{
-		$parts = @parse_url((string) $url);
-		if(!is_array($parts) || empty($parts["host"])) {
-			return(false); }
-		// The URL may not weaken the site's scheme. An https site matched over
-		// http would have this account's cookies put on the wire in clear by
-		// the very first request, before any redirect could upgrade it, and a
-		// feed link is not written by the user. The other direction is allowed:
-		// an https URL to a site still configured http simply fails to
-		// connect, and costs nothing to permit.
-		if($scheme!==null)
-		{
-			$urlScheme = strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '');
-			if(($urlScheme!==strtolower($scheme)) && ($urlScheme!=='https')) {
-				return(false); }
-		}
-		if($pathPrefix!==null)
-		{
-			$path = isset($parts["path"]) ? $parts["path"] : '/';
-			if(strncasecmp($path,$pathPrefix,strlen($pathPrefix))!==0) {
-				return(false); }
-		}
-		$host = strtolower($parts["host"]);
-		foreach($hosts as $candidate)
-		{
-			$candidate = strtolower($candidate);
-			if(($host===$candidate) || (substr($host,-strlen($candidate)-1)==='.'.$candidate)) {
-				return(true); }
-		}
-		return(false);
-	}
+    protected function loadData($client = null)
+    {
+        return(privateData::load($this->getName(), $client));
+    }
 
-	protected function loadData( $client = null )
-	{
-		 return(privateData::load( $this->getName(), $client ));
-	}
+    protected function updateCached($client, &$url, &$method, &$content_type, &$body)
+    {
+        return(true);
+    }
 
-	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
-	{
-		return(true);
-	}
+    // What the client is holding after a fetch of the caller's own URL.
+    protected function classifyAnswer($client)
+    {
+        if (!is_object($client)) {
+            return(self::ANSWER_NONE);
+        }
+        $status = (int) $client->status;
+        // A conditional request the server honoured. It answered, it answered
+        // the authenticated request, and it sent no body on purpose: the
+        // caller asked for that (plugins/rss sends If-None-Match and reads
+        // $client->status itself). Judging it by its absent body would turn
+        // every unchanged poll of an authenticated feed into a fresh login.
+        if ($status === 304) {
+            return(self::ANSWER_LIVE);
+        }
+        // Only 2xx carries a body meant for the caller. A 3xx reaching here is
+        // a redirect Snoopy did not follow -- a followed chain ends at the
+        // status of its last hop -- and the boilerplate body a server puts on
+        // one carries no guest marker either, so it would read as a live
+        // session for want of evidence.
+        if (($status < 200) || ($status >= 300)) {
+            return(self::ANSWER_NONE);
+        }
+        if (!$this->hasReadableBody($client)) {
+            return(self::ANSWER_NONE);
+        }
+        return($this->isOK($client) ? self::ANSWER_LIVE : self::ANSWER_GUEST);
+    }
 
-	// What the client is holding after a fetch of the caller's own URL.
-	protected function classifyAnswer($client)
-	{
-		if(!is_object($client)) {
-			return(self::ANSWER_NONE); }
-		$status = (int) $client->status;
-		// A conditional request the server honoured. It answered, it answered
-		// the authenticated request, and it sent no body on purpose: the
-		// caller asked for that (plugins/rss sends If-None-Match and reads
-		// $client->status itself). Judging it by its absent body would turn
-		// every unchanged poll of an authenticated feed into a fresh login.
-		if($status===304) {
-			return(self::ANSWER_LIVE); }
-		// Only 2xx carries a body meant for the caller. A 3xx reaching here is
-		// a redirect Snoopy did not follow -- a followed chain ends at the
-		// status of its last hop -- and the boilerplate body a server puts on
-		// one carries no guest marker either, so it would read as a live
-		// session for want of evidence.
-		if(($status<200) || ($status>=300)) {
-			return(self::ANSWER_NONE); }
-		if(!$this->hasReadableBody($client)) {
-			return(self::ANSWER_NONE); }
-		return($this->isOK($client) ? self::ANSWER_LIVE : self::ANSWER_GUEST);
-	}
+    // True when $client->results is something a strpos() marker test can read.
+    // Snoopy does not always leave a string there: when a gzipped body arrives
+    // on a build without gzinflate() it shells out to gzip, and if the
+    // decompressed file is missing the body is lost. strpos() on a non-string
+    // is fatal in PHP 8, and every marker test under accounts/ is a strpos().
+    protected function hasReadableBody($client)
+    {
+        return(is_object($client) && is_string($client->results) && ($client->results !== ''));
+    }
 
-	// True when $client->results is something a strpos() marker test can read.
-	// Snoopy does not always leave a string there: when a gzipped body arrives
-	// on a build without gzinflate() it shells out to gzip, and if the
-	// decompressed file is missing the body is lost. strpos() on a non-string
-	// is fatal in PHP 8, and every marker test under accounts/ is a strpos().
-	protected function hasReadableBody($client)
-	{
-		return(is_object($client) && is_string($client->results) && ($client->results!==''));
-	}
+    // The login answer is a narrower question than the caller's answer: a
+    // login endpoint may legitimately answer with no body at all -- a 30x to
+    // the landing page, or a 200 whose whole content is Set-Cookie -- and it
+    // is the fetch that follows which proves whether the session took. So the
+    // marker test is applied only when there is a body to apply it to, and the
+    // status range stays the one this class has always used here.
+    protected function loginWasNotRefused($client)
+    {
+        if (!is_object($client)) {
+            return(false);
+        }
+        $status = (int) $client->status;
+        if (($status < 200) || ($status >= 400)) {
+            return(false);
+        }
+        return(!$this->hasReadableBody($client) || $this->isOK($client));
+    }
 
-	// The login answer is a narrower question than the caller's answer: a
-	// login endpoint may legitimately answer with no body at all -- a 30x to
-	// the landing page, or a 200 whose whole content is Set-Cookie -- and it
-	// is the fetch that follows which proves whether the session took. So the
-	// marker test is applied only when there is a body to apply it to, and the
-	// status range stays the one this class has always used here.
-	protected function loginWasNotRefused($client)
-	{
-		if(!is_object($client)) {
-			return(false); }
-		$status = (int) $client->status;
-		if(($status<200) || ($status>=400)) {
-			return(false); }
-		return(!$this->hasReadableBody($client) || $this->isOK($client));
-	}
-
-	protected function isOKPostFetch($client,$url,$method,$content_type,$body)
-	{
-		return($this->classifyAnswer($client)===self::ANSWER_LIVE);
-	}
+    protected function isOKPostFetch($client, $url, $method, $content_type, $body)
+    {
+        return($this->classifyAnswer($client) === self::ANSWER_LIVE);
+    }
 }
 
 class accountManager
 {
-	public $hash = "loginmgr.dat";
-	public $modified = false;
-	public $accounts = [];
+    public $hash = "loginmgr.dat";
+    public $modified = false;
+    public $accounts = [];
 
-	public static function load()
-	{
-		$cache = new rCache();
-		$ar = new accountManager();
-		return($cache->get($ar) ? $ar : false);
-	}
+    public static function load()
+    {
+        $cache = new rCache();
+        $ar = new accountManager();
+        return($cache->get($ar) ? $ar : false);
+    }
 
-	public function store()
-	{
-		$cache = new rCache();
-		return($cache->set($this));
-	}
+    public function store()
+    {
+        $cache = new rCache();
+        return($cache->set($this));
+    }
 
-	// True when the discovered list is durable. A refused write leaves that
-	// list standing for this request only, so the scheduled job is left
-	// alone as well: it would otherwise describe accounts that no later
-	// request can read.
-	//
-	// A directory that cannot be enumerated is not a directory holding no
-	// accounts, and the difference matters because only one of the two may be
-	// written down: a store of the empty list succeeds, and from then on
-	// load() answers every later request from it, so the plugin stays empty
-	// after whatever denied the read is repaired. What that store lands on is
-	// whatever the profile held, credentials included -- action.php reaches
-	// here whenever the stored list could not be loaded, not only when there
-	// is none.
-	public function obtain( $dir = '../plugins/loginmgr/accounts' )
-	{
-		$oldAccounts = $this->accounts;
-		$handle = @opendir($dir);
-		if($handle===false)
-		{
-			FileUtil::toLog('loginmgr: the accounts directory could not be read, so the stored list is left alone: '.$dir);
-			return(false);
-		}
-		$accounts = [];
-		while(false !== ($file = readdir($handle)))
-		{
-			if(is_file($dir.'/'.$file))
-			{
-				$name = basename($file,".php");
-				$accounts[$name] = [ "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 ];
-				if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
-				{
-					$accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
-					$accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
-					$accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
-					if(array_key_exists("auto",$oldAccounts[$name])) {
-						$accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]); }
-				}
-			}
-		}
-		closedir($handle);
-		ksort($accounts);
-		$this->accounts = $accounts;
-		if(!$this->store())
-		{
-			FileUtil::toLog('loginmgr: the discovered account list could not be saved.');
-			return(false);
-		}
-		$this->setHandlers();
-		return(true);
-	}
+    // True when the discovered list is durable. A refused write leaves that
+    // list standing for this request only, so the scheduled job is left
+    // alone as well: it would otherwise describe accounts that no later
+    // request can read.
+    //
+    // A directory that cannot be enumerated is not a directory holding no
+    // accounts, and the difference matters because only one of the two may be
+    // written down: a store of the empty list succeeds, and from then on
+    // load() answers every later request from it, so the plugin stays empty
+    // after whatever denied the read is repaired. What that store lands on is
+    // whatever the profile held, credentials included -- action.php reaches
+    // here whenever the stored list could not be loaded, not only when there
+    // is none.
+    public function obtain($dir = '../plugins/loginmgr/accounts')
+    {
+        $oldAccounts = $this->accounts;
+        $handle = @opendir($dir);
+        if ($handle === false) {
+            FileUtil::toLog('loginmgr: the accounts directory could not be read, so the stored list is left alone: ' . $dir);
+            return(false);
+        }
+        $accounts = [];
+        while (false !== ($file = readdir($handle))) {
+            if (is_file($dir . '/' . $file)) {
+                $name = basename($file, ".php");
+                $accounts[$name] = [ "name" => $name, "path" => FileUtil::fullpath($dir . '/' . $file), "object" => $name . "Account", "login" => '', "password" => '', "enabled" => 0, "auto" => 0 ];
+                if (array_key_exists($name, $oldAccounts) && array_key_exists("login", $oldAccounts[$name])) {
+                    $accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
+                    $accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
+                    $accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
+                    if (array_key_exists("auto", $oldAccounts[$name])) {
+                        $accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
+                    }
+                }
+            }
+        }
+        closedir($handle);
+        ksort($accounts);
+        $this->accounts = $accounts;
+        if (!$this->store()) {
+            FileUtil::toLog('loginmgr: the discovered account list could not be saved.');
+            return(false);
+        }
+        $this->setHandlers();
+        return(true);
+    }
 
-	// The stored password is not part of this. The browser only has to know
-	// whether one is set, so that the settings page can say so; it is sent
-	// back only when someone types a new one.
-	//
-	// The whole structure is one json literal. Built as javascript text, every
-	// stored value that was not already a number or a quoted string reached
-	// the page as source the browser ran.
-	public function get()
-	{
-		$accounts = [];
-		foreach( $this->accounts as $name=>$nfo ) {
-			$accounts[self::asText($name)] = [
-				"login" => self::asText($nfo["login"]),
-				"password_set" => (self::asText($nfo["password"])==="") ? 0 : 1,
-				"enabled" => self::asFlag($nfo["enabled"]),
-				"auto" => self::asNumber($nfo["auto"]) ]; }
-		return("theWebUI.theAccounts = ".JSON::jsValue((object) $accounts).";\n");
-	}
+    // The stored password is not part of this. The browser only has to know
+    // whether one is set, so that the settings page can say so; it is sent
+    // back only when someone types a new one.
+    //
+    // The whole structure is one json literal. Built as javascript text, every
+    // stored value that was not already a number or a quoted string reached
+    // the page as source the browser ran.
+    public function get()
+    {
+        $accounts = [];
+        foreach ($this->accounts as $name => $nfo) {
+            $accounts[self::asText($name)] = [
+                "login" => self::asText($nfo["login"]),
+                "password_set" => (self::asText($nfo["password"]) === "") ? 0 : 1,
+                "enabled" => self::asFlag($nfo["enabled"]),
+                "auto" => self::asNumber($nfo["auto"]) ];
+        }
+        return("theWebUI.theAccounts = " . JSON::jsValue((object) $accounts) . ";\n");
+    }
 
-	// $notRetired comes back holding the accounts whose stored session is
-	// still on disk after a save that changed their credentials. The save
-	// itself succeeded in that case, so the return value cannot carry it.
-	public function set( &$notRetired = null )
-	{
-		$previous = $this->accounts;
-		foreach( $this->accounts as $name=>$nfo )
-		{
-			if(isset($_REQUEST[$name."_enabled"])) {
-				$this->accounts[$name]["enabled"] = self::asFlag($_REQUEST[$name."_enabled"]); }
-			if(isset($_REQUEST[$name."_login"])) {
-				$this->accounts[$name]["login"] = self::asText($_REQUEST[$name."_login"]); }
-			if(isset($_REQUEST[$name."_password"])) {
-				$this->accounts[$name]["password"] = self::asText($_REQUEST[$name."_password"]); }
-			if(isset($_REQUEST[$name."_auto"])) {
-				$this->accounts[$name]["auto"] = self::asNumber($_REQUEST[$name."_auto"]); }
-		}
-		// A refused edit must leave the active credentials and sessions in place.
-		if(!$this->store())
-		{
-			$this->accounts = $previous;
-			return(false);
-		}
-		$notRetired = [];
-		foreach(array_keys($this->accounts) as $name) {
-			if(!$this->forgetSession($name)) {
-				$notRetired[] = $name; } }
-		// A session the cache would not discard is still sent to the tracker
-		// under credentials that no longer exist, which is the one thing
-		// forgetSession() is for. Nothing here can force the removal, so the
-		// names go where an operator can read them.
-		if(count($notRetired)) {
-			FileUtil::toLog('loginmgr: a stored session outlived the credentials it was made with: '.
-				implode(', ',$notRetired)); }
-		$this->setHandlers();
-		return(true);
-	}
+    // $notRetired comes back holding the accounts whose stored session is
+    // still on disk after a save that changed their credentials. The save
+    // itself succeeded in that case, so the return value cannot carry it.
+    public function set(&$notRetired = null)
+    {
+        $previous = $this->accounts;
+        foreach ($this->accounts as $name => $nfo) {
+            if (isset($_REQUEST[$name . "_enabled"])) {
+                $this->accounts[$name]["enabled"] = self::asFlag($_REQUEST[$name . "_enabled"]);
+            }
+            if (isset($_REQUEST[$name . "_login"])) {
+                $this->accounts[$name]["login"] = self::asText($_REQUEST[$name . "_login"]);
+            }
+            if (isset($_REQUEST[$name . "_password"])) {
+                $this->accounts[$name]["password"] = self::asText($_REQUEST[$name . "_password"]);
+            }
+            if (isset($_REQUEST[$name . "_auto"])) {
+                $this->accounts[$name]["auto"] = self::asNumber($_REQUEST[$name . "_auto"]);
+            }
+        }
+        // A refused edit must leave the active credentials and sessions in place.
+        if (!$this->store()) {
+            $this->accounts = $previous;
+            return(false);
+        }
+        $notRetired = [];
+        foreach (array_keys($this->accounts) as $name) {
+            if (!$this->forgetSession($name)) {
+                $notRetired[] = $name;
+            }
+        }
+        // A session the cache would not discard is still sent to the tracker
+        // under credentials that no longer exist, which is the one thing
+        // forgetSession() is for. Nothing here can force the removal, so the
+        // names go where an operator can read them.
+        if (count($notRetired)) {
+            FileUtil::toLog('loginmgr: a stored session outlived the credentials it was made with: '
+                . implode(', ', $notRetired));
+        }
+        $this->setHandlers();
+        return(true);
+    }
 
-	public function getAccount( $url )
-	{
-		foreach( $this->accounts as $name=>$nfo )
-		{
-			if($nfo["enabled"])
-			{
-				require_once( $nfo["path"] );
-				$object = new $nfo["object"]();
-				if($object->test($url)) {
-					return( $name ); }
-			}
-		}
-		return(false);
-	}
+    public function getAccount($url)
+    {
+        foreach ($this->accounts as $name => $nfo) {
+            if ($nfo["enabled"]) {
+                require_once($nfo["path"]);
+                $object = new $nfo["object"]();
+                if ($object->test($url)) {
+                    return($name);
+                }
+            }
+        }
+        return(false);
+    }
 
-        public function fetch( $acc, $client, $url, $method="GET", $content_type="", $body="" )
-	{
-		if(array_key_exists($acc,$this->accounts))
-		{
-			$nfo = $this->accounts[$acc];
-			require_once( $nfo["path"] );
-			$object = new $nfo["object"]();
-			return($object->fetch( $client, $url, $nfo["login"], $nfo["password"], $method, $content_type, $body ));
-		}
-		return(false);
-	}
+    public function fetch($acc, $client, $url, $method = "GET", $content_type = "", $body = "")
+    {
+        if (array_key_exists($acc, $this->accounts)) {
+            $nfo = $this->accounts[$acc];
+            require_once($nfo["path"]);
+            $object = new $nfo["object"]();
+            return($object->fetch($client, $url, $nfo["login"], $nfo["password"], $method, $content_type, $body));
+        }
+        return(false);
+    }
 
-	public function getInfo()
-	{
-		$ret = [];
-		foreach( $this->accounts as $name=>$nfo )
-		{
-			require_once( $nfo["path"] );
-			$nfo["name"] = $name;
-			$object = new $nfo["object"]();
-			$nfo["url"] = $object->url;
-			unset($nfo["object"]);
-			unset($nfo["path"]);
-			// Nothing reads the password from here, and this answer is json
-			// served to the browser like any other.
-			$nfo["password_set"] = (self::asText($nfo["password"])==="") ? 0 : 1;
-			unset($nfo["password"]);
-			$nfo["login"] = self::asText($nfo["login"]);
-			$nfo["enabled"] = self::asFlag($nfo["enabled"]);
-			$nfo["auto"] = self::asNumber($nfo["auto"]);
-			$ret[] = $nfo;
-		}
-		return($ret);
-	}
+    public function getInfo()
+    {
+        $ret = [];
+        foreach ($this->accounts as $name => $nfo) {
+            require_once($nfo["path"]);
+            $nfo["name"] = $name;
+            $object = new $nfo["object"]();
+            $nfo["url"] = $object->url;
+            unset($nfo["object"]);
+            unset($nfo["path"]);
+            // Nothing reads the password from here, and this answer is json
+            // served to the browser like any other.
+            $nfo["password_set"] = (self::asText($nfo["password"]) === "") ? 0 : 1;
+            unset($nfo["password"]);
+            $nfo["login"] = self::asText($nfo["login"]);
+            $nfo["enabled"] = self::asFlag($nfo["enabled"]);
+            $nfo["auto"] = self::asNumber($nfo["auto"]);
+            $ret[] = $nfo;
+        }
+        return($ret);
+    }
 
-	public function hasAuto()
-	{
-		foreach( $this->accounts as $name=>$nfo ) {
-			if($nfo["enabled"] && !empty($nfo["auto"])) {
-				return(true); } }
-		return(false);
-	}
+    public function hasAuto()
+    {
+        foreach ($this->accounts as $name => $nfo) {
+            if ($nfo["enabled"] && !empty($nfo["auto"])) {
+                return(true);
+            }
+        }
+        return(false);
+    }
 
-	public function setHandlers()
-	{
-		if(rTorrentSettings::get()->linkExist)
-		{
-			$req =  new rXMLRPCRequest( $this->hasAuto() ?
-				rTorrentSettings::get()->getAlignedScheduleCommand("loginmgr",86400,
-					getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' & exit 0}' ) :
-				rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr") );
-			$req->success();
-		}
-	}
+    public function setHandlers()
+    {
+        if (rTorrentSettings::get()->linkExist) {
+            $req = new rXMLRPCRequest($this->hasAuto()
+                ? rTorrentSettings::get()->getAlignedScheduleCommand(
+                    "loginmgr",
+                    86400,
+                    getCmd('execute') . '={sh,-c,' . escapeshellarg(Utility::getPHP()) . ' ' . escapeshellarg(dirname(__FILE__) . '/update.php') . ' ' . escapeshellarg(User::getUser()) . ' & exit 0}',
+                )
+                : rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr"));
+            $req->success();
+        }
+    }
 
-	public function checkAuto()
-	{
-		foreach( $this->accounts as $name=>$nfo )
-		{
-			if($nfo["enabled"] && !empty($nfo["auto"]))
-			{
-				require_once( $nfo["path"] );
-				$object = new $nfo["object"]();
-				$object->check( new Snoopy(), $nfo["login"], $nfo["password"], $nfo["auto"] );
-			}
-		}
-	}
+    public function checkAuto()
+    {
+        foreach ($this->accounts as $name => $nfo) {
+            if ($nfo["enabled"] && !empty($nfo["auto"])) {
+                require_once($nfo["path"]);
+                $object = new $nfo["object"]();
+                $object->check(new Snoopy(), $nfo["login"], $nfo["password"], $nfo["auto"]);
+            }
+        }
+    }
 
-	// A stored scalar is a flag, a number or a text, and nothing else is kept.
-	// What a settings request carries is whatever the request put there, and
-	// what is already in the cache file may predate this, so the write and the
-	// read both go through these.
-	protected static function asFlag($value)
-	{
-		return(is_scalar($value) && $value && ($value!=='0') ? 1 : 0);
-	}
+    // A stored scalar is a flag, a number or a text, and nothing else is kept.
+    // What a settings request carries is whatever the request put there, and
+    // what is already in the cache file may predate this, so the write and the
+    // read both go through these.
+    protected static function asFlag($value)
+    {
+        return(is_scalar($value) && $value && ($value !== '0') ? 1 : 0);
+    }
 
-	protected static function asNumber($value)
-	{
-		return(is_scalar($value) ? intval($value) : 0);
-	}
+    protected static function asNumber($value)
+    {
+        return(is_scalar($value) ? intval($value) : 0);
+    }
 
-	protected static function asText($value)
-	{
-		return(is_scalar($value) ? strval($value) : '');
-	}
+    protected static function asText($value)
+    {
+        return(is_scalar($value) ? strval($value) : '');
+    }
 
-	// Discards the cookies and referer held for this account: whatever was
-	// just written may name another site or another user. False when the
-	// session is still there afterwards.
-	protected function forgetSession( $name )
-	{
-		$data = new privateData( $name );
-		return($data->remove());
-	}
+    // Discards the cookies and referer held for this account: whatever was
+    // just written may name another site or another user. False when the
+    // session is still there afterwards.
+    protected function forgetSession($name)
+    {
+        $data = new privateData($name);
+        return($data->remove());
+    }
 }

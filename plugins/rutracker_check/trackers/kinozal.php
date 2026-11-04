@@ -41,28 +41,33 @@ class KinozalCheckImpl
     public static function download_torrent($url, $hash, $old_torrent)
     {
         if (!preg_match('`^https?://kinozal\.(tv|me|guru)/details\.php\?id=(?P<id>\d+)$`', $url, $matches)) {
-            return ruTrackerChecker::STE_NOT_NEED; }
+            return ruTrackerChecker::STE_NOT_NEED;
+        }
 
         // Checked after the URL match, so a topic this handler does not own
         // still falls through to STE_NOT_NEED exactly as before.
         if (self::$sessionDead) {
-            return ruTrackerChecker::STE_CANT_REACH_TRACKER; }
+            return ruTrackerChecker::STE_CANT_REACH_TRACKER;
+        }
 
         $id = $matches["id"];
-        $client = ruTrackerChecker::makeClient("https://kinozal.guru/get_srv_details.php?action=2&id=".$id);
+        $client = ruTrackerChecker::makeClient("https://kinozal.guru/get_srv_details.php?action=2&id=" . $id);
         if ($client->status != 200) {
-            return self::cantReach("get_srv_details failed: status=".$client->status." id=".$id); }
+            return self::cantReach("get_srv_details failed: status=" . $client->status . " id=" . $id);
+        }
 
         $details = (string) $client->results;
         if (self::isGuestAnswer($details)) {
-            return self::guestAnswer("get_srv_details answered a guest page, check the loginmgr account: id=".$id); }
+            return self::guestAnswer("get_srv_details answered a guest page, check the loginmgr account: id=" . $id);
+        }
         // An authenticated answer clears the count: only guest answers that
         // run together mean a lost session, and isolated ones must not add up
         // across an otherwise healthy cycle.
         self::$guestAnswers = 0;
 
         if (self::bodyHas($details, self::MISSING_MARKER)) {
-            return ruTrackerChecker::STE_DELETED; }
+            return ruTrackerChecker::STE_DELETED;
+        }
 
         // Strict comparison: loose == reads a hex hash shaped like scientific
         // notation as a number -- '1E' followed by 38 zeros == '00...01'
@@ -70,25 +75,29 @@ class KinozalCheckImpl
         // pass as equal.
         if (preg_match('`<li>.*(?P<hash>[0-9A-Fa-f]{40})</li>`', $details, $matches1)
             && strtoupper($matches1["hash"]) === strtoupper((string) $hash)) {
-            return ruTrackerChecker::STE_UPTODATE; }
+            return ruTrackerChecker::STE_UPTODATE;
+        }
 
         $client->setcookies();
-        $client->fetchComplex("https://dl.kinozal.guru/download.php?id=".$id);
+        $client->fetchComplex("https://dl.kinozal.guru/download.php?id=" . $id);
         // A guest download is a redirect to login.php. Whether Snoopy follows
         // it to the 200 login page (the guest marker below catches that) or
         // stops on a 3xx, the answer is treated as a login wall either way:
         // a non-200 status is "could not fetch", never "deleted".
         if ($client->status != 200) {
-            return self::cantReach("download.php failed: status=".$client->status." id=".$id); }
+            return self::cantReach("download.php failed: status=" . $client->status . " id=" . $id);
+        }
 
         // Metainfo first: bytes that parse ARE the torrent, whatever text they
         // happen to contain, so a torrent is never mistaken for a login wall.
         $payload = (string) $client->results;
         if (self::isMetainfo($payload)) {
-            return ruTrackerChecker::createTorrent($payload, $hash); }
+            return ruTrackerChecker::createTorrent($payload, $hash);
+        }
         if (self::isGuestAnswer($payload)) {
-            return self::guestAnswer("download.php answered a guest page, check the loginmgr account: id=".$id); }
-        return self::cantReach("download.php returned no metainfo: id=".$id." bytes=".strlen($payload));
+            return self::guestAnswer("download.php answered a guest page, check the loginmgr account: id=" . $id);
+        }
+        return self::cantReach("download.php returned no metainfo: id=" . $id . " bytes=" . strlen($payload));
     }
 
     // get_srv_details.php is served as UTF-8 while the rest of the site is
@@ -96,11 +105,17 @@ class KinozalCheckImpl
     // pinned to whichever charset that endpoint happens to use today.
     private static function bodyHas($body, $needle)
     {
-        if (!is_string($body) || $body === '') { return false; }
-        if (strpos($body, $needle) !== false) { return true; }
+        if (!is_string($body) || $body === '') {
+            return false;
+        }
+        if (strpos($body, $needle) !== false) {
+            return true;
+        }
         if (function_exists('iconv')) {
             $legacy = @iconv('UTF-8', 'CP1251//IGNORE', $needle);
-            if (is_string($legacy) && $legacy !== '' && strpos($body, $legacy) !== false) { return true; }
+            if (is_string($legacy) && $legacy !== '' && strpos($body, $legacy) !== false) {
+                return true;
+            }
         }
         return false;
     }
@@ -116,7 +131,9 @@ class KinozalCheckImpl
     // validates in.
     private static function isMetainfo($payload)
     {
-        if (!is_string($payload) || $payload === '') { return false; }
+        if (!is_string($payload) || $payload === '') {
+            return false;
+        }
         // PHP 7.4 warns when Torrent probes binary metainfo as a filename.
         $torrent = @new Torrent($payload);
         return !$torrent->errors() && strlen((string) $torrent->hash_info()) === 40;
@@ -139,7 +156,8 @@ class KinozalCheckImpl
     private static function guestAnswer($log)
     {
         if (++self::$guestAnswers < self::GUEST_TOLERANCE) {
-            return self::cantReach($log); }
+            return self::cantReach($log);
+        }
         self::$sessionDead = true;
         return self::cantReach($log . ', the rest of this cycle is skipped');
     }

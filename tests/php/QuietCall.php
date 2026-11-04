@@ -7,22 +7,20 @@
  */
 trait QuietCall
 {
-	// The call's result and the diagnostics it raised.
-	private static function quietly($call)
-	{
-		$errors = [];
-		set_error_handler(function($number, $message) use (&$errors) {
-			if(error_reporting() & $number) {
-				$errors[] = $message; }
-			return true;
-		});
-		try
-		{
-			return [$call(), $errors];
-		}
-		finally
-		{
-			restore_error_handler();
-		}
-	}
+    // The call's result and the diagnostics it raised.
+    private static function quietly($call)
+    {
+        $errors = [];
+        set_error_handler(function ($number, $message) use (&$errors) {
+            if (error_reporting() & $number) {
+                $errors[] = $message;
+            }
+            return true;
+        });
+        try {
+            return [$call(), $errors];
+        } finally {
+            restore_error_handler();
+        }
+    }
 }

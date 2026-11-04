@@ -4,7 +4,9 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function urlBytesAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // A peer that answers one request and hands back the request line it read.
@@ -31,14 +33,19 @@ fclose($socket);
 fclose($server);
 echo json_encode(array('request' => base64_encode($request)));
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer],
-        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     urlBytesAssert(is_resource($process), 'The loopback peer starts');
     try {
         stream_set_timeout($pipes[1], 20);
         $address = trim((string) fgets($pipes[1]));
-        urlBytesAssert(preg_match('/^127\.0\.0\.1:[0-9]+$/D', $address) === 1,
-            'The peer announces its listener');
+        urlBytesAssert(
+            preg_match('/^127\.0\.0\.1:[0-9]+$/D', $address) === 1,
+            'The peer announces its listener',
+        );
         $client = new Snoopy();
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
@@ -68,14 +75,22 @@ PHP;
         proc_close($process);
         $process = null;
         $request = json_decode($capture, true);
-        urlBytesAssert(is_array($request) && isset($request['request']),
-            'The peer reports the request it read');
+        urlBytesAssert(
+            is_array($request) && isset($request['request']),
+            'The peer reports the request it read',
+        );
         $line = strtok(base64_decode($request['request']), "\r\n");
-        urlBytesAssert(is_string($line) && preg_match('|^[A-Z]+ (\S*) HTTP/|', $line, $match) === 1,
-            'The peer read a request line: ' . var_export($line, true));
+        urlBytesAssert(
+            is_string($line) && preg_match('|^[A-Z]+ (\S*) HTTP/|', $line, $match) === 1,
+            'The peer read a request line: ' . var_export($line, true),
+        );
         return $match[1];
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         if (is_resource($process)) {
             proc_terminate($process);
             proc_close($process);
@@ -91,7 +106,9 @@ function urlBytesLocales()
     $found = [];
     foreach (['C', 'C.UTF-8', 'C.utf8', 'POSIX', 'en_US.UTF-8', 'en_US.utf8'] as $name) {
         $previous = setlocale(LC_CTYPE, '0');
-        if (setlocale(LC_CTYPE, $name) !== false) { $found[$name] = true; }
+        if (setlocale(LC_CTYPE, $name) !== false) {
+            $found[$name] = true;
+        }
         setlocale(LC_CTYPE, $previous);
     }
     return array_keys($found);
@@ -123,16 +140,22 @@ $tests = [
                 foreach ($targets as $label => $target) {
                     $where = $label . ' under ' . $locale;
                     $socket = urlBytesTarget(false, $target);
-                    urlBytesAssert($socket === $target,
+                    urlBytesAssert(
+                        $socket === $target,
                         'The socket transport asks for the target it was given: ' . $where
-                        . ' asked for ' . bin2hex($socket) . ' of ' . bin2hex($target));
+                        . ' asked for ' . bin2hex($socket) . ' of ' . bin2hex($target),
+                    );
                     $curl = urlBytesTarget(true, $target);
-                    urlBytesAssert(rawurldecode($curl) === rawurldecode($socket),
+                    urlBytesAssert(
+                        rawurldecode($curl) === rawurldecode($socket),
                         'The curl transport must ask for the same resource: ' . $where
-                        . ' asked for ' . bin2hex($curl) . ' where the socket asked for ' . bin2hex($socket));
-                    urlBytesAssert(preg_match('/[\x80-\xff]/', $curl) !== 1,
+                        . ' asked for ' . bin2hex($curl) . ' where the socket asked for ' . bin2hex($socket),
+                    );
+                    urlBytesAssert(
+                        preg_match('/[\x80-\xff]/', $curl) !== 1,
                         'No byte of the target is left for the locale to decide: ' . $where
-                        . ' asked for ' . bin2hex($curl));
+                        . ' asked for ' . bin2hex($curl),
+                    );
                 }
             }
         } finally {

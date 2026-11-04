@@ -43,16 +43,22 @@ $redactedOrigin = 'https://redacted.example';
 
 function authAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function authRemoveTree($path)
 {
     if (!is_dir($path) || is_link($path)) {
-        if (file_exists($path) || is_link($path)) { unlink($path); }
+        if (file_exists($path) || is_link($path)) {
+            unlink($path);
+        }
         return;
     }
-    foreach (array_diff(scandir($path), ['.', '..']) as $name) { authRemoveTree($path . '/' . $name); }
+    foreach (array_diff(scandir($path), ['.', '..']) as $name) {
+        authRemoveTree($path . '/' . $name);
+    }
     rmdir($path);
 }
 
@@ -74,7 +80,9 @@ function authEngineNames()
     $dir = __DIR__ . '/../../../plugins/extsearch/engines';
     $names = [];
     foreach (scandir($dir) as $entry) {
-        if (substr($entry, -4) !== '.php') { continue; }
+        if (substr($entry, -4) !== '.php') {
+            continue;
+        }
         if (preg_match('/[\'"]auth[\'"]\s*=>\s*1\s*[,)]/', file_get_contents($dir . '/' . $entry))) {
             $names[] = basename($entry, '.php');
         }
@@ -123,8 +131,10 @@ function authEngineRequests($name)
 function authAccountOrigin($name)
 {
     $file = __DIR__ . '/../../../plugins/loginmgr/accounts/' . $name . '.php';
-    authAssert(is_file($file),
-        'the ' . $name . ' engine declares auth=1, so loginmgr has an account of that name to log it in');
+    authAssert(
+        is_file($file),
+        'the ' . $name . ' engine declares auth=1, so loginmgr has an account of that name to log it in',
+    );
     require_once($file);
     $class = $name . 'Account';
     authAssert(class_exists($class), $class . ' is declared');
@@ -140,8 +150,10 @@ $tests = [
         foreach ($names as $name) {
             $wanted = authAccountOrigin($name);
             $requests = authEngineRequests($name);
-            authAssert(count($requests) > 0,
-                'the ' . $name . ' engine makes a request once its account names a site');
+            authAssert(
+                count($requests) > 0,
+                'the ' . $name . ' engine makes a request once its account names a site',
+            );
             foreach ($requests as $url) {
                 $origin = authOrigin($url);
                 if ($origin !== $wanted) {
@@ -149,8 +161,10 @@ $tests = [
                 }
             }
         }
-        authAssert($mismatched === [],
-            'an engine asking off its account\'s origin is never logged in: ' . implode('; ', array_unique($mismatched)));
+        authAssert(
+            $mismatched === [],
+            'an engine asking off its account\'s origin is never logged in: ' . implode('; ', array_unique($mismatched)),
+        );
     },
 
     'the two the scheme used to separate are selected for their own search' => function () {
@@ -163,10 +177,14 @@ $tests = [
             $class = $name . 'Account';
             $account = new $class();
             foreach (authEngineRequests($name) as $url) {
-                authAssert(authOrigin($url) === $wanted,
-                    $name . ' searches ' . $wanted . ', not ' . authOrigin($url));
-                authAssert($account->test($url) === true,
-                    $name . '\'s account claims the URL the engine searches, so the search is made logged in: ' . $url);
+                authAssert(
+                    authOrigin($url) === $wanted,
+                    $name . ' searches ' . $wanted . ', not ' . authOrigin($url),
+                );
+                authAssert(
+                    $account->test($url) === true,
+                    $name . '\'s account claims the URL the engine searches, so the search is made logged in: ' . $url,
+                );
             }
         }
     },

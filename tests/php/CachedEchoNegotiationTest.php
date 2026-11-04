@@ -5,37 +5,45 @@ require_once(__DIR__ . '/TestHttpServer.php');
 function cachedEchoNegotiatedResponse($port, $accept, $query)
 {
     $peer = stream_socket_client('tcp://127.0.0.1:' . $port, $errno, $error, 2);
-    if ($peer === false) { throw new RuntimeException('Could not connect to the HTTP fixture: ' . $error); }
+    if ($peer === false) {
+        throw new RuntimeException('Could not connect to the HTTP fixture: ' . $error);
+    }
     try {
         stream_set_timeout($peer, 5);
         $request = 'GET /?' . http_build_query($query) . " HTTP/1.1\r\nHost: 127.0.0.1\r\n"
             . ($accept === null ? '' : 'Accept-Encoding: ' . $accept . "\r\n")
             . "Connection: close\r\n\r\n";
         if (fwrite($peer, $request) !== strlen($request)) {
-            throw new RuntimeException('Could not write the complete HTTP request'); }
+            throw new RuntimeException('Could not write the complete HTTP request');
+        }
         $response = stream_get_contents($peer);
         if ($response === false || stream_get_meta_data($peer)['timed_out']
             || strpos($response, "\r\n\r\n") === false) {
-            throw new RuntimeException('The response did not complete successfully'); }
+            throw new RuntimeException('The response did not complete successfully');
+        }
     } finally {
         fclose($peer);
     }
     list($head, $body) = explode("\r\n\r\n", $response, 2);
     $lines = explode("\r\n", $head);
     if (array_shift($lines) !== 'HTTP/1.1 200 OK') {
-        throw new RuntimeException('The HTTP fixture did not return 200 OK'); }
+        throw new RuntimeException('The HTTP fixture did not return 200 OK');
+    }
     $headers = [];
     foreach ($lines as $line) {
         $colon = strpos($line, ':');
         if ($colon !== false) {
-            $headers[strtolower(substr($line, 0, $colon))] = trim(substr($line, $colon + 1)); }
+            $headers[strtolower(substr($line, 0, $colon))] = trim(substr($line, $colon + 1));
+        }
     }
     return [$headers, $body];
 }
 
 $directory = (getenv('TMPDIR') ?: sys_get_temp_dir())
     . '/cached-echo-negotiation-' . getmypid() . '-' . bin2hex(random_bytes(4));
-if (!mkdir($directory, 0700)) { throw new RuntimeException('Could not create the fixture directory'); }
+if (!mkdir($directory, 0700)) {
+    throw new RuntimeException('Could not create the fixture directory');
+}
 $server = null;
 $failures = 0;
 $cases = [
@@ -103,29 +111,41 @@ try {
         . 'else CachedEcho::send($body, "text/plain"); '
         . 'file_put_contents(' . var_export($directory . '/continued', true) . ', "yes");';
     file_put_contents($directory . '/router.php', $router);
-    $server = TestHttpServer::start($directory, [],
+    $server = TestHttpServer::start(
+        $directory,
+        [],
         array_merge(PhpProcess::sameIni(), ['-d', 'zlib.output_compression=0']),
-        $directory . '/router.php');
+        $directory . '/router.php',
+    );
     foreach ($cases as $name => $case) {
         try {
             list($accept, $encoding) = $case;
             $query = $case[2] ?? [];
-            if (is_file($directory . '/continued')) { unlink($directory . '/continued'); }
+            if (is_file($directory . '/continued')) {
+                unlink($directory . '/continued');
+            }
             list($headers, $body) = cachedEchoNegotiatedResponse($server->port(), $accept, $query);
             if (($headers['content-encoding'] ?? null) !== $encoding) {
                 throw new RuntimeException('Unexpected Content-Encoding: '
-                    . var_export($headers['content-encoding'] ?? null, true)); }
+                    . var_export($headers['content-encoding'] ?? null, true));
+            }
             $size = $query['size'] ?? 2500;
-            if ($encoding === null && ($headers['content-length'] ?? null) !== (string)$size) {
-                throw new RuntimeException('The plain response has no exact Content-Length'); }
-            if ($encoding !== null) { $body = gzdecode($body); }
+            if ($encoding === null && ($headers['content-length'] ?? null) !== (string) $size) {
+                throw new RuntimeException('The plain response has no exact Content-Length');
+            }
+            if ($encoding !== null) {
+                $body = gzdecode($body);
+            }
             if ($body !== str_repeat('A', $size)) {
-                throw new RuntimeException('The complete response body changed'); }
+                throw new RuntimeException('The complete response body changed');
+            }
             clearstatcache(true, $directory . '/continued');
             if (is_file($directory . '/continued') !== isset($query['continue'])) {
-                throw new RuntimeException('Unexpected caller continuation after sending'); }
+                throw new RuntimeException('Unexpected caller continuation after sending');
+            }
             if (count(scandir($directory . '/answers')) !== 2) {
-                throw new RuntimeException('The response left a temporary file behind'); }
+                throw new RuntimeException('The response left a temporary file behind');
+            }
             echo 'ok - ', $name, "\n";
         } catch (Throwable $error) {
             $failures++;
@@ -134,16 +154,21 @@ try {
     }
     // Startup diagnostics ("in Unknown on line 0") belong to the PHP build, such as
     // the JIT warning hosted runners print when an extension replaces the executor.
-    $errors = preg_grep('/PHP (?:Warning|Notice|Deprecated|Fatal|Parse)|Uncaught/',
-        explode("\n", file_get_contents($directory . '/server.err')));
+    $errors = preg_grep(
+        '/PHP (?:Warning|Notice|Deprecated|Fatal|Parse)|Uncaught/',
+        explode("\n", file_get_contents($directory . '/server.err')),
+    );
     $errors = preg_grep('/ in Unknown on line 0\s*$/', $errors, PREG_GREP_INVERT);
     if ($errors) {
-        throw new RuntimeException('The HTTP fixture reported a PHP diagnostic: ' . implode("\n", $errors)); }
+        throw new RuntimeException('The HTTP fixture reported a PHP diagnostic: ' . implode("\n", $errors));
+    }
 } catch (Throwable $error) {
     $failures++;
     echo 'not ok - HTTP fixture: ', $error->getMessage(), "\n";
 } finally {
-    if ($server !== null) { $server->close(); }
+    if ($server !== null) {
+        $server->close();
+    }
     TestTree::remove($directory);
 }
 echo count($cases), ' tests, ', $failures, " failures\n";

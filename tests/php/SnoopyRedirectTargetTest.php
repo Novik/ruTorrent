@@ -4,7 +4,9 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function redirectTargetAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // What the bytes of a request line say about its structure. A request line is
@@ -39,22 +41,33 @@ function requestsAreWellFormed($requests)
 {
     foreach ($requests as $index => $wire) {
         $shape = requestLineShape($wire);
-        redirectTargetAssert($shape['spaces'] === 2,
+        redirectTargetAssert(
+            $shape['spaces'] === 2,
             'Request ' . $index . ' must have a request line of three parts: '
-            . var_export($shape['line'], true));
-        redirectTargetAssert(is_string($shape['target']),
-            'Request ' . $index . ' must name a target: ' . var_export($shape['line'], true));
-        redirectTargetAssert(preg_match('/[[:space:][:cntrl:]]/', $shape['target']) !== 1,
+            . var_export($shape['line'], true),
+        );
+        redirectTargetAssert(
+            is_string($shape['target']),
+            'Request ' . $index . ' must name a target: ' . var_export($shape['line'], true),
+        );
+        redirectTargetAssert(
+            preg_match('/[[:space:][:cntrl:]]/', $shape['target']) !== 1,
             'Request ' . $index . ' must carry no whitespace and no control character in its target: '
-            . var_export($shape['target'], true));
+            . var_export($shape['target'], true),
+        );
         foreach (redirectFieldLines($wire) as $line) {
-            redirectTargetAssert(preg_match('/^[A-Za-z0-9-]+: [^[:cntrl:]]*$/D', $line) === 1,
-                'Request ' . $index . ' field line must be a name and a value: ' . var_export($line, true));
+            redirectTargetAssert(
+                preg_match('/^[A-Za-z0-9-]+: [^[:cntrl:]]*$/D', $line) === 1,
+                'Request ' . $index . ' field line must be a name and a value: ' . var_export($line, true),
+            );
             // A host name carries no whitespace, and the redirect target is
             // where the Host header of the request after it comes from.
             if (stripos($line, 'Host: ') === 0) {
-                redirectTargetAssert(preg_match('/[[:space:]]/', substr($line, 6)) !== 1,
-                    'Request ' . $index . ' must name one host: ' . var_export($line, true)); }
+                redirectTargetAssert(
+                    preg_match('/[[:space:]]/', substr($line, 6)) !== 1,
+                    'Request ' . $index . ' must name one host: ' . var_export($line, true),
+                );
+            }
         }
     }
 }
@@ -65,7 +78,9 @@ function requestsAreWellFormed($requests)
 function redirectTargetCertificate()
 {
     static $path = null;
-    if ($path !== null) { return $path; }
+    if ($path !== null) {
+        return $path;
+    }
     redirectTargetAssert(extension_loaded('openssl'), 'The openssl extension is loaded');
     $key = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
     redirectTargetAssert($key !== false, 'A key is generated');
@@ -78,7 +93,9 @@ function redirectTargetCertificate()
     while (openssl_error_string() !== false) ;
     $path = FileUtil::getTempFilename('redirect-target-tls', 'pem');
     redirectTargetAssert(file_put_contents($path, $pem . $private) > 0, 'The certificate is written');
-    register_shutdown_function(function () use ($path) { @unlink($path); });
+    register_shutdown_function(function () use ($path) {
+        @unlink($path);
+    });
     return $path;
 }
 
@@ -131,16 +148,21 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses)), $tls ? redirectTargetCertificate() : ''],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses)), $tls ? redirectTargetCertificate() : ''],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     redirectTargetAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 15);
         $address = fgets($pipes[1]);
-        redirectTargetAssert(is_string($address)
+        redirectTargetAssert(
+            is_string($address)
             && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+            'The peer announces its local port',
+        );
         $client = new Snoopy();
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
@@ -157,12 +179,18 @@ PHP;
         $check = $body($client, ($tls ? 'https' : 'http') . '://127.0.0.1:' . $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
+        while (($line = fgets($pipes[1])) !== false) {
+            $json .= $line;
+        }
         $requests = json_decode(trim($json), true);
         redirectTargetAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         proc_close($process);
     }
 }
@@ -239,8 +267,8 @@ foreach ($transports as $transport => $tls) {
         $header = is_array($case) ? $case[0] : $case;
         $status = (is_array($case) && $tls) ? $case[1] : [302];
         $status = is_array($status) ? $status : [$status];
-        $tests['a redirect target with ' . $label . ' names no redirect over ' . $transport] =
-            function () use ($header, $status, $ok, $tls) {
+        $tests['a redirect target with ' . $label . ' names no redirect over ' . $transport]
+            = function () use ($header, $status, $ok, $tls) {
                 redirectTargetPeer([redirectWith($header), $ok], $tls, function ($client, $base) use ($status) {
                     $client->fetch($base . '/start');
                     // A response naming a redirect this client will not write
@@ -248,51 +276,72 @@ foreach ($transports as $transport => $tls) {
                     // Declining the target keeps it; refusing the url instead,
                     // which is what curl does when handed one, reports a
                     // transport error and loses the response it came with.
-                    redirectTargetAssert(in_array((int) $client->status, $status, true),
+                    redirectTargetAssert(
+                        in_array((int) $client->status, $status, true),
                         'The caller is given the response that named the redirect: '
-                        . $client->status . ' ' . $client->error);
+                        . $client->status . ' ' . $client->error,
+                    );
                     return function ($requests) {
                         requestsAreWellFormed($requests);
-                        redirectTargetAssert(count($requests) === 1,
-                            'The chain is the one request: ' . var_export($requests, true));
+                        redirectTargetAssert(
+                            count($requests) === 1,
+                            'The chain is the one request: ' . var_export($requests, true),
+                        );
                         foreach ($requests as $wire) {
-                            redirectTargetAssert(strpos($wire, 'X-Injected') === false,
+                            redirectTargetAssert(
+                                strpos($wire, 'X-Injected') === false,
                                 'Nothing behind the offending byte reaches the wire: '
-                                . var_export($wire, true)); }
+                                . var_export($wire, true),
+                            );
+                        }
                     };
                 });
             };
     }
     foreach ($tls ? $kept : array_merge($kept, $keptOverSocket) as $label => $pair) {
-        $tests['a redirect to ' . $label . ' is still followed over ' . $transport] =
-            function () use ($pair, $ok, $tls) {
+        $tests['a redirect to ' . $label . ' is still followed over ' . $transport]
+            = function () use ($pair, $ok, $tls) {
                 list($header, $expected) = $pair;
-                redirectTargetPeer([redirectWith($header), $ok], $tls,
+                redirectTargetPeer(
+                    [redirectWith($header), $ok],
+                    $tls,
                     function ($client, $base) use ($expected) {
-                        redirectTargetAssert($client->fetch($base . '/start') && $client->results === 'ok',
-                            'The redirect is followed to its answer: ' . $client->error);
+                        redirectTargetAssert(
+                            $client->fetch($base . '/start') && $client->results === 'ok',
+                            'The redirect is followed to its answer: ' . $client->error,
+                        );
                         return function ($requests) use ($expected) {
                             redirectTargetAssert(count($requests) === 2, 'The chain is two requests long');
                             requestsAreWellFormed($requests);
                             $shape = requestLineShape($requests[1]);
                             // curl writes a byte over 0x7f in a path as %XX
                             // of its own accord, which is the same target.
-                            redirectTargetAssert($shape['target'] === $expected
+                            redirectTargetAssert(
+                                $shape['target'] === $expected
                                 || rawurldecode($shape['target']) === $expected,
                                 'The second request asks for the target as written: '
-                                . var_export($shape['target'], true) . ' for ' . var_export($expected, true));
-                            redirectTargetAssert(strpos($requests[1], 'X-Injected') === false,
-                                'No header the response carried is written into the request');
+                                . var_export($shape['target'], true) . ' for ' . var_export($expected, true),
+                            );
+                            redirectTargetAssert(
+                                strpos($requests[1], 'X-Injected') === false,
+                                'No header the response carried is written into the request',
+                            );
                         };
-                    });
+                    },
+                );
             };
     }
 }
 
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

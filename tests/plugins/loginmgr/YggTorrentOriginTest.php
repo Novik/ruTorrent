@@ -187,8 +187,11 @@ function yggPosts($client)
 
 $tests = [
     'the setting reaches the account when accounts.php is first included from a method' => function () {
-        yggSame(true, array_key_exists('yggTorrentOrigin', $GLOBALS),
-            'the plugin configuration must be read into the global scope');
+        yggSame(
+            true,
+            array_key_exists('yggTorrentOrigin', $GLOBALS),
+            'the plugin configuration must be read into the global scope',
+        );
     },
 
     'the shipped default names no origin' => function () {
@@ -203,10 +206,16 @@ $tests = [
         $account = new YggProbeAccount();
         $client = new YggProbeClient();
         $account->check($client, 'fake-user', 'fake-pass', 0);
-        yggSame(['https://yggtorrent.example', 'GET', ''], $client->requests[0],
-            'the landing page is fetched from the configured origin');
-        yggSame(['https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='],
-            $client->requests[1], 'the credentials are posted to the configured origin');
+        yggSame(
+            ['https://yggtorrent.example', 'GET', ''],
+            $client->requests[0],
+            'the landing page is fetched from the configured origin',
+        );
+        yggSame(
+            ['https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='],
+            $client->requests[1],
+            'the credentials are posted to the configured origin',
+        );
         yggSame(2, count($client->requests), 'and nothing else is requested');
         foreach ($client->requests as $request) {
             yggSame(false, strpos($request[0], 'abstract.com'), 'no request names the old placeholder');
@@ -241,8 +250,11 @@ $tests = [
         yggSame(0, $account->logins, 'no credential flow starts without a site');
         $log = yggLog();
         yggSame(1, substr_count($log, "\n"), 'one log line: ' . $log);
-        yggSame(true, strpos($log, 'loginmgr: YggProbeSiteless is not used: the account names no site') !== false,
-            'the log line names the account: ' . $log);
+        yggSame(
+            true,
+            strpos($log, 'loginmgr: YggProbeSiteless is not used: the account names no site') !== false,
+            'the log line names the account: ' . $log,
+        );
     },
 
     // ---- selection by a URL (getAccount() -> test()) and the download -------
@@ -256,8 +268,11 @@ $tests = [
         // checks the URL for itself.
         $client = new YggProbeClient();
         $client->results = "S'identifier</a>";
-        yggSame(false, $account->fetch($client, $url, 'fake-user', 'fake-pass', 'GET', '', ''),
-            'the download is refused');
+        yggSame(
+            false,
+            $account->fetch($client, $url, 'fake-user', 'fake-pass', 'GET', '', ''),
+            'the download is refused',
+        );
         yggSame([], $client->requests, 'and no request, let alone a credential POST, leaves for that host');
     },
 
@@ -347,8 +362,11 @@ $tests = [
             yggSame('', $account->url, 'origin of ' . var_export($configured, true));
             $client = new YggProbeClient();
             $account->check($client, 'fake-user', 'fake-pass', 0);
-            yggSame(false, $account->test('https://yggtorrent.example/engine/download_torrent?id=1'),
-                'nothing is claimed with ' . var_export($configured, true));
+            yggSame(
+                false,
+                $account->test('https://yggtorrent.example/engine/download_torrent?id=1'),
+                'nothing is claimed with ' . var_export($configured, true),
+            );
             yggSame([], $client->requests, 'nothing is sent with ' . var_export($configured, true));
         }
         yggConfigure('https://yggtorrent.example?x=1');
