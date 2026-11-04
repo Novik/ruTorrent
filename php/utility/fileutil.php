@@ -268,15 +268,21 @@ class FileUtil
             }
             $line = "[" . date_create()->format('Y-m-d H:i:s') . "] {$str}\n";
             $isRegular = $isFilesystem && is_file($logTarget);
+            // O_APPEND puts each line at the end as it is written, so lines that
+            // other processes append without the lock, error_log()'s included,
+            // stay whole.
+            $w = $isRegular ? @fopen($logTarget, "ab") : false;
             // fs.protected_regular refuses an open that may create the file when
             // another user owns it in a sticky directory such as /tmp, whatever
-            // its mode, so an existing log is first opened without O_CREAT.
-            if ($isRegular && self::appendToExistingLog($logTarget, $line)) {
+            // its mode, so when that open is refused the log is opened without O_CREAT.
+            if ($isRegular && !$w && self::appendToExistingLog($logTarget, $line)) {
                 return;
             }
             // Regular and unstatable stream logs only need write access. Keep the
             // old mode for FIFOs, where a write-only open blocks until a reader appears.
-            $w = fopen($logTarget, (!$isFilesystem && !$exists) || is_file($logTarget) ? "ab" : "ab+");
+            if (!$w) {
+                $w = fopen($logTarget, (!$isFilesystem && !$exists) || is_file($logTarget) ? "ab" : "ab+");
+            }
             if ($w) {
                 try {
                     if ($isRegular) {
@@ -339,11 +345,19 @@ class FileUtil
             && (preg_match('/^[A-Za-z]:[\\\\\/]/', $path) || (strncmp($path, '\\\\', 2) == 0)));
     }
 
-    // Without O_APPEND, the lock keeps a concurrent toLog() line from being
-    // overwritten between the seek and the write. Closing the handle releases
-    // the lock even when the write throws.
+    // PHP has no append mode without O_CREAT, so a seek places the line, and a
+    // line that another writer appends after the seek, without the lock or past
+    // an expired wait, is overwritten. A disabled function throws on PHP 8 and
+    // only warns on 7.4, where a skipped seek would write over the start of the
+    // log, so this path is not taken without flock(), fseek() and usleep().
+    // Closing the handle releases the lock even when the write throws.
     private static function appendToExistingLog($path, $line)
     {
+        foreach ([ 'flock', 'fseek', 'usleep' ] as $function) {
+            if (!function_exists($function)) {
+                return false;
+            }
+        }
         $w = @fopen($path, "r+b");
         if (!$w) {
             return false;
@@ -352,7 +366,6 @@ class FileUtil
             self::lockLog($w);
             fseek($w, 0, SEEK_END);
             fputs($w, $line);
-            fflush($w);
         } finally {
             fclose($w);
         }
@@ -360,9 +373,13 @@ class FileUtil
     }
 
     // Waits a bounded time, so a writer stopped while holding the lock cannot
-    // hang every request that logs; the line is written either way.
+    // hang every request that logs; the line is written either way, and also
+    // without flock() or usleep(), rather than throwing on PHP 8.
     private static function lockLog($w)
     {
+        if (!function_exists('flock') || !function_exists('usleep')) {
+            return;
+        }
         for ($attempt = 0; $attempt < self::LOG_LOCK_ATTEMPTS; $attempt++) {
             if (flock($w, LOCK_EX | LOCK_NB, $wouldBlock) || !$wouldBlock) {
                 return;
