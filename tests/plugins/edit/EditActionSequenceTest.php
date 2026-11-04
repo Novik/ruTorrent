@@ -309,7 +309,7 @@ class EditActionSequenceTest extends TestCase
         if ($source === false) {
             throw new RuntimeException("plugins/edit/action.php could not be read");
         }
-        $startAnchor = 'if( !$torrent->errors() )';
+        $startAnchor = 'if (!$torrent->errors())';
         $endAnchor = "unset(\$torrent->{'rtorrent'});";
         $start = strpos($source, $startAnchor);
         if ($start === false) {
@@ -328,6 +328,9 @@ class EditActionSequenceTest extends TestCase
         // after $block was already filled would abort only the FIRST test and
         // let the other ten run on an extraction it had just rejected.
         $cut = substr($source, $brace + 1, ($end + strlen($endAnchor)) - ($brace + 1));
+        // The end anchor sits inside the braced if that guards it, so close
+        // whatever the cut leaves open.
+        $cut .= str_repeat('}', max(0, substr_count($cut, '{') - substr_count($cut, '}')));
         // A later setter would escape these assertions, so require the entire edit.
         $tailStart = $end + strlen($endAnchor);
         $handover = strpos($source, 'rTorrent::sendTorrent(', $tailStart);

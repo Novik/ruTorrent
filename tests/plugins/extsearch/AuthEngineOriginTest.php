@@ -83,7 +83,7 @@ function authEngineNames()
         if (substr($entry, -4) !== '.php') {
             continue;
         }
-        if (preg_match('/[\'"]auth[\'"]\s*=>\s*1\s*[,)]/', file_get_contents($dir . '/' . $entry))) {
+        if (preg_match('/[\'"]auth[\'"]\s*=>\s*1\s*[,)\]]/', file_get_contents($dir . '/' . $entry))) {
             $names[] = basename($entry, '.php');
         }
     }

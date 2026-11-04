@@ -60,14 +60,14 @@ trait AdditionCallerFixtures
     {
         if (!preg_match(
             '/\$this->iVersion\s*(>=|>)\s*(0x[0-9a-fA-F]+)\s*\)\s*\{\s*'
-            . '\$this->aliases\s*=\s*array\s*\((.*?)\)\s*;/s',
+            . '\$this->aliases\s*=\s*(?:array\s*\(|\[)(.*?)(?:\)|\])\s*;/s',
             $this->settingsSource(),
             $m,
         )) {
             return null;
         }
-        preg_match_all('/"([^"]+)"\s*=>\s*array\(\s*"name"\s*=>\s*"([^"]+)"\s*,\s*'
-            . '"prm"\s*=>\s*(\d+)\s*\)/', $m[3], $entries, PREG_SET_ORDER);
+        preg_match_all('/"([^"]+)"\s*=>\s*(?:array\(|\[)\s*"name"\s*=>\s*"([^"]+)"\s*,\s*'
+            . '"prm"\s*=>\s*(\d+)\s*,?\s*(?:\)|\])/', $m[3], $entries, PREG_SET_ORDER);
         $aliases = [];
         foreach ($entries as $e) {
             $aliases[$e[1]] = ['name' => $e[2], 'prm' => (int) $e[3]];
