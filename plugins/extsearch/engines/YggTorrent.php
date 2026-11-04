@@ -2,12 +2,12 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const MAX_PAGE = 10;
-    const PAGE_SIZE = 50;
+    public const MAX_PAGE = 10;
+    public const PAGE_SIZE = 50;
 
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
+    public $defaults = ["public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1];
 
-    public $categories = array(
+    public $categories = [
         'Tout' => '',
         '|--Film/Vidéo' => '&category=2145',
         '|--F--Animation' => '&category=2145&sub_category=2178',
@@ -69,11 +69,11 @@ class YggTorrentEngine extends commonEngine
         '|--X--Films' => '&category=2188&sub_category=2189',
         '|--X--Hentai' => '&category=2188&sub_category=2190',
         '|--X--Images' => '&category=2188&sub_category=2191',
-    );
+    ];
 
-    private $category_mapping = array(
-        'filmvidéo' => 'Film/Vidéos'
-    );
+    private $category_mapping = [
+        'filmvidéo' => 'Film/Vidéos',
+    ];
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
@@ -86,7 +86,7 @@ class YggTorrentEngine extends commonEngine
         }
 
         if($useGlobalCats) {
-            $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140");
+            $categories = ['all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140"];
             $defaultCat = 'all';
         } else {
             $categories = &$this->categories;
@@ -111,7 +111,7 @@ class YggTorrentEngine extends commonEngine
 	    $item["name"] = "Fetch Error";
 	    $ret[""] = $item;
             return;
-	} else if (strpos($cli->results, "Aucun résultat !") !== false) {
+	} elseif (strpos($cli->results, "Aucun résultat !") !== false) {
 	    $item = $this->getNewEntry();
 	    $item["name"] = "No result found";
 	    $ret[""] = $item;
@@ -154,7 +154,7 @@ class YggTorrentEngine extends commonEngine
                 '<td>(?P<leecher>.*)</td>'.
                 '`siU',
                 $cli->results,
-                $matches
+                $matches,
             );
 
             if ($res) {

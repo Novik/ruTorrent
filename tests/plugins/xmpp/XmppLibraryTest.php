@@ -8,7 +8,7 @@ require_once(__DIR__ . '/../../../plugins/xmpp/XMPPHP/XMPP.php');
 // bind path in-process.
 class XmppBindProbe extends XMPPHP_XMPP
 {
-	public $sent = array();
+	public $sent = [];
 
 	public function send($msg, $timeout = null)
 	{
@@ -45,30 +45,10 @@ class XmppBindProbe extends XMPPHP_XMPP
 //    unconditional fatal error on PHP 8 -- the file could not be loaded at all.
 class XmppLibraryTest extends TestCase
 {
-	private function bindResult($fulljid)
-	{
-		$jid = new XMPPHP_XMLObj('jid', '', array(), $fulljid);
-		$bind = new XMPPHP_XMLObj('bind', 'urn:ietf:params:xml:ns:xmpp-bind');
-		$bind->subs[] = $jid;
-		$iq = new XMPPHP_XMLObj('iq', 'jabber:client', array('type' => 'result', 'id' => '1'));
-		$iq->subs[] = $bind;
-
-		return $iq;
-	}
-
-	private function newProbe()
-	{
-		// Suppressed diagnostic: XMLStream::setupParser() drives the XML parser
-		// through xml_set_object() and string method names, which PHP 8.4
-		// deprecates. That is a pre-existing XMPPHP issue and not what these
-		// tests are about; without the @ every construction below buries the
-		// suite log in the same three notices.
-		return @new XmppBindProbe('example.org', 5222, 'user', 'secret', 'rutorrent');
-	}
 
 	public function testJidIsADeclaredProperty()
 	{
-		$declared = array();
+		$declared = [];
 		$reflection = new ReflectionClass('XMPPHP_XMPP');
 		foreach ($reflection->getProperties() as $property) {
 			$declared[] = $property->getName();
@@ -107,7 +87,7 @@ class XmppLibraryTest extends TestCase
 		$probe = $this->newProbe();
 		$bind = $this->bindResult('user@example.org/rutorrent');
 
-		$notices = array();
+		$notices = [];
 		set_error_handler(function ($errno, $errstr) use (&$notices) {
 			$notices[] = $errstr;
 
@@ -138,7 +118,7 @@ class XmppLibraryTest extends TestCase
 
 	public function testNonResultBindIsIgnored()
 	{
-		$iq = new XMPPHP_XMLObj('iq', 'jabber:client', array('type' => 'error', 'id' => '1'));
+		$iq = new XMPPHP_XMLObj('iq', 'jabber:client', ['type' => 'error', 'id' => '1']);
 		$probe = $this->newProbe();
 		$probe->handleBind($iq);
 
@@ -210,5 +190,25 @@ class XmppLibraryTest extends TestCase
 
 		$this->assertTrue($message !== null,
 			'connect() without an endpoint must raise XMPPHP_Exception rather than proceeding with a null URL');
+	}
+	private function bindResult($fulljid)
+	{
+		$jid = new XMPPHP_XMLObj('jid', '', [], $fulljid);
+		$bind = new XMPPHP_XMLObj('bind', 'urn:ietf:params:xml:ns:xmpp-bind');
+		$bind->subs[] = $jid;
+		$iq = new XMPPHP_XMLObj('iq', 'jabber:client', ['type' => 'result', 'id' => '1']);
+		$iq->subs[] = $bind;
+
+		return $iq;
+	}
+
+	private function newProbe()
+	{
+		// Suppressed diagnostic: XMLStream::setupParser() drives the XML parser
+		// through xml_set_object() and string method names, which PHP 8.4
+		// deprecates. That is a pre-existing XMPPHP issue and not what these
+		// tests are about; without the @ every construction below buries the
+		// suite log in the same three notices.
+		return @new XmppBindProbe('example.org', 5222, 'user', 'secret', 'rutorrent');
 	}
 }

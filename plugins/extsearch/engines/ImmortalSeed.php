@@ -2,9 +2,9 @@
 
 class ImmortalSeedEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>30, "auth"=>1 );
+	public $defaults = [ "public"=>false, "page_size"=>30, "auth"=>1 ];
 
-	public $categories = array(
+	public $categories = [
 		'All'=>'',
 		'All Nuked'=>'&selectedcats2=3',
 		'Anime'=>'&selectedcats2=32',
@@ -47,15 +47,15 @@ class ImmortalSeedEngine extends commonEngine
 		'TV SD - x264'=>'&selectedcats2=48',
 		'TV SD - XviD'=>'&selectedcats2=9',
 		'TV Season Packs - HD'=>'&selectedcats2=4',
-		'TV Season Packs - SD'=>'&selectedcats2=6'
-		);
+		'TV Season Packs - SD'=>'&selectedcats2=6',
+		];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$url = 'https://immortalseed.me';
 		$added = 0;
-		if($useGlobalCats)
-			$categories = array(
+		if($useGlobalCats) {
+			$categories = [
 				'all'=>'',
 				'movies'=>'&selectedcats2=59,16,17,14',
 				'tv'=>'&selectedcats2=47,8,48,9,4,6',
@@ -63,14 +63,14 @@ class ImmortalSeedEngine extends commonEngine
 				'games'=>'&selectedcats2=25',
 				'anime'=>'&selectedcats2=32',
 				'software'=>'&selectedcats2=23,49',
-				'books'=>'&selectedcats2=35,22'
-				);
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+				'books'=>'&selectedcats2=35,22',
+				]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?do=search&keywords='.$what.'&search_type=t_name'.$cat.'&sort=seeders&order=desc&page='.$pg );
@@ -108,13 +108,13 @@ class ImmortalSeedEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

@@ -9,7 +9,7 @@ $_ENV['RU_PROFILE_PATH'] = sys_get_temp_dir() . '/rutorrent-rss-state-' . getmyp
 require_once(__DIR__ . '/../../php/TestCase.php');
 
 $minInterval = 2;
-$feedsWithIncorrectTimes = array();
+$feedsWithIncorrectTimes = [];
 $rss_debug_enabled = false;
 require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
@@ -32,39 +32,6 @@ final class RSSManagerStateTest extends TestCase
 		$this->clearProfile();
 	}
 
-	/**
-	 * TestCase::run() calls setUp() once for the whole class, and every case
-	 * here reads the feed list and the error list that rRSSManager finds on
-	 * disk. What the case before it stored is not this case's input, so each
-	 * one starts the profile again and the cases can be read, and reordered,
-	 * one at a time.
-	 */
-	private function freshProfile()
-	{
-		$this->clearProfile();
-		@mkdir($_ENV['RU_PROFILE_PATH'], 0700, true);
-	}
-
-	private function clearProfile()
-	{
-		$dir = $_ENV['RU_PROFILE_PATH'];
-		foreach (array_reverse(glob($dir . '/{,*/,*/*/,*/*/*/}*', GLOB_BRACE)) as $path) {
-			is_dir($path) ? @rmdir($path) : @unlink($path);
-		}
-		@rmdir($dir);
-	}
-
-	private function addFeed($manager, $url)
-	{
-		$manager->rssList->lst[md5($url)] = array('label' => '', 'auto' => 0, 'enabled' => 1, 'url' => $url);
-	}
-
-	/** The cache file rRSSManager keeps its feed and error list in. */
-	private function feedListFile()
-	{
-		return $_ENV['RU_PROFILE_PATH'] . '/settings/rss/cache/info';
-	}
-
 	public function testAFeedAddedDuringAnUpdateRunSurvivesItsSaveState()
 	{
 		$this->freshProfile();
@@ -82,7 +49,7 @@ final class RSSManagerStateTest extends TestCase
 
 		$urls = array_column((new rRSSManager())->rssList->lst, 'url');
 		sort($urls);
-		$this->assertEquals(array('http://example.invalid/one', 'http://example.invalid/two'), $urls,
+		$this->assertEquals(['http://example.invalid/one', 'http://example.invalid/two'], $urls,
 			'the feed added during the run is still listed: ' . json_encode($urls));
 	}
 
@@ -103,7 +70,7 @@ final class RSSManagerStateTest extends TestCase
 		for ($save = 1; $save <= 3; $save++) {
 			$manager->saveState(false);
 			$check = new rRSSManager();
-			$this->assertEquals(array(), $check->rssList->formatErrors(),
+			$this->assertEquals([], $check->rssList->formatErrors(),
 				'the reported error stays cleared after save ' . $save);
 			$this->assertEquals(0, $check->rssList->lst[md5($url)]['enabled'], 'the feed stays disabled');
 		}
@@ -165,8 +132,41 @@ final class RSSManagerStateTest extends TestCase
 
 		$manager->saveState(false);
 
-		$this->assertEquals(array(), (new rRSSManager())->rssList->formatErrors(),
+		$this->assertEquals([], (new rRSSManager())->rssList->formatErrors(),
 			'the error cleared before the failed store stays cleared: '
 				. json_encode((new rRSSManager())->rssList->formatErrors()));
+	}
+
+	/**
+	 * TestCase::run() calls setUp() once for the whole class, and every case
+	 * here reads the feed list and the error list that rRSSManager finds on
+	 * disk. What the case before it stored is not this case's input, so each
+	 * one starts the profile again and the cases can be read, and reordered,
+	 * one at a time.
+	 */
+	private function freshProfile()
+	{
+		$this->clearProfile();
+		@mkdir($_ENV['RU_PROFILE_PATH'], 0700, true);
+	}
+
+	private function clearProfile()
+	{
+		$dir = $_ENV['RU_PROFILE_PATH'];
+		foreach (array_reverse(glob($dir . '/{,*/,*/*/,*/*/*/}*', GLOB_BRACE)) as $path) {
+			is_dir($path) ? @rmdir($path) : @unlink($path);
+		}
+		@rmdir($dir);
+	}
+
+	private function addFeed($manager, $url)
+	{
+		$manager->rssList->lst[md5($url)] = ['label' => '', 'auto' => 0, 'enabled' => 1, 'url' => $url];
+	}
+
+	/** The cache file rRSSManager keeps its feed and error list in. */
+	private function feedListFile()
+	{
+		return $_ENV['RU_PROFILE_PATH'] . '/settings/rss/cache/info';
 	}
 }

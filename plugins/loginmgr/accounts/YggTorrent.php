@@ -19,6 +19,23 @@ class YggTorrentAccount extends commonAccount
         $this->url = self::configuredOrigin(isset($yggTorrentOrigin) ? $yggTorrentOrigin : '', $this->originError);
     }
 
+    public function test($url)
+    {
+        $parts = @parse_url((string) $url);
+        if (!is_array($parts) ||
+            strcasecmp(isset($parts["path"]) ? $parts["path"] : '', '/engine/download_torrent') !== 0 ||
+            preg_match('/(^|&)id=/', isset($parts["query"]) ? $parts["query"] : '') !== 1) {
+            return false;
+        }
+        // A download link of the tracker's shape with no origin to compare it
+        // with is declined, and the log says why: the download is then made
+        // as a guest.
+        if ($this->refuseUnconfigured()) {
+            return false;
+        }
+        return $this->onOrigin($url);
+    }
+
     protected function unconfigured()
     {
         if ($this->url !== '') {
@@ -51,23 +68,6 @@ class YggTorrentAccount extends commonAccount
             && $client->results !== 'Vous devez vous connecter pour télécharger un torrent'
             && strpos($client->results, "S'identifier</a>") === false
         );
-    }
-
-    public function test($url)
-    {
-        $parts = @parse_url((string) $url);
-        if (!is_array($parts) ||
-            strcasecmp(isset($parts["path"]) ? $parts["path"] : '', '/engine/download_torrent') !== 0 ||
-            preg_match('/(^|&)id=/', isset($parts["query"]) ? $parts["query"] : '') !== 1) {
-            return false;
-        }
-        // A download link of the tracker's shape with no origin to compare it
-        // with is declined, and the log says why: the download is then made
-        // as a guest.
-        if ($this->refuseUnconfigured()) {
-            return false;
-        }
-        return $this->onOrigin($url);
     }
 
     protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched)

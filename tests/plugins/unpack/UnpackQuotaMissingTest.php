@@ -39,7 +39,7 @@ class UnpackQuotaMissingTest extends TestCase
 	{
 		$this->assertTrue(
 			!file_exists($this->rquotaPath()),
-			'plugins/quotaspace/rquota.php is not shipped with ruTorrent'
+			'plugins/quotaspace/rquota.php is not shipped with ruTorrent',
 		);
 	}
 
@@ -47,7 +47,7 @@ class UnpackQuotaMissingTest extends TestCase
 	{
 		$this->assertTrue(
 			!class_exists('rQuota', false),
-			'No rQuota class exists in the process running this file'
+			'No rQuota class exists in the process running this file',
 		);
 	}
 
@@ -58,7 +58,7 @@ class UnpackQuotaMissingTest extends TestCase
 		$this->quotaspaceRegistered(true);
 		$this->assertTrue(
 			$this->silentTaskWasAllowed(),
-			'A registered quotaspace with no rquota.php lets the silent unpack proceed'
+			'A registered quotaspace with no rquota.php lets the silent unpack proceed',
 		);
 	}
 
@@ -68,7 +68,7 @@ class UnpackQuotaMissingTest extends TestCase
 		$this->quotaspaceRegistered(true);
 		$this->assertTrue(
 			$this->startTaskErrors() != $this->quotaRefusal(),
-			'A registered quotaspace with no rquota.php is not reported as a quota refusal'
+			'A registered quotaspace with no rquota.php is not reported as a quota refusal',
 		);
 	}
 
@@ -79,12 +79,12 @@ class UnpackQuotaMissingTest extends TestCase
 	public function testTheCoreAutoloaderIsNotAskedForRQuota()
 	{
 		$this->quotaspaceRegistered(true);
-		$asked = array();
+		$asked = [];
 		spl_autoload_register(function ($class) use (&$asked) {
 			$asked[] = $class;
 		});
 		$this->silentTaskWasAllowed();
-		$this->assertEquals(array(), $asked, 'No class was autoloaded while looking for the quota');
+		$this->assertEquals([], $asked, 'No class was autoloaded while looking for the quota');
 	}
 
 	// The overwhelmingly common install: no quotaspace at all. Nothing about the
@@ -94,11 +94,11 @@ class UnpackQuotaMissingTest extends TestCase
 		$this->quotaspaceRegistered(false);
 		$this->assertTrue(
 			$this->silentTaskWasAllowed(),
-			'Without quotaspace the silent unpack proceeds'
+			'Without quotaspace the silent unpack proceeds',
 		);
 		$this->assertTrue(
 			$this->startTaskErrors() != $this->quotaRefusal(),
-			'Without quotaspace the manual unpack is not refused'
+			'Without quotaspace the manual unpack is not refused',
 		);
 	}
 }

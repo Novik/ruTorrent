@@ -9,7 +9,7 @@ $_ENV['RU_PROFILE_PATH'] = sys_get_temp_dir() . '/rutorrent-rss-fetchurl-' . get
 require_once(__DIR__ . '/../../php/TestCase.php');
 
 $minInterval = 2;
-$feedsWithIncorrectTimes = array();
+$feedsWithIncorrectTimes = [];
 $rss_debug_enabled = false;
 require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
@@ -20,7 +20,7 @@ function rssFetchURLInjectionMarker($url, $cookies = null, $headers = null)
 	$cli = new stdClass();
 	$cli->status = -100;
 	$cli->error = 'marker';
-	$cli->headers = array();
+	$cli->headers = [];
 	$cli->results = '';
 	return $cli;
 }
@@ -61,26 +61,6 @@ final class RSSFetchURLTest extends TestCase
 			is_dir($path) ? @rmdir($path) : @unlink($path);
 		}
 		@rmdir($dir);
-	}
-
-	private function fetcherOf($rss)
-	{
-		$property = new ReflectionProperty('rRSS', 'fetchURL');
-		$property->setAccessible(true);
-		return $property->getValue($rss);
-	}
-
-	/** The payload: an rRSS naming another function as its fetcher. */
-	private function hijacked($fetcher)
-	{
-		$nul = "\0";
-		// version matches what the cache expects, so that the payload is one
-		// the loader would have accepted before this change.
-		return 'O:4:"rRSS":4:{s:4:"hash";s:32:"' . str_repeat('a', 32) . '";'
-			. 's:3:"url";s:21:"http://127.0.0.1:1/x/";'
-			. 's:7:"version";i:1;'
-			. 's:14:"' . $nul . 'rRSS' . $nul . 'fetchURL";s:' . strlen($fetcher)
-			. ':"' . $fetcher . '";}';
 	}
 
 	public function testARestoredFeedDoesNotKeepThePayloadsFetcher()
@@ -139,5 +119,25 @@ final class RSSFetchURLTest extends TestCase
 
 		$this->assertTrue($this->fetcherOf($rss) === 'rssFetchURLInjectionMarker',
 			'a constructed feed keeps the fetcher its caller passed');
+	}
+
+	private function fetcherOf($rss)
+	{
+		$property = new ReflectionProperty('rRSS', 'fetchURL');
+		$property->setAccessible(true);
+		return $property->getValue($rss);
+	}
+
+	/** The payload: an rRSS naming another function as its fetcher. */
+	private function hijacked($fetcher)
+	{
+		$nul = "\0";
+		// version matches what the cache expects, so that the payload is one
+		// the loader would have accepted before this change.
+		return 'O:4:"rRSS":4:{s:4:"hash";s:32:"' . str_repeat('a', 32) . '";'
+			. 's:3:"url";s:21:"http://127.0.0.1:1/x/";'
+			. 's:7:"version";i:1;'
+			. 's:14:"' . $nul . 'rRSS' . $nul . 'fetchURL";s:' . strlen($fetcher)
+			. ':"' . $fetcher . '";}';
 	}
 }

@@ -18,19 +18,9 @@ class LogFileModeStream
 		clearstatcache(true, 'rutorrent-log-test://sink');
 		self::$fileType = $fileType;
 		self::$exists = $exists;
-		self::$metadataCalls = array();
-		self::$openModes = array();
+		self::$metadataCalls = [];
+		self::$openModes = [];
 		self::$body = '';
-	}
-
-	private static function statResult()
-	{
-		$mode = self::$fileType | 0600;
-		$size = strlen(self::$body);
-		return array(
-			2 => $mode, 7 => $size,
-			'mode' => $mode, 'size' => $size,
-		);
 	}
 
 	public function url_stat($path, $flags)
@@ -60,6 +50,16 @@ class LogFileModeStream
 		self::$metadataCalls[] = $option;
 		return true;
 	}
+
+	private static function statResult()
+	{
+		$mode = self::$fileType | 0600;
+		$size = strlen(self::$body);
+		return [
+			2 => $mode, 7 => $size,
+			'mode' => $mode, 'size' => $size,
+		];
+	}
 }
 
 /**
@@ -80,7 +80,7 @@ class LogFileModeTest extends TestCase
 	// Logs each remaining argument through FileUtil::toLog(), keeping any
 	// Throwable alive the way an error handler or a debugger may, and prints
 	// how many milliseconds the calls took.
-	const LOG_CHILD = '$GLOBALS["log_file"] = $argv[2]; require $argv[1]; $kept = array(); $start = microtime(true);
+	public const LOG_CHILD = '$GLOBALS["log_file"] = $argv[2]; require $argv[1]; $kept = array(); $start = microtime(true);
 foreach (array_slice($argv, 3) as $str) { try { FileUtil::toLog($str); } catch (Throwable $e) { $kept[] = $e; } }
 echo (int)((microtime(true) - $start) * 1000);';
 
@@ -109,35 +109,6 @@ echo (int)((microtime(true) - $start) * 1000);';
 		}
 	}
 
-	private function clean()
-	{
-		foreach (glob($this->dir . '/*') as $path) {
-			unlink($path);
-		}
-	}
-
-	// toLog() only creates and chmods when the file is absent, so every case
-	// starts from a path that does not exist yet.
-	private function logAfterFirstWrite($mask, $name)
-	{
-		$this->clean();
-		$GLOBALS['log_file'] = $this->dir . '/' . $name;
-		if (is_null($mask)) {
-			unset($GLOBALS['profileMask']);
-		} else {
-			$GLOBALS['profileMask'] = $mask;
-		}
-		FileUtil::toLog('probe');
-		clearstatcache();
-		return $GLOBALS['log_file'];
-	}
-
-	private function modeOf($file)
-	{
-		clearstatcache(true, $file);
-		return fileperms($file) & 0777;
-	}
-
 	// Passes both before and after the change: the default must not move, or
 	// every install where rtorrent runs as its own user loses its log.
 	public function testDefaultMaskStillCreatesTheLogWorldWritable()
@@ -147,7 +118,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0666,
 			$this->modeOf($log),
-			'At the 0777 default the log is created 0666, exactly as before'
+			'At the 0777 default the log is created 0666, exactly as before',
 		);
 	}
 
@@ -158,7 +129,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0660,
 			$this->modeOf($log),
-			'A 0770 mask creates the log 0660, so the group still writes it and the world does not'
+			'A 0770 mask creates the log 0660, so the group still writes it and the world does not',
 		);
 	}
 
@@ -169,7 +140,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0600,
 			$this->modeOf($log),
-			'A 0700 mask creates the log 0600'
+			'A 0700 mask creates the log 0600',
 		);
 	}
 
@@ -181,7 +152,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0444,
 			$this->modeOf($log),
-			'A 0444 mask cannot be widened to 0666'
+			'A 0444 mask cannot be widened to 0666',
 		);
 	}
 
@@ -194,7 +165,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0666,
 			$this->modeOf($log),
-			'With no $profileMask set the log is created 0666'
+			'With no $profileMask set the log is created 0666',
 		);
 	}
 
@@ -209,7 +180,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0640,
 			$this->modeOf($log),
-			'An existing log keeps the mode it already had'
+			'An existing log keeps the mode it already had',
 		);
 	}
 
@@ -221,7 +192,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$body = file_get_contents($log);
 		$this->assertTrue(
 			strpos($body, 'probe') !== false && strpos($body, 'second line') !== false,
-			'Both lines are appended to the log'
+			'Both lines are appended to the log',
 		);
 	}
 
@@ -232,9 +203,9 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$GLOBALS['profileMask'] = 0777;
 		FileUtil::toLog('probe');
 		$this->assertEquals(
-			array(),
+			[],
 			LogFileModeStream::$metadataCalls,
-			'An existing non-regular log keeps its operator-assigned permissions'
+			'An existing non-regular log keeps its operator-assigned permissions',
 		);
 	}
 
@@ -257,7 +228,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0700,
 			$mode,
-			'An existing non-regular filesystem target keeps its operator-assigned permissions'
+			'An existing non-regular filesystem target keeps its operator-assigned permissions',
 		);
 	}
 
@@ -267,9 +238,9 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
 		FileUtil::toLog('probe');
 		$this->assertEquals(
-			array('ab'),
+			['ab'],
 			LogFileModeStream::$openModes,
-			'A regular log does not require read permission just to append a line'
+			'A regular log does not require read permission just to append a line',
 		);
 	}
 
@@ -303,7 +274,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		}
 		$this->assertTrue(
 			strpos($body, "first\n") === 0 && strpos($body, 'second user') !== false,
-			'A log owned by another user in a sticky directory gets the line appended'
+			'A log owned by another user in a sticky directory gets the line appended',
 		);
 	}
 
@@ -317,7 +288,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$body = file_get_contents($log);
 		$this->assertTrue(
 			strpos($body, 'probe') !== false && strpos($body, 'second line') !== false,
-			'A write-only log gets the line appended'
+			'A write-only log gets the line appended',
 		);
 	}
 
@@ -331,7 +302,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$writers = 4;
 		$lines = 200;
 		$log = $this->logAfterFirstWrite(0777, 'concurrent.log');
-		$children = array();
+		$children = [];
 		for ($i = 0; $i < $writers; $i++) {
 			$pid = pcntl_fork();
 			if ($pid === 0) {
@@ -350,16 +321,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			1 + $writers * $lines,
 			count($whole),
-			'Every line from concurrent writers is kept whole'
-		);
-	}
-
-	private function logInChild($log, $ini, $lines)
-	{
-		return PhpProcess::run(
-			array_merge(PhpProcess::sameIni(), $ini, array('-r', self::LOG_CHILD,
-				realpath(__DIR__ . '/../../php/utility/fileutil.php'), $log), $lines),
-			array('timeout' => 10, 'env' => array('XDEBUG_MODE' => 'develop'))
+			'Every line from concurrent writers is kept whole',
 		);
 	}
 
@@ -371,14 +333,14 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$holder = fopen($log, 'rb');
 		flock($holder, LOCK_EX);
 		try {
-			$result = $this->logInChild($log, array(), array('past the held lock'));
+			$result = $this->logInChild($log, [], ['past the held lock']);
 		} finally {
 			fclose($holder);
 		}
 		$this->assertTrue(!$result['timedOut'] && $result['code'] === 0, 'A held lock does not hang the writer');
 		$this->assertTrue(
 			strpos(file_get_contents($log), 'past the held lock') !== false,
-			'The line is written after the bounded wait'
+			'The line is written after the bounded wait',
 		);
 	}
 
@@ -388,11 +350,11 @@ echo (int)((microtime(true) - $start) * 1000);';
 	public function testAThrowingWriteReleasesTheLock()
 	{
 		$log = $this->logAfterFirstWrite(0777, 'throwing-write.log');
-		$result = $this->logInChild($log, array('-d', 'disable_functions=fputs'), array('first', 'second'));
+		$result = $this->logInChild($log, ['-d', 'disable_functions=fputs'], ['first', 'second']);
 		$this->assertTrue(!$result['timedOut'] && $result['code'] === 0, 'A second line after a throwing write does not hang');
 		$this->assertTrue(
 			(int)$result['out'] < FileUtil::LOG_LOCK_ATTEMPTS * FileUtil::LOG_LOCK_WAIT_US / 2000,
-			'The lock is released at once, not after the bounded wait: ' . $result['out'] . ' ms'
+			'The lock is released at once, not after the bounded wait: ' . $result['out'] . ' ms',
 		);
 	}
 
@@ -402,9 +364,9 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
 		FileUtil::toLog('probe');
 		$this->assertEquals(
-			array('ab+'),
+			['ab+'],
 			LogFileModeStream::$openModes,
-			'A non-regular log keeps the mode that does not wait forever for a FIFO reader'
+			'A non-regular log keeps the mode that does not wait forever for a FIFO reader',
 		);
 	}
 
@@ -427,11 +389,11 @@ echo (int)((microtime(true) - $start) * 1000);';
 		}
 		$this->assertTrue(
 			!file_exists($this->dir . '/relative.log'),
-			'A relative log path cannot create different files from different entry-point directories'
+			'A relative log path cannot create different files from different entry-point directories',
 		);
 		$this->assertTrue(
 			strpos($warning, '$log_file must be an absolute path') !== false,
-			'An invalid $log_file names the configuration error and its consequence'
+			'An invalid $log_file names the configuration error and its consequence',
 		);
 	}
 
@@ -441,14 +403,14 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
 		FileUtil::toLog('probe');
 		$this->assertEquals(
-			array(),
+			[],
 			LogFileModeStream::$metadataCalls,
-			'A stream URI is not touched or chmodded like a filesystem path'
+			'A stream URI is not touched or chmodded like a filesystem path',
 		);
 		$this->assertEquals(
-			array('ab'),
+			['ab'],
 			LogFileModeStream::$openModes,
-			'A stream URI only needs write access to append a line'
+			'A stream URI only needs write access to append a line',
 		);
 	}
 
@@ -483,7 +445,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		$this->assertEquals(
 			0600,
 			$this->modeOf($target),
-			'A file URI obeys the same profile mask as a plain filesystem path'
+			'A file URI obeys the same profile mask as a plain filesystem path',
 		);
 	}
 
@@ -518,7 +480,7 @@ echo (int)((microtime(true) - $start) * 1000);';
 		}
 		$this->assertTrue(
 			strpos($warning, '$log_file must be an absolute path') !== false,
-			'A relative file URI is visibly rejected by the runtime parser'
+			'A relative file URI is visibly rejected by the runtime parser',
 		);
 	}
 
@@ -540,7 +502,45 @@ echo (int)((microtime(true) - $start) * 1000);';
 		}
 		$this->assertTrue(
 			!file_exists($this->dir . '/C:\\logs\\rutorrent.log'),
-			'A Windows drive path cannot become a relative filename on Unix'
+			'A Windows drive path cannot become a relative filename on Unix',
+		);
+	}
+
+	private function clean()
+	{
+		foreach (glob($this->dir . '/*') as $path) {
+			unlink($path);
+		}
+	}
+
+	// toLog() only creates and chmods when the file is absent, so every case
+	// starts from a path that does not exist yet.
+	private function logAfterFirstWrite($mask, $name)
+	{
+		$this->clean();
+		$GLOBALS['log_file'] = $this->dir . '/' . $name;
+		if (is_null($mask)) {
+			unset($GLOBALS['profileMask']);
+		} else {
+			$GLOBALS['profileMask'] = $mask;
+		}
+		FileUtil::toLog('probe');
+		clearstatcache();
+		return $GLOBALS['log_file'];
+	}
+
+	private function modeOf($file)
+	{
+		clearstatcache(true, $file);
+		return fileperms($file) & 0777;
+	}
+
+	private function logInChild($log, $ini, $lines)
+	{
+		return PhpProcess::run(
+			array_merge(PhpProcess::sameIni(), $ini, ['-r', self::LOG_CHILD,
+				realpath(__DIR__ . '/../../php/utility/fileutil.php'), $log], $lines),
+			['timeout' => 10, 'env' => ['XDEBUG_MODE' => 'develop']],
 		);
 	}
 }

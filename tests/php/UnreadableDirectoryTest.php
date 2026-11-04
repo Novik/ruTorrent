@@ -35,16 +35,56 @@ class UnreadableDirectoryTest extends TestCase
 		$this->wipe();
 	}
 
+	public function testTheScanFindsTheCopiesThatShip()
+	{
+		$sources = $this->sources();
+		foreach (['plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php'] as $known) {
+			$this->assertTrue(in_array($known, $sources, true),
+				$known . ' is among them; found: ' . implode(', ', $sources)); }
+	}
+
+	public function testNoCopyStopsAtADirectoryItCannotOpen()
+	{
+		foreach ($this->sources() as $source)
+		{
+			list($r, $noise) = $this->drive($source);
+			$this->assertTrue(is_array($r), $source . ': the walk runs to the end; it printed: ' . $noise);
+			if (!is_array($r)) {
+				continue; }
+			$this->assertTrue($r['precondition'] === true,
+				$source . ': the locked directory really cannot be opened (not running as root)');
+			$this->assertEquals('', $noise, $source . ': and nothing is printed on the way');
+
+			$this->assertTrue($r['control'][0] === true && $r['control'][1] === false,
+				$source . ': a tree of empty directories is removed');
+
+			$this->assertTrue($r['nested'][0] === false,
+				$source . ': a tree holding an unreadable directory is reported as not removed');
+			$this->assertTrue($r['nested'][1] === false,
+				$source . ': the empty directory beside it is still cleared');
+			$this->assertTrue($r['nested'][2] === true,
+				$source . ': and the unreadable one is left where it is');
+
+			$this->assertTrue($r['top'][0] === false && $r['top'][1] === true,
+				$source . ': an unreadable directory holding a file is reported as not removed');
+
+			$this->assertEquals(['a.torrent', 'sub/c.torrent'], $r['scan'],
+				$source . ': a scan returns what it can read and skips what it cannot');
+			$this->assertEquals([], $r['scantop'],
+				$source . ': a scan of a directory it cannot open finds nothing');
+		}
+	}
+
 	private function wipe()
 	{
-		if (!is_dir($this->tree))
-			return;
+		if (!is_dir($this->tree)) {
+			return; }
 		exec('chmod -R u+rwx ' . escapeshellarg($this->tree) . ' 2>/dev/null');
 		$items = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
 			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item)
-			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+		foreach ($items as $item) {
+			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
 		@rmdir($this->tree);
 	}
 
@@ -56,17 +96,17 @@ class UnreadableDirectoryTest extends TestCase
 	/** Every file in the tree that defines rtRemoveDirectory(), relative to the root. */
 	private function sources()
 	{
-		$found = array();
-		foreach (array('php', 'plugins') as $dir)
+		$found = [];
+		foreach (['php', 'plugins'] as $dir)
 		{
 			$items = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator($this->repoRoot() . '/' . $dir, FilesystemIterator::SKIP_DOTS));
 			foreach ($items as $item)
 			{
-				if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php')
-					continue;
-				if (preg_match('/function\s+rtRemoveDirectory\s*\(/i', file_get_contents($item->getPathname())))
-					$found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1);
+				if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php') {
+					continue; }
+				if (preg_match('/function\s+rtRemoveDirectory\s*\(/i', file_get_contents($item->getPathname()))) {
+					$found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1); }
 			}
 		}
 		sort($found);
@@ -88,8 +128,8 @@ class UnreadableDirectoryTest extends TestCase
 		$from = $this->repoRoot() . '/' . $source;
 		$to = $holder . '/' . basename($source);
 		copy($from, $to);
-		if (hash_file('sha256', $from) !== hash_file('sha256', $to))
-			throw new Exception('could not copy ' . $source);
+		if (hash_file('sha256', $from) !== hash_file('sha256', $to)) {
+			throw new Exception('could not copy ' . $source); }
 
 		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
 			class LFS
@@ -152,56 +192,16 @@ class UnreadableDirectoryTest extends TestCase
 			echo "--end--\n" . json_encode($out);
 		');
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=-1 -d display_errors=1 -d log_errors=0 -d html_errors=0 -d xdebug.mode=off '
 			. escapeshellarg($probe) . ' 2>&1', $output);
 		$printed = implode("\n", $output);
 		$begin = strpos($printed, "--begin--\n");
 		$end = strrpos($printed, "--end--\n");
-		if ($begin === false || $end === false)
-			return array(null, $printed);
+		if ($begin === false || $end === false) {
+			return [null, $printed]; }
 		$result = json_decode(substr($printed, $end + strlen("--end--\n")), true);
 		$noise = trim(substr($printed, $begin + strlen("--begin--\n"), $end - $begin - strlen("--begin--\n")));
-		return array($result, $noise);
-	}
-
-	public function testTheScanFindsTheCopiesThatShip()
-	{
-		$sources = $this->sources();
-		foreach (array('plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php') as $known)
-			$this->assertTrue(in_array($known, $sources, true),
-				$known . ' is among them; found: ' . implode(', ', $sources));
-	}
-
-	public function testNoCopyStopsAtADirectoryItCannotOpen()
-	{
-		foreach ($this->sources() as $source)
-		{
-			list($r, $noise) = $this->drive($source);
-			$this->assertTrue(is_array($r), $source . ': the walk runs to the end; it printed: ' . $noise);
-			if (!is_array($r))
-				continue;
-			$this->assertTrue($r['precondition'] === true,
-				$source . ': the locked directory really cannot be opened (not running as root)');
-			$this->assertEquals('', $noise, $source . ': and nothing is printed on the way');
-
-			$this->assertTrue($r['control'][0] === true && $r['control'][1] === false,
-				$source . ': a tree of empty directories is removed');
-
-			$this->assertTrue($r['nested'][0] === false,
-				$source . ': a tree holding an unreadable directory is reported as not removed');
-			$this->assertTrue($r['nested'][1] === false,
-				$source . ': the empty directory beside it is still cleared');
-			$this->assertTrue($r['nested'][2] === true,
-				$source . ': and the unreadable one is left where it is');
-
-			$this->assertTrue($r['top'][0] === false && $r['top'][1] === true,
-				$source . ': an unreadable directory holding a file is reported as not removed');
-
-			$this->assertEquals(array('a.torrent', 'sub/c.torrent'), $r['scan'],
-				$source . ': a scan returns what it can read and skips what it cannot');
-			$this->assertEquals(array(), $r['scantop'],
-				$source . ': a scan of a directory it cannot open finds nothing');
-		}
+		return [$result, $noise];
 	}
 }

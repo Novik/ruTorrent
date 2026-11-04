@@ -2,17 +2,17 @@
 
 require_once( "../../php/util.php" );
 
-if(!isset($HTTP_RAW_POST_DATA))
-	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
-$ret = array();
+if(!isset($HTTP_RAW_POST_DATA)) {
+	$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
+$ret = [];
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
 	foreach($vars as $var)
 	{
 		$parts = explode("=",$var);
-		if($parts[0]=="hash")
-			$ret[] = $parts[1];
+		if($parts[0]=="hash") {
+			$ret[] = $parts[1]; }
 	}
 	if(count($ret))
 	{

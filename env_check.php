@@ -27,15 +27,30 @@
  */
 class Requirements
 {
-	const MIN_PHP = '7.4.0'; // arrow functions (fn() =>) are used in the codebase
+	public const MIN_PHP = '7.4.0'; // arrow functions (fn() =>) are used in the codebase
+
+	/**
+	 * The bundled Public Suffix List is a dated snapshot, and an install cannot
+	 * refresh it: php/publicsuffix.php pins its SHA-256, so a newer .dat makes
+	 * every lookup throw. Upgrading ruTorrent is the only remedy, which is why
+	 * the age is reported and not repaired.
+	 *
+	 * The bound sits above the age a correct install already shows. A snapshot
+	 * reaches the tree weeks after it is published -- the shipped one was four
+	 * weeks old on arrival -- and the last twelve releases are up to 24 days
+	 * apart, so 52 days is the oldest a fully current install can be. One
+	 * release cycle, 8.9 days on average across those twelve, would warn about
+	 * a tree with nothing wrong with it.
+	 */
+	public const MAX_PSL_AGE_DAYS = 56;
 
 	/** rtorrent support policy: 0.9.8 baseline + 0.16.x series; anything else may or may not work. */
 	public static function rtorrentSupport($ver)
 	{
 		$ver = (string)$ver;
-		if (preg_match('/^0\.9\.8(\D|$)/', $ver)) return array(true, 'supported (0.9.8 baseline)');
-		if (preg_match('/^0\.16\./', $ver))       return array(true, 'supported (0.16.x series)');
-		return array(false, 'not an explicitly supported version (0.9.8 or 0.16.x) -- may or may not work');
+		if (preg_match('/^0\.9\.8(\D|$)/', $ver)) { return [true, 'supported (0.9.8 baseline)']; }
+		if (preg_match('/^0\.16\./', $ver)) {       return [true, 'supported (0.16.x series)']; }
+		return [false, 'not an explicitly supported version (0.9.8 or 0.16.x) -- may or may not work'];
 	}
 
 	public static function phpMeetsMinimum($current, $min = self::MIN_PHP)
@@ -59,8 +74,8 @@ class Requirements
 	 */
 	public static function rutorrentHandlers($keys)
 	{
-		$builtin = array('1_prepare', '~_save_full');
-		return is_array($keys) ? array_values(array_diff($keys, $builtin)) : array();
+		$builtin = ['1_prepare', '~_save_full'];
+		return is_array($keys) ? array_values(array_diff($keys, $builtin)) : [];
 	}
 
 	public static function scgiLabel($host, $port)
@@ -71,8 +86,8 @@ class Requirements
 	/** Is the SCGI target configured coherently (a socket path, or host + a valid TCP port)? */
 	public static function scgiConfigured($host, $port)
 	{
-		if ($host === null || $host === '') return false;
-		if (self::isUnixSocket($host)) return strlen(self::unixSocketPath($host)) > 0;
+		if ($host === null || $host === '') { return false; }
+		if (self::isUnixSocket($host)) { return strlen(self::unixSocketPath($host)) > 0; }
 		return ((int)$port > 0) && ((int)$port <= 65535);
 	}
 
@@ -84,8 +99,8 @@ class Requirements
 
 	public static function looksAbsolute($path)
 	{
-		if (!is_string($path) || $path === '') return false;
-		if ($path[0] === '/') return true;
+		if (!is_string($path) || $path === '') { return false; }
+		if ($path[0] === '/') { return true; }
 		return DIRECTORY_SEPARATOR === '\\' &&
 			((bool)preg_match('#^[A-Za-z]:[\\\\/]#', $path) || strncmp($path, '\\\\', 2) === 0);
 	}
@@ -98,7 +113,7 @@ class Requirements
 	 */
 	public static function profileMaskValid($value)
 	{
-		if ($value === null || $value === '') return true;
+		if ($value === null || $value === '') { return true; }
 		return is_string($value) && (bool)preg_match('/^0?[0-7]{3}$/D', $value);
 	}
 
@@ -110,13 +125,13 @@ class Requirements
 	 */
 	public static function pluginExtensions($info)
 	{
-		$ret = array('error' => array(), 'warning' => array());
-		if (!is_string($info) || $info === '') return $ret;
+		$ret = ['error' => [], 'warning' => []];
+		if (!is_string($info) || $info === '') { return $ret; }
 		foreach (preg_split('/\r\n|\r|\n/', $info) as $line) {
-			if (!preg_match('/^\s*php\.extensions\.(error|warning)\s*:\s*(.+)$/', $line, $m)) continue;
+			if (!preg_match('/^\s*php\.extensions\.(error|warning)\s*:\s*(.+)$/', $line, $m)) { continue; }
 			foreach (explode(',', $m[2]) as $ext) {
 				$ext = trim($ext);
-				if ($ext !== '' && !in_array($ext, $ret[$m[1]], true)) $ret[$m[1]][] = $ext;
+				if ($ext !== '' && !in_array($ext, $ret[$m[1]], true)) { $ret[$m[1]][] = $ext; }
 			}
 		}
 		return $ret;
@@ -131,56 +146,41 @@ class Requirements
 	 */
 	public static function missingPluginExtensions($byPlugin, $loaded)
 	{
-		$wanted = array();
-		foreach ($byPlugin as $plugin => $needs)
-			foreach (array('error', 'warning') as $severity)
-				foreach ((isset($needs[$severity]) ? $needs[$severity] : array()) as $ext) {
-					if (!isset($wanted[$ext])) $wanted[$ext] = array();
+		$wanted = [];
+		foreach ($byPlugin as $plugin => $needs) {
+			foreach (['error', 'warning'] as $severity) {
+				foreach ((isset($needs[$severity]) ? $needs[$severity] : []) as $ext) {
+					if (!isset($wanted[$ext])) { $wanted[$ext] = []; }
 					// A plugin that cannot run without it outranks one that
 					// only loses a feature, so error wins for the same pair.
-					if (!isset($wanted[$ext][$plugin]) || ($severity === 'error'))
-						$wanted[$ext][$plugin] = $severity;
-				}
+					if (!isset($wanted[$ext][$plugin]) || ($severity === 'error')) {
+						$wanted[$ext][$plugin] = $severity; }
+				} } }
 		ksort($wanted);
 		// get_loaded_extensions() answers with the name each extension
 		// registered -- Phar, SimpleXML -- while plugin.info spells them
 		// lower case, and extension_loaded() does not care either way.
 		$have = array_map('strtolower', $loaded);
-		$ret = array();
+		$ret = [];
 		foreach ($wanted as $ext => $plugins) {
-			if (in_array(strtolower($ext), $have, true)) continue;
+			if (in_array(strtolower($ext), $have, true)) { continue; }
 			ksort($plugins);
-			$ret[$ext] = array(
+			$ret[$ext] = [
 				'disables' => array_keys(array_filter($plugins, function ($s) { return $s === 'error'; })),
 				'limits'   => array_keys(array_filter($plugins, function ($s) { return $s === 'warning'; })),
-			);
+			];
 		}
 		return $ret;
 	}
-
-	/**
-	 * The bundled Public Suffix List is a dated snapshot, and an install cannot
-	 * refresh it: php/publicsuffix.php pins its SHA-256, so a newer .dat makes
-	 * every lookup throw. Upgrading ruTorrent is the only remedy, which is why
-	 * the age is reported and not repaired.
-	 *
-	 * The bound sits above the age a correct install already shows. A snapshot
-	 * reaches the tree weeks after it is published -- the shipped one was four
-	 * weeks old on arrival -- and the last twelve releases are up to 24 days
-	 * apart, so 52 days is the oldest a fully current install can be. One
-	 * release cycle, 8.9 days on average across those twelve, would warn about
-	 * a tree with nothing wrong with it.
-	 */
-	const MAX_PSL_AGE_DAYS = 56;
 
 	/** The list's own '// VERSION: 2026-09-24_13-26-36_UTC' stamp, as a UTC timestamp. */
 	public static function publicSuffixListDate($data)
 	{
 		if (!is_string($data) || !preg_match(
 			'~^//[ \t]*VERSION:[ \t]*([0-9]{4})-([0-9]{2})-([0-9]{2})_([0-9]{2})-([0-9]{2})-([0-9]{2})_UTC[ \t\r]*$~m',
-			$data, $matches)) return null;
+			$data, $matches)) { return null; }
 		list(, $year, $month, $day, $hour, $minute, $second) = array_map('intval', $matches);
-		if (!checkdate($month, $day, $year) || $hour > 23 || $minute > 59 || $second > 60) return null;
+		if (!checkdate($month, $day, $year) || $hour > 23 || $minute > 59 || $second > 60) { return null; }
 		return gmmktime($hour, $minute, $second, $month, $day, $year);
 	}
 
@@ -194,20 +194,20 @@ class Requirements
 	public static function publicSuffixListAge($data, $now)
 	{
 		$stamped = self::publicSuffixListDate($data);
-		if ($stamped === null)
-			return array(false, 'carries no "// VERSION:" stamp, so its age cannot be read');
+		if ($stamped === null) {
+			return [false, 'carries no "// VERSION:" stamp, so its age cannot be read']; }
 		$days = intdiv(max(0, (int)$now - $stamped), 86400);
 		$detail = 'published ' . gmdate('Y-m-d', $stamped) . ', ' . $days . ' day(s) ago';
-		if ($days <= self::MAX_PSL_AGE_DAYS) return array(true, $detail);
-		return array(false, $detail . ' -- over ' . self::MAX_PSL_AGE_DAYS .
+		if ($days <= self::MAX_PSL_AGE_DAYS) { return [true, $detail]; }
+		return [false, $detail . ' -- over ' . self::MAX_PSL_AGE_DAYS .
 			'; a public suffix delegated since then is unknown here, so a cookie Domain naming' .
-			' one is accepted. Upgrade ruTorrent for a newer list.');
+			' one is accepted. Upgrade ruTorrent for a newer list.'];
 	}
 
 	public static function logFileStreamScheme($path)
 	{
 		if (!is_string($path) ||
-			!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):\/\//', $path, $matches)) return null;
+			!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):\/\//', $path, $matches)) { return null; }
 		return $matches[1];
 	}
 
@@ -217,9 +217,9 @@ class Requirements
 		if (!is_array($parts) || !isset($parts['scheme']) ||
 			strcasecmp($parts['scheme'], 'file') !== 0 || !isset($parts['path']) ||
 			isset($parts['user']) || isset($parts['pass']) || isset($parts['port']) ||
-			isset($parts['query']) || isset($parts['fragment'])) return null;
+			isset($parts['query']) || isset($parts['fragment'])) { return null; }
 		$host = isset($parts['host']) ? $parts['host'] : '';
-		if ($host === '' || strcasecmp($host, 'localhost') === 0) return $parts['path'];
+		if ($host === '' || strcasecmp($host, 'localhost') === 0) { return $parts['path']; }
 		return DIRECTORY_SEPARATOR === '\\'
 			? '\\\\' . $host . str_replace('/', '\\', $parts['path']) : null;
 	}
@@ -237,18 +237,18 @@ class Requirements
 	public static function logFileStreamAvailable($path, $wrappers)
 	{
 		$scheme = self::logFileStreamScheme($path);
-		if ($scheme === null || !is_array($wrappers)) return false;
-		if (in_array($scheme, $wrappers, true)) return true;
+		if ($scheme === null || !is_array($wrappers)) { return false; }
+		if (in_array($scheme, $wrappers, true)) { return true; }
 		// PHP's built-in wrappers are case-insensitive; user-registered wrappers are not.
-		$builtin = array('https', 'ftps', 'compress.zlib', 'php', 'file',
-			'glob', 'data', 'http', 'ftp', 'phar');
+		$builtin = ['https', 'ftps', 'compress.zlib', 'php', 'file',
+			'glob', 'data', 'http', 'ftp', 'phar'];
 		$lower = strtolower($scheme);
 		return in_array($lower, $builtin, true) && in_array($lower, $wrappers, true);
 	}
 }
 
 // When included by a test we only want the class above; skip the live probing.
-if (defined('RUTORRENT_REQUIREMENTS_LIB')) return;
+if (defined('RUTORRENT_REQUIREMENTS_LIB')) { return; }
 
 // Command line only. PHP_SAPI is fixed by how PHP was invoked (the cli binary
 // vs a web module) and cannot be influenced by an HTTP request, so this can
@@ -263,10 +263,10 @@ if (PHP_SAPI !== 'cli') {
 // Live environment probing + rendering (not unit-tested; exercises the host).
 // -------------------------------------------------------------------------
 
-$results = array(); // each: [section, ok|null, label, detail]  (ok===null => informational)
+$results = []; // each: [section, ok|null, label, detail]  (ok===null => informational)
 function check($section, $ok, $label, $detail = '') {
 	global $results;
-	$results[] = array($section, $ok, $label, $detail);
+	$results[] = [$section, $ok, $label, $detail];
 }
 $disabled = array_map('trim', explode(',', (string)ini_get('disable_functions')));
 function fn_available($name, $disabled) {
@@ -275,10 +275,10 @@ function fn_available($name, $disabled) {
 
 // ---- PHP + required extensions -------------------------------------------
 check('req', Requirements::phpMeetsMinimum(PHP_VERSION), "PHP >= " . Requirements::MIN_PHP, "found " . PHP_VERSION);
-foreach (array(
+foreach ([
 	'json' => 'encodes every API response ruTorrent sends to the browser',
 	'pcre' => 'regular expressions used throughout, incl. XMLRPC parsing',
-) as $ext => $why) {
+] as $ext => $why) {
 	check('req', extension_loaded($ext), "PHP extension: $ext", $why);
 }
 $transportFile = __DIR__.'/php/scgitransport.php';
@@ -292,29 +292,29 @@ if($transportAvailable) {
 		$transportAvailable = $transportAvailable && $available;
 	}
 	$clock = false;
-	foreach(rSCGITransport::clockFunctions() as $function)
-		$clock = $clock || fn_available($function, $disabled);
+	foreach(rSCGITransport::clockFunctions() as $function) {
+		$clock = $clock || fn_available($function, $disabled); }
 	check('req', $clock, 'hrtime() or microtime() available', 'times the SCGI transfer budget');
 	$transportAvailable = $transportAvailable && $clock;
 }
 
 // ---- Recommended extensions ----------------------------------------------
-foreach (array(
+foreach ([
 	'simplexml' => 'XMLRPC proxy sanitisation (Sonarr/Radarr raw pass-through)',
 	'curl'      => 'HTTP fetches used by several plugins',
 	'mbstring'  => 'robust handling of non-UTF8 torrent and file names',
 	'zlib'      => 'gzip compression of responses',
-) as $ext => $why) {
+] as $ext => $why) {
 	check('rec', extension_loaded($ext), "PHP extension: $ext", $why);
 }
 
 // ---- Recommended external programs ---------------------------------------
 if (fn_available('exec', $disabled)) {
-	foreach (array(
+	foreach ([
 		'php'  => 'runs plugin helper scripts scheduled by rtorrent (_task, autotools, ...)',
 		'curl' => 'used by some plugins',
 		'gzip' => 'response compression',
-	) as $prog => $why) {
+	] as $prog => $why) {
 		$path = @exec('command -v ' . escapeshellarg($prog) . ' 2>/dev/null');
 		check('rec', !empty($path), "program: $prog", $path ? "found at $path" : $why);
 	}
@@ -337,13 +337,13 @@ if (!is_string($pslData)) {
 // ---- Load ruTorrent config (best effort) ---------------------------------
 function load_ru_config() {
 	$cfg = dirname(__FILE__) . '/conf/config.php';
-	if (!is_file($cfg) || !is_readable($cfg)) return null;
+	if (!is_file($cfg) || !is_readable($cfg)) { return null; }
 	$load = function() use ($cfg) {
 		// config.php only assigns config vars (and guards its config.local include).
 		$scgi_host = null; $scgi_port = null; $XMLRPCMountPoint = null;
 		$topDirectory = null; $log_file = null; $tempDirectory = null;
 		include $cfg;
-		return array(
+		return [
 			'scgi_host' => isset($scgi_host) ? $scgi_host : null,
 			'scgi_port' => isset($scgi_port) ? $scgi_port : null,
 			'mount'     => isset($XMLRPCMountPoint) ? $XMLRPCMountPoint : null,
@@ -353,7 +353,7 @@ function load_ru_config() {
 			'max'       => isset($rpcMaxResponseBytes) ? $rpcMaxResponseBytes : null,
 			'connect'   => isset($rpcTimeOut) ? $rpcTimeOut : null,
 			'transfer'  => isset($rpcTransferTimeOut) ? $rpcTransferTimeOut : null,
-		);
+		];
 	};
 	return @$load();
 }
@@ -373,12 +373,12 @@ if ($cfg === null) {
 	}
 	if(class_exists('rSCGITransport')) {
 		list($connect, $transfer) = rSCGITransport::timeouts($cfg['connect'], $cfg['transfer']);
-		if(!rSCGITransport::isValidTimeout($cfg['connect']))
+		if(!rSCGITransport::isValidTimeout($cfg['connect'])) {
 			check('config', false, '$rpcTimeOut', 'invalid value '.var_export($cfg['connect'], true)
-				.'; using 30 seconds. Set a positive number of seconds.');
-		if(!rSCGITransport::isValidTimeout($cfg['transfer']))
+				.'; using 30 seconds. Set a positive number of seconds.'); }
+		if(!rSCGITransport::isValidTimeout($cfg['transfer'])) {
 			check('config', false, '$rpcTransferTimeOut', 'invalid value '.var_export($cfg['transfer'], true)
-				.'; using '.$transfer.' seconds, as for null. Set null or a positive number of seconds.');
+				.'; using '.$transfer.' seconds, as for null. Set null or a positive number of seconds.'); }
 	}
 	if ($cfg['topdir'] !== null) {
 		$ok = Requirements::looksAbsolute($cfg['topdir']) && @is_dir($cfg['topdir']) && @is_readable($cfg['topdir']);
@@ -428,62 +428,62 @@ if ($cfg === null) {
 // missing extension disables one plugin, not ruTorrent, so these are warnings.
 $pluginDir = __DIR__ . '/plugins';
 if (@is_dir($pluginDir)) {
-	$byPlugin = array();
-	foreach (@scandir($pluginDir) ?: array() as $entry) {
-		if (($entry === '.') || ($entry === '..')) continue;
+	$byPlugin = [];
+	foreach (@scandir($pluginDir) ?: [] as $entry) {
+		if (($entry === '.') || ($entry === '..')) { continue; }
 		$info = @file_get_contents($pluginDir . '/' . $entry . '/plugin.info');
-		if ($info === false) continue;
+		if ($info === false) { continue; }
 		$byPlugin[$entry] = Requirements::pluginExtensions($info);
 	}
 	$missing = Requirements::missingPluginExtensions($byPlugin, get_loaded_extensions());
 	foreach ($missing as $ext => $cost) {
-		$detail = array();
-		if ($cost['disables']) $detail[] = 'disables ' . implode(', ', $cost['disables']);
-		if ($cost['limits'])   $detail[] = 'limits ' . implode(', ', $cost['limits']);
+		$detail = [];
+		if ($cost['disables']) { $detail[] = 'disables ' . implode(', ', $cost['disables']); }
+		if ($cost['limits']) {   $detail[] = 'limits ' . implode(', ', $cost['limits']); }
 		check('plugins', false, "PHP extension: $ext", implode('; ', $detail));
 	}
-	if (!$missing)
+	if (!$missing) {
 		check('plugins', true, 'plugin extensions',
-			'every extension the bundled plugins declare is loaded');
+			'every extension the bundled plugins declare is loaded'); }
 }
 
 // ---- rtorrent version (needs config + a running rtorrent) ----------------
 function scgi_params($params) {
 	$xml = '';
-	foreach ($params as $p)
-		$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_QUOTES) . '</string></value></param>';
+	foreach ($params as $p) {
+		$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_QUOTES) . '</string></value></param>'; }
 	return $xml;
 }
 // A check that prints nothing for a minute looks hung itself, so a probe
 // connects and waits within the WebUI's budgets, but no longer than this.
-if (!defined('ENV_CHECK_PROBE_SECONDS')) define('ENV_CHECK_PROBE_SECONDS', 10);
+if (!defined('ENV_CHECK_PROBE_SECONDS')) { define('ENV_CHECK_PROBE_SECONDS', 10); }
 function probe_budgets() {
 	global $cfg;
 	list($connect, $transfer) = rSCGITransport::timeouts($cfg['connect'], $cfg['transfer']);
-	return array(min($connect, (float)ENV_CHECK_PROBE_SECONDS), min($transfer, (float)ENV_CHECK_PROBE_SECONDS), $transfer, $connect);
+	return [min($connect, (float)ENV_CHECK_PROBE_SECONDS), min($transfer, (float)ENV_CHECK_PROBE_SECONDS), $transfer, $connect];
 }
-function scgi_call($host, $port, $methodName, $params = array(), $asList = false, &$failure = null) {
+function scgi_call($host, $port, $methodName, $params = [], $asList = false, &$failure = null) {
 	global $cfg;
 	$body = '<?xml version="1.0"?><methodCall><methodName>' . $methodName . '</methodName><params>' . scgi_params($params) . '</params></methodCall>';
 	list($connect, $probe) = probe_budgets();
-	$resp = rSCGITransport::send($host, $port, $body, true, array('connectTimeout' => $connect,
+	$resp = rSCGITransport::send($host, $port, $body, true, ['connectTimeout' => $connect,
 		'transferTimeout' => $probe, 'maxResponseBytes' => $cfg['max'],
-		'responseMode' => rSCGITransport::RESPONSE_BODY, 'temporaryDirectory' => $cfg['tmp']), $failure);
-	if ($resp === null) return null;
+		'responseMode' => rSCGITransport::RESPONSE_BODY, 'temporaryDirectory' => $cfg['tmp']], $failure);
+	if ($resp === null) { return null; }
 	if (strpos($resp, '<fault>') !== false) {
 		$failure = 'fault';
 		return null;
 	}
 	if ($asList) {
-		if (preg_match_all('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
-		return array();
+		if (preg_match_all('#<string>(.*?)</string>#s', $resp, $m)) { return $m[1]; }
+		return [];
 	}
-	if (preg_match('#<value>\s*<string>(.*?)</string>#s', $resp, $m)) return $m[1];
-	if (preg_match('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
+	if (preg_match('#<value>\s*<string>(.*?)</string>#s', $resp, $m)) { return $m[1]; }
+	if (preg_match('#<string>(.*?)</string>#s', $resp, $m)) { return $m[1]; }
 	return null;
 }
 if ($transportAvailable && $cfg && Requirements::scgiConfigured($cfg['scgi_host'], $cfg['scgi_port'])) {
-	$ver = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'system.client_version', array(), false, $failure);
+	$ver = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'system.client_version', [], false, $failure);
 	$where = Requirements::scgiLabel($cfg['scgi_host'], $cfg['scgi_port']);
 	if ($ver === null) {
 		if ($failure === 'read-timeout' || $failure === 'write-timeout') {
@@ -513,7 +513,7 @@ if ($transportAvailable && $cfg && Requirements::scgiConfigured($cfg['scgi_host'
 		// torrents added by other clients silently get no ratio group, no added time
 		// and no history entry.
 		$keys = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'method.list_keys',
-			array('', 'event.download.inserted_new'), true);
+			['', 'event.download.inserted_new'], true);
 		if (is_array($keys)) {
 			$registered = Requirements::rutorrentHandlers($keys);
 			check('rtorrent', count($registered) > 0, 'handlers registered', count($registered)
@@ -531,20 +531,20 @@ if ($transportAvailable && $cfg && Requirements::scgiConfigured($cfg['scgi_host'
 $req_fail = 0; $warn = 0;
 foreach ($results as $r) { if ($r[1] === false) { $r[0] === 'req' ? $req_fail++ : $warn++; } }
 $mark = function($ok, $section) {
-	if ($ok === null) return 'INFO';
-	if ($ok) return 'OK  ';
+	if ($ok === null) { return 'INFO'; }
+	if ($ok) { return 'OK  '; }
 	return $section === 'req' ? 'FAIL' : 'WARN';
 };
-$sections = array('req' => 'Required', 'rec' => 'Recommended', 'config' => 'Configuration', 'plugins' => 'Plugins', 'rtorrent' => 'rtorrent');
-$lines = array();
+$sections = ['req' => 'Required', 'rec' => 'Recommended', 'config' => 'Configuration', 'plugins' => 'Plugins', 'rtorrent' => 'rtorrent'];
+$lines = [];
 $lines[] = "ruTorrent prerequisites & install check  (PHP " . PHP_VERSION . ")";
 $lines[] = str_repeat('-', 74);
 foreach ($sections as $sec => $title) {
-	$has = false; foreach ($results as $r) if ($r[0] === $sec) { $has = true; break; }
-	if (!$has) continue;
+	$has = false; foreach ($results as $r) { if ($r[0] === $sec) { $has = true; break; } }
+	if (!$has) { continue; }
 	$lines[] = "$title:";
-	foreach ($results as $r) if ($r[0] === $sec)
-		$lines[] = sprintf("  [%s] %-24s %s", $mark($r[1], $r[0]), $r[2], $r[3]);
+	foreach ($results as $r) { if ($r[0] === $sec) {
+		$lines[] = sprintf("  [%s] %-24s %s", $mark($r[1], $r[0]), $r[2], $r[3]); } }
 	$lines[] = "";
 }
 $lines[] = str_repeat('-', 74);

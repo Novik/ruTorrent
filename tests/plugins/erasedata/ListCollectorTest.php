@@ -44,8 +44,8 @@ class ListCollectorTest extends TestCase
 		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/update.php';
 		$target = $this->tree . '/plugins/erasedata/update.php';
 		copy($source, $target);
-		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
-			throw new Exception('could not copy update.php');
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target)) {
+			throw new Exception('could not copy update.php'); }
 
 		// update.php asks rtorrent which hashes it holds before it applies a
 		// list, through erasedataLiveHashes() in pending.php, which is copied
@@ -56,8 +56,8 @@ class ListCollectorTest extends TestCase
 		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/pending.php';
 		$target = $this->tree . '/plugins/erasedata/pending.php';
 		copy($source, $target);
-		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
-			throw new Exception('could not copy pending.php');
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target)) {
+			throw new Exception('could not copy pending.php'); }
 		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
 			class rXMLRPCCommand
 			{
@@ -102,15 +102,250 @@ class ListCollectorTest extends TestCase
 		$this->wipe();
 	}
 
+	// -- the injection -------------------------------------------------------
+
+	public function testAnEntryOutsideTheDownloadIsNotUnlinked()
+	{
+		$this->reset();
+		$base = $this->tree . '/data/EvilPack';
+		$own = $this->file($base . '/inject');
+		$victim = $this->file($this->tree . '/victim/DELETE_ME', 'must survive');
+
+		// What the shipped writer produced for a torrent whose first file's
+		// path element ended in a line break and whose following elements
+		// spelled out an absolute path. Two entries, one of them the victim.
+		$this->queue('A', [$own, $victim], $base, '1');
+		$out = $this->collect();
+
+		$this->assertTrue($out === '',
+			'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue(is_file($victim),
+			'a file outside the download is still there');
+		$this->assertTrue(strpos($this->logged(), 'REFUSED, not under ' . $base) !== false,
+			'and the collector says it refused it');
+	}
+
+	public function testTheDownloadsOwnFilesAreStillDeleted()
+	{
+		$this->reset();
+		$base = $this->tree . '/data/GoodPack';
+		$one = $this->file($base . '/one.txt');
+		$two = $this->file($base . '/sub/two.txt');
+
+		$this->queue('B', [$one, $two], $base, '1');
+		$this->collect();
+
+		$this->assertTrue(!is_file($one), 'the download\'s own file is deleted');
+		$this->assertTrue(!is_file($two), 'and the one in its subdirectory too');
+		$this->assertTrue(!is_dir($base . '/sub'), 'the emptied subdirectory is removed');
+		$this->assertTrue(!is_dir($base), 'and the download directory itself');
+	}
+
+	public function testASingleFileDownloadIsStillDeleted()
+	{
+		$this->reset();
+		// For a single-file download the base path is the file, so the one
+		// entry equals the base rather than lying below it.
+		$movie = $this->file($this->tree . '/data/movie.mkv');
+
+		$this->queue('C', [$movie], $movie, '0');
+		$this->collect();
+
+		$this->assertTrue(!is_file($movie), 'a single-file download is deleted');
+	}
+
+	public function testARelativeEntryIsNotUnlinked()
+	{
+		$this->reset();
+		// A line break in the middle of a path element leaves the tail of it
+		// on a line of its own, with no leading separator.
+		$base = $this->tree . '/data/RelPack';
+		$own = $this->file($base . '/keep');
+		$cwdVictim = $this->file($this->tree . '/plugins/erasedata/relative_victim', 'must survive');
+
+		$this->queue('D', [$own, 'relative_victim'], $base, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($cwdVictim),
+			'a relative entry is not resolved against the collector\'s directory');
+	}
+
+	public function testAnEntryClimbingOutOfTheDownloadIsNotUnlinked()
+	{
+		$this->reset();
+		$base = $this->tree . '/data/DotPack';
+		$own = $this->file($base . '/keep');
+		$victim = $this->file($this->tree . '/data/neighbour.bin', 'must survive');
+
+		$this->queue('E', [$own, $base . '/../neighbour.bin'], $base, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($victim),
+			'an entry climbing out of the download with .. is not unlinked');
+	}
+
+	public function testAListClaimingTheRootIsRefusedWhole()
+	{
+		$this->reset();
+		// The base path is read from the third line from the end, so a line
+		// break in the download's own name moves what is read as the base. A
+		// base of "/" would put every path on the host inside the download.
+		$victim = $this->file($this->tree . '/victim/ROOT_CASE', 'must survive');
+
+		$this->queue('F', [$victim], '/', '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($victim), 'a list claiming "/" as its base deletes nothing');
+		$this->assertTrue(strpos($this->logged(), 'REFUSED, not a usable base path') !== false,
+			'and the collector says why');
+	}
+
+	public function testEveryListFileIsStillConsumed()
+	{
+		$this->reset();
+		$base = $this->tree . '/data/Consumed';
+		$this->file($base . '/a');
+		$this->queue('G', [$base . '/a'], $base, '1');
+		$this->queue('H', [$this->tree . '/victim/elsewhere'], '/', '1');
+		$this->collect();
+
+		$this->assertTrue(count(glob($this->listPath . '/*.list2')) === 0,
+			'a refused list is removed from the queue rather than retried forever');
+	}
+
+	// -- a list the writer has staged but not published -----------------------
+
+	public function testAStagedListIsNeitherAppliedNorRemoved()
+	{
+		$this->reset();
+		// removewithdata.php writes a list under a temporary name first and
+		// renames it to <hash>.list2 only once rtorrent has confirmed the
+		// erase. A writer that died in between leaves it here, naming the
+		// files of a download rtorrent may well still hold.
+		$staged = $this->tree . '/data/Staged';
+		$kept = $this->file($staged . '/one.txt');
+		$tmp = $this->listPath . '/X.list2.1.1.tmp';
+		file_put_contents($tmp, implode("\n", [$kept, $staged, '1', '1']) . "\n");
+		$applied = $this->tree . '/data/Applied';
+		$gone = $this->file($applied . '/one.txt');
+		$this->queue('Y', [$gone], $applied, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($kept), 'a file a staged list names is not unlinked');
+		$this->assertTrue(is_file($tmp), 'and the staged list is left where it is');
+		$this->assertTrue(!is_file($gone), 'while the published list beside it is applied');
+	}
+
+	public function testALegacyListIsNotActedOn()
+	{
+		$this->reset();
+		// A base the download never had, and a file under it: what the
+		// previous writer produced for a torrent whose own name carried a
+		// line break, and what a local account can write by hand.
+		$base = $this->tree . '/elsewhere';
+		$victim = $this->file($base . '/DELETE_ME', 'must survive');
+
+		$this->queueLegacy('L', [$victim], $base, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($victim),
+			'a list from the previous writer deletes nothing');
+		$this->assertTrue(is_dir($base), 'and its declared base is still there');
+	}
+
+	public function testALegacyListIsKeptRatherThanDiscarded()
+	{
+		$this->reset();
+		$base = $this->tree . '/elsewhere';
+		$victim = $this->file($base . '/DELETE_ME', 'must survive');
+		$this->queueLegacy('M', [$victim], $base, '1');
+		$before = file_get_contents($this->listPath . '/M.list');
+
+		$this->collect();
+
+		$this->assertTrue(!is_file($this->listPath . '/M.list'),
+			'the list is taken out of the queue');
+		$this->assertTrue(is_file($this->listPath . '/M.list.unverified'),
+			'and kept under a name the collector does not read, because the '
+			. 'files it names are still on disk and it still names them');
+		$this->assertTrue(file_get_contents($this->listPath . '/M.list.unverified') === $before,
+			'unchanged');
+	}
+
+	public function testTheQuarantineIsReportedWithDebugLoggingOff()
+	{
+		$this->reset();
+		$base = $this->tree . '/elsewhere';
+		$this->file($base . '/DELETE_ME', 'must survive');
+		$this->queueLegacy('N', [$base . '/DELETE_ME'], $base, '1');
+
+		// Someone asked for a deletion that is not going to happen, so they
+		// are told whether or not the plugin's debug logging is on.
+		$this->collect(false);
+
+		$this->assertTrue(strpos($this->logged(), 'N.list') !== false,
+			'the quarantine names the list outside the debug channel: ' . $this->logged());
+		$this->assertTrue(strpos($this->logged(), 'N.list.unverified') !== false,
+			'and says where it went');
+	}
+
+	public function testACurrentListIsStillApplied()
+	{
+		$this->reset();
+		// The same directory, one list of each kind: the current one is acted
+		// on and the previous one is not, so the two are told apart rather
+		// than the collector having simply stopped.
+		$mine = $this->tree . '/data/Mine';
+		$own = $this->file($mine . '/one.txt');
+		$theirs = $this->tree . '/elsewhere';
+		$victim = $this->file($theirs . '/DELETE_ME', 'must survive');
+
+		$this->queue('P', [$own], $mine, '1');
+		$this->queueLegacy('Q', [$victim], $theirs, '1');
+		$this->collect();
+
+		$this->assertTrue(!is_file($own), 'the current list is applied');
+		$this->assertTrue(is_file($victim), 'the previous one is not');
+	}
+
+	public function testAQuarantineDoesNotReplaceOneAlreadyThere()
+	{
+		$this->reset();
+		// During a rolling upgrade the previous writer is still running, so it
+		// can queue the same hash again after this collector has already put one
+		// of its lists aside. A quarantined list is the only thing that still
+		// names the files it names, so the second one must not land on top of
+		// the first.
+		$base = $this->tree . '/elsewhere';
+		$this->file($base . '/first', 'must survive');
+		$this->file($base . '/second', 'must survive');
+
+		$this->queueLegacy('R', [$base . '/first'], $base, '1');
+		$first = file_get_contents($this->listPath . '/R.list');
+		$this->collect();
+
+		$this->queueLegacy('R', [$base . '/second'], $base, '1');
+		$second = file_get_contents($this->listPath . '/R.list');
+		$this->collect();
+
+		$kept = [];
+		foreach (glob($this->listPath . '/R.list*') as $f) {
+			$kept[] = file_get_contents($f); }
+		$this->assertTrue(in_array($first, $kept, true),
+			'the list quarantined first still names the files it named');
+		$this->assertTrue(in_array($second, $kept, true),
+			'and so does the one quarantined after it');
+	}
+
 	private function wipe()
 	{
-		if (!is_dir($this->tree))
-			return;
+		if (!is_dir($this->tree)) {
+			return; }
 		$items = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
 			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item)
-			$item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+		foreach ($items as $item) {
+			$item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
 		@rmdir($this->tree);
 	}
 
@@ -118,8 +353,8 @@ class ListCollectorTest extends TestCase
 
 	private function reset()
 	{
-		foreach (glob($this->listPath . '/*') as $f)
-			@unlink($f);
+		foreach (glob($this->listPath . '/*') as $f) {
+			@unlink($f); }
 		@unlink($this->log);
 	}
 
@@ -145,17 +380,17 @@ class ListCollectorTest extends TestCase
 	{
 		$command = escapeshellarg(PHP_BINARY) . ' -d display_errors=1 update.php';
 		$process = proc_open($command,
-			array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
+			[0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
 			$pipes,
 			$this->tree . '/plugins/erasedata',
-			array(
+			[
 				'ERASEDATA_TEST_SETTINGS' => $this->tree . '/settings',
 				'ERASEDATA_TEST_LOG' => $this->log,
 				'ERASEDATA_TEST_DEBUG' => $debug ? '1' : '0',
 				'PATH' => getenv('PATH'),
-			));
-		if (!is_resource($process))
-			throw new Exception('could not start the collector');
+			]);
+		if (!is_resource($process)) {
+			throw new Exception('could not start the collector'); }
 		fclose($pipes[0]);
 		$out = stream_get_contents($pipes[1]) . stream_get_contents($pipes[2]);
 		fclose($pipes[1]);
@@ -167,140 +402,6 @@ class ListCollectorTest extends TestCase
 	private function logged()
 	{
 		return is_file($this->log) ? file_get_contents($this->log) : '';
-	}
-
-	// -- the injection -------------------------------------------------------
-
-	public function testAnEntryOutsideTheDownloadIsNotUnlinked()
-	{
-		$this->reset();
-		$base = $this->tree . '/data/EvilPack';
-		$own = $this->file($base . '/inject');
-		$victim = $this->file($this->tree . '/victim/DELETE_ME', 'must survive');
-
-		// What the shipped writer produced for a torrent whose first file's
-		// path element ended in a line break and whose following elements
-		// spelled out an absolute path. Two entries, one of them the victim.
-		$this->queue('A', array($own, $victim), $base, '1');
-		$out = $this->collect();
-
-		$this->assertTrue($out === '',
-			'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue(is_file($victim),
-			'a file outside the download is still there');
-		$this->assertTrue(strpos($this->logged(), 'REFUSED, not under ' . $base) !== false,
-			'and the collector says it refused it');
-	}
-
-	public function testTheDownloadsOwnFilesAreStillDeleted()
-	{
-		$this->reset();
-		$base = $this->tree . '/data/GoodPack';
-		$one = $this->file($base . '/one.txt');
-		$two = $this->file($base . '/sub/two.txt');
-
-		$this->queue('B', array($one, $two), $base, '1');
-		$this->collect();
-
-		$this->assertTrue(!is_file($one), 'the download\'s own file is deleted');
-		$this->assertTrue(!is_file($two), 'and the one in its subdirectory too');
-		$this->assertTrue(!is_dir($base . '/sub'), 'the emptied subdirectory is removed');
-		$this->assertTrue(!is_dir($base), 'and the download directory itself');
-	}
-
-	public function testASingleFileDownloadIsStillDeleted()
-	{
-		$this->reset();
-		// For a single-file download the base path is the file, so the one
-		// entry equals the base rather than lying below it.
-		$movie = $this->file($this->tree . '/data/movie.mkv');
-
-		$this->queue('C', array($movie), $movie, '0');
-		$this->collect();
-
-		$this->assertTrue(!is_file($movie), 'a single-file download is deleted');
-	}
-
-	public function testARelativeEntryIsNotUnlinked()
-	{
-		$this->reset();
-		// A line break in the middle of a path element leaves the tail of it
-		// on a line of its own, with no leading separator.
-		$base = $this->tree . '/data/RelPack';
-		$own = $this->file($base . '/keep');
-		$cwdVictim = $this->file($this->tree . '/plugins/erasedata/relative_victim', 'must survive');
-
-		$this->queue('D', array($own, 'relative_victim'), $base, '1');
-		$this->collect();
-
-		$this->assertTrue(is_file($cwdVictim),
-			'a relative entry is not resolved against the collector\'s directory');
-	}
-
-	public function testAnEntryClimbingOutOfTheDownloadIsNotUnlinked()
-	{
-		$this->reset();
-		$base = $this->tree . '/data/DotPack';
-		$own = $this->file($base . '/keep');
-		$victim = $this->file($this->tree . '/data/neighbour.bin', 'must survive');
-
-		$this->queue('E', array($own, $base . '/../neighbour.bin'), $base, '1');
-		$this->collect();
-
-		$this->assertTrue(is_file($victim),
-			'an entry climbing out of the download with .. is not unlinked');
-	}
-
-	public function testAListClaimingTheRootIsRefusedWhole()
-	{
-		$this->reset();
-		// The base path is read from the third line from the end, so a line
-		// break in the download's own name moves what is read as the base. A
-		// base of "/" would put every path on the host inside the download.
-		$victim = $this->file($this->tree . '/victim/ROOT_CASE', 'must survive');
-
-		$this->queue('F', array($victim), '/', '1');
-		$this->collect();
-
-		$this->assertTrue(is_file($victim), 'a list claiming "/" as its base deletes nothing');
-		$this->assertTrue(strpos($this->logged(), 'REFUSED, not a usable base path') !== false,
-			'and the collector says why');
-	}
-
-	public function testEveryListFileIsStillConsumed()
-	{
-		$this->reset();
-		$base = $this->tree . '/data/Consumed';
-		$this->file($base . '/a');
-		$this->queue('G', array($base . '/a'), $base, '1');
-		$this->queue('H', array($this->tree . '/victim/elsewhere'), '/', '1');
-		$this->collect();
-
-		$this->assertTrue(count(glob($this->listPath . '/*.list2')) === 0,
-			'a refused list is removed from the queue rather than retried forever');
-	}
-
-	// -- a list the writer has staged but not published -----------------------
-
-	public function testAStagedListIsNeitherAppliedNorRemoved()
-	{
-		$this->reset();
-		// removewithdata.php writes a list under a temporary name first and
-		// renames it to <hash>.list2 only once rtorrent has confirmed the
-		// erase. A writer that died in between leaves it here, naming the
-		// files of a download rtorrent may well still hold.
-		$staged = $this->tree . '/data/Staged';
-		$kept = $this->file($staged . '/one.txt');
-		$tmp = $this->listPath . '/X.list2.1.1.tmp';
-		file_put_contents($tmp, implode("\n", array($kept, $staged, '1', '1')) . "\n");
-		$applied = $this->tree . '/data/Applied';
-		$gone = $this->file($applied . '/one.txt');
-		$this->queue('Y', array($gone), $applied, '1');
-		$this->collect();
-
-		$this->assertTrue(is_file($kept), 'a file a staged list names is not unlinked');
-		$this->assertTrue(is_file($tmp), 'and the staged list is left where it is');
-		$this->assertTrue(!is_file($gone), 'while the published list beside it is applied');
 	}
 
 	// -- a list the previous writer left behind ------------------------------
@@ -320,106 +421,5 @@ class ListCollectorTest extends TestCase
 		$lines[] = $multi;
 		$lines[] = $force;
 		file_put_contents($this->listPath . '/' . $hash . '.list', implode("\n", $lines) . "\n");
-	}
-
-	public function testALegacyListIsNotActedOn()
-	{
-		$this->reset();
-		// A base the download never had, and a file under it: what the
-		// previous writer produced for a torrent whose own name carried a
-		// line break, and what a local account can write by hand.
-		$base = $this->tree . '/elsewhere';
-		$victim = $this->file($base . '/DELETE_ME', 'must survive');
-
-		$this->queueLegacy('L', array($victim), $base, '1');
-		$this->collect();
-
-		$this->assertTrue(is_file($victim),
-			'a list from the previous writer deletes nothing');
-		$this->assertTrue(is_dir($base), 'and its declared base is still there');
-	}
-
-	public function testALegacyListIsKeptRatherThanDiscarded()
-	{
-		$this->reset();
-		$base = $this->tree . '/elsewhere';
-		$victim = $this->file($base . '/DELETE_ME', 'must survive');
-		$this->queueLegacy('M', array($victim), $base, '1');
-		$before = file_get_contents($this->listPath . '/M.list');
-
-		$this->collect();
-
-		$this->assertTrue(!is_file($this->listPath . '/M.list'),
-			'the list is taken out of the queue');
-		$this->assertTrue(is_file($this->listPath . '/M.list.unverified'),
-			'and kept under a name the collector does not read, because the '
-			. 'files it names are still on disk and it still names them');
-		$this->assertTrue(file_get_contents($this->listPath . '/M.list.unverified') === $before,
-			'unchanged');
-	}
-
-	public function testTheQuarantineIsReportedWithDebugLoggingOff()
-	{
-		$this->reset();
-		$base = $this->tree . '/elsewhere';
-		$this->file($base . '/DELETE_ME', 'must survive');
-		$this->queueLegacy('N', array($base . '/DELETE_ME'), $base, '1');
-
-		// Someone asked for a deletion that is not going to happen, so they
-		// are told whether or not the plugin's debug logging is on.
-		$this->collect(false);
-
-		$this->assertTrue(strpos($this->logged(), 'N.list') !== false,
-			'the quarantine names the list outside the debug channel: ' . $this->logged());
-		$this->assertTrue(strpos($this->logged(), 'N.list.unverified') !== false,
-			'and says where it went');
-	}
-
-	public function testACurrentListIsStillApplied()
-	{
-		$this->reset();
-		// The same directory, one list of each kind: the current one is acted
-		// on and the previous one is not, so the two are told apart rather
-		// than the collector having simply stopped.
-		$mine = $this->tree . '/data/Mine';
-		$own = $this->file($mine . '/one.txt');
-		$theirs = $this->tree . '/elsewhere';
-		$victim = $this->file($theirs . '/DELETE_ME', 'must survive');
-
-		$this->queue('P', array($own), $mine, '1');
-		$this->queueLegacy('Q', array($victim), $theirs, '1');
-		$this->collect();
-
-		$this->assertTrue(!is_file($own), 'the current list is applied');
-		$this->assertTrue(is_file($victim), 'the previous one is not');
-	}
-
-	public function testAQuarantineDoesNotReplaceOneAlreadyThere()
-	{
-		$this->reset();
-		// During a rolling upgrade the previous writer is still running, so it
-		// can queue the same hash again after this collector has already put one
-		// of its lists aside. A quarantined list is the only thing that still
-		// names the files it names, so the second one must not land on top of
-		// the first.
-		$base = $this->tree . '/elsewhere';
-		$this->file($base . '/first', 'must survive');
-		$this->file($base . '/second', 'must survive');
-
-		$this->queueLegacy('R', array($base . '/first'), $base, '1');
-		$first = file_get_contents($this->listPath . '/R.list');
-		$this->collect();
-
-		$this->queueLegacy('R', array($base . '/second'), $base, '1');
-		$second = file_get_contents($this->listPath . '/R.list');
-		$this->collect();
-
-		$kept = array();
-		foreach (glob($this->listPath . '/R.list*') as $f)
-			$kept[] = file_get_contents($f);
-		$this->assertTrue(in_array($first, $kept, true),
-			'the list quarantined first still names the files it named');
-		$this->assertTrue(in_array($second, $kept, true),
-			'and so does the one quarantined after it');
 	}
 }

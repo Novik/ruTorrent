@@ -50,100 +50,6 @@ class CacheTest extends TestCase
 		}
 	}
 
-	private function removeDir($dir)
-	{
-		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
-			$path = $dir . '/' . $entry;
-			if (is_dir($path) && !is_link($path)) {
-				$this->removeDir($path);
-			} else {
-				unlink($path);
-			}
-		}
-		rmdir($dir);
-	}
-
-	// Writes a helper that does what a second update.php does -- load the
-	// cache, record one row, store it -- as a genuinely separate process,
-	// with statics of its own, the way a second update.php has them.
-	private function makeWriterScript()
-	{
-		$path = FileUtil::getSettingsPath() . '/concurrent-writer.php';
-		$code = "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
-			. "\$payload = new CacheMergePayload();\n"
-			. "(new rCache())->get(\$payload);\n"
-			. "exit(\$payload->addRow(\$argv[1]) ? 0 : 1);\n";
-		file_put_contents($path, $code);
-		return $path;
-	}
-
-	// Writes the helper for the overlap test: load the cache, then rendezvous
-	// with the peer writer -- announce readiness through one file, spin until
-	// the peer's file appears -- so both processes enter set() at the same
-	// moment, then store one row.
-	private function makeBarrierWriterScript()
-	{
-		$path = FileUtil::getSettingsPath() . '/overlapping-writer.php';
-		$code = "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
-			. "list(, \$row, \$readyMine, \$readyOther) = \$argv;\n"
-			. "\$payload = new CacheMergePayload();\n"
-			. "(new rCache())->get(\$payload);\n"
-			. "touch(\$readyMine);\n"
-			. "\$deadline = microtime(true) + 10;\n"
-			. "for (;;) {\n"
-			. "\tclearstatcache(true, \$readyOther);\n"
-			. "\tif (file_exists(\$readyOther)) break;\n"
-			. "\tif (microtime(true) > \$deadline) exit(2);\n"
-			. "\tusleep(200);\n"
-			. "}\n"
-			. "// Both writers saw each other; spinning to the same clock boundary\n"
-			. "// puts their set() calls within microseconds of each other.\n"
-			. "\$go = ceil((microtime(true) + 0.05) * 4) / 4;\n"
-			. "while (microtime(true) < \$go);\n"
-			. "exit(\$payload->addRow(\$row) ? 0 : 1);\n";
-		file_put_contents($path, $code);
-		return $path;
-	}
-
-	// Writes the helper for the repeated-stamp test: another process that
-	// changes one row to a value of the same length, rewrites the file in
-	// place under the key lock and puts the mtime back. The inode, the mtime
-	// and the size are then exactly what this process loaded -- the stat
-	// tuple that two rename-published stores leave behind on an idle ext4,
-	// where the next temporary file is handed the inode the first store
-	// freed -- forced here so the test does not depend on the allocator.
-	private function makeSameStampWriterScript()
-	{
-		$path = FileUtil::getSettingsPath() . '/same-stamp-writer.php';
-		$code = "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
-			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
-			. "\$payload = new CacheMergePayload();\n"
-			. "\$name = FileUtil::getSettingsPath() . '/' . \$payload->hash;\n"
-			. "\$lock = fopen(\$name . '.lock', 'c');\n"
-			. "if (\$lock === false || !flock(\$lock, LOCK_EX)) exit(2);\n"
-			. "\$before = stat(\$name);\n"
-			. "if (!(new rCache())->get(\$payload)) exit(3);\n"
-			. "\$payload->rows['slot'] = \$argv[1];\n"
-			. "\$bytes = serialize(\$payload);\n"
-			. "if (strlen(\$bytes) !== \$before['size']) exit(4);\n"
-			. "if (file_put_contents(\$name, \$bytes) !== strlen(\$bytes)) exit(5);\n"
-			. "if (!touch(\$name, \$before['mtime'])) exit(6);\n"
-			. "clearstatcache(true, \$name);\n"
-			. "\$after = stat(\$name);\n"
-			. "exit(\$after['ino'] === \$before['ino'] && \$after['mtime'] === \$before['mtime']\n"
-			. "\t&& \$after['size'] === \$before['size'] ? 0 : 7);\n";
-		file_put_contents($path, $code);
-		return $path;
-	}
-
 	// The live failure this guards: replacing a torrent fires three update.php
 	// processes inside one second, and filemtime only resolves to the second,
 	// so a writer that reloaded after a same-second write saw an unchanged
@@ -499,14 +405,14 @@ class CacheTest extends TestCase
 			. 'if ($lock === false || !flock($lock, LOCK_EX)) exit(2);'
 			. 'echo "locked\\n"; fflush(STDOUT);'
 			. 'fgets(STDIN); flock($lock, LOCK_UN); fclose($lock);';
-		$process = proc_open(array(PHP_BINARY, '-r', $worker, $cacheFile . '.lock'),
-			array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
-		if(!is_resource($process))
-			throw new RuntimeException('Could not start the competing cache writer');
+		$process = proc_open([PHP_BINARY, '-r', $worker, $cacheFile . '.lock'],
+			[0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+		if(!is_resource($process)) {
+			throw new RuntimeException('Could not start the competing cache writer'); }
 		try {
 			stream_set_timeout($pipes[1], 5);
-			if(fgets($pipes[1]) !== "locked\n")
-				throw new RuntimeException('The competing cache writer did not acquire its lock');
+			if(fgets($pipes[1]) !== "locked\n") {
+				throw new RuntimeException('The competing cache writer did not acquire its lock'); }
 			$this->assertEquals(false, $cache->remove($payload),
 				'Remove refuses while a real competing writer holds the key lock');
 			$this->assertEquals($bytes, @file_get_contents($cacheFile),
@@ -535,5 +441,99 @@ class CacheTest extends TestCase
 			'Remove refuses when a directory prevents opening the key lock');
 		$this->assertEquals($bytes, @file_get_contents($cacheFile),
 			'A lock-open refusal leaves the removable cache entry intact');
+	}
+
+	private function removeDir($dir)
+	{
+		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
+			$path = $dir . '/' . $entry;
+			if (is_dir($path) && !is_link($path)) {
+				$this->removeDir($path);
+			} else {
+				unlink($path);
+			}
+		}
+		rmdir($dir);
+	}
+
+	// Writes a helper that does what a second update.php does -- load the
+	// cache, record one row, store it -- as a genuinely separate process,
+	// with statics of its own, the way a second update.php has them.
+	private function makeWriterScript()
+	{
+		$path = FileUtil::getSettingsPath() . '/concurrent-writer.php';
+		$code = "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
+			. "\$payload = new CacheMergePayload();\n"
+			. "(new rCache())->get(\$payload);\n"
+			. "exit(\$payload->addRow(\$argv[1]) ? 0 : 1);\n";
+		file_put_contents($path, $code);
+		return $path;
+	}
+
+	// Writes the helper for the overlap test: load the cache, then rendezvous
+	// with the peer writer -- announce readiness through one file, spin until
+	// the peer's file appears -- so both processes enter set() at the same
+	// moment, then store one row.
+	private function makeBarrierWriterScript()
+	{
+		$path = FileUtil::getSettingsPath() . '/overlapping-writer.php';
+		$code = "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
+			. "list(, \$row, \$readyMine, \$readyOther) = \$argv;\n"
+			. "\$payload = new CacheMergePayload();\n"
+			. "(new rCache())->get(\$payload);\n"
+			. "touch(\$readyMine);\n"
+			. "\$deadline = microtime(true) + 10;\n"
+			. "for (;;) {\n"
+			. "\tclearstatcache(true, \$readyOther);\n"
+			. "\tif (file_exists(\$readyOther)) break;\n"
+			. "\tif (microtime(true) > \$deadline) exit(2);\n"
+			. "\tusleep(200);\n"
+			. "}\n"
+			. "// Both writers saw each other; spinning to the same clock boundary\n"
+			. "// puts their set() calls within microseconds of each other.\n"
+			. "\$go = ceil((microtime(true) + 0.05) * 4) / 4;\n"
+			. "while (microtime(true) < \$go);\n"
+			. "exit(\$payload->addRow(\$row) ? 0 : 1);\n";
+		file_put_contents($path, $code);
+		return $path;
+	}
+
+	// Writes the helper for the repeated-stamp test: another process that
+	// changes one row to a value of the same length, rewrites the file in
+	// place under the key lock and puts the mtime back. The inode, the mtime
+	// and the size are then exactly what this process loaded -- the stat
+	// tuple that two rename-published stores leave behind on an idle ext4,
+	// where the next temporary file is handed the inode the first store
+	// freed -- forced here so the test does not depend on the allocator.
+	private function makeSameStampWriterScript()
+	{
+		$path = FileUtil::getSettingsPath() . '/same-stamp-writer.php';
+		$code = "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
+			. "\$payload = new CacheMergePayload();\n"
+			. "\$name = FileUtil::getSettingsPath() . '/' . \$payload->hash;\n"
+			. "\$lock = fopen(\$name . '.lock', 'c');\n"
+			. "if (\$lock === false || !flock(\$lock, LOCK_EX)) exit(2);\n"
+			. "\$before = stat(\$name);\n"
+			. "if (!(new rCache())->get(\$payload)) exit(3);\n"
+			. "\$payload->rows['slot'] = \$argv[1];\n"
+			. "\$bytes = serialize(\$payload);\n"
+			. "if (strlen(\$bytes) !== \$before['size']) exit(4);\n"
+			. "if (file_put_contents(\$name, \$bytes) !== strlen(\$bytes)) exit(5);\n"
+			. "if (!touch(\$name, \$before['mtime'])) exit(6);\n"
+			. "clearstatcache(true, \$name);\n"
+			. "\$after = stat(\$name);\n"
+			. "exit(\$after['ino'] === \$before['ino'] && \$after['mtime'] === \$before['mtime']\n"
+			. "\t&& \$after['size'] === \$before['size'] ? 0 : 7);\n";
+		file_put_contents($path, $code);
+		return $path;
 	}
 }

@@ -3,6 +3,14 @@
 class KinozalTVAccount extends commonAccount
 {
 	public $url = "https://kinozal.guru";
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/kinozal.guru/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
+	public function test($url)
+	{
+		return(self::urlAddresses($url,["kinozal.tv","kinozal.me","kinozal.guru"]));
+	}
 
 	protected function isOK($client)
 	{
@@ -12,8 +20,8 @@ class KinozalTVAccount extends commonAccount
 		// torrent as a login wall, costing a re-login and the cached session
 		// on every download of it. Nothing that opens a bencoded dictionary
 		// came from the web front end.
-		if((strncmp($client->results,'d',1)===0) && (strpos($client->results,'4:info')!==false))
-			return(true);
+		if((strncmp($client->results,'d',1)===0) && (strpos($client->results,'4:info')!==false)) {
+			return(true); }
 		// Two independent markers of a guest answer, because Kinozal has two
 		// kinds of them. The login form is matched on the password field alone
 		// (like RUTracker/TapochekNet do): the previous two-attribute probe
@@ -40,13 +48,5 @@ class KinozalTVAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	// Matched against the URL's host, not against the URL string: the pattern
-	// this replaced also accepted https://evil.test/path/kinozal.guru/x, whose
-	// host is the attacker's, and loginmgr would then have sent this account's
-	// cookies there.
-	public function test($url)
-	{
-		return(self::urlAddresses($url,array("kinozal.tv","kinozal.me","kinozal.guru")));
 	}
 }

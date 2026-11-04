@@ -16,11 +16,11 @@ class rRatio
 {
 	public $hash = "ratio.dat";
 	public $modified = false;
-	public $rat = array();
+	public $rat = [];
 	public $default = 0;
 	private $version = 3;
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new rRatio();
@@ -37,16 +37,9 @@ class rRatio
 			$rt->version = 4;
 			$cache->set($rt);
 		}
-		else
-			$rt->pad();
+		else {
+			$rt->pad(); }
 		return($rt);
-	}
-	private function migrate()
-	{
-		for($i=0; $i<count($this->rat); $i++)
-		{
-			$this->rat[$i]["upload"] /= 1024;
-		}
 	}
 	public function pad()
 	{
@@ -57,28 +50,28 @@ class rRatio
 	        	$rat["max"] = Math::iclamp($rat["max"]);
 	        	$rat["upload"] = $rat["upload"] == 0 ? 0 : Math::fRoundClamp($rat["upload"]);
 	        }
-		for($i=count($this->rat); $i<MAX_RATIO; $i++)
-			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"ratio".$i, "time"=>-1 );
+		for($i=count($this->rat); $i<MAX_RATIO; $i++) {
+			$this->rat[] = [ "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"ratio".$i, "time"=>-1 ]; }
 	}
 	public function fillArray()
 	{
-		$this->rat = array();
+		$this->rat = [];
 		$this->pad();
 		$this->default = 0;
 	}
 	public function getTimes()
 	{
-		$ret = array();
-		for($i=0; $i<MAX_RATIO; $i++)
-			if(array_key_exists("time",$this->rat[$i]) && ($this->rat[$i]["time"]>=0))
-				$ret[]=$i;
+		$ret = [];
+		for($i=0; $i<MAX_RATIO; $i++) {
+			if(array_key_exists("time",$this->rat[$i]) && ($this->rat[$i]["time"]>=0)) {
+				$ret[]=$i; } }
 		return($ret);
 	}
 	public function hasTimes()
 	{
-		for($i=0; $i<MAX_RATIO; $i++)
-			if(array_key_exists("time",$this->rat[$i]) && ($this->rat[$i]["time"]>=0))
-				return(true);
+		for($i=0; $i<MAX_RATIO; $i++) {
+			if(array_key_exists("time",$this->rat[$i]) && ($this->rat[$i]["time"]>=0)) {
+				return(true); } }
 		return(false);
 	}
 	public function checkTimes()
@@ -87,9 +80,9 @@ class rRatio
 		$cnt = count($times);
 		if($cnt)
 		{
-			$cmd = new rXMLRPCCommand("d.multicall",array("complete",getCmd("d.get_hash="),getCmd("d.get_custom=")."seedingtime",getCmd("d.is_active=") ));
-			foreach($times as $i)
-				$cmd->addParameters( array( getCmd("cat")."=".$i, getCmd("d.views.has")."=rat_".$i) );
+			$cmd = new rXMLRPCCommand("d.multicall",["complete",getCmd("d.get_hash="),getCmd("d.get_custom=")."seedingtime",getCmd("d.is_active=") ]);
+			foreach($times as $i) {
+				$cmd->addParameters( [ getCmd("cat")."=".$i, getCmd("d.views.has")."=rat_".$i] ); }
 			$req = new rXMLRPCRequest($cmd);
 			if($req->success())
 			{
@@ -108,8 +101,8 @@ class rRatio
 							if(intval($req->val[$i+$j+4])==1)
 							{
 								$rat = $this->rat[intval($req->val[$i+$j+3])];
-								if( $tm>=$finished+$rat["time"]*3600 )
-									$req1->addCommand( new rXMLRPCCommand("group.rat_".$req->val[$i+$j+3].".ratio.command",$hash) );
+								if( $tm>=$finished+$rat["time"]*3600 ) {
+									$req1->addCommand( new rXMLRPCCommand("group.rat_".$req->val[$i+$j+3].".ratio.command",$hash) ); }
 							}
 						}
 					}
@@ -144,17 +137,17 @@ class rRatio
 	{
 		$prefix = getCmd("d.stop=")."; ".getCmd("d.close=")."; ";
 		$helper = dirname(dirname(__FILE__))."/erasedata/erase.php";
-		if(!is_file($helper))
-			return($prefix.getCmd("d.set_custom5=").$force."; ".getCmd("d.erase="));
+		if(!is_file($helper)) {
+			return($prefix.getCmd("d.set_custom5=").$force."; ".getCmd("d.erase=")); }
 		return($prefix.'execute.nothrow.bg={'.Utility::getPHP().','.$helper.
 			',$'.getCmd("d.get_hash").'=,'.$force.','.User::getUser().'}');
 	}
 
 	public function correct()
 	{
-		$cmd = new rXMLRPCCommand("d.multicall",array("default",getCmd("d.get_hash=")));
-		for($i=0; $i<MAX_RATIO; $i++)
-			$cmd->addParameters( array( getCmd("d.views.has")."=rat_".$i, getCmd("view.set_not_visible")."=rat_".$i ) );
+		$cmd = new rXMLRPCCommand("d.multicall",["default",getCmd("d.get_hash=")]);
+		for($i=0; $i<MAX_RATIO; $i++) {
+			$cmd->addParameters( [ getCmd("d.views.has")."=rat_".$i, getCmd("view.set_not_visible")."=rat_".$i ] ); }
 		$req = new rXMLRPCRequest($cmd);
 		$req->setParseByTypes();
 		if($req->success())
@@ -164,8 +157,8 @@ class rRatio
 			{
 			        for($i=0; $i<MAX_RATIO; $i++)
 			        {
-					if($req->i8s[$no*MAX_RATIO*2+$i*2]==1)
-						$req1->addCommand(new rXMLRPCCommand("view.set_visible",array($hash,"rat_".$i)));
+					if($req->i8s[$no*MAX_RATIO*2+$i*2]==1) {
+						$req1->addCommand(new rXMLRPCCommand("view.set_visible",[$hash,"rat_".$i])); }
 				}
 			}
 			return(($req1->getCommandsCount()==0) || ($req1->success()));
@@ -190,11 +183,11 @@ class rRatio
 			$insertReq = new rXMLRPCRequest();
 			for($i=0; $i<MAX_RATIO; $i++)
 			{
-				if(!in_array("rat_".$i,$req1->val))
-					$insertReq->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
+				if(!in_array("rat_".$i,$req1->val)) {
+					$insertReq->addCommand(new rXMLRPCCommand("group.insert_persistent_view", ["", "rat_".$i])); }
 			}
-			if($insertReq->getCommandsCount())
-				$insertReq->run();
+			if($insertReq->getCommandsCount()) {
+				$insertReq->run(); }
 
 			$req = new rXMLRPCRequest();
 			for($i=0; $i<MAX_RATIO; $i++)
@@ -202,7 +195,7 @@ class rRatio
 				$rat = $this->rat[$i];
 				if($this->isCorrect($i))
 				{
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',array("")) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',[""]) );
 					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',$rat["min"]) );
 					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',$rat["max"]) );
 					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',floatval($rat["upload"]*1024*1024*1024)) );
@@ -210,39 +203,39 @@ class rRatio
 					{
 						case RAT_STOP:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd("d.stop=")."; ".getCmd("d.close="))));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								getCmd("d.stop=")."; ".getCmd("d.close=")]));
 							break;
 						}
 						case RAT_STOP_AND_REMOVE:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("view.set_not_visible")."=rat_".$i."; ".getCmd("d.views.remove")."=rat_".$i)));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("view.set_not_visible")."=rat_".$i."; ".getCmd("d.views.remove")."=rat_".$i]));
 							break;
 						}
 						case RAT_ERASE:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.erase="))));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.erase=")]));
 							break;
 						}
 						case RAT_ERASEDATA:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								$this->getEraseWithDataCommand("1"))));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								$this->getEraseWithDataCommand("1")]));
 							break;
 						}
 						case RAT_ERASEDATAALL:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								$this->getEraseWithDataCommand("2"))));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								$this->getEraseWithDataCommand("2")]));
 							break;
 						}
 						default:
 						{
 							$thr = "thr_".($rat["action"]-RAT_FIRSTTHROTTLE);
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$thr.',$'.getCmd('d.start='))));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", ["group.rat_".$i.".ratio.command",
+								getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$thr.',$'.getCmd('d.start=')]));
 							break;
 						}
 					}
@@ -258,14 +251,14 @@ class rRatio
 			// the default group was never applied (issue #3100). The object syntax is
 			// understood by rtorrent 0.9.8 and the 0.16.x series alike.
 			$insCmd = getCmd('branch').'=('.getCmd('or');
-			for($i=0; $i<MAX_RATIO; $i++)
-				$insCmd .= ',('.getCmd('d.views.has').',rat_'.$i.')';
+			for($i=0; $i<MAX_RATIO; $i++) {
+				$insCmd .= ',('.getCmd('d.views.has').',rat_'.$i.')'; }
 			$insCmd .= '),,';
-			if($this->isCorrect($this->default-1))
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(),
-					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1))));
-			else
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), getCmd('cat='))));
+			if($this->isCorrect($this->default-1)) {
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(['_ratio'.User::getUser(),
+					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1)])); }
+			else {
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(['_ratio'.User::getUser(), getCmd('cat=')])); }
 
 			return($req->run() && !$req->fault);
 		}
@@ -279,34 +272,34 @@ class rRatio
 
 	public function set()
 	{
-		$this->rat = array();
+		$this->rat = [];
 		$this->default = 0;
 		for($i = 0; $i<MAX_RATIO; $i++)
 		{
-			$arr = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"", "time"=>-1 );
-			if(isset($_REQUEST['rat_action'.$i]))
-				$arr["action"] = intval($_REQUEST['rat_action'.$i]);
-			if(isset($_REQUEST['rat_min'.$i]))
-			        $arr["min"] = Math::iclamp($_REQUEST['rat_min'.$i]);
-			if(isset($_REQUEST['rat_max'.$i]))
-			        $arr["max"] = Math::iclamp($_REQUEST['rat_max'.$i]);
+			$arr = [ "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"", "time"=>-1 ];
+			if(isset($_REQUEST['rat_action'.$i])) {
+				$arr["action"] = intval($_REQUEST['rat_action'.$i]); }
+			if(isset($_REQUEST['rat_min'.$i])) {
+			        $arr["min"] = Math::iclamp($_REQUEST['rat_min'.$i]); }
+			if(isset($_REQUEST['rat_max'.$i])) {
+			        $arr["max"] = Math::iclamp($_REQUEST['rat_max'.$i]); }
 			if(isset($_REQUEST['rat_upload'.$i]))
 			{
 				$upload = $_REQUEST['rat_upload'.$i];
 				$arr["upload"] = $upload == 0 ? 0 : Math::fRoundClamp($upload);
 			}
-			if(isset($_REQUEST['rat_time'.$i]))
-			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1);
+			if(isset($_REQUEST['rat_time'.$i])) {
+			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1); }
 			if(isset($_REQUEST['rat_name'.$i]))
 			{
 			        $v = trim($_REQUEST['rat_name'.$i]);
-			        if($v!='')
-					$arr["name"] = $v;
+			        if($v!='') {
+					$arr["name"] = $v; }
 			}
 			$this->rat[] = $arr;
 		}
-		if(isset($_REQUEST['default']))
-			$this->default = floatval($_REQUEST['default']);
+		if(isset($_REQUEST['default'])) {
+			$this->default = floatval($_REQUEST['default']); }
                 $this->store();
 		$this->flush();
 		$this->setHandlers();
@@ -321,8 +314,15 @@ class rRatio
 				", time: ".$tm.", upload: ".$item["upload"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
 		}
 		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
+		if($ret[$len-1]==',') {
+			$ret = substr($ret,0,$len-1); }
 		return($ret."];\ntheWebUI.maxRatio = ".MAX_RATIO.";\ntheWebUI.defaultRatio = ".$this->default.";\n");
+	}
+	private function migrate()
+	{
+		for($i=0; $i<count($this->rat); $i++)
+		{
+			$this->rat[$i]["upload"] /= 1024;
+		}
 	}
 }

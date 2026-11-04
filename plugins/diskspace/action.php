@@ -15,11 +15,11 @@
 			$partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
 		}
 	}
-	$ret = array
-	(
+	$ret = 
+	[
 		"total" => 0,
-		"free" => 0
-	);
+		"free" => 0,
+	];
 	if( is_dir($partitionDirectory) )
 	{
 		$ret["total"] = disk_total_space($partitionDirectory);

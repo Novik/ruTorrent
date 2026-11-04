@@ -10,25 +10,6 @@ class UTF
 		return(is_string($text) && (preg_match('//u', $text) === 1));
 	}
 
-	// The length of the UTF-8 character at $offset, or 0 if none starts there.
-	private static function characterLength($text, $offset)
-	{
-		$first = $text[$offset];
-		if($first <= "\x7F") return(1);
-		if(($first >= "\xC2") && ($first <= "\xDF")) $length = 2;
-		else if(($first >= "\xE0") && ($first <= "\xEF")) $length = 3;
-		else if(($first >= "\xF0") && ($first <= "\xF4")) $length = 4;
-		else return(0);
-		// A byte past the end reads as '', which is below every bound.
-		$minimum = ($first === "\xE0") ? "\xA0" : (($first === "\xF0") ? "\x90" : "\x80");
-		$maximum = ($first === "\xED") ? "\x9F" : (($first === "\xF4") ? "\x8F" : "\xBF");
-		$second = $text[$offset + 1] ?? '';
-		if(($second < $minimum) || ($second > $maximum)) return(0);
-		for($part = 2; $part < $length; $part++)
-			if((($text[$offset + $part] ?? '') < "\x80") || ($text[$offset + $part] > "\xBF")) return(0);
-		return($length);
-	}
-
 	// Text for display. Valid UTF-8 comes back unchanged. Otherwise each byte
 	// that is not part of a character, and each control but tab, CR and LF,
 	// becomes \xNN, and a backslash is doubled. So a valid name that spells
@@ -37,8 +18,8 @@ class UTF
 	public static function display($text)
 	{
 		$text = (string)$text;
-		if(self::isValid($text))
-			return($text);
+		if(self::isValid($text)) {
+			return($text); }
 		$out = '';
 		for($offset = 0; isset($text[$offset]);)
 		{
@@ -49,14 +30,14 @@ class UTF
 				$out .= sprintf('\\x%02X', ord($byte));
 				$offset++;
 			}
-			else if($byte === '\\')
+			elseif($byte === '\\')
 			{
 				$out .= '\\\\';
 				$offset++;
 			}
-			else
-				for($part = 0; $part < $length; $part++)
-					$out .= $text[$offset++];
+			else {
+				for($part = 0; $part < $length; $part++) {
+					$out .= $text[$offset++]; } }
 		}
 		return($out);
 	}
@@ -96,17 +77,17 @@ class UTF
 			$c = ord($str[$i]);
 			if($c > 128)
 			{
-				if(($c > 247)) return(true);
-				elseif($c > 239) $bytes = 4;
-				elseif($c > 223) $bytes = 3;
-				elseif($c > 191) $bytes = 2;
-				else return(true);
-				if(($i + $bytes) > $len) return(true);
+				if(($c > 247)) { return(true); }
+				elseif($c > 239) { $bytes = 4; }
+				elseif($c > 223) { $bytes = 3; }
+				elseif($c > 191) { $bytes = 2; }
+				else { return(true); }
+				if(($i + $bytes) > $len) { return(true); }
 				while ($bytes > 1)
 				{
 					$i++;
 					$b = ord($str[$i]);
-					if($b < 128 || $b > 191) return(true);
+					if($b < 128 || $b > 191) { return(true); }
 					$bytes--;
 				}
 			}
@@ -117,8 +98,8 @@ class UTF
 	public static function win2utf($str)
 	{
 		$outstr='';
-		$recode=array
-		(
+		$recode=
+		[
 			0x0402,0x0403,0x201A,0x0453,0x201E,0x2026,0x2020,0x2021,
 			0x20AC,0x2030,0x0409,0x2039,0x040A,0x040C,0x040B,0x040F,
 			0x0452,0x2018,0x2019,0x201C,0x201D,0x2022,0x2013,0x2014,
@@ -134,18 +115,18 @@ class UTF
 			0x0430,0x0431,0x0432,0x0433,0x0434,0x0435,0x0436,0x0437,
 			0x0438,0x0439,0x043A,0x043B,0x043C,0x043D,0x043E,0x043F,
 			0x0440,0x0441,0x0442,0x0443,0x0444,0x0445,0x0446,0x0447,
-			0x0448,0x0449,0x044A,0x044B,0x044C,0x044D,0x044E,0x044F
-		);
+			0x0448,0x0449,0x044A,0x044B,0x044C,0x044D,0x044E,0x044F,
+		];
 		$and=0x3F;
 		for($i=0;$i<strlen($str);$i++)
 		{
-			$octet=array();
-			if(ord($str[$i])<0x80)
-				$strhex=ord($str[$i]);
-			else
-				$strhex=$recode[ord($str[$i])-128];
-			if($strhex<0x0080)
-				$octet[0]=0x0;
+			$octet=[];
+			if(ord($str[$i])<0x80) {
+				$strhex=ord($str[$i]); }
+			else {
+				$strhex=$recode[ord($str[$i])-128]; }
+			if($strhex<0x0080) {
+				$octet[0]=0x0; }
 			elseif($strhex<0x0800)
 			{
 				$octet[0]=0xC0;
@@ -187,21 +168,40 @@ class UTF
 				$strhex=$strhex>>6;
 			}
 			$octet[0]=$octet[0] + $strhex;
-			for($j=0;$j<count($octet);$j++)
-				$outstr.=chr($octet[$j]);
+			for($j=0;$j<count($octet);$j++) {
+				$outstr.=chr($octet[$j]); }
 		}
 		return($outstr);
 	}
 
-	private static function maybe_mb_convert_to_utf8($string) {
-		return function_exists('mb_convert_encoding') ? mb_convert_encoding($string, "UTF-8", "auto") : $string;
-	}
-
 	public static function raw_url_encode($string){
-		return rawurlencode(Self::maybe_mb_convert_to_utf8($string));
+		return rawurlencode(self::maybe_mb_convert_to_utf8($string));
 	}
 
 	public static function raw_url_decode($string){
-		return rawurldecode(Self::maybe_mb_convert_to_utf8($string));
+		return rawurldecode(self::maybe_mb_convert_to_utf8($string));
+	}
+
+	// The length of the UTF-8 character at $offset, or 0 if none starts there.
+	private static function characterLength($text, $offset)
+	{
+		$first = $text[$offset];
+		if($first <= "\x7F") { return(1); }
+		if(($first >= "\xC2") && ($first <= "\xDF")) { $length = 2; }
+		elseif(($first >= "\xE0") && ($first <= "\xEF")) { $length = 3; }
+		elseif(($first >= "\xF0") && ($first <= "\xF4")) { $length = 4; }
+		else { return(0); }
+		// A byte past the end reads as '', which is below every bound.
+		$minimum = ($first === "\xE0") ? "\xA0" : (($first === "\xF0") ? "\x90" : "\x80");
+		$maximum = ($first === "\xED") ? "\x9F" : (($first === "\xF4") ? "\x8F" : "\xBF");
+		$second = $text[$offset + 1] ?? '';
+		if(($second < $minimum) || ($second > $maximum)) { return(0); }
+		for($part = 2; $part < $length; $part++) {
+			if((($text[$offset + $part] ?? '') < "\x80") || ($text[$offset + $part] > "\xBF")) { return(0); } }
+		return($length);
+	}
+
+	private static function maybe_mb_convert_to_utf8($string) {
+		return function_exists('mb_convert_encoding') ? mb_convert_encoding($string, "UTF-8", "auto") : $string;
 	}
 }

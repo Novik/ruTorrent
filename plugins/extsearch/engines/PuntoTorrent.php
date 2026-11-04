@@ -2,8 +2,8 @@
 
 class PuntoTorrentEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"xbt.puntotorrent.com|uid=XXX;pass=XXX" );
-	public $categories = array(
+	public $defaults = [ "public"=>false, "page_size"=>15, "cookies"=>"xbt.puntotorrent.com|uid=XXX;pass=XXX" ];
+	public $categories = [
 		'All'=>'&category=0',
 		'DVD/Animación'=>'&category=37',
 		'DVD/Deportes'=>'&category=38',
@@ -82,28 +82,28 @@ class PuntoTorrentEngine extends commonEngine
 		'3D/Documentales'=>'&category=119',
 		'3D/Películas'=>'&category=120',
 		'3D/Adulto (+18)'=>'&category=121',
-		'3D/Música'=>'&category=122'
-	);
+		'3D/Música'=>'&category=122',
+	];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://xbt.puntotorrent.com';
 
-		if($useGlobalCats)
-			$categories = array( 'all'=>'&category=0' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'&category=0' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/index.php?page=torrents&active=1'.$cat.'&search='.$what.'&order=5&by=2&pages='.$pg );
 
-			if( ($cli==false) )		break;
+			if( ($cli==false) ) {		break; }
 
 			$res = preg_match_all('`<img src="'.$url.'/style/xbtit_default/images/categories/.*" border="0"  alt="(?P<cat>.*)"/>.*'.
 				'<td .*>(?P<name>.*)</td>.*'.
@@ -133,13 +133,13 @@ class PuntoTorrentEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 class KATEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>150 );
+	public $defaults = [ "public"=>true, "page_size"=>150 ];
 	public $url = 'https://katcr.co';
-	public $categories = array(
+	public $categories = [
 		'all'=>'',
 		'Movies'=>'Movies',
 		'TV'=>'TV',
@@ -13,14 +13,14 @@ class KATEngine extends commonEngine
 		'Apps'=>'Apps',
 		'Anime'=>'Anime',
 		'Other'=>'Other',
-		'XXX'=>'XXX'
-	);
+		'XXX'=>'XXX',
+	];
 
  	public function fetch($url, $method="GET", $cookie="", $content_type="", $body="")
  	{
 		$client = $this->makeClient($url);
-		if($cookie)
-			$client->cookies = $cookie;
+		if($cookie) {
+			$client->cookies = $cookie; }
 		$client->fetchComplex( $url, $method, $content_type, $body );
 		if($client->status>=200 && $client->status<300)
 		{
@@ -50,14 +50,14 @@ class KATEngine extends commonEngine
 		if($cookie)
 		{
 			$added = 0;
-			if($useGlobalCats)
-				$categories = array( 'all'=>'', 'movies'=>'Movies', 'tv'=>'TV', 'music'=>'Music', 'games'=>'Games', 'anime'=>'Anime', 'software'=>'Apps', 'books'=>'Books' );
-			else
-				$categories = &$this->categories;
-			if(!array_key_exists($cat,$categories))
-				$cat = $categories['all'];
-			else
-				$cat = $categories[$cat];
+			if($useGlobalCats) {
+				$categories = [ 'all'=>'', 'movies'=>'Movies', 'tv'=>'TV', 'music'=>'Music', 'games'=>'Games', 'anime'=>'Anime', 'software'=>'Apps', 'books'=>'Books' ]; }
+			else {
+				$categories = &$this->categories; }
+			if(!array_key_exists($cat,$categories)) {
+				$cat = $categories['all']; }
+			else {
+				$cat = $categories[$cat]; }
 
 			// Website uses 1 page to display torrents
 
@@ -69,8 +69,8 @@ class KATEngine extends commonEngine
 				$cli = $this->fetch( $this->url . '/katsearch/page/1/' . $what, "GET", $cookie );
 
 			if( ($cli == false) || (strpos($cli->results, "<div class=\"torrents_table__torrent_name\">") === false)
-				|| (strpos($cli->results, "loading........") !== false) )
-				return;
+				|| (strpos($cli->results, "loading........") !== false) ) {
+				return; }
 
 			$res = preg_match_all(
 				'`<a class="torrents_table__torrent_title" href="(?P<desc>.*)">(?P<name>.*)</a>.*'.
@@ -99,13 +99,13 @@ class KATEngine extends commonEngine
 						$item["peers"] = intval($matches["leech"][$i]);
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				return;
+			else {
+				return; }
 		}
 	}
 }

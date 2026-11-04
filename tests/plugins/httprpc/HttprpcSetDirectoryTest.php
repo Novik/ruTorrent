@@ -43,50 +43,6 @@ class HttprpcSetDirectoryTest extends TestCase
 		$this->removeTree($this->base);
 	}
 
-	private function removeTree($path)
-	{
-		if (is_link($path) || !is_dir($path)) {
-			@unlink($path);
-			return;
-		}
-		foreach (glob($path . '/*') as $entry) {
-			$this->removeTree($entry);
-		}
-		@rmdir($path);
-	}
-
-	/** Sets the default directory through action.php; true when rtorrent was asked to. */
-	private function setDirectory($directory)
-	{
-		$root = realpath(__DIR__ . '/../../..');
-		if ($this->daemon !== null) {
-			$this->daemon->stop();
-		}
-		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
-		$this->daemon = new FakeRtorrentDaemon(function ($body, $methods) {
-			return array(0);
-		}, $this->base . '/calls.log');
-
-		$driver = $this->base . '/drive-setdir.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
-			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
-			. '$scgi_host = "127.0.0.1";' . "\n"
-			. '$scgi_port = ' . $this->daemon->port() . ";\n"
-			. '$rpcTimeOut = 10;' . "\n"
-			. '$rpcLogCalls = false;' . "\n"
-			. '$topDirectory = ' . var_export($this->top . '/', true) . ";\n"
-			. '$HTTP_RAW_POST_DATA = ' . var_export('mode=setsettings&s=sdirectory&v='
-				. rawurlencode($this->top . $directory), true) . ";\n"
-			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
-			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
-
-		$output = array();
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
-			escapeshellarg($driver) . ' 2>&1', $output);
-		return $this->daemon->received('directory.default.set');
-	}
-
 	public function testALinkOutOfTheTopDirectoryIsNotSet()
 	{
 		$this->assertTrue(!$this->setDirectory('/out'),
@@ -115,5 +71,49 @@ class HttprpcSetDirectoryTest extends TestCase
 	{
 		$this->assertTrue($this->setDirectory('/plain/new'),
 			'a directory inside the top directory is set: ' . json_encode($this->daemon->calls()));
+	}
+
+	private function removeTree($path)
+	{
+		if (is_link($path) || !is_dir($path)) {
+			@unlink($path);
+			return;
+		}
+		foreach (glob($path . '/*') as $entry) {
+			$this->removeTree($entry);
+		}
+		@rmdir($path);
+	}
+
+	/** Sets the default directory through action.php; true when rtorrent was asked to. */
+	private function setDirectory($directory)
+	{
+		$root = realpath(__DIR__ . '/../../..');
+		if ($this->daemon !== null) {
+			$this->daemon->stop();
+		}
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
+		$this->daemon = new FakeRtorrentDaemon(function ($body, $methods) {
+			return [0];
+		}, $this->base . '/calls.log');
+
+		$driver = $this->base . '/drive-setdir.php';
+		file_put_contents($driver, "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
+			. '$scgi_host = "127.0.0.1";' . "\n"
+			. '$scgi_port = ' . $this->daemon->port() . ";\n"
+			. '$rpcTimeOut = 10;' . "\n"
+			. '$rpcLogCalls = false;' . "\n"
+			. '$topDirectory = ' . var_export($this->top . '/', true) . ";\n"
+			. '$HTTP_RAW_POST_DATA = ' . var_export('mode=setsettings&s=sdirectory&v='
+				. rawurlencode($this->top . $directory), true) . ";\n"
+			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
+			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
+
+		$output = [];
+		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
+			escapeshellarg($driver) . ' 2>&1', $output);
+		return $this->daemon->received('directory.default.set');
 	}
 }

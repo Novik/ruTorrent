@@ -2,9 +2,9 @@
 
 class KinozalTVEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.guru|uid=XXX;pass=XXX;" );
+       	public $defaults = [ "public"=>false, "page_size"=>40, "cookies"=>"kinozal.guru|uid=XXX;pass=XXX;" ];
 
-	public $categories = array( 'all'=>'0',
+	public $categories = [ 'all'=>'0',
 		'ÐšÐ¸Ð½Ð¾ - Ð¡ÐµÑ€Ð¸Ð°Ð»'=>'5',
 		'ÐšÐ¸Ð½Ð¾ - ÐšÐ¾Ð¼ÐµÐ´Ð¸Ñ'=>'8',
 		'ÐšÐ¸Ð½Ð¾ - Ð‘Ð¾ÐµÐ²Ð¸Ðº / Ð’Ð¾ÐµÐ½Ð½Ñ‹Ð¹'=>'6',
@@ -37,11 +37,67 @@ class KinozalTVEngine extends commonEngine
 		'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð˜Ð³Ñ€Ñ‹'=>'23',
 		'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹'=>'32',
 		'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð“Ñ€Ð°Ñ„Ð¸ÐºÐ°'=>'40',
-		'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð‘Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ°'=>'41' );
+		'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð‘Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ°'=>'41' ];
+
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
+	{
+		$added = 0;
+		$url = 'https://kinozal.guru';
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'0', 'tv'=>'5', 'games'=>'23', 'anime'=>'20', 'software'=>'32', 'pictures'=>'40', 'books'=>'41' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
+		$what = rawurlencode(self::fromUTF(rawurldecode($what),"CP1251"));
+		for($pg = 0; $pg<11; $pg++)
+		{
+			$cli = $this->fetch( $url.'/browse.php?s='.$what.'&a=3&page='.$pg.'&c='.$cat );
+			if( ($cli==false) ||
+				(strpos($cli->results, "<br><center><b>Íåò àêòèâíûõ ðàçäà÷")!==false) ||
+				(strpos($cli->results, '<input type=password size=48 name="password"')!==false)
+				) {
+				break; }
+
+			$res = preg_match_all('|<tr class=bg><td class="bt"><img src=.* onclick="cat(?P<cat>.*);".*'.
+				'<a href="/details.php\?.*id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
+				'<td class=.*>\d+</td>.*'.
+				'<td class=.*>(?P<size>.*)</td>.*'.
+				'<td class=.*>(?P<leech>.*)</td>.*'.
+				'<td class=.*>(?P<seeds>.*)</td>.*'.
+				'<td class=.*>(?P<date>.*)</td>|siU', $cli->results, $matches);
+			if($res)
+			{
+				for($i=0; $i<$res; $i++)
+				{
+					$link = $url."/download.php?id=".$matches["id"][$i];
+					if(!array_key_exists($link,$ret))
+					{
+						$item = $this->getNewEntry();
+						$item["cat"] = self::getInnerCategory($matches["cat"][$i]);
+						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
+						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
+						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
+						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
+						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+						$item["time"] = self::formatTime(self::removeTags(str_replace("â ", "",$matches["date"][$i])));
+						$ret[$link] = $item;
+						$added++;
+						if($added>=$limit) {
+							return; }
+					}
+				}
+			}
+			else {
+				break; }
+		}
+	}
 
 	protected static function getInnerCategory($cat)
 	{
-		$categories = array(
+		$categories = [
 			'5'=>'ÐšÐ¸Ð½Ð¾ - Ð¡ÐµÑ€Ð¸Ð°Ð»',
 			'8'=>'ÐšÐ¸Ð½Ð¾ - ÐšÐ¾Ð¼ÐµÐ´Ð¸Ñ',
 			'6'=>'ÐšÐ¸Ð½Ð¾ - Ð‘Ð¾ÐµÐ²Ð¸Ðº / Ð’Ð¾ÐµÐ½Ð½Ñ‹Ð¹',
@@ -74,72 +130,16 @@ class KinozalTVEngine extends commonEngine
 			'23'=>'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð˜Ð³Ñ€Ñ‹',
 			'32'=>'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹',
 			'40'=>'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð“Ñ€Ð°Ñ„Ð¸ÐºÐ°',
-			'41'=>'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð‘Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ°' );
+			'41'=>'Ð”Ñ€ÑƒÐ³Ð¾Ðµ - Ð‘Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ°' ];
 		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
 	}
 
 	protected static function formatTime($time)
 	{
-		$search = array( ' ÿíâàðÿ ', ' ôåâðàëÿ ', ' ìàðòà ', ' àïðåëÿ ', ' ìàÿ ', ' èþíÿ ',
-			' èþëÿ ', ' àâãóñòà ', ' ñåíòÿáðÿ ', ' îêòÿáðÿ ', ' íîÿáðÿ ', ' äåêàáðÿ ', 'â÷åðà ', ' ñåãîäíÿ ' );
-		$replace = array( '.01.', '.02.', '.03.', '.04.', '.05.', '.06.',
-			'.07.', '.08.', '.09.', '.10.', '.11.', '.12.', '-1 day ', '0 day ' );
+		$search = [ ' ÿíâàðÿ ', ' ôåâðàëÿ ', ' ìàðòà ', ' àïðåëÿ ', ' ìàÿ ', ' èþíÿ ',
+			' èþëÿ ', ' àâãóñòà ', ' ñåíòÿáðÿ ', ' îêòÿáðÿ ', ' íîÿáðÿ ', ' äåêàáðÿ ', 'â÷åðà ', ' ñåãîäíÿ ' ];
+		$replace = [ '.01.', '.02.', '.03.', '.04.', '.05.', '.06.',
+			'.07.', '.08.', '.09.', '.10.', '.11.', '.12.', '-1 day ', '0 day ' ];
 		return( strtotime(str_replace( $search, $replace, $time )) );
-	}
-
-	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
-	{
-		$added = 0;
-		$url = 'https://kinozal.guru';
-		if($useGlobalCats)
-			$categories = array( 'all'=>'0', 'tv'=>'5', 'games'=>'23', 'anime'=>'20', 'software'=>'32', 'pictures'=>'40', 'books'=>'41' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
-		$what = rawurlencode(self::fromUTF(rawurldecode($what),"CP1251"));
-		for($pg = 0; $pg<11; $pg++)
-		{
-			$cli = $this->fetch( $url.'/browse.php?s='.$what.'&a=3&page='.$pg.'&c='.$cat );
-			if( ($cli==false) ||
-				(strpos($cli->results, "<br><center><b>Íåò àêòèâíûõ ðàçäà÷")!==false) ||
-				(strpos($cli->results, '<input type=password size=48 name="password"')!==false)
-				)
-				break;
-
-			$res = preg_match_all('|<tr class=bg><td class="bt"><img src=.* onclick="cat(?P<cat>.*);".*'.
-				'<a href="/details.php\?.*id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
-				'<td class=.*>\d+</td>.*'.
-				'<td class=.*>(?P<size>.*)</td>.*'.
-				'<td class=.*>(?P<leech>.*)</td>.*'.
-				'<td class=.*>(?P<seeds>.*)</td>.*'.
-				'<td class=.*>(?P<date>.*)</td>|siU', $cli->results, $matches);
-			if($res)
-			{
-				for($i=0; $i<$res; $i++)
-				{
-					$link = $url."/download.php?id=".$matches["id"][$i];
-					if(!array_key_exists($link,$ret))
-					{
-						$item = $this->getNewEntry();
-						$item["cat"] = self::getInnerCategory($matches["cat"][$i]);
-						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
-						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
-						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
-						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						$item["time"] = self::formatTime(self::removeTags(str_replace("â ", "",$matches["date"][$i])));
-						$ret[$link] = $item;
-						$added++;
-						if($added>=$limit)
-							return;
-					}
-				}
-			}
-			else
-				break;
-		}
 	}
 }

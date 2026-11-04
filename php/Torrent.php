@@ -13,19 +13,6 @@ require_once( 'util.php' );
 
 class Torrent
 {
-	protected $errors = array();
-	protected $basedir = null;
-	protected $pointer = 0;
-	private $data;
-	protected $log_callback = null;
-	protected $err_callback = null;
-	protected $filename = null;
-
-	/** True when this instance's info dictionary was built here, out of files
-	 * on disk, rather than decoded from a torrent someone else wrote. Only a
-	 * torrent this class built is this class' to sign; see touch().
-	 * @var boolean */
-	protected $built = false;
 
 	/** Keys of the torrent's top level dictionary.
 	 *
@@ -41,6 +28,19 @@ class Torrent
 	/** @var mixed */ public $info = null;
 	/** @var mixed */ public $libtorrent_resume = null;
 	/** @var mixed */ public $rtorrent = null;
+	protected $errors = [];
+	protected $basedir = null;
+	protected $pointer = 0;
+	protected $log_callback = null;
+	protected $err_callback = null;
+	protected $filename = null;
+
+	/** True when this instance's info dictionary was built here, out of files
+	 * on disk, rather than decoded from a torrent someone else wrote. Only a
+	 * torrent this class built is this class' to sign; see touch().
+	 * @var boolean */
+	protected $built = false;
+	private $data;
 
 	/** The keys that are not declared properties above.
 	 *
@@ -49,7 +49,64 @@ class Torrent
 	 * here and reached through meta(), setMeta() and clearMeta().
 	 * @var array<string, mixed>
 	 */
-	private $extra = array();
+	private $extra = [];
+
+	/** Read and decode torrent file/data OR build a torrent from source folder/file(s)
+	 * Supported signatures:
+	 *  - Torrent( string $torrent );
+	 *  - Torrent( string $torrent, string $announce );
+	 *  - Torrent( string $torrent, array  $meta );
+	 *  - Torrent( string $file_or_folder );
+	 *  - Torrent( string $file_or_folder, string $announce_url, [int $piece_length] );
+	 *  - Torrent( string $file_or_folder, array $meta, [int $piece_length] );
+	 *  - Torrent( array $files_list );
+	 *  - Torrent( array $files_list, string $announce_url, [int $piece_length] );
+	 *  - Torrent( array $files_list, array $meta, [int $piece_length] );
+	 * @param string|array torrent to read or source folder/file(s)
+	 * @param string|array announce url or meta informations (optional)
+	 * @param int piece length (optional)
+	 */
+	public function __construct( $data, $meta = [], $piece_length = 256, $log_callback = null, $err_callback = null )
+	{
+        	try {
+		if( is_string( $meta ) ) {
+			$meta =  [ 'announce' => $meta ]; }
+		$this->log_callback = $log_callback;
+		$this->err_callback = $err_callback;
+		if( $this->build( $data, $piece_length * 1024 ) )
+		{
+			$this->built = true;
+			$this->touch();
+		}
+		else
+		{
+			$arr = $this->decode( $data );
+			if(!is_array($arr)) {
+				$this->notify_err('Bad torrent data'); }
+			else {
+				// A union rather than array_merge(): a top level key that is a
+				// decimal number is an integer array key by the time it reaches
+				// here, and array_merge() renumbers integer keys, so a torrent
+				// carrying a key of "5" would be written back under "0". The
+				// decoded keys take precedence over the caller's, as before.
+				$meta = $arr + $meta; }
+		}
+		foreach( $meta as $key => $value ) {
+			if(substr(strval( $key ),0,1)!="\x00") {
+	                	$this->setMeta( $key, $value ); } }
+	        } catch(Exception $e)
+        	{
+        		$this->errors[] = $e;
+		}
+	}
+
+	/** Convert the current Torrent instance in torrent format
+	 * @return string encoded torrent data
+	 */
+	public function __toString()
+	{
+        	return(self::encode_dictionary( $this->metadata() ));
+	}
 
 	/** Read one key of the torrent's top level dictionary
 	 * @param string $key bencode key
@@ -99,107 +156,6 @@ class Torrent
 		unset( $this->extra[$key] );
 	}
 
-	/** The torrent's top level dictionary, as it is written to a torrent file
-	 * @return array<string, mixed> keys in the order they are encoded
-	 */
-	protected function metadata()
-	{
-		$meta = array();
-		foreach( $this->extra as $key => $value )
-			if( !is_null( $value ) )
-				$meta[$key] = $value;
-		if( isset( $this->announce ) )
-			$meta['announce'] = $this->announce;
-		if( isset( $this->comment ) )
-			$meta['comment'] = $this->comment;
-		if( isset( $this->encoding ) )
-			$meta['encoding'] = $this->encoding;
-		if( isset( $this->httpseeds ) )
-			$meta['httpseeds'] = $this->httpseeds;
-		if( isset( $this->info ) )
-			$meta['info'] = $this->info;
-		if( isset( $this->libtorrent_resume ) )
-			$meta['libtorrent_resume'] = $this->libtorrent_resume;
-		if( isset( $this->rtorrent ) )
-			$meta['rtorrent'] = $this->rtorrent;
-		ksort( $meta, SORT_STRING );
-		return $meta;
-	}
-
-	/** Read and decode torrent file/data OR build a torrent from source folder/file(s)
-	 * Supported signatures:
-	 *  - Torrent( string $torrent );
-	 *  - Torrent( string $torrent, string $announce );
-	 *  - Torrent( string $torrent, array  $meta );
-	 *  - Torrent( string $file_or_folder );
-	 *  - Torrent( string $file_or_folder, string $announce_url, [int $piece_length] );
-	 *  - Torrent( string $file_or_folder, array $meta, [int $piece_length] );
-	 *  - Torrent( array $files_list );
-	 *  - Torrent( array $files_list, string $announce_url, [int $piece_length] );
-	 *  - Torrent( array $files_list, array $meta, [int $piece_length] );
-	 * @param string|array torrent to read or source folder/file(s)
-	 * @param string|array announce url or meta informations (optional)
-	 * @param int piece length (optional)
-	 */
-	public function __construct( $data, $meta = array(), $piece_length = 256, $log_callback = null, $err_callback = null )
-	{
-        	try {
-		if( is_string( $meta ) )
-			$meta =  array( 'announce' => $meta );
-		$this->log_callback = $log_callback;
-		$this->err_callback = $err_callback;
-		if( $this->build( $data, $piece_length * 1024 ) )
-		{
-			$this->built = true;
-			$this->touch();
-		}
-		else
-		{
-			$arr = $this->decode( $data );
-			if(!is_array($arr))
-				$this->notify_err('Bad torrent data');
-			else
-				// A union rather than array_merge(): a top level key that is a
-				// decimal number is an integer array key by the time it reaches
-				// here, and array_merge() renumbers integer keys, so a torrent
-				// carrying a key of "5" would be written back under "0". The
-				// decoded keys take precedence over the caller's, as before.
-				$meta = $arr + $meta;
-		}
-		foreach( $meta as $key => $value )
-			if(substr(strval( $key ),0,1)!="\x00")
-	                	$this->setMeta( $key, $value );
-	        } catch(Exception $e)
-        	{
-        		$this->errors[] = $e;
-		}
-	}
-
-	protected function notify_log( $msg )
-	{
-		if(is_callable($this->log_callback))
-		{
-			call_user_func($this->log_callback,$msg);
-		}
-	}
-
-	protected function notify_err( $msg )
-	{
-		if(is_callable($this->err_callback))
-		{
-			call_user_func($this->err_callback,$msg);
-		}
-		$this->errors[] = new Exception($msg);
-	}
-
-	/** Convert the current Torrent instance in torrent format
-	 * @return string encoded torrent data
-	 */
-	public function __toString()
-	{
-        	return(self::encode_dictionary( $this->metadata() ));
-	}
-
 	/** Return Errors
 	 * @return array|boolean error list or null if none
 	 */
@@ -213,96 +169,6 @@ class Torrent
 		return($this->filename);
 	}
 
-	/**** Encode BitTorrent ****/
-
-	/** Encode torrent data
-	 * @param mixed data to encode
-	 * @return string torrent encoded data
-	 */
-	static protected function encode( $mixed )
-	{
-		switch ( gettype( $mixed ) )
-		{
-			case 'integer':
-			case 'double':
-				return self::encode_integer( $mixed );
-			case 'object':
-				$mixed = (array) $mixed;
-			case 'array':
-				return self::encode_array( $mixed );
-			default:
-				return self::encode_string( (string) $mixed );
-		}
-	}
-
-	/** Encode torrent string
-	 * @param string string to encode
-	 * @return string encoded string
-	 */
-	static private function encode_string( $string )
-	{
-        	return(strlen( $string ) . ':' . $string);
-	}
-
-	/** Encode torrent integer
-	 * @param integer integer to encode
-	 * @return string encoded integer
-	 */
-	static private function encode_integer( $integer )
-	{
-        	return('i' . $integer . 'e');
-	}
-
-	/** Encode torrent dictionary or list
-	 * @param array array to encode
-	 * @return string encoded dictionary or list
-	 */
-	static private function encode_array( $array )
-	{
-        	if( !self::is_list( (array) $array ) )
-			return(self::encode_dictionary( $array ));
-		$return = 'l';
-		foreach( $array as $value )
-			$return .= self::encode( $value );
-		return $return . 'e';
-	}
-
-	/** Encode torrent dictionary
-	 * @param array dictionary to encode
-	 * @return string encoded dictionary
-	 */
-	static private function encode_dictionary( $array )
-	{
-		ksort( $array, SORT_STRING );
-		$return = 'd';
-		foreach( $array as $key => $value )
-		{
-			$val = 	strval( $key );
-			if(substr($val,0,1)=="\x00")
-				continue;
-			$return .= self::encode( $val ) . self::encode( $value );
-            	}
-		return $return . 'e';
-	}
-
-	/** Helper to test if an array is a list
-	 * @param array array to test
-	 * @return boolean is the array a list
-	 */
-	static protected function is_list ( $array )
-	{
-        	foreach( array_keys( $array ) as $key )
-			if( !is_int( $key ) )
-				return false;
-		return true;
-	}
-
-	/** Binary bencode strings can contain NUL and are never filesystem paths. */
-	static private function isPathCandidate( $value )
-	{
-		return is_string( $value ) && strpos( $value, "\0" ) === false;
-	}
-
 	/**** Decode BitTorrent ****/
 
 	public function decode( $string )
@@ -312,117 +178,10 @@ class Torrent
 			$this->data = file_get_contents( $string );
 			$this->filename = $string;
 		}
-		else
-			$this->data = $string;
+		else {
+			$this->data = $string; }
 		$this->pointer = 0;
 		return($this->decode_data());
-	}
-
-	protected function decode_data()
-	{
-        	if($this->pointer>=strlen($this->data))
-        		throw new Exception('Bad torrent data1 '.$this->pointer);
-	        switch( $this->data[$this->pointer] )
-        	{
-        		case 'i':
-				return($this->decode_integer());
-			case 'l':
-				return($this->decode_list());
-			case 'd':
-				return($this->decode_dictionary());
-		        default:
-				return $this->decode_string();
-        	}
-	}
-
-	private function decode_dictionary()
-	{
-		$dictionary = array();
-		$this->pointer++;
-        	while( !$this->isOfType('e') )
-		{
-			$key = $this->decode_string();
-			$dictionary[$key] = $this->decode_data();
-	        }
-        	$this->pointer++;
-		// is_list() is the question encode_array() puts to this array when the
-		// torrent is written back, and PHP has already turned every key that is
-		// a decimal number into an integer, so a dictionary it answers yes for
-		// leaves here as a list carrying the values with the keys gone. Nothing
-		// in the array can tell the two apart any more, so the caller is told
-		// instead of being handed a torrent that is not the one it read.
-		//
-		// An empty dictionary is not that: it holds no keys to lose, and it is
-		// indistinguishable from an empty list with nothing either way to
-		// prefer one reading over the other. It stays a list, as before.
-		if( $dictionary && self::is_list( $dictionary ) )
-			$this->notify_err( 'Cannot write back a dictionary whose keys are all decimal numbers: '
-				.implode( ', ', array_keys( $dictionary ) ) );
-	        return($dictionary);
-	}
-
-	private function decode_list()
-	{
-		$list = array();
-		$this->pointer++;
-		while( !$this->isOfType('e') )
-			$list[] = $this->decode_data();
-	        $this->pointer++;
-		return($list);
-	}
-
-	private function decode_string()
-	{
-		$delim_pos = strpos($this->data, ':', $this->pointer);
-	        if($delim_pos===false)
-		       	throw new Exception('Bad torrent data4');
-		$elem_len = intval(substr($this->data, $this->pointer, $delim_pos - $this->pointer));
-		$this->pointer = $delim_pos + 1;
-	        if($this->pointer>=strlen($this->data))
-		       	throw new Exception('Bad torrent data2 '.$delim_pos);
-		$elem_name = substr($this->data, $this->pointer, $elem_len);
-		$this->pointer += $elem_len;
-		return($elem_name);
-	}
-
-	private function decode_integer()
-	{
-		$this->pointer++;
-	        $delim_pos = strpos($this->data, 'e', $this->pointer);
-        	if($delim_pos===false)
-	       		throw new Exception('Bad torrent data4');
-		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
-		$this->pointer = $delim_pos + 1;
-		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
-		{
-			$this->notify_err('Bad integer');
-			return(floatval($integer));
-		}
-		// An int carries every value up to PHP_INT_MAX exactly and writes back
-		// the digits it was read as. A float does not: it rounds silently above
-		// 2^53, and from 1e16 up PHP renders it as 1.0E+16, which is not a
-		// bencoded integer at all. Either outcome inside info moves the info
-		// hash, so the torrent that gets loaded describes different files from
-		// the one that was read.
-		//
-		// BEP 3 puts no bound on a bencoded integer, so a value can arrive that
-		// no PHP scalar holds. Carrying it as a string is not open either: the
-		// encoder would write it as a bencoded string and change its type. It
-		// is reported instead, on the same ground as a dictionary whose keys
-		// cannot survive -- the caller is told rather than handed a torrent
-		// that is not the one it read.
-		$value = intval($integer);
-		if(strval($value) === $integer)
-			return($value);
-		$this->notify_err('Cannot write back this integer unchanged: '.$integer);
-		return(floatval($integer));
-	}
-
-	private function isOfType($type)
-	{
-        	if($this->pointer>=strlen($this->data))
-        		throw new Exception('Bad torrent data3 '.$this->pointer);
-		return($this->data[$this->pointer] == $type);
 	}
 
 	/**** Make BitTorrent ****/
@@ -433,8 +192,8 @@ class Torrent
 	 */
     	public function announce( $announce = null )
 	{
-		if( is_null( $announce ) )
-			return($this->announce);
+		if( is_null( $announce ) ) {
+			return($this->announce); }
 		$this->announce = (string) $announce;
 		$this->touch();
 		return null;
@@ -453,8 +212,8 @@ class Torrent
 
     	public function announce_list( $announce_list = null )
     	{
-		if( is_null( $announce_list ) )
-			return($this->meta( 'announce-list' ));
+		if( is_null( $announce_list ) ) {
+			return($this->meta( 'announce-list' )); }
 		$this->setMeta( 'announce-list', (array) $announce_list );
 		$this->touch();
 		return null;
@@ -472,8 +231,8 @@ class Torrent
 	 */
     	public function comment( $comment = null )
     	{
-		if( is_null( $comment ) )
-			return($this->comment);
+		if( is_null( $comment ) ) {
+			return($this->comment); }
 		$this->comment = (string) $comment;
 		$this->touch();
 		return null;
@@ -491,8 +250,8 @@ class Torrent
 	 */
 	public function name( $name = null )
     	{
-		if( is_null( $name ) )
-			return(isset( $this->info['name'] ) ? $this->info['name'] : null);
+		if( is_null( $name ) ) {
+			return(isset( $this->info['name'] ) ? $this->info['name'] : null); }
 		$this->info['name'] = (string) $name;
 		$this->touch();
 		return null;
@@ -518,8 +277,8 @@ class Torrent
 	 */
 	public function is_private( $private = null )
 	{
-		if( is_null( $private ) )
-			return(!empty( $this->info['private'] ));
+		if( is_null( $private ) ) {
+			return(!empty( $this->info['private'] )); }
 		$this->info['private'] = $private ? 1 : 0;
 		$this->touch();
 		return null;
@@ -531,8 +290,8 @@ class Torrent
 	 */
 	public function url_list( $urls = null )
 	{
-		if( is_null( $urls ) )
-			return($this->meta( 'url-list' ));
+		if( is_null( $urls ) ) {
+			return($this->meta( 'url-list' )); }
 		$this->setMeta( 'url-list', $urls );
 		$this->touch();
 		return null;
@@ -544,8 +303,8 @@ class Torrent
 	 */
 	public function httpseeds( $urls = null )
 	{
-		if( is_null( $urls ) )
-			return($this->httpseeds);
+		if( is_null( $urls ) ) {
+			return($this->httpseeds); }
 		$this->httpseeds = (array) $urls;
 		$this->touch();
 		return null;
@@ -569,13 +328,155 @@ class Torrent
 	 */
 	public function send( $filename = null )
 	{
-	        if(is_null( $filename ))
-			$filename = $this->info['name'].'.torrent';
+	        if(is_null( $filename )) {
+			$filename = $this->info['name'].'.torrent'; }
 		require_once( __DIR__.'/utility/contentdisposition.php' );
 		header( 'Content-Disposition: '.ContentDisposition::attachment($filename,
 			isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null) );
         	CachedEcho::send( $this->__toString(), 'application/x-bittorrent', true );
     	}
+
+	/** Helper scan directories files and sub directories recursivly
+	 * @param string directory path
+	 * @return array directory content list
+	 */
+	public function scandir( $dir )
+	{
+	        $this->notify_log('Scan directory '.$dir);
+		$paths = [];
+	        $files = @scandir( $dir );
+        	if($files!==false) {
+	        	foreach( $files as $item  ) {
+	        	        if( $item != '.' && $item != '..')
+				{
+					$path = $dir . DIRECTORY_SEPARATOR . $item;
+					// A link back into the folder would be read twice, and one out
+					// of the top directory would be read, and served once seeded,
+					// from wherever it points.
+					if(is_link($path) && ((strpos(realpath( $path ),$this->basedir.'/')===0) ||
+						!self::isInsideTopDirectory(realpath( $path )))) {
+						continue; }
+					if(is_dir( $path )) {
+						$paths = array_merge( self::scandir( $path ), $paths ); }
+					elseif(is_file($path)) {
+							$paths[] = $path; }
+				} } }
+        	return $paths;
+	}
+
+	/**** Analyze BitTorrent ****/
+
+	/** Get piece length
+	 * @return integer piece length or null if not set
+	 */
+	public function piece_length()
+	{
+        	return(isset( $this->info['piece length'] ) ? $this->info['piece length'] : null );
+	}
+
+	/** Compute hash info
+	 * @return string hash info or null if info not set
+	 */
+	public function hash_info()
+	{
+        	return(isset( $this->info ) ? strtoupper(sha1( self::encode( $this->info ) )) : null);
+	}
+
+	/** The torrent's top level dictionary, as it is written to a torrent file
+	 * @return array<string, mixed> keys in the order they are encoded
+	 */
+	protected function metadata()
+	{
+		$meta = [];
+		foreach( $this->extra as $key => $value ) {
+			if( !is_null( $value ) ) {
+				$meta[$key] = $value; } }
+		if( isset( $this->announce ) ) {
+			$meta['announce'] = $this->announce; }
+		if( isset( $this->comment ) ) {
+			$meta['comment'] = $this->comment; }
+		if( isset( $this->encoding ) ) {
+			$meta['encoding'] = $this->encoding; }
+		if( isset( $this->httpseeds ) ) {
+			$meta['httpseeds'] = $this->httpseeds; }
+		if( isset( $this->info ) ) {
+			$meta['info'] = $this->info; }
+		if( isset( $this->libtorrent_resume ) ) {
+			$meta['libtorrent_resume'] = $this->libtorrent_resume; }
+		if( isset( $this->rtorrent ) ) {
+			$meta['rtorrent'] = $this->rtorrent; }
+		ksort( $meta, SORT_STRING );
+		return $meta;
+	}
+
+	protected function notify_log( $msg )
+	{
+		if(is_callable($this->log_callback))
+		{
+			call_user_func($this->log_callback,$msg);
+		}
+	}
+
+	protected function notify_err( $msg )
+	{
+		if(is_callable($this->err_callback))
+		{
+			call_user_func($this->err_callback,$msg);
+		}
+		$this->errors[] = new Exception($msg);
+	}
+
+	/**** Encode BitTorrent ****/
+
+	/** Encode torrent data
+	 * @param mixed data to encode
+	 * @return string torrent encoded data
+	 */
+	protected static function encode( $mixed )
+	{
+		switch ( gettype( $mixed ) )
+		{
+			case 'integer':
+			case 'double':
+				return self::encode_integer( $mixed );
+			case 'object':
+				$mixed = (array) $mixed;
+				// no break
+			case 'array':
+				return self::encode_array( $mixed );
+			default:
+				return self::encode_string( (string) $mixed );
+		}
+	}
+
+	/** Helper to test if an array is a list
+	 * @param array array to test
+	 * @return boolean is the array a list
+	 */
+	protected static function is_list ( $array )
+	{
+        	foreach( array_keys( $array ) as $key ) {
+			if( !is_int( $key ) ) {
+				return false; } }
+		return true;
+	}
+
+	protected function decode_data()
+	{
+        	if($this->pointer>=strlen($this->data)) {
+        		throw new Exception('Bad torrent data1 '.$this->pointer); }
+	        switch( $this->data[$this->pointer] )
+        	{
+        		case 'i':
+				return($this->decode_integer());
+			case 'l':
+				return($this->decode_list());
+			case 'd':
+				return($this->decode_dictionary());
+		        default:
+				return $this->decode_string();
+        	}
+	}
 
 	/** Build torrent info
      	 * @param string|array source folder/file(s) path
@@ -584,8 +485,8 @@ class Torrent
 	 */
 	protected function build( $data, $piece_length )
 	{
-        	if( is_null( $data ) )
-            		return(false);
+        	if( is_null( $data ) ) {
+            		return(false); }
 		if( is_array( $data ) && self::is_list( $data ) )
 		{
 			$this->info = $this->files( $data, $piece_length );
@@ -604,6 +505,181 @@ class Torrent
 		return false;
 	}
 
+	/** Sign a torrent this class built with its creator and creation date
+	 *
+	 * Called from the constructor's build branch and from every setter. The
+	 * two keys name whoever produced the metainfo, so they are only this
+	 * class' to write when this class produced it: on a torrent that was
+	 * decoded from a file, a setter is an edit -- a tracker, a comment, the
+	 * private flag -- and an edit is not authorship. Stamping there would
+	 * destroy the only record a .torrent keeps of who made it and when, which
+	 * is also what rtorrent serves as d.creation_date. Absent keys are
+	 * left absent for the same reason.
+	 * @return void
+	 */
+	protected function touch()
+	{
+		if( !$this->built ) {
+			return; }
+        	$this->setMeta( 'created by', 'ruTorrent (PHP Class - Adrien Gibrat)' );
+	        $this->setMeta( 'creation date', time() );
+    	}
+
+	/** Helper to pack data hash
+	 * @param string data
+	 * @return string packed data hash
+	 */
+	protected static function pack( & $data )
+	{
+		return(sha1( $data, true ) . ( $data = '' ));
+    	}
+
+	/** Encode torrent string
+	 * @param string string to encode
+	 * @return string encoded string
+	 */
+	private static function encode_string( $string )
+	{
+        	return(strlen( $string ) . ':' . $string);
+	}
+
+	/** Encode torrent integer
+	 * @param integer integer to encode
+	 * @return string encoded integer
+	 */
+	private static function encode_integer( $integer )
+	{
+        	return('i' . $integer . 'e');
+	}
+
+	/** Encode torrent dictionary or list
+	 * @param array array to encode
+	 * @return string encoded dictionary or list
+	 */
+	private static function encode_array( $array )
+	{
+        	if( !self::is_list( (array) $array ) ) {
+			return(self::encode_dictionary( $array )); }
+		$return = 'l';
+		foreach( $array as $value ) {
+			$return .= self::encode( $value ); }
+		return $return . 'e';
+	}
+
+	/** Encode torrent dictionary
+	 * @param array dictionary to encode
+	 * @return string encoded dictionary
+	 */
+	private static function encode_dictionary( $array )
+	{
+		ksort( $array, SORT_STRING );
+		$return = 'd';
+		foreach( $array as $key => $value )
+		{
+			$val = 	strval( $key );
+			if(substr($val,0,1)=="\x00") {
+				continue; }
+			$return .= self::encode( $val ) . self::encode( $value );
+            	}
+		return $return . 'e';
+	}
+
+	/** Binary bencode strings can contain NUL and are never filesystem paths. */
+	private static function isPathCandidate( $value )
+	{
+		return is_string( $value ) && strpos( $value, "\0" ) === false;
+	}
+
+	private function decode_dictionary()
+	{
+		$dictionary = [];
+		$this->pointer++;
+        	while( !$this->isOfType('e') )
+		{
+			$key = $this->decode_string();
+			$dictionary[$key] = $this->decode_data();
+	        }
+        	$this->pointer++;
+		// is_list() is the question encode_array() puts to this array when the
+		// torrent is written back, and PHP has already turned every key that is
+		// a decimal number into an integer, so a dictionary it answers yes for
+		// leaves here as a list carrying the values with the keys gone. Nothing
+		// in the array can tell the two apart any more, so the caller is told
+		// instead of being handed a torrent that is not the one it read.
+		//
+		// An empty dictionary is not that: it holds no keys to lose, and it is
+		// indistinguishable from an empty list with nothing either way to
+		// prefer one reading over the other. It stays a list, as before.
+		if( $dictionary && self::is_list( $dictionary ) ) {
+			$this->notify_err( 'Cannot write back a dictionary whose keys are all decimal numbers: '
+				.implode( ', ', array_keys( $dictionary ) ) ); }
+	        return($dictionary);
+	}
+
+	private function decode_list()
+	{
+		$list = [];
+		$this->pointer++;
+		while( !$this->isOfType('e') ) {
+			$list[] = $this->decode_data(); }
+	        $this->pointer++;
+		return($list);
+	}
+
+	private function decode_string()
+	{
+		$delim_pos = strpos($this->data, ':', $this->pointer);
+	        if($delim_pos===false) {
+		       	throw new Exception('Bad torrent data4'); }
+		$elem_len = intval(substr($this->data, $this->pointer, $delim_pos - $this->pointer));
+		$this->pointer = $delim_pos + 1;
+	        if($this->pointer>=strlen($this->data)) {
+		       	throw new Exception('Bad torrent data2 '.$delim_pos); }
+		$elem_name = substr($this->data, $this->pointer, $elem_len);
+		$this->pointer += $elem_len;
+		return($elem_name);
+	}
+
+	private function decode_integer()
+	{
+		$this->pointer++;
+	        $delim_pos = strpos($this->data, 'e', $this->pointer);
+        	if($delim_pos===false) {
+	       		throw new Exception('Bad torrent data4'); }
+		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
+		$this->pointer = $delim_pos + 1;
+		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
+		{
+			$this->notify_err('Bad integer');
+			return(floatval($integer));
+		}
+		// An int carries every value up to PHP_INT_MAX exactly and writes back
+		// the digits it was read as. A float does not: it rounds silently above
+		// 2^53, and from 1e16 up PHP renders it as 1.0E+16, which is not a
+		// bencoded integer at all. Either outcome inside info moves the info
+		// hash, so the torrent that gets loaded describes different files from
+		// the one that was read.
+		//
+		// BEP 3 puts no bound on a bencoded integer, so a value can arrive that
+		// no PHP scalar holds. Carrying it as a string is not open either: the
+		// encoder would write it as a bencoded string and change its type. It
+		// is reported instead, on the same ground as a dictionary whose keys
+		// cannot survive -- the caller is told rather than handed a torrent
+		// that is not the one it read.
+		$value = intval($integer);
+		if(strval($value) === $integer) {
+			return($value); }
+		$this->notify_err('Cannot write back this integer unchanged: '.$integer);
+		return(floatval($integer));
+	}
+
+	private function isOfType($type)
+	{
+        	if($this->pointer>=strlen($this->data)) {
+        		throw new Exception('Bad torrent data3 '.$this->pointer); }
+		return($this->data[$this->pointer] == $type);
+	}
+
 	/** Build torrent info from single file
 	 * @param string file path
 	 * @param integer piece length
@@ -618,17 +694,17 @@ class Torrent
 			return(false);
         	}
 		$pieces = '';
-		while( ($piece = fread( $handle, $piece_length )) !== false && $piece !== '' )
-			$pieces .= self::pack( $piece );
+		while( ($piece = fread( $handle, $piece_length )) !== false && $piece !== '' ) {
+			$pieces .= self::pack( $piece ); }
 		fclose( $handle );
-		return(array(
+		return([
             		'length'        => filesize( $file ),
 			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
 			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
             		'name'          => FileUtil::getFileName( $file ),
             		'piece length'  => $piece_length,
-            		'pieces'        => $pieces
-        		));
+            		'pieces'        => $pieces,
+        		]);
     	}
 
     	private static function sortNames($a,$b)
@@ -644,19 +720,19 @@ class Torrent
 	 */
 	private function files( $files, $piece_length )
 	{
-		if(is_null( $this->basedir ))
-        		$files  = array_map( 'realpath', $files );
+		if(is_null( $this->basedir )) {
+        		$files  = array_map( 'realpath', $files ); }
 
-		usort( $files, array($this,'sortNames') );
+		usort( $files, [$this,'sortNames'] );
 
-		if(!is_null( $this->basedir ))
-			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir );
-		else
-		        $path   = explode( DIRECTORY_SEPARATOR, dirname( realpath( current( $files ) ) ) );
+		if(!is_null( $this->basedir )) {
+			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir ); }
+		else {
+		        $path   = explode( DIRECTORY_SEPARATOR, dirname( realpath( current( $files ) ) ) ); }
 
 	        $length = $piece_length;
         	$piece  = $pieces = '';
-	        $info_files = array();
+	        $info_files = [];
 		foreach( $files as $i => $file )
 		{
 			$this->notify_log( 'Hash '.$file );
@@ -672,16 +748,16 @@ class Torrent
         	    	}
 			while(!feof( $handle ))
 			{
-				if( ( $length = strlen( $piece .= fread( $handle, $length ) ) ) == $piece_length )
-                    			$pieces .= self::pack( $piece );
-				else
-					$length = $piece_length - $length;
+				if( ( $length = strlen( $piece .= fread( $handle, $length ) ) ) == $piece_length ) {
+                    			$pieces .= self::pack( $piece ); }
+				else {
+					$length = $piece_length - $length; }
 			}
 			fclose( $handle );
-			$info_files[$i] = array(
+			$info_files[$i] = [
 				'length'    => filesize( $file ),
-				'path'      => array_diff_assoc( $file_path, $path )
-				);
+				'path'      => array_diff_assoc( $file_path, $path ),
+				];
 		}
 
 	        switch( count( $info_files ) )
@@ -689,12 +765,12 @@ class Torrent
 			case 0:
 				return false;
 			default:
-				return(array(
+				return([
 					'files'         => $info_files,
 					'name'          => end( $path ),
 					'piece length'  => $piece_length,
-					'pieces'        => $pieces . ( $piece !== '' ? self::pack( $piece ) : '' )
-					));
+					'pieces'        => $pieces . ( $piece !== '' ? self::pack( $piece ) : '' ),
+					]);
         	}
     	}
 
@@ -707,100 +783,24 @@ class Torrent
 	{
 		$this->basedir = $dir;
 		$len = strlen($this->basedir);
-		if(($len>1) && ($this->basedir[$len-1]=='/'))
-			$this->basedir = substr($this->basedir,0,-1);
+		if(($len>1) && ($this->basedir[$len-1]=='/')) {
+			$this->basedir = substr($this->basedir,0,-1); }
 		return($this->files( self::scandir( $this->basedir ), $piece_length ));
     	}
-
-	/** Sign a torrent this class built with its creator and creation date
-	 *
-	 * Called from the constructor's build branch and from every setter. The
-	 * two keys name whoever produced the metainfo, so they are only this
-	 * class' to write when this class produced it: on a torrent that was
-	 * decoded from a file, a setter is an edit -- a tracker, a comment, the
-	 * private flag -- and an edit is not authorship. Stamping there would
-	 * destroy the only record a .torrent keeps of who made it and when, which
-	 * is also what rtorrent serves as d.creation_date. Absent keys are
-	 * left absent for the same reason.
-	 * @return void
-	 */
-	protected function touch()
-	{
-		if( !$this->built )
-			return;
-        	$this->setMeta( 'created by', 'ruTorrent (PHP Class - Adrien Gibrat)' );
-	        $this->setMeta( 'creation date', time() );
-    	}
-
-	/** Helper scan directories files and sub directories recursivly
-	 * @param string directory path
-	 * @return array directory content list
-	 */
-	public function scandir( $dir )
-	{
-	        $this->notify_log('Scan directory '.$dir);
-		$paths = array();
-	        $files = @scandir( $dir );
-        	if($files!==false)
-	        	foreach( $files as $item  )
-	        	        if( $item != '.' && $item != '..')
-				{
-					$path = $dir . DIRECTORY_SEPARATOR . $item;
-					// A link back into the folder would be read twice, and one out
-					// of the top directory would be read, and served once seeded,
-					// from wherever it points.
-					if(is_link($path) && ((strpos(realpath( $path ),$this->basedir.'/')===0) ||
-						!self::isInsideTopDirectory(realpath( $path ))))
-						continue;
-					if(is_dir( $path ))
-						$paths = array_merge( self::scandir( $path ), $paths );
-					else
-						if(is_file($path))
-							$paths[] = $path;
-				}
-        	return $paths;
-	}
 
 	/** Whether $real, a resolved path, is inside $topDirectory
 	 * @param string|false resolved path
 	 * @return boolean
 	 */
-	static private function isInsideTopDirectory( $real )
+	private static function isInsideTopDirectory( $real )
 	{
 		global $topDirectory;
-		if(!isset($topDirectory) || (FileUtil::addslash($topDirectory) === '/'))
-			return(true);
-		if($real === false)
-			return(false);
+		if(!isset($topDirectory) || (FileUtil::addslash($topDirectory) === '/')) {
+			return(true); }
+		if($real === false) {
+			return(false); }
 		$top = realpath($topDirectory);
 		$top = FileUtil::addslash(($top === false) ? $topDirectory : $top);
 		return(strpos(FileUtil::addslash($real), $top) === 0);
-	}
-
-	/** Helper to pack data hash
-	 * @param string data
-	 * @return string packed data hash
-	 */
-	static protected function pack( & $data )
-	{
-		return(sha1( $data, true ) . ( $data = '' ));
-    	}
-
-	/**** Analyze BitTorrent ****/
-
-	/** Get piece length
-	 * @return integer piece length or null if not set
-	 */
-	public function piece_length()
-	{
-        	return(isset( $this->info['piece length'] ) ? $this->info['piece length'] : null );
-	}
-
-	/** Compute hash info
-	 * @return string hash info or null if info not set
-	 */
-	public function hash_info()
-	{
-        	return(isset( $this->info ) ? strtoupper(sha1( self::encode( $this->info ) )) : null);
 	}
 }

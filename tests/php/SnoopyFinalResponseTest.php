@@ -39,27 +39,27 @@ $pathToExternals['curl'] = $finalRoot . '/curl';
 
 function finalSame($expected, $actual, $message)
 {
-    if ($expected !== $actual) throw new RuntimeException($message . '; expected ' . var_export($expected, true)
-        . ', got ' . var_export($actual, true));
+    if ($expected !== $actual) { throw new RuntimeException($message . '; expected ' . var_export($expected, true)
+        . ', got ' . var_export($actual, true)); }
 }
 
 class FinalResponseSocket extends Snoopy
 {
     public $replies;
-    private $peers = array();
-    public $requests = array();
+    public $requests = [];
     // A peer that stays open after its reply, as one still streaming would.
     public $keepOpen = false;
+    private $peers = [];
 
     public function connect()
     {
         $this->status = 0;
         $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
-        if ($pair === false) throw new RuntimeException('Could not create the private HTTP peer');
+        if ($pair === false) { throw new RuntimeException('Could not create the private HTTP peer'); }
         $reply = array_shift($this->replies);
-        if (!is_array($reply)) throw new RuntimeException('Unexpected offline socket request');
+        if (!is_array($reply)) { throw new RuntimeException('Unexpected offline socket request'); }
         fwrite($pair[1], $reply[0] . $reply[1]);
-        if (!$this->keepOpen) stream_socket_shutdown($pair[1], STREAM_SHUT_WR);
+        if (!$this->keepOpen) { stream_socket_shutdown($pair[1], STREAM_SHUT_WR); }
         $this->peers[] = $pair[1];
         return $pair[0];
     }
@@ -71,10 +71,10 @@ class FinalResponseSocket extends Snoopy
             $wire = stream_get_contents($peer);
             preg_match('/^(\S+) (\S+)/', $wire, $request);
             preg_match('/^Cookie: (.*)\r?$/m', $wire, $cookie);
-            $this->requests[] = array('method' => $request[1], 'url' => $request[2], 'cookie' => trim($cookie[0] ?? ''));
+            $this->requests[] = ['method' => $request[1], 'url' => $request[2], 'cookie' => trim($cookie[0] ?? '')];
             fclose($peer);
         }
-        $this->peers = array();
+        $this->peers = [];
     }
 }
 
@@ -87,7 +87,7 @@ function finalClient($transport, $replies)
         $finalClients[] = $client;
     } else {
         file_put_contents($finalRoot . '/plan', serialize($replies));
-        file_put_contents($finalRoot . '/requests', serialize(array()));
+        file_put_contents($finalRoot . '/requests', serialize([]));
         $client = new Snoopy();
     }
     $client->block_private = false;
@@ -102,17 +102,17 @@ function finalRequests($client)
         $client->closeSockets();
         return $client->requests;
     }
-    return unserialize(file_get_contents($finalRoot . '/requests'), array('allowed_classes' => false));
+    return unserialize(file_get_contents($finalRoot . '/requests'), ['allowed_classes' => false]);
 }
 
-$tests = array();
-foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) {
+$tests = [];
+foreach (['socket' => 'http', 'curl' => 'https'] as $transport => $scheme) {
     $url = $scheme . '://origin.test/start';
     $tests[$transport . ' exposes only final headers status and body after 100 and 103'] = function () use ($transport, $url) {
         $interim = "HTTP/1.1 100 Continue\r\nSet-Cookie: early=wrong\r\nLocation: /wrong\r\nContent-Encoding: gzip\r\n\r\n"
             . "HTTP/1.1 103 Early Hints\r\nSet-Cookie: hints=wrong\r\nLast-Modified: Thu, 01 Jan 1970 00:00:00 GMT\r\n\r\n";
         $final = "HTTP/1.1 200 OK\r\nSet-Cookie: final=right\r\nETag: final\r\nContent-Disposition: attachment; filename=\"final.torrent\"\r\n\r\n";
-        $client = finalClient($transport, array(array($interim . $final, 'body')));
+        $client = finalClient($transport, [[$interim . $final, 'body']]);
         $client->maxredirs = 0;
         finalSame(true, $client->fetch($url), 'The final plaintext body completes despite interim gzip');
         finalSame('200', $client->status, 'Final HTTP status');
@@ -123,15 +123,15 @@ foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) 
         finalSame('final.torrent', $client->get_filename(), 'Filename consumer reads the final response');
         finalSame(false, $client->_redirectaddr, 'An interim Location cannot survive');
         $client->setcookies();
-        finalSame(array('final' => 'right'), $client->cookies, 'Flat legacy cookies take only the final block');
+        finalSame(['final' => 'right'], $client->cookies, 'Flat legacy cookies take only the final block');
     };
     $tests[$transport . ' follows only the final redirect and forwards only its cookie'] = function () use ($transport, $scheme, $url) {
         $target = $scheme . '://origin.test/next';
-        $client = finalClient($transport, array(
-            array("HTTP/1.1 103 Early Hints\r\nLocation: /wrong\r\nSet-Cookie: early=wrong\r\n\r\n"
-                . "HTTP/1.1 302 Found\r\nLocation: " . $target . "\r\nSet-Cookie: final=right\r\n\r\n", ''),
-            array("HTTP/1.1 200 OK\r\n\r\n", 'landing'),
-        ));
+        $client = finalClient($transport, [
+            ["HTTP/1.1 103 Early Hints\r\nLocation: /wrong\r\nSet-Cookie: early=wrong\r\n\r\n"
+                . "HTTP/1.1 302 Found\r\nLocation: " . $target . "\r\nSet-Cookie: final=right\r\n\r\n", ''],
+            ["HTTP/1.1 200 OK\r\n\r\n", 'landing'],
+        ]);
         finalSame(true, $client->fetch($url), 'The real final redirect completes');
         finalSame('landing', $client->results, 'The redirected response owns the body');
         $requests = finalRequests($client);
@@ -141,17 +141,17 @@ foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) 
         finalSame(0, $client->_redirectdepth, 'The existing request-state contract still unwinds');
     };
     $tests[$transport . ' refuses an interim-only response without publishing its metadata'] = function () use ($transport, $url) {
-        $client = finalClient($transport, array(array("HTTP/1.1 103 Early Hints\r\nSet-Cookie: early=wrong\r\n\r\n", '')));
+        $client = finalClient($transport, [["HTTP/1.1 103 Early Hints\r\nSet-Cookie: early=wrong\r\n\r\n", '']]);
         finalSame(false, $client->fetch($url), 'An interim answer is not a completed response');
         finalSame(Snoopy::RESPONSE_BODY_FAILED, $client->status, 'A missing final response has refusal status');
         finalSame('missing-final-response', $client->error, 'The refusal has a fixed reason');
-        finalSame(array(), $client->headers, 'Interim headers are discarded');
+        finalSame([], $client->headers, 'Interim headers are discarded');
         finalSame('', $client->results, 'No incomplete body is published');
         $client->setcookies();
-        finalSame(array(), $client->cookies, 'Explicit setcookies cannot revive interim metadata');
+        finalSame([], $client->cookies, 'Explicit setcookies cannot revive interim metadata');
     };
     $tests[$transport . ' keeps 101 Switching Protocols as the final response'] = function () use ($transport, $url) {
-        $client = finalClient($transport, array(array("HTTP/1.1 101 Switching Protocols\r\nUpgrade: test\r\n\r\n", 'switched')));
+        $client = finalClient($transport, [["HTTP/1.1 101 Switching Protocols\r\nUpgrade: test\r\n\r\n", 'switched']]);
         $client->maxredirs = 0;
         finalSame(true, $client->fetch($url), 'A 101 answer is final, not a provisional block');
         finalSame('101', $client->status, 'The 101 status is published');
@@ -160,7 +160,7 @@ foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) 
     };
     $tests[$transport . ' retains ordinary final gzip non-success and literal-zero responses'] = function () use ($transport, $url) {
         $body = 'decoded final body';
-        $client = finalClient($transport, array(array("HTTP/1.1 404 Not Found\r\n0\r\nContent-Encoding: gzip\r\n\r\n", gzencode($body))));
+        $client = finalClient($transport, [["HTTP/1.1 404 Not Found\r\n0\r\nContent-Encoding: gzip\r\n\r\n", gzencode($body)]]);
         finalSame(true, $client->fetch($url), 'A non-success HTTP answer is still fetched');
         finalSame('404', $client->status, 'The final non-success status is preserved');
         finalSame($body, $client->results, 'Final gzip is still decoded');
@@ -171,7 +171,7 @@ foreach (array('socket' => 'http', 'curl' => 'https') as $transport => $scheme) 
 // curl stops a stream of 1xx blocks by its own header limit or by -m.
 $tests['socket accepts the most interim responses one answer may carry'] = function () {
     $interim = str_repeat("HTTP/1.1 103 Early Hints\r\nLink: </a.css>; rel=preload\r\n\r\n", Snoopy::MAX_INTERIM_RESPONSES);
-    $client = finalClient('socket', array(array($interim . "HTTP/1.1 200 OK\r\n\r\n", 'body')));
+    $client = finalClient('socket', [[$interim . "HTTP/1.1 200 OK\r\n\r\n", 'body']]);
     finalSame(true, $client->fetch('http://origin.test/start'), 'A final response after the allowed interim blocks completes');
     finalSame('body', $client->results, 'The final body is delivered');
 };
@@ -179,18 +179,18 @@ $tests['socket refuses an interim response past the cap without reading on'] = f
     // The peer stays open and sends nothing more, so a reader that kept going
     // past the cap would wait for the read timeout and report -100 instead.
     $interim = str_repeat("HTTP/1.1 100 Continue\r\n\r\n", Snoopy::MAX_INTERIM_RESPONSES + 1);
-    $client = finalClient('socket', array(array($interim, '')));
+    $client = finalClient('socket', [[$interim, '']]);
     $client->keepOpen = true;
     $client->read_timeout = 1;
     finalSame(false, $client->fetch('http://origin.test/start'), 'Interim blocks past the cap are refused, not read on');
     finalSame(Snoopy::RESPONSE_BODY_FAILED, $client->status, 'The refusal has refusal status, not a read timeout');
     finalSame('too-many-interim-responses', $client->error, 'The refusal has a fixed reason');
-    finalSame(array(), $client->headers, 'No headers are published');
+    finalSame([], $client->headers, 'No headers are published');
     finalSame('', $client->results, 'No body is published');
 };
 $tests['curl removes proxy CONNECT metadata before the final HTTP2 origin response'] = function () {
-    $client = finalClient('curl', array(array("HTTP/1.1 200 Arbitrary tunnel phrase\r\nSet-Cookie: proxy=wrong\r\nLocation: /proxy\r\nContent-Encoding: gzip\r\n\r\n"
-        . "HTTP/2 200\r\nETag: final\r\n\r\n", 'origin')));
+    $client = finalClient('curl', [["HTTP/1.1 200 Arbitrary tunnel phrase\r\nSet-Cookie: proxy=wrong\r\nLocation: /proxy\r\nContent-Encoding: gzip\r\n\r\n"
+        . "HTTP/2 200\r\nETag: final\r\n\r\n", 'origin']]);
     $client->maxredirs = 0;
     finalSame(true, $client->fetch('https://origin.test/start'), 'The final origin response completes');
     finalSame('200', $client->status, 'HTTP2 origin status');
@@ -199,17 +199,17 @@ $tests['curl removes proxy CONNECT metadata before the final HTTP2 origin respon
     finalSame(false, $client->_redirectaddr, 'Proxy Location is absent');
 };
 $tests['curl CONNECT followed by TLS failure never publishes an origin response'] = function () {
-    $client = finalClient('curl', array(array("HTTP/1.1 200 Arbitrary tunnel phrase\r\nSet-Cookie: proxy=wrong\r\n\r\n", 'partial', 28)));
+    $client = finalClient('curl', [["HTTP/1.1 200 Arbitrary tunnel phrase\r\nSet-Cookie: proxy=wrong\r\n\r\n", 'partial', 28]]);
     finalSame(false, $client->fetch('https://origin.test/start'), 'The TLS failure remains a curl error');
     finalSame(28, $client->status, 'curl exit code is preserved');
-    finalSame(array(), $client->headers, 'CONNECT headers are not an origin response');
+    finalSame([], $client->headers, 'CONNECT headers are not an origin response');
     finalSame('', $client->results, 'No failed-transfer body is exposed');
 };
 
 $failures = 0;
 try {
     foreach ($tests as $name => $test) {
-        $finalClients = array();
+        $finalClients = [];
         try {
             $test();
             echo 'ok - ', $name, "\n";
@@ -217,15 +217,15 @@ try {
             $failures++;
             echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
         } finally {
-            foreach ($finalClients as $client) $client->closeSockets();
+            foreach ($finalClients as $client) { $client->closeSockets(); }
         }
     }
 } finally {
-    if ($previousCurl === null) unset($pathToExternals['curl']);
-    else $pathToExternals['curl'] = $previousCurl;
-    if ($previousFixture === false) putenv('SNOOPY_FINAL_ROOT');
-    else putenv('SNOOPY_FINAL_ROOT=' . $previousFixture);
-    foreach (glob($finalRoot . '/*') as $path) unlink($path);
+    if ($previousCurl === null) { unset($pathToExternals['curl']); }
+    else { $pathToExternals['curl'] = $previousCurl; }
+    if ($previousFixture === false) { putenv('SNOOPY_FINAL_ROOT'); }
+    else { putenv('SNOOPY_FINAL_ROOT=' . $previousFixture); }
+    foreach (glob($finalRoot . '/*') as $path) { unlink($path); }
     rmdir($finalRoot);
 }
 echo count($tests), ' tests, ', $failures, " failures\n";

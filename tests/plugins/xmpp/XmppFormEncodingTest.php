@@ -24,8 +24,8 @@ class XmppFormEncodingProbe extends rXmpp
 
 class XmppFormEncodingTest extends TestCase
 {
-	const STORED = 'correct-horse-battery-staple';
-	const MARKER = 'formEncoding=percent-v1';
+	public const STORED = 'correct-horse-battery-staple';
+	public const MARKER = 'formEncoding=percent-v1';
 
 	private $values;
 
@@ -35,56 +35,6 @@ class XmppFormEncodingTest extends TestCase
 			file_get_contents(__DIR__ . '/../../fixtures/xmpp-form-values.json'), true);
 		$this->assertTrue(is_array($this->values) && count($this->values) > 0,
 			'read a table with values in it');
-	}
-
-	private function configured()
-	{
-		$xmpp = new XmppFormEncodingProbe();
-		$xmpp->jabberLogin = 'someone';
-		$xmpp->jabberServer = 'jabber.example';
-		$xmpp->jabberFor = 'someone-else@jabber.example';
-		$xmpp->jabberPasswd = self::STORED;
-		return $xmpp;
-	}
-
-	// What the settings page sends: the word that says its values are
-	// escaped, and then one field each.
-	private function body($field, $encoded)
-	{
-		$fields = array(
-			'advancedSettings' => '0',
-			'useEncryption' => '1',
-			'jabberHost' => '',
-			'jabberPort' => '5222',
-			'jabberJid' => 'someone%40jabber.example',
-			'jabberFor' => 'nobody%40jabber.example',
-			'message' => 'done',
-		);
-		$fields[$field] = $encoded;
-		$pairs = array(self::MARKER);
-		foreach($fields as $name => $value)
-			$pairs[] = $name . '=' . $value;
-		return implode('&', $pairs);
-	}
-
-	// What a settings page from before that word sends: no word, and
-	// whatever was typed put on the wire as it stands.
-	private function legacyBody($field, $raw)
-	{
-		$fields = array(
-			'advancedSettings' => '0',
-			'useEncryption' => '1',
-			'jabberHost' => '',
-			'jabberPort' => '5222',
-			'jabberJid' => 'someone@jabber.example',
-			'jabberFor' => 'nobody@jabber.example',
-			'message' => 'done',
-		);
-		$fields[$field] = $raw;
-		$pairs = array();
-		foreach($fields as $name => $value)
-			$pairs[] = $name . '=' . $value;
-		return implode('&', $pairs);
 	}
 
 	public function testATypedPasswordArrivesAsItWasTyped()
@@ -144,8 +94,8 @@ class XmppFormEncodingTest extends TestCase
 	// sends is unescaped: what arrived is what somebody typed.
 	public function testAnUnmarkedBodyIsNotUnescaped()
 	{
-		foreach(array('p+ssword', '100%25', 'p%2Bssword', 'p%26ssword',
-			'p%3Dssword', 'p%40ssword', 'p%20ssword') as $typed)
+		foreach(['p+ssword', '100%25', 'p%2Bssword', 'p%26ssword',
+			'p%3Dssword', 'p%40ssword', 'p%20ssword'] as $typed)
 		{
 			$xmpp = $this->configured();
 			$xmpp->set($this->legacyBody('jabberPasswd', $typed));
@@ -249,5 +199,55 @@ class XmppFormEncodingTest extends TestCase
 		$legacy->set($this->legacyBody('jabberPasswd', ''));
 		$this->assertTrue($legacy->jabberPasswd === '',
 			'unmarked, an emptied field clears it: ' . var_export($legacy->jabberPasswd, true));
+	}
+
+	private function configured()
+	{
+		$xmpp = new XmppFormEncodingProbe();
+		$xmpp->jabberLogin = 'someone';
+		$xmpp->jabberServer = 'jabber.example';
+		$xmpp->jabberFor = 'someone-else@jabber.example';
+		$xmpp->jabberPasswd = self::STORED;
+		return $xmpp;
+	}
+
+	// What the settings page sends: the word that says its values are
+	// escaped, and then one field each.
+	private function body($field, $encoded)
+	{
+		$fields = [
+			'advancedSettings' => '0',
+			'useEncryption' => '1',
+			'jabberHost' => '',
+			'jabberPort' => '5222',
+			'jabberJid' => 'someone%40jabber.example',
+			'jabberFor' => 'nobody%40jabber.example',
+			'message' => 'done',
+		];
+		$fields[$field] = $encoded;
+		$pairs = [self::MARKER];
+		foreach($fields as $name => $value) {
+			$pairs[] = $name . '=' . $value; }
+		return implode('&', $pairs);
+	}
+
+	// What a settings page from before that word sends: no word, and
+	// whatever was typed put on the wire as it stands.
+	private function legacyBody($field, $raw)
+	{
+		$fields = [
+			'advancedSettings' => '0',
+			'useEncryption' => '1',
+			'jabberHost' => '',
+			'jabberPort' => '5222',
+			'jabberJid' => 'someone@jabber.example',
+			'jabberFor' => 'nobody@jabber.example',
+			'message' => 'done',
+		];
+		$fields[$field] = $raw;
+		$pairs = [];
+		foreach($fields as $name => $value) {
+			$pairs[] = $name . '=' . $value; }
+		return implode('&', $pairs);
 	}
 }

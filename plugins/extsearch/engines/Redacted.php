@@ -3,9 +3,9 @@
 class RedactedEngine extends commonEngine
 {
 
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Applications'=>'&filter_cat[2]=1', 'E-Books'=>'&filter_cat[3]=1',
-		'Audiobooks'=>'&filter_cat[4]=1', 'E-Learning Videos'=>'&filter_cat[5]=1', 'Comedy'=>'&filter_cat[6]=1', 'Comics'=>'&filter_cat[7]=1' );
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
+	public $categories = [ 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Applications'=>'&filter_cat[2]=1', 'E-Books'=>'&filter_cat[3]=1',
+		'Audiobooks'=>'&filter_cat[4]=1', 'E-Learning Videos'=>'&filter_cat[5]=1', 'Comedy'=>'&filter_cat[6]=1', 'Comics'=>'&filter_cat[7]=1' ];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -19,22 +19,22 @@ class RedactedEngine extends commonEngine
 			$this->unconfiguredOriginEntry('Redacted','redactedOrigin',$ret);
 			return;
 		}
-		if($useGlobalCats)
-			$categories = array( 'all'=>'', 'music'=>'&filter_cat[1]=1', 'software'=>'&filter_cat[2]=1', 'books'=>'&filter_cat[3]=1&filter_cat[4]=1&filter_cat[6]=1&filter_cat[7]=1' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'', 'music'=>'&filter_cat[1]=1', 'software'=>'&filter_cat[2]=1', 'books'=>'&filter_cat[3]=1&filter_cat[4]=1&filter_cat[6]=1&filter_cat[7]=1' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 1; $pg<10; $pg++)
 		{
 			$itemsFound = false;
 			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&tags_type=1&searchsubmit=1&order_by=seeders&order_way=desc&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
-				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
-				break;
+				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false)) {
+				break; }
 
 			$res = preg_match_all('/<tr class="torrent">.*<a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
 				'<\/span>(?P<artist>.*)<a href="torrents\.php\?id=(?P<desc>\d+)\&.*>(?P<title>.*)<div class="torrent_info">(?P<cat>.*)<\/div>.*'.
@@ -59,13 +59,13 @@ class RedactedEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

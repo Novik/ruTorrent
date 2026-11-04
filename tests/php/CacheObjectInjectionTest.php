@@ -39,7 +39,7 @@ class InjectionTargetPayload
 {
 	public $hash = 'injection-target.dat';
 	public $modified = false;
-	public $rows = array();
+	public $rows = [];
 }
 
 /** A cached class that legitimately stores objects of another class. */
@@ -58,11 +58,11 @@ class InjectionListPayload
 {
 	public $hash = 'injection-list.dat';
 	public $modified = false;
-	public $lst = array();
+	public $lst = [];
 
-	static public function cacheClasses()
+	public static function cacheClasses()
 	{
-		return array('InjectionItemPayload');
+		return ['InjectionItemPayload'];
 	}
 }
 
@@ -87,51 +87,6 @@ class CacheObjectInjectionTest extends TestCase
 		if (is_dir($this->profilePath)) {
 			$this->removeDir($this->profilePath);
 		}
-	}
-
-	private function removeDir($dir)
-	{
-		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
-			$path = $dir . '/' . $entry;
-			if (is_dir($path) && !is_link($path)) {
-				$this->removeDir($path);
-			} else {
-				unlink($path);
-			}
-		}
-		rmdir($dir);
-	}
-
-	/**
-	 * An rLock whose destructor unlinks $path. Written by hand rather than with
-	 * serialize(), because a payload is bytes an attacker writes and not an
-	 * object this process was ever holding -- and because serialize() would
-	 * have to be handed a live rLock, whose own destructor would then run.
-	 */
-	private function lockGadget($path)
-	{
-		$nul = "\0";
-		return 'O:5:"rLock":3:'
-			. '{s:7:"' . $nul . '*' . $nul . 'file";s:' . strlen($path) . ':"' . $path . '";'
-			. 's:11:"' . $nul . '*' . $nul . 'lockTime";i:0;'
-			. 's:9:"' . $nul . '*' . $nul . 'locked";b:1;}';
-	}
-
-	/** Puts the victim file back and reports whether the gadget deleted it. */
-	private function gadgetFired()
-	{
-		clearstatcache(true, $this->victim);
-		$fired = !file_exists($this->victim);
-		file_put_contents($this->victim, "still here\n");
-		return $fired;
-	}
-
-	private function plant($relative, $bytes)
-	{
-		$path = $this->settings . '/' . $relative;
-		FileUtil::makeDirectory(dirname($path));
-		file_put_contents($path, $bytes);
-		return $path;
 	}
 
 	// ---- the class a cache file may name ---------------------------------
@@ -179,12 +134,12 @@ class CacheObjectInjectionTest extends TestCase
 	public function testTheCallersOwnClassStillLoads()
 	{
 		$stored = new InjectionTargetPayload();
-		$stored->rows = array('a', 'b');
+		$stored->rows = ['a', 'b'];
 		$this->assertTrue((new rCache())->set($stored) === true, 'the store succeeds');
 
 		$loaded = new InjectionTargetPayload();
 		$this->assertTrue((new rCache())->get($loaded) === true, 'the load succeeds');
-		$this->assertTrue($loaded->rows === array('a', 'b'), 'and carries the data back');
+		$this->assertTrue($loaded->rows === ['a', 'b'], 'and carries the data back');
 	}
 
 	/** A list class declares what it may contain, and that still round-trips. */
@@ -193,7 +148,7 @@ class CacheObjectInjectionTest extends TestCase
 		$item = new InjectionItemPayload();
 		$item->name = 'nested';
 		$stored = new InjectionListPayload();
-		$stored->lst = array($item);
+		$stored->lst = [$item];
 		$this->assertTrue((new rCache())->set($stored) === true, 'the store succeeds');
 
 		$loaded = new InjectionListPayload();
@@ -230,7 +185,7 @@ class CacheObjectInjectionTest extends TestCase
 			'a:2:{s:8:"__hash__";s:16:"array-target.dat";s:1:"x";'
 			. $this->lockGadget($this->victim) . '}');
 
-		$target = array('__hash__' => 'array-target.dat');
+		$target = ['__hash__' => 'array-target.dat'];
 		$ok = (new rCache())->get($target);
 		unset($target);
 		gc_collect_cycles();
@@ -281,11 +236,11 @@ class CacheObjectInjectionTest extends TestCase
 	 */
 	public function testARootOfAnotherTypeIsAMiss()
 	{
-		$cases = array(
-			array('injection-target.dat', serialize(array('rows' => array('a'))), new InjectionTargetPayload()),
-			array('injection-target.dat', serialize(42), new InjectionTargetPayload()),
-			array('array-target.dat', serialize('text'), array('__hash__' => 'array-target.dat')),
-		);
+		$cases = [
+			['injection-target.dat', serialize(['rows' => ['a']]), new InjectionTargetPayload()],
+			['injection-target.dat', serialize(42), new InjectionTargetPayload()],
+			['array-target.dat', serialize('text'), ['__hash__' => 'array-target.dat']],
+		];
 		foreach ($cases as list($key, $bytes, $target)) {
 			$this->plant($key, $bytes);
 			$expected = is_object($target) ? get_class($target) : 'array';
@@ -316,12 +271,12 @@ class CacheObjectInjectionTest extends TestCase
 		$log = $this->profilePath . '/cache-root-name.log';
 		$nested = new InjectionItemPayload();
 		$nested->name = 'InjectionListPayload';
-		$cases = array(
-			array('injection-target.dat', serialize(array('rows' => 'InjectionTargetPayload')),
-				new InjectionTargetPayload(), 'InjectionTargetPayload', 'an array'),
-			array('injection-list.dat', serialize($nested),
-				new InjectionListPayload(), 'InjectionListPayload', 'class InjectionItemPayload'),
-		);
+		$cases = [
+			['injection-target.dat', serialize(['rows' => 'InjectionTargetPayload']),
+				new InjectionTargetPayload(), 'InjectionTargetPayload', 'an array'],
+			['injection-list.dat', serialize($nested),
+				new InjectionListPayload(), 'InjectionListPayload', 'class InjectionItemPayload'],
+		];
 		foreach ($cases as list($key, $bytes, $target, $asked, $found)) {
 			$this->assertTrue(strpos($bytes, $asked) !== false,
 				"the bytes of {$key} carry the name {$asked}: " . json_encode($bytes));
@@ -356,24 +311,24 @@ class CacheObjectInjectionTest extends TestCase
 	public function testTheRootRefusalSaysWhatTheFileHoldsAndNothingMore()
 	{
 		$long = str_repeat('A', 129);
-		$cases = array(
-			array('', 'InjectionTargetPayload', 'an empty file'),
-			array('a:1:{i:0;s:1:"a";}', 'InjectionTargetPayload', 'an array'),
-			array('i:42;', 'InjectionTargetPayload', 'a scalar'),
-			array('N;', 'InjectionTargetPayload', 'null'),
-			array('garbage', 'InjectionTargetPayload', 'no serialized value'),
-			array('O:8:"Intruder":0:{}', 'InjectionTargetPayload', 'class Intruder'),
-			array('O:9:"Intruder":0:{}', 'InjectionTargetPayload', 'an object'),
-			array('O:129:"' . $long . '":0:{}', 'InjectionTargetPayload', 'an object'),
-			array("O:15:\"Intruder\nFORGED\":0:{}", 'InjectionTargetPayload', 'an object'),
-			array('O:8:"Intruder":0:{}', 'array', 'class Intruder'),
-		);
+		$cases = [
+			['', 'InjectionTargetPayload', 'an empty file'],
+			['a:1:{i:0;s:1:"a";}', 'InjectionTargetPayload', 'an array'],
+			['i:42;', 'InjectionTargetPayload', 'a scalar'],
+			['N;', 'InjectionTargetPayload', 'null'],
+			['garbage', 'InjectionTargetPayload', 'no serialized value'],
+			['O:8:"Intruder":0:{}', 'InjectionTargetPayload', 'class Intruder'],
+			['O:9:"Intruder":0:{}', 'InjectionTargetPayload', 'an object'],
+			['O:129:"' . $long . '":0:{}', 'InjectionTargetPayload', 'an object'],
+			["O:15:\"Intruder\nFORGED\":0:{}", 'InjectionTargetPayload', 'an object'],
+			['O:8:"Intruder":0:{}', 'array', 'class Intruder'],
+		];
 		$log = $this->profilePath . '/cache-root-found.log';
 		foreach ($cases as list($bytes, $asked, $found)) {
 			@unlink($log);
 			if ($asked === 'array') {
 				$this->plant('array-target.dat', $bytes);
-				$target = array('__hash__' => 'array-target.dat');
+				$target = ['__hash__' => 'array-target.dat'];
 				$line = 'rCache: array-target.dat does not hold an array at its root (found '
 					. $found . '); not loaded.';
 			} else {
@@ -488,19 +443,64 @@ class CacheObjectInjectionTest extends TestCase
 	/** Every key the shipped code actually uses still names a file. */
 	public function testTheShippedKeyShapesAreAccepted()
 	{
-		$keys = array('rtorrent.dat', 'WebUISettings.dat', 'which.dat', 'loginmgr.dat',
+		$keys = ['rtorrent.dat', 'WebUISettings.dat', 'which.dat', 'loginmgr.dat',
 			'history', 'filters', 'groups', 'info', 'data',
-			md5('http://example.test/feed.xml'), 'grp_' . uniqid(time()));
+			md5('http://example.test/feed.xml'), 'grp_' . uniqid(time())];
 		$cache = new rCache();
 		foreach ($keys as $key) {
 			$stored = new InjectionTargetPayload();
 			$stored->hash = $key;
-			$stored->rows = array($key);
+			$stored->rows = [$key];
 			$this->assertTrue($cache->set($stored) === true, "key '{$key}' can be stored");
 
 			$loaded = new InjectionTargetPayload();
 			$loaded->hash = $key;
 			$this->assertTrue($cache->get($loaded) === true, "key '{$key}' can be read back");
 		}
+	}
+
+	private function removeDir($dir)
+	{
+		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
+			$path = $dir . '/' . $entry;
+			if (is_dir($path) && !is_link($path)) {
+				$this->removeDir($path);
+			} else {
+				unlink($path);
+			}
+		}
+		rmdir($dir);
+	}
+
+	/**
+	 * An rLock whose destructor unlinks $path. Written by hand rather than with
+	 * serialize(), because a payload is bytes an attacker writes and not an
+	 * object this process was ever holding -- and because serialize() would
+	 * have to be handed a live rLock, whose own destructor would then run.
+	 */
+	private function lockGadget($path)
+	{
+		$nul = "\0";
+		return 'O:5:"rLock":3:'
+			. '{s:7:"' . $nul . '*' . $nul . 'file";s:' . strlen($path) . ':"' . $path . '";'
+			. 's:11:"' . $nul . '*' . $nul . 'lockTime";i:0;'
+			. 's:9:"' . $nul . '*' . $nul . 'locked";b:1;}';
+	}
+
+	/** Puts the victim file back and reports whether the gadget deleted it. */
+	private function gadgetFired()
+	{
+		clearstatcache(true, $this->victim);
+		$fired = !file_exists($this->victim);
+		file_put_contents($this->victim, "still here\n");
+		return $fired;
+	}
+
+	private function plant($relative, $bytes)
+	{
+		$path = $this->settings . '/' . $relative;
+		FileUtil::makeDirectory(dirname($path));
+		file_put_contents($path, $bytes);
+		return $path;
 	}
 }

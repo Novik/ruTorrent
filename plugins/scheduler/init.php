@@ -12,5 +12,5 @@ if($req->run() && !$req->fault)
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	$jResult.=$schd->get();
 }
-else
-	$jResult.="plugin.disable(); noty('scheduler: '+theUILang.pluginCantStart,'error');";
+else {
+	$jResult.="plugin.disable(); noty('scheduler: '+theUILang.pluginCantStart,'error');"; }

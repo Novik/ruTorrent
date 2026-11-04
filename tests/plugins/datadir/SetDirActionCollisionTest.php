@@ -30,7 +30,7 @@ require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
  */
 class SetDirActionCollisionTest extends TestCase
 {
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
 
 	private $base;
 	private $daemon;
@@ -50,100 +50,13 @@ class SetDirActionCollisionTest extends TestCase
 		$this->removeTree($this->base);
 	}
 
-	private function removeTree($path)
-	{
-		if (is_link($path)) { @unlink($path); return; }
-		if (!is_dir($path)) { @unlink($path); return; }
-		foreach (glob($path . '/*') as $entry)
-			$this->removeTree($entry);
-		@rmdir($path);
-	}
-
-	private function repoRoot()
-	{
-		return realpath(__DIR__ . '/../../..');
-	}
-
-	/**
-	 * Posts a "set data directory" to action.php and reports what came back
-	 * and what rTorrent was asked for.
-	 *
-	 * $occupy are names already standing under the destination, $isOpen is the
-	 * run state rTorrent reports, and $datadir defaults to a directory that is
-	 * not where the data already is.
-	 */
-	private function setTheDataDirectory($occupy, $isOpen = 1, $datadir = null, $moveFiles = 1)
-	{
-		$this->removeTree($this->base);
-		if ($this->daemon !== null)
-			$this->daemon->stop();
-
-		$names = array('1.bin', '2.bin');
-		@mkdir($this->base . '/profile/settings', 0700, true);
-		@mkdir($this->base . '/src/mytorrent', 0777, true);
-		@mkdir($this->base . '/dst', 0777, true);
-		foreach ($names as $n)
-			file_put_contents($this->base . '/src/mytorrent/' . $n, 'download ' . $n);
-		foreach ($occupy as $n)
-		{
-			@mkdir($this->base . '/dst/mytorrent', 0777, true);
-			file_put_contents($this->base . '/dst/mytorrent/' . $n, 'already there');
-		}
-		if ($datadir === null)
-			$datadir = $this->base . '/dst';
-
-		// One reply per request. Before the check existed the first request
-		// was the execute; the list serves both shapes, because the only
-		// thing read out of a reply is that it came back at all.
-
-		// An install whose interface has been opened has a settings cache.
-		// This script is driven against a profile of its own, so leave one
-		// there rather than have it probe and spend the replies below.
-		// action.php runs as REMOTE_USER, so the profile is that user's own.
-		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/tester');
-		$this->daemon = new FakeRtorrentDaemon(array(
-			array($isOpen, 'mytorrent', $this->base . '/src/mytorrent', 'mytorrent', 1),
-			$names,
-			array(0), array(0), array(0),
-		), $this->base . '/calls.log');
-
-		$driver = $this->base . '/drive-action.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_SERVER[\'REMOTE_USER\'] = "tester"; $_ENV[\'RU_PROFILE_PATH\'] = '
-				. var_export($this->base . '/profile', true) . ";\n"
-			. 'require_once(' . var_export($this->repoRoot() . '/conf/config.php', true) . ");\n"
-			. '$scgi_host = "127.0.0.1"; $scgi_port = ' . $this->daemon->port() . ';'
-				. ' $rpcTimeOut = 10; $rpcLogCalls = false;' . "\n"
-			. '$topDirectory = "/";' . "\n"
-			. '$HTTP_RAW_POST_DATA = "hash=' . self::HASH . '&datadir='
-				. rawurlencode($datadir) . '&move_addpath=1&move_datafiles=' . $moveFiles
-				. '&move_fastresume=0";' . "\n"
-			. 'chdir(' . var_export($this->repoRoot() . '/plugins/datadir', true) . ");\n"
-			. 'require(' . var_export($this->repoRoot() . '/plugins/datadir/action.php', true) . ");\n");
-
-		$out = array();
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
-			. ' 2>&1', $out);
-		$printed = implode("\n", $out);
-		$answer = json_decode($printed, true);
-		if (!is_array($answer) || !array_key_exists('errors', $answer))
-			throw new Exception('action.php printed: ' . $printed);
-
-		return array(
-			'printed' => $printed,
-			'errors' => $answer['errors'],
-			'calls' => $this->daemon->calls(),
-			'started' => in_array('execute', $this->daemon->calls(), true),
-		);
-	}
-
 	/**
 	 * The whole point: the dialog is told the move did not happen, and which
 	 * name stopped it, rather than being told nothing at all.
 	 */
 	public function testATakenDestinationComesBackAsAnError()
 	{
-		$r = $this->setTheDataDirectory(array('2.bin'));
+		$r = $this->setTheDataDirectory(['2.bin']);
 
 		$this->assertTrue(count($r['errors']) > 0,
 			'a destination that is already taken is refused before anything is '
@@ -177,9 +90,9 @@ class SetDirActionCollisionTest extends TestCase
 			return;
 		}
 
-		$r = $this->setTheDataDirectory(array('2.BIN'));
+		$r = $this->setTheDataDirectory(['2.BIN']);
 
-		$this->assertEquals(array(), $r['errors'],
+		$this->assertEquals([], $r['errors'],
 			'a name differing only in case does not occupy the destination, so '
 			. 'the move goes ahead; action.php answered: ' . $r['printed']);
 		$this->assertTrue($r['started'],
@@ -194,7 +107,7 @@ class SetDirActionCollisionTest extends TestCase
 	 */
 	public function testAClosedDownloadIsNotOpenedToAnswerTheQuestion()
 	{
-		$r = $this->setTheDataDirectory(array('2.bin'), 0);
+		$r = $this->setTheDataDirectory(['2.bin'], 0);
 
 		$this->assertTrue(!in_array('d.open', $r['calls'], true),
 			'the check does not open a closed download; calls: '
@@ -210,9 +123,9 @@ class SetDirActionCollisionTest extends TestCase
 	 */
 	public function testMovingADownloadToWhereItAlreadyIsIsNotRefused()
 	{
-		$r = $this->setTheDataDirectory(array(), 1, $this->base . '/src');
+		$r = $this->setTheDataDirectory([], 1, $this->base . '/src');
 
-		$this->assertEquals(array(), $r['errors'],
+		$this->assertEquals([], $r['errors'],
 			'a download is not refused its own directory; action.php answered: '
 			. $r['printed']);
 		$this->assertTrue($r['started'],
@@ -225,14 +138,101 @@ class SetDirActionCollisionTest extends TestCase
 	 */
 	public function testARequestThatDoesNotMoveTheFilesIsNotChecked()
 	{
-		$r = $this->setTheDataDirectory(array('2.bin'), 1, null, 0);
+		$r = $this->setTheDataDirectory(['2.bin'], 1, null, 0);
 
-		$this->assertEquals(array(), $r['errors'],
+		$this->assertEquals([], $r['errors'],
 			'leaving the data where it is cannot collide; action.php answered: '
 			. $r['printed']);
 		$this->assertTrue(!in_array('f.multicall', $r['calls'], true),
 			'so the file list is not read; calls: ' . implode(', ', $r['calls']));
 		$this->assertTrue($r['started'],
 			'and the directory change is started; calls: ' . implode(', ', $r['calls']));
+	}
+
+	private function removeTree($path)
+	{
+		if (is_link($path)) { @unlink($path); return; }
+		if (!is_dir($path)) { @unlink($path); return; }
+		foreach (glob($path . '/*') as $entry) {
+			$this->removeTree($entry); }
+		@rmdir($path);
+	}
+
+	private function repoRoot()
+	{
+		return realpath(__DIR__ . '/../../..');
+	}
+
+	/**
+	 * Posts a "set data directory" to action.php and reports what came back
+	 * and what rTorrent was asked for.
+	 *
+	 * $occupy are names already standing under the destination, $isOpen is the
+	 * run state rTorrent reports, and $datadir defaults to a directory that is
+	 * not where the data already is.
+	 */
+	private function setTheDataDirectory($occupy, $isOpen = 1, $datadir = null, $moveFiles = 1)
+	{
+		$this->removeTree($this->base);
+		if ($this->daemon !== null) {
+			$this->daemon->stop(); }
+
+		$names = ['1.bin', '2.bin'];
+		@mkdir($this->base . '/profile/settings', 0700, true);
+		@mkdir($this->base . '/src/mytorrent', 0777, true);
+		@mkdir($this->base . '/dst', 0777, true);
+		foreach ($names as $n) {
+			file_put_contents($this->base . '/src/mytorrent/' . $n, 'download ' . $n); }
+		foreach ($occupy as $n)
+		{
+			@mkdir($this->base . '/dst/mytorrent', 0777, true);
+			file_put_contents($this->base . '/dst/mytorrent/' . $n, 'already there');
+		}
+		if ($datadir === null) {
+			$datadir = $this->base . '/dst'; }
+
+		// One reply per request. Before the check existed the first request
+		// was the execute; the list serves both shapes, because the only
+		// thing read out of a reply is that it came back at all.
+
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		// action.php runs as REMOTE_USER, so the profile is that user's own.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/tester');
+		$this->daemon = new FakeRtorrentDaemon([
+			[$isOpen, 'mytorrent', $this->base . '/src/mytorrent', 'mytorrent', 1],
+			$names,
+			[0], [0], [0],
+		], $this->base . '/calls.log');
+
+		$driver = $this->base . '/drive-action.php';
+		file_put_contents($driver, "<?php\n"
+			. '$_SERVER[\'REMOTE_USER\'] = "tester"; $_ENV[\'RU_PROFILE_PATH\'] = '
+				. var_export($this->base . '/profile', true) . ";\n"
+			. 'require_once(' . var_export($this->repoRoot() . '/conf/config.php', true) . ");\n"
+			. '$scgi_host = "127.0.0.1"; $scgi_port = ' . $this->daemon->port() . ';'
+				. ' $rpcTimeOut = 10; $rpcLogCalls = false;' . "\n"
+			. '$topDirectory = "/";' . "\n"
+			. '$HTTP_RAW_POST_DATA = "hash=' . self::HASH . '&datadir='
+				. rawurlencode($datadir) . '&move_addpath=1&move_datafiles=' . $moveFiles
+				. '&move_fastresume=0";' . "\n"
+			. 'chdir(' . var_export($this->repoRoot() . '/plugins/datadir', true) . ");\n"
+			. 'require(' . var_export($this->repoRoot() . '/plugins/datadir/action.php', true) . ");\n");
+
+		$out = [];
+		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
+			. ' 2>&1', $out);
+		$printed = implode("\n", $out);
+		$answer = json_decode($printed, true);
+		if (!is_array($answer) || !array_key_exists('errors', $answer)) {
+			throw new Exception('action.php printed: ' . $printed); }
+
+		return [
+			'printed' => $printed,
+			'errors' => $answer['errors'],
+			'calls' => $this->daemon->calls(),
+			'started' => in_array('execute', $this->daemon->calls(), true),
+		];
 	}
 }

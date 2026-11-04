@@ -35,35 +35,27 @@ class SCGITransportInjected extends rSCGITransport
 		self::$step = 0.0;
 		self::$writeSize = 65536;
 		self::$writeStep = ($mode === 'write-zero') ? 0.25 : 0.0;
-		self::$blocking = array();
-		self::$readQueue = array("Content-Length: 1\r\n\r\nx");
+		self::$blocking = [];
+		self::$readQueue = ["Content-Length: 1\r\n\r\nx"];
 		self::$readStep = ($mode === 'read-empty') ? 0.25 : 0.0;
 		self::$readCount = 0;
-		self::$writePlan = array();
-		self::$sleeps = array();
+		self::$writePlan = [];
+		self::$sleeps = [];
 		self::$calls = 0;
-	}
-
-	// A loop that never sleeps or advances the clock would spin forever here;
-	// fail by name instead of hanging the suite.
-	private static function count()
-	{
-		if(++self::$calls > 100000)
-			throw new RuntimeException('the transport loops without sleeping');
 	}
 
 	public static function finish()
 	{
-		if(is_resource(self::$peer))
-			fclose(self::$peer);
+		if(is_resource(self::$peer)) {
+			fclose(self::$peer); }
 		self::$peer = null;
 	}
 
 	protected static function openSocket($address, &$errno, &$error, $timeout)
 	{
 		$pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
-		if($pair === false)
-			return false;
+		if($pair === false) {
+			return false; }
 		self::$peer = $pair[1];
 		return $pair[0];
 	}
@@ -79,12 +71,12 @@ class SCGITransportInjected extends rSCGITransport
 	{
 		self::count();
 		self::$now += self::$writeStep;
-		if(self::$writePlan)
-			return min(array_shift(self::$writePlan), $length);
-		if(self::$mode === 'write-false')
-			return false;
-		if(self::$mode === 'write-zero')
-			return 0;
+		if(self::$writePlan) {
+			return min(array_shift(self::$writePlan), $length); }
+		if(self::$mode === 'write-false') {
+			return false; }
+		if(self::$mode === 'write-zero') {
+			return 0; }
 		return min(self::$writeSize, $length);
 	}
 
@@ -94,12 +86,12 @@ class SCGITransportInjected extends rSCGITransport
 		self::count();
 		self::$now += self::$readStep;
 		self::$readCount++;
-		if(self::$mode === 'read-false')
-			return false;
-		if(in_array(self::$mode, array('read-empty', 'read-timeout-meta', 'read-eof-meta'), true))
-			return '';
-		if(count(self::$readQueue) === 0)
-			return false;
+		if(self::$mode === 'read-false') {
+			return false; }
+		if(in_array(self::$mode, ['read-empty', 'read-timeout-meta', 'read-eof-meta'], true)) {
+			return ''; }
+		if(count(self::$readQueue) === 0) {
+			return false; }
 		$chunk = array_shift(self::$readQueue);
 		if(strlen($chunk) > $length)
 		{
@@ -111,11 +103,11 @@ class SCGITransportInjected extends rSCGITransport
 
 	protected static function socketMetadata($socket)
 	{
-		if(self::$readCount > 0 && (self::$mode === 'read-timeout-meta' || self::$mode === 'partial-read-timeout'))
-			return array('timed_out' => true, 'eof' => false);
-		if(self::$mode === 'read-eof-meta')
-			return array('timed_out' => false, 'eof' => true);
-		return array('timed_out' => false, 'eof' => false);
+		if(self::$readCount > 0 && (self::$mode === 'read-timeout-meta' || self::$mode === 'partial-read-timeout')) {
+			return ['timed_out' => true, 'eof' => false]; }
+		if(self::$mode === 'read-eof-meta') {
+			return ['timed_out' => false, 'eof' => true]; }
+		return ['timed_out' => false, 'eof' => false];
 	}
 
 	protected static function monotonicNow()
@@ -136,17 +128,25 @@ class SCGITransportInjected extends rSCGITransport
 	{
 		return false;
 	}
+
+	// A loop that never sleeps or advances the clock would spin forever here;
+	// fail by name instead of hanging the suite.
+	private static function count()
+	{
+		if(++self::$calls > 100000) {
+			throw new RuntimeException('the transport loops without sleeping'); }
+	}
 }
 
 class SCGITransportWakeProbe extends rSCGITransport
 {
-	public static $waits = array();
-	public static $sleeps = array();
+	public static $waits = [];
+	public static $sleeps = [];
 
 	public static function reset()
 	{
-		self::$waits = array();
-		self::$sleeps = array();
+		self::$waits = [];
+		self::$sleeps = [];
 	}
 
 	public static function watch($socket, $writing, $seconds)
@@ -157,7 +157,7 @@ class SCGITransportWakeProbe extends rSCGITransport
 	protected static function waitForSocket($socket, $writing, $seconds)
 	{
 		$ready = parent::waitForSocket($socket, $writing, $seconds);
-		self::$waits[] = array('writing' => $writing, 'ready' => $ready);
+		self::$waits[] = ['writing' => $writing, 'ready' => $ready];
 		return $ready;
 	}
 
@@ -170,15 +170,15 @@ class SCGITransportWakeProbe extends rSCGITransport
 
 class SCGITransportShortWriter extends rSCGITransport
 {
-	public static $offers = array();
-	public static $slices = array();
+	public static $offers = [];
+	public static $slices = [];
 	public static $zeros;
 
 	public static function reset($zeros = 0)
 	{
 		self::$zeros = $zeros;
-		self::$offers = array();
-		self::$slices = array();
+		self::$offers = [];
+		self::$slices = [];
 	}
 
 	protected static function writeBytes($socket, $bytes, $length)
@@ -277,8 +277,8 @@ class SCGITransportSpillStream
 
 	public function stream_seek($offset, $whence)
 	{
-		if(($whence !== SEEK_SET) || ($offset < 0) || ($offset > strlen($this->data)))
-			return false;
+		if(($whence !== SEEK_SET) || ($offset < 0) || ($offset > strlen($this->data))) {
+			return false; }
 		$this->position = $offset;
 		return true;
 	}
@@ -290,7 +290,7 @@ class SCGITransportSpillStream
 
 	public function stream_stat()
 	{
-		return array('size' => strlen($this->data));
+		return ['size' => strlen($this->data)];
 	}
 }
 stream_wrapper_register('scgitransport-spill', 'SCGITransportSpillStream');
@@ -322,13 +322,13 @@ class SCGITransportTemporary extends rSCGITransport
 	public static function inspect($directory)
 	{
 		$file = parent::openTemporary($directory);
-		if(!is_resource($file))
-			return false;
+		if(!is_resource($file)) {
+			return false; }
 		try
 		{
 			$meta = stream_get_meta_data($file);
 			$stat = fstat($file);
-			return array($meta['uri'], $stat['nlink']);
+			return [$meta['uri'], $stat['nlink']];
 		}
 		finally { fclose($file); }
 	}
@@ -337,19 +337,19 @@ class SCGITransportTemporary extends rSCGITransport
 class SCGITransportTest extends TestCase
 {
 	// Options most exchanges here use; a test names only what it changes.
-	const BODY = array('connectTimeout' => 1, 'transferTimeout' => 1, 'maxResponseBytes' => 1024,
-		'responseMode' => rSCGITransport::RESPONSE_BODY);
+	public const BODY = ['connectTimeout' => 1, 'transferTimeout' => 1, 'maxResponseBytes' => 1024,
+		'responseMode' => rSCGITransport::RESPONSE_BODY];
 
 	// rtorrent's own response ceiling: 100 << 20 in 0.9.8 and current master.
-	const DAEMON_RESPONSE_CAP = 104857600;
+	public const DAEMON_RESPONSE_CAP = 104857600;
 
 	private $sourceRoot;
 
 	public function setUp()
 	{
 		$this->sourceRoot = realpath(__DIR__.'/../..');
-		if($this->sourceRoot === false)
-			throw new Exception('could not locate production source root');
+		if($this->sourceRoot === false) {
+			throw new Exception('could not locate production source root'); }
 	}
 
 	public function testCompleteDeclaredFrameReturnsBeforePeerEOF()
@@ -361,7 +361,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = 'not-cleared';
 			$result = rSCGITransport::send($peer->host(), $peer->port(), '<request/>', false,
-				array('maxResponseBytes' => 4096, 'responseMode' => rSCGITransport::RESPONSE_RAW) + self::BODY,
+				['maxResponseBytes' => 4096, 'responseMode' => rSCGITransport::RESPONSE_RAW] + self::BODY,
 				$failure);
 			$this->assertTrue($result === $headers.$body,
 				'a complete Content-Length frame is returned verbatim before the peer closes');
@@ -372,7 +372,7 @@ class SCGITransportTest extends TestCase
 
 	public function testRequestFramingAndBothTrustBitsAreExact()
 	{
-		foreach(array(array(true, '0'), array(false, '1')) as $case)
+		foreach([[true, '0'], [false, '1']] as $case)
 		{
 			list($trusted, $untrusted) = $case;
 			$payload = '<request trust="'.$untrusted.'"/>';
@@ -404,7 +404,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = rSCGITransport::send($tcp->host(), $tcp->port(), '<tcp/>', true,
-				array('responseMode' => rSCGITransport::RESPONSE_RAW) + self::BODY,
+				['responseMode' => rSCGITransport::RESPONSE_RAW] + self::BODY,
 				$failure);
 			$this->assertTrue($result === $raw && $failure === null,
 				'a real TCP peer returns the exact raw frame');
@@ -413,7 +413,7 @@ class SCGITransportTest extends TestCase
 
 		// fsockopen() appended a port only when it was positive, so these all
 		// named the UNIX socket alone.
-		foreach(array(0, '0', -1, null) as $port)
+		foreach([0, '0', -1, null] as $port)
 		{
 			$unix = SCGITransportFixture::startUnix("Content-Length: 4\r\n\r\nunix");
 			try
@@ -431,15 +431,15 @@ class SCGITransportTest extends TestCase
 	public function testConfiguredTransportPrefixesReachTheOriginalEndpoint()
 	{
 		$frame = "Status: 200 OK\r\nContent-Length: 2\r\n\r\nok";
-		foreach(array('', 'tcp://') as $prefix)
-			foreach(array(rSCGITransport::RESPONSE_RAW, rSCGITransport::RESPONSE_BODY) as $mode)
+		foreach(['', 'tcp://'] as $prefix) {
+			foreach([rSCGITransport::RESPONSE_RAW, rSCGITransport::RESPONSE_BODY] as $mode)
 			{
 				$peer = SCGITransportFixture::start($frame);
 				try
 				{
 					$failure = null;
 					$result = rSCGITransport::send($prefix.$peer->host(), $peer->port(), '<configured/>',
-						true, array('maxResponseBytes' => 1024, 'responseMode' => $mode) + self::BODY, $failure);
+						true, ['maxResponseBytes' => 1024, 'responseMode' => $mode] + self::BODY, $failure);
 					$expected = ($mode === rSCGITransport::RESPONSE_RAW) ? $frame : 'ok';
 					$this->assertTrue($result === $expected && $failure === null,
 						var_export($prefix, true).' configured prefix returns the exact '.$mode.' reply');
@@ -451,7 +451,7 @@ class SCGITransportTest extends TestCase
 					}
 				}
 				finally { $peer->close(); }
-			}
+			} }
 	}
 
 	public function testAddressIsComposedAsFsockopenComposedIt()
@@ -459,23 +459,23 @@ class SCGITransportTest extends TestCase
 		// No connection is made, so bracketed IPv6 forms are checked even where
 		// the host running this suite has no IPv6 loopback interface.
 		$unix = 'unix:///run/rtorrent/rtorrent.sock';
-		$cases = array(
-			array($unix, 0, $unix),
-			array($unix, '0', $unix),
-			array($unix, -1, $unix),
-			array($unix, null, $unix),
-			array('127.0.0.1:5000', 0, '127.0.0.1:5000'),
-			array('127.0.0.1', 5000, '127.0.0.1:5000'),
-			array('localhost', '5000', 'localhost:5000'),
-			array('tcp://127.0.0.1', 5000, 'tcp://127.0.0.1:5000'),
-			array('[::1]', 5000, '[::1]:5000'),
-			array('tcp://[::1]', 5000.0, 'tcp://[::1]:5000'),
-		);
+		$cases = [
+			[$unix, 0, $unix],
+			[$unix, '0', $unix],
+			[$unix, -1, $unix],
+			[$unix, null, $unix],
+			['127.0.0.1:5000', 0, '127.0.0.1:5000'],
+			['127.0.0.1', 5000, '127.0.0.1:5000'],
+			['localhost', '5000', 'localhost:5000'],
+			['tcp://127.0.0.1', 5000, 'tcp://127.0.0.1:5000'],
+			['[::1]', 5000, '[::1]:5000'],
+			['tcp://[::1]', 5000.0, 'tcp://[::1]:5000'],
+		];
 		foreach($cases as $case)
 		{
 			$failure = null;
 			SCGITransportNoConnect::send($case[0], $case[1], '<configured/>', true,
-				array('connectTimeout' => 1, 'transferTimeout' => 1, 'maxResponseBytes' => 1024), $failure);
+				['connectTimeout' => 1, 'transferTimeout' => 1, 'maxResponseBytes' => 1024], $failure);
 			$this->assertTrue(SCGITransportNoConnect::$address === $case[2],
 				$case[0].' with port '.var_export($case[1], true).' connects to '.$case[2]);
 		}
@@ -483,39 +483,25 @@ class SCGITransportTest extends TestCase
 
 	public function testInvalidInputsMakeZeroConnectAttempts()
 	{
-		$cases = array(
-			array('', null, null, rSCGITransport::RESPONSE_RAW, 'empty-request'),
-			array('<x/>', null, null, 'invalid', 'invalid-response-mode'),
-		);
+		$cases = [
+			['', null, null, rSCGITransport::RESPONSE_RAW, 'empty-request'],
+			['<x/>', null, null, 'invalid', 'invalid-response-mode'],
+		];
 		SCGITransportNoConnect::$attempts = 0;
 		foreach($cases as $case)
 		{
 			$failure = null;
 			$result = SCGITransportNoConnect::send('unused', 1, $case[0], true,
-				array('transferTimeout' => $case[1], 'maxResponseBytes' => $case[2], 'responseMode' => $case[3]) + self::BODY,
+				['transferTimeout' => $case[1], 'maxResponseBytes' => $case[2], 'responseMode' => $case[3]] + self::BODY,
 				$failure);
 			$this->assertTrue($result === null && $failure === $case[4],
 				$case[4].' rejects its invalid input');
 		}
 		$failure = null;
-		$result = SCGITransportNoConnect::send('unused', 1, '<x/>', true, array('transferTimeOut' => 5) + self::BODY, $failure);
+		$result = SCGITransportNoConnect::send('unused', 1, '<x/>', true, ['transferTimeOut' => 5] + self::BODY, $failure);
 		$this->assertTrue($result === null && $failure === 'invalid-options', 'a misspelt option is refused, not ignored');
 		$this->assertEquals(0, SCGITransportNoConnect::$attempts,
 			'all invalid inputs are rejected before any socket connect attempt');
-	}
-
-	/** The pauses $sleeps took against the backoff: first, doubling, capped. */
-	private function assertBackoff($sleeps, $message)
-	{
-		$expected = rSCGITransport::FIRST_PAUSE;
-		$shaped = count($sleeps) > 0;
-		// The last pause may be cut short by the deadline.
-		for($i = 0; $i < count($sleeps) - 1; $i++)
-		{
-			$shaped = $shaped && (abs($sleeps[$i] - $expected) < 1e-9);
-			$expected = min($expected * 2, rSCGITransport::LONGEST_PAUSE);
-		}
-		$this->assertTrue($shaped, $message.': '.json_encode($sleeps));
 	}
 
 	public function testIdleReadsBackOffAndSpendTheBudgetAsleep()
@@ -542,14 +528,14 @@ class SCGITransportTest extends TestCase
 	public function testReadProgressStartsTheBackoffOver()
 	{
 		SCGITransportInjected::prepare('read-trickle');
-		SCGITransportInjected::$readQueue = array('', '', "Content-Length: 2\r\n\r\n", '', '', 'x', '', 'y');
+		SCGITransportInjected::$readQueue = ['', '', "Content-Length: 2\r\n\r\n", '', '', 'x', '', 'y'];
 		try
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<x/>', true, self::BODY, $failure);
 			$first = rSCGITransport::FIRST_PAUSE;
 			$this->assertTrue($result === 'xy' && $failure === null, 'the trickled response completes');
-			$this->assertTrue(SCGITransportInjected::$sleeps === array($first, 2 * $first, $first, 2 * $first, $first),
+			$this->assertTrue(SCGITransportInjected::$sleeps === [$first, 2 * $first, $first, 2 * $first, $first],
 				'each read that brings bytes starts the pauses over: '.json_encode(SCGITransportInjected::$sleeps));
 		}
 		finally { SCGITransportInjected::finish(); }
@@ -572,32 +558,22 @@ class SCGITransportTest extends TestCase
 		finally { SCGITransportInjected::finish(); }
 
 		SCGITransportInjected::prepare('write-plan');
-		SCGITransportInjected::$writePlan = array(0, 0, 5, 0);
+		SCGITransportInjected::$writePlan = [0, 0, 5, 0];
 		try
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<x/>', true, self::BODY, $failure);
 			$first = rSCGITransport::FIRST_PAUSE;
 			$this->assertTrue($result === 'x' && $failure === null, 'the request completes after partial writes');
-			$this->assertTrue(SCGITransportInjected::$sleeps === array($first, 2 * $first, $first),
+			$this->assertTrue(SCGITransportInjected::$sleeps === [$first, 2 * $first, $first],
 				'written bytes start the pauses over: '.json_encode(SCGITransportInjected::$sleeps));
 		}
 		finally { SCGITransportInjected::finish(); }
 	}
 
-	/** The waits of SCGITransportWakeProbe in one direction. */
-	private function probeWaits($writing)
-	{
-		$waits = array();
-		foreach(SCGITransportWakeProbe::$waits as $wait)
-			if($wait['writing'] === $writing)
-				$waits[] = $wait['ready'];
-		return $waits;
-	}
-
 	public function testAReplyEndsTheReadPauseWhenItArrives()
 	{
-		$peer = SCGITransportFixture::startChunks(array(array(0.2, "Content-Length: 1\r\n\r\nx")));
+		$peer = SCGITransportFixture::startChunks([[0.2, "Content-Length: 1\r\n\r\nx"]]);
 		try
 		{
 			SCGITransportWakeProbe::reset();
@@ -605,7 +581,7 @@ class SCGITransportTest extends TestCase
 			$result = SCGITransportWakeProbe::send($peer->host(), $peer->port(), '<x/>', true, self::BODY, $failure);
 			$waits = $this->probeWaits(false);
 			$this->assertTrue($result === 'x' && $failure === null, 'the late reply completes');
-			$this->assertTrue(SCGITransportWakeProbe::$sleeps === array() && (end($waits) === 1),
+			$this->assertTrue(SCGITransportWakeProbe::$sleeps === [] && (end($waits) === 1),
 				'the client watched the socket and the reply woke it: '.json_encode(SCGITransportWakeProbe::$waits));
 			$this->assertTrue(count($waits) < 30,
 				'an idle read waits for readability rather than returning at once: '.count($waits));
@@ -615,15 +591,15 @@ class SCGITransportTest extends TestCase
 
 	public function testABlockedWriteWaitsForRoomInTheSocket()
 	{
-		$peer = SCGITransportFixture::startNotReading(0.2, array(array(0, "Content-Length: 1\r\n\r\nx")));
+		$peer = SCGITransportFixture::startNotReading(0.2, [[0, "Content-Length: 1\r\n\r\nx"]]);
 		try
 		{
 			SCGITransportWakeProbe::reset();
 			$failure = null;
 			$result = SCGITransportWakeProbe::send($peer->host(), $peer->port(), str_repeat('x', 8 * 1048576),
-				true, array('transferTimeout' => 10) + self::BODY, $failure);
+				true, ['transferTimeout' => 10] + self::BODY, $failure);
 			$this->assertTrue($result === 'x' && $failure === null, 'the request is written once the peer reads');
-			$this->assertTrue(SCGITransportWakeProbe::$sleeps === array() && (count($this->probeWaits(true)) > 0),
+			$this->assertTrue(SCGITransportWakeProbe::$sleeps === [] && (count($this->probeWaits(true)) > 0),
 				'a blocked write watched the socket for room: '.json_encode(SCGITransportWakeProbe::$waits));
 		}
 		finally { $peer->close(); }
@@ -654,25 +630,25 @@ class SCGITransportTest extends TestCase
 		// With its accept queue full, the listener drops further connection
 		// attempts, so connecting waits for the timeout instead of failing.
 		$server = stream_socket_server('tcp://127.0.0.1:0', $errno, $error, STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,
-			stream_context_create(array('socket' => array('backlog' => 0))));
+			stream_context_create(['socket' => ['backlog' => 0]]));
 		$address = stream_socket_get_name($server, false);
-		$queued = array();
+		$queued = [];
 		try
 		{
-			while((count($queued) < 8) && (($client = @stream_socket_client('tcp://'.$address, $errno, $error, 0.1)) !== false))
-				$queued[] = $client;
+			while((count($queued) < 8) && (($client = @stream_socket_client('tcp://'.$address, $errno, $error, 0.1)) !== false)) {
+				$queued[] = $client; }
 			$failure = null;
 			$started = microtime(true);
 			$result = rSCGITransport::send('127.0.0.1', (int)substr($address, strrpos($address, ':') + 1), '<x/>', true,
-				array('connectTimeout' => 0.5) + self::BODY, $failure);
+				['connectTimeout' => 0.5] + self::BODY, $failure);
 			$elapsed = microtime(true) - $started;
 			$this->assertTrue($result === null && $failure === 'connect-failed' && ($elapsed >= 0.45) && ($elapsed < 3),
 				'the configured timeout bounds a connection that is never accepted: '.$elapsed.' s');
 		}
 		finally
 		{
-			foreach($queued as $client)
-				fclose($client);
+			foreach($queued as $client) {
+				fclose($client); }
 			fclose($server);
 		}
 	}
@@ -683,7 +659,7 @@ class SCGITransportTest extends TestCase
 		try
 		{
 			$failure = null;
-			$result = rSCGITransport::send($peer->host(), $peer->port(), '<x/>', true, array('transferTimeout' => 3), $failure);
+			$result = rSCGITransport::send($peer->host(), $peer->port(), '<x/>', true, ['transferTimeout' => 3], $failure);
 			$this->assertTrue($result === "Content-Length: 2\r\n\r\nok", 'without a response mode the raw frame is returned');
 		}
 		finally { $peer->close(); }
@@ -698,9 +674,9 @@ class SCGITransportTest extends TestCase
 			ini_set('default_socket_timeout', '60');
 			$GLOBALS['rpcTimeOut'] = 90;
 			$GLOBALS['rpcTransferTimeOut'] = null;
-			foreach(array('read-timeout', 'write-timeout') as $failure)
+			foreach(['read-timeout', 'write-timeout'] as $failure) {
 				$this->assertEquals($failure.' after the 90-second transfer budget; raise $rpcTransferTimeOut for slower replies',
-					rSCGITransport::describeFailure($failure), 'a longer connect timeout is the budget null gives');
+					rSCGITransport::describeFailure($failure), 'a longer connect timeout is the budget null gives'); }
 			$GLOBALS['rpcTransferTimeOut'] = 7.5;
 			$this->assertEquals('read-timeout after the 7.5-second transfer budget; raise $rpcTransferTimeOut for slower replies',
 				rSCGITransport::describeFailure('read-timeout'), 'a configured budget is named as it is used');
@@ -721,12 +697,12 @@ class SCGITransportTest extends TestCase
 		{
 			$GLOBALS['scgi_host'] = '127.0.0.1';
 			$GLOBALS['scgi_port'] = 1;
-			foreach(array(array(5, 5.0), array('2.5', 2.5), array(0, 30.0), array('5s', 30.0), array(null, 30.0)) as $case)
+			foreach([[5, 5.0], ['2.5', 2.5], [0, 30.0], ['5s', 30.0], [null, 30.0]] as $case)
 			{
 				$GLOBALS['rpcTimeOut'] = $case[0];
 				SCGITransportNoConnect::$timeout = null;
 				$failure = null;
-				SCGITransportNoConnect::sendConfigured('<x/>', true, array(), $failure);
+				SCGITransportNoConnect::sendConfigured('<x/>', true, [], $failure);
 				$this->assertTrue(SCGITransportNoConnect::$timeout === $case[1] && $failure === 'connect-failed',
 					'$rpcTimeOut = '.var_export($case[0], true).' connects within '.$case[1].' seconds');
 			}
@@ -738,28 +714,28 @@ class SCGITransportTest extends TestCase
 	{
 		$previous = ini_get('default_socket_timeout');
 		$cap = (float)rSCGITransport::MAX_TRANSFER_TIMEOUT;
-		$cases = array(
+		$cases = [
 			// connect, transfer, default_socket_timeout => connect, transfer
-			array(0.2, null, '60', 0.2, 60.0, 'a short connect timeout does not shorten the default budget'),
-			array(5, null, '1', 5.0, 5.0, 'a longer connect timeout raises a short default budget'),
-			array(5, null, '90', 5.0, 90.0, 'a longer default_socket_timeout is the budget'),
-			array(5, null, '-1', 5.0, 60.0, 'an unusable default_socket_timeout means 60 seconds'),
-			array(120, 0, '60', 120.0, 120.0, 'zero means the same as null'),
-			array(5, -1, '60', 5.0, 60.0, 'a negative budget means the same as null'),
-			array(5, INF, '60', 5.0, 60.0, 'an infinite budget means the same as null'),
-			array(5, '3m', '60', 5.0, 60.0, 'a non-numeric budget means the same as null'),
-			array(5, ' 7 ', '60', 5.0, 7.0, 'surrounding spaces are ignored on every PHP version'),
-			array(5, 1e19, '60', 5.0, $cap, 'a huge budget is capped'),
-			array('5s', null, '60', 30.0, 60.0, 'an unusable connect timeout means 30 seconds'),
-			array(1e19, 2, '60', $cap, 2.0, 'a huge connect timeout is capped'),
-		);
+			[0.2, null, '60', 0.2, 60.0, 'a short connect timeout does not shorten the default budget'],
+			[5, null, '1', 5.0, 5.0, 'a longer connect timeout raises a short default budget'],
+			[5, null, '90', 5.0, 90.0, 'a longer default_socket_timeout is the budget'],
+			[5, null, '-1', 5.0, 60.0, 'an unusable default_socket_timeout means 60 seconds'],
+			[120, 0, '60', 120.0, 120.0, 'zero means the same as null'],
+			[5, -1, '60', 5.0, 60.0, 'a negative budget means the same as null'],
+			[5, INF, '60', 5.0, 60.0, 'an infinite budget means the same as null'],
+			[5, '3m', '60', 5.0, 60.0, 'a non-numeric budget means the same as null'],
+			[5, ' 7 ', '60', 5.0, 7.0, 'surrounding spaces are ignored on every PHP version'],
+			[5, 1e19, '60', 5.0, $cap, 'a huge budget is capped'],
+			['5s', null, '60', 30.0, 60.0, 'an unusable connect timeout means 30 seconds'],
+			[1e19, 2, '60', $cap, 2.0, 'a huge connect timeout is capped'],
+		];
 		try
 		{
 			foreach($cases as $case)
 			{
 				ini_set('default_socket_timeout', $case[2]);
 				$resolved = rSCGITransport::timeouts($case[0], $case[1]);
-				$this->assertTrue($resolved === array($case[3], $case[4]), $case[5].': '.var_export($resolved, true));
+				$this->assertTrue($resolved === [$case[3], $case[4]], $case[5].': '.var_export($resolved, true));
 			}
 		}
 		finally { ini_set('default_socket_timeout', $previous); }
@@ -777,7 +753,7 @@ class SCGITransportTest extends TestCase
 			$uri = is_resource($file) ? stream_get_meta_data($file)['uri'] : '';
 			$this->assertTrue(dirname($uri) === realpath($directory) && !file_exists($uri),
 				'the spill is created in that directory and its name is already gone');
-			if(is_resource($file)) fclose($file);
+			if(is_resource($file)) { fclose($file); }
 		}
 		finally { TestTree::remove($directory); }
 	}
@@ -789,30 +765,30 @@ class SCGITransportTest extends TestCase
 		mkdir($base.'/elsewhere', 0700);
 		$victim = $base.'/victim';
 		// Each case is built so that only the check it names can refuse it.
-		$cases = array(
-			'tempnam fell back to another directory' => array(function($directory) use ($base) {
-				return tempnam($base.'/elsewhere', 'x'); }, null, 'victim'),
-			'the name is a planted symbolic link' => array(function($directory) use ($victim) {
-				symlink($victim, $directory.'/planted'); return $directory.'/planted'; }, null, 'victim'),
-			'the name is a hard link to another empty file' => array(function($directory) use ($victim) {
-				link($victim, $directory.'/hard'); return $directory.'/hard'; }, null, ''),
-			'the name already holds data' => array(function($directory) {
-				file_put_contents($directory.'/full', 'data'); return $directory.'/full'; }, null, 'victim'),
-			'the name is replaced before it is opened' => array(null, function($path) use ($victim) {
+		$cases = [
+			'tempnam fell back to another directory' => [function($directory) use ($base) {
+				return tempnam($base.'/elsewhere', 'x'); }, null, 'victim'],
+			'the name is a planted symbolic link' => [function($directory) use ($victim) {
+				symlink($victim, $directory.'/planted'); return $directory.'/planted'; }, null, 'victim'],
+			'the name is a hard link to another empty file' => [function($directory) use ($victim) {
+				link($victim, $directory.'/hard'); return $directory.'/hard'; }, null, ''],
+			'the name already holds data' => [function($directory) {
+				file_put_contents($directory.'/full', 'data'); return $directory.'/full'; }, null, 'victim'],
+			'the name is replaced before it is opened' => [null, function($path) use ($victim) {
 				unlink($path); symlink($victim, $path);
-				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, 'victim'),
+				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, 'victim'],
 			// Our own empty file passes every check but the identity one.
-			'the name is replaced by a link to an empty file before it is opened' => array(null, function($path) use ($victim) {
+			'the name is replaced by a link to an empty file before it is opened' => [null, function($path) use ($victim) {
 				unlink($path); symlink($victim, $path);
-				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, ''),
-			'the name is replaced by a dangling link before it is opened' => array(null, function($path) use ($base) {
+				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, ''],
+			'the name is replaced by a dangling link before it is opened' => [null, function($path) use ($base) {
 				unlink($path); symlink($base.'/absent', $path);
-				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, 'victim'),
-		);
+				return SCGITransportTemporaryProbe::openAsTheTransportDoes($path); }, 'victim'],
+		];
 		// A FIFO opens like an empty file, and writes to it would block.
-		if(function_exists('posix_mkfifo'))
-			$cases['the name is not a regular file'] = array(function($directory) {
-				posix_mkfifo($directory.'/fifo', 0600); return $directory.'/fifo'; }, null, 'victim');
+		if(function_exists('posix_mkfifo')) {
+			$cases['the name is not a regular file'] = [function($directory) {
+				posix_mkfifo($directory.'/fifo', 0600); return $directory.'/fifo'; }, null, 'victim']; }
 		try
 		{
 			foreach($cases as $name => $case)
@@ -824,8 +800,8 @@ class SCGITransportTest extends TestCase
 				$file = SCGITransportTemporaryProbe::open($base.'/spill');
 				$this->assertTrue($file === false, $name.': no spill is used');
 				// Opening a FIFO or device can itself have effects.
-				if($name === 'the name is not a regular file')
-					$this->assertTrue(SCGITransportTemporaryProbe::$opened === 0, $name.': it is not even opened');
+				if($name === 'the name is not a regular file') {
+					$this->assertTrue(SCGITransportTemporaryProbe::$opened === 0, $name.': it is not even opened'); }
 				$this->assertTrue(file_get_contents($victim) === $case[2], $name.': no other file is touched');
 				$this->assertTrue(count(scandir($base.'/spill')) === 2 && count(scandir($base.'/elsewhere')) === 2
 					&& !file_exists($base.'/absent'), $name.': nothing is created or left behind');
@@ -846,7 +822,7 @@ class SCGITransportTest extends TestCase
 		mkdir($base, 0700);
 		try
 		{
-			foreach(array(0777 => false, 0703 => false, 01777 => true, 0770 => true, 0755 => true, 0700 => true) as $mode => $used)
+			foreach([0777 => false, 0703 => false, 01777 => true, 0770 => true, 0755 => true, 0700 => true] as $mode => $used)
 			{
 				chmod($base, $mode);
 				clearstatcache();
@@ -854,8 +830,8 @@ class SCGITransportTest extends TestCase
 				$file = SCGITransportTemporaryProbe::open($base);
 				$this->assertTrue(is_resource($file) === $used && (SCGITransportTemporaryProbe::$opened === ($used ? 1 : 0)),
 					sprintf('a %04o directory is %s', $mode, $used ? 'used' : 'not used'));
-				if(is_resource($file))
-					fclose($file);
+				if(is_resource($file)) {
+					fclose($file); }
 				$this->assertTrue(count(scandir($base)) === 2, sprintf('a %04o directory is left empty', $mode));
 			}
 		}
@@ -869,20 +845,20 @@ class SCGITransportTest extends TestCase
 	public function testAnEmptyTemporaryDirectoryMeansTheSystemOne()
 	{
 		// realpath('') would be the working directory, under FPM the web root.
-		$asked = array();
+		$asked = [];
 		SCGITransportTemporaryProbe::$create = function($directory) use (&$asked) {
 			$asked[] = $directory;
 			return tempnam($directory, 'rutorrent-scgi-');
 		};
 		try
 		{
-			foreach(array('', false, null) as $setting)
+			foreach(['', false, null] as $setting)
 			{
 				$file = SCGITransportTemporaryProbe::open($setting);
 				$this->assertTrue(is_resource($file) && (end($asked) === realpath(sys_get_temp_dir())),
 					var_export($setting, true).' collects a response in the system temporary directory');
-				if(is_resource($file))
-					fclose($file);
+				if(is_resource($file)) {
+					fclose($file); }
 			}
 		}
 		finally { SCGITransportTemporaryProbe::$create = null; }
@@ -926,25 +902,25 @@ class SCGITransportTest extends TestCase
 		// larger or unusable setting means that ceiling instead of a refusal of
 		// every request; only a usable smaller number lowers it.
 		$cap = self::DAEMON_RESPONSE_CAP;
-		$cases = array(
-			array(null, $cap, 'a missing setting'),
-			array(1, 1, 'one byte'),
-			array(67108864, 67108864, 'a 64 MiB integer'),
-			array('0004', 4, 'a decimal string with leading zeros'),
-			array(1e8, 100000000, 'a float in exponent form'),
-			array($cap, $cap, 'exactly the daemon ceiling'),
-			array($cap + 1, $cap, 'a value above the daemon ceiling'),
-			array('999999999999999999999', $cap, 'an overflowing decimal string'),
-			array('64M', $cap, 'php.ini shorthand'),
-			array(0, $cap, 'zero'),
-			array(-1, $cap, 'a negative number'),
-			array('', $cap, 'an empty string'),
-			array(false, $cap, 'false'),
-			array(true, $cap, 'true'),
-			array(1.5, $cap, 'a fractional byte count'),
-			array('1000 ', 1000, 'a number with a trailing space, on every PHP version'),
-			array(' 1000', 1000, 'a number with a leading space'),
-		);
+		$cases = [
+			[null, $cap, 'a missing setting'],
+			[1, 1, 'one byte'],
+			[67108864, 67108864, 'a 64 MiB integer'],
+			['0004', 4, 'a decimal string with leading zeros'],
+			[1e8, 100000000, 'a float in exponent form'],
+			[$cap, $cap, 'exactly the daemon ceiling'],
+			[$cap + 1, $cap, 'a value above the daemon ceiling'],
+			['999999999999999999999', $cap, 'an overflowing decimal string'],
+			['64M', $cap, 'php.ini shorthand'],
+			[0, $cap, 'zero'],
+			[-1, $cap, 'a negative number'],
+			['', $cap, 'an empty string'],
+			[false, $cap, 'false'],
+			[true, $cap, 'true'],
+			[1.5, $cap, 'a fractional byte count'],
+			['1000 ', 1000, 'a number with a trailing space, on every PHP version'],
+			[' 1000', 1000, 'a number with a leading space'],
+		];
 		foreach($cases as $case)
 		{
 			$this->assertTrue($this->declaredLengthOutcome($case[0], $case[1]) === 'read-failed'
@@ -965,7 +941,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = SCGITransportShortWriter::send($peer->host(), $peer->port(), $payload, true,
-				array('transferTimeout' => 2) + self::BODY,
+				['transferTimeout' => 2] + self::BODY,
 				$failure);
 			$request = $peer->request();
 			$this->assertTrue($result === 'ok' && $failure === null,
@@ -989,7 +965,7 @@ class SCGITransportTest extends TestCase
 		SCGITransportInjected::$writeSize = 32;
 		$failure = null;
 		$result = SCGITransportInjected::send('unused', 1, '<request/>', true,
-			array('transferTimeout' => 0.6) + self::BODY,
+			['transferTimeout' => 0.6] + self::BODY,
 			$failure);
 		SCGITransportInjected::finish();
 		$this->assertTrue($result === null && $failure === 'write-timeout',
@@ -1005,11 +981,11 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<request/>', true,
-				array('transferTimeout' => 0.75) + self::BODY,
+				['transferTimeout' => 0.75] + self::BODY,
 				$failure);
 			$this->assertTrue($result === 'x' && $failure === null,
 				'bounded nonblocking writes preserve a complete short-written request');
-			$this->assertTrue(SCGITransportInjected::$blocking === array(false),
+			$this->assertTrue(SCGITransportInjected::$blocking === [false],
 				'the socket stays nonblocking through the entire transfer');
 
 		}
@@ -1026,7 +1002,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<request/>', true,
-				array('transferTimeout' => 0.4) + self::BODY,
+				['transferTimeout' => 0.4] + self::BODY,
 				$failure);
 			$this->assertTrue($result === null && $failure === 'read-timeout',
 				'time spent writing consumes the budget available to the response');
@@ -1036,7 +1012,7 @@ class SCGITransportTest extends TestCase
 
 	public function testHugeTransferTimeoutHasAPortableDeadlineAndConnectBudget()
 	{
-		foreach(array(PHP_INT_MAX, 1e19, 1e300) as $timeout)
+		foreach([PHP_INT_MAX, 1e19, 1e300] as $timeout)
 		{
 			SCGITransportInjected::prepare('timeout-capture');
 			SCGITransportInjected::$readStep = 2147484;
@@ -1044,12 +1020,12 @@ class SCGITransportTest extends TestCase
 			{
 				$failure = null;
 				$result = SCGITransportInjected::send('unused', 1, '<request/>', true,
-					array('transferTimeout' => $timeout) + self::BODY,
+					['transferTimeout' => $timeout] + self::BODY,
 					$failure);
 				$this->assertTrue($result === null && $failure === 'read-timeout',
 					'a huge finite timeout is capped before creating the transfer deadline');
 				SCGITransportNoConnect::send('unused', 1, '<request/>', true,
-					array('connectTimeout' => $timeout), $failure);
+					['connectTimeout' => $timeout], $failure);
 				$this->assertEquals(2147483, SCGITransportNoConnect::$timeout,
 					'the connection system call receives a timeout below signed millisecond overflow');
 			}
@@ -1060,8 +1036,8 @@ class SCGITransportTest extends TestCase
 	public function testTemporaryResponseUsesConfiguredDirectoryAndUnlinksImmediately()
 	{
 		$directory = sys_get_temp_dir().'/rutorrent-scgi-spill-'.uniqid();
-		if(!mkdir($directory, 0700))
-			throw new Exception('could not create temporary response test directory');
+		if(!mkdir($directory, 0700)) {
+			throw new Exception('could not create temporary response test directory'); }
 		try
 		{
 			$opened = SCGITransportTemporary::inspect($directory);
@@ -1075,11 +1051,11 @@ class SCGITransportTest extends TestCase
 
 	public function testWriteAndSocketFailuresKeepDistinctStableCodes()
 	{
-		$cases = array(
+		$cases = [
 			'socket-config' => 'socket-config-failed',
 			'write-false' => 'write-failed',
 			'write-zero' => 'write-timeout',
-		);
+		];
 		foreach($cases as $mode => $expected)
 		{
 			SCGITransportInjected::prepare($mode);
@@ -1100,7 +1076,7 @@ class SCGITransportTest extends TestCase
 			$failure = null;
 			$started = microtime(true);
 			$result = rSCGITransport::send($peer->host(), $peer->port(), str_repeat('x', 8 * 1048576),
-				true, array('transferTimeout' => 0.3) + self::BODY, $failure);
+				true, ['transferTimeout' => 0.3] + self::BODY, $failure);
 			$this->assertTrue($result === null && $failure === 'write-timeout',
 				'a peer that accepts without reading exhausts the write budget');
 			$this->assertTrue(microtime(true) - $started < 2,
@@ -1111,13 +1087,13 @@ class SCGITransportTest extends TestCase
 
 	public function testSignalsCannotExtendWriteOrReadDeadlines()
 	{
-		foreach(array('pcntl_fork', 'pcntl_async_signals', 'pcntl_signal', 'pcntl_waitpid', 'posix_kill') as $function)
+		foreach(['pcntl_fork', 'pcntl_async_signals', 'pcntl_signal', 'pcntl_waitpid', 'posix_kill'] as $function) {
 			if(!function_exists($function))
 			{
 				echo "Skipped: signal deadline test requires pcntl and posix\n";
 				return;
-			}
-		foreach(array('write', 'read') as $phase)
+			} }
+		foreach(['write', 'read'] as $phase)
 		{
 			$peer = SCGITransportFixture::startNotReading(3);
 			try
@@ -1132,8 +1108,8 @@ class SCGITransportTest extends TestCase
 					.'$elapsed=microtime(true)-$started;'
 					.'}finally{posix_kill($sender,SIGTERM);while(pcntl_waitpid($sender,$status)<0&&pcntl_get_last_error()===PCNTL_EINTR){}}'
 					.'echo json_encode(array("refused"=>$result===null,"failure"=>$failure,"elapsed"=>$elapsed,"signals"=>$caught));';
-				$run = PhpProcess::run(array('-r', $code, $peer->host(), (string)$peer->port(), $phase),
-					array('cwd' => $this->sourceRoot));
+				$run = PhpProcess::run(['-r', $code, $peer->host(), (string)$peer->port(), $phase],
+					['cwd' => $this->sourceRoot]);
 				$value = json_decode($run['out'], true);
 				$this->assertTrue($run['code'] === 0 && is_array($value) && $value['refused']
 					&& $value['failure'] === $phase.'-timeout' && $value['signals'] >= 2,
@@ -1148,13 +1124,13 @@ class SCGITransportTest extends TestCase
 	public function testReadProgressDoesNotResetTheTransferDeadline()
 	{
 		SCGITransportInjected::prepare('read-trickle');
-		SCGITransportInjected::$readQueue = array("Content-Length: 2\r\n\r\n", 'x', 'y');
+		SCGITransportInjected::$readQueue = ["Content-Length: 2\r\n\r\n", 'x', 'y'];
 		SCGITransportInjected::$readStep = 0.06;
 		try
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<x/>', true,
-				array('transferTimeout' => 0.15) + self::BODY,
+				['transferTimeout' => 0.15] + self::BODY,
 				$failure);
 			$this->assertTrue($result === null && $failure === 'read-timeout',
 				'a final body byte arriving after the original deadline is refused');
@@ -1165,13 +1141,13 @@ class SCGITransportTest extends TestCase
 	public function testFragmentedReadsCompleteWithinOneTransferBudget()
 	{
 		SCGITransportInjected::prepare('read-trickle');
-		SCGITransportInjected::$readQueue = array("Content-Length: 2\r\n\r\n", 'x', 'y');
+		SCGITransportInjected::$readQueue = ["Content-Length: 2\r\n\r\n", 'x', 'y'];
 		SCGITransportInjected::$readStep = 0.03;
 		try
 		{
 			$failure = null;
 			$result = SCGITransportInjected::send('unused', 1, '<x/>', true,
-				array('transferTimeout' => 0.15) + self::BODY,
+				['transferTimeout' => 0.15] + self::BODY,
 				$failure);
 			$this->assertTrue($result === 'xy' && $failure === null,
 				'fragments received inside the original deadline remain complete');
@@ -1182,7 +1158,7 @@ class SCGITransportTest extends TestCase
 	public function testTimedOutReadCannotPublishItsPartialBytes()
 	{
 		SCGITransportInjected::prepare('partial-read-timeout');
-		SCGITransportInjected::$readQueue = array("Content-Length: 2\r\n\r\nxy");
+		SCGITransportInjected::$readQueue = ["Content-Length: 2\r\n\r\nxy"];
 		try
 		{
 			$failure = null;
@@ -1196,15 +1172,15 @@ class SCGITransportTest extends TestCase
 
 	public function testRealTricklingPeerCannotExtendTheTransferDeadline()
 	{
-		$peer = SCGITransportFixture::startChunks(array(
-			array(0, "Content-Length: 5\r\n\r\n"), array(0.04, 'a'),
-			array(0.04, 'b'), array(0.04, 'c'), array(0.04, 'd'), array(0.04, 'e')));
+		$peer = SCGITransportFixture::startChunks([
+			[0, "Content-Length: 5\r\n\r\n"], [0.04, 'a'],
+			[0.04, 'b'], [0.04, 'c'], [0.04, 'd'], [0.04, 'e']]);
 		try
 		{
 			$failure = null;
 			$started = microtime(true);
 			$result = rSCGITransport::send($peer->host(), $peer->port(), '<x/>', true,
-				array('transferTimeout' => 0.12) + self::BODY, $failure);
+				['transferTimeout' => 0.12] + self::BODY, $failure);
 			$this->assertTrue($result === null && $failure === 'read-timeout',
 				'continued progress cannot keep a real response alive beyond the total budget');
 			$this->assertTrue(microtime(true)-$started < 2.0,
@@ -1215,15 +1191,15 @@ class SCGITransportTest extends TestCase
 
 	public function testReadBudgetIsIndependentFromTightConnectBudget()
 	{
-		$peer = SCGITransportFixture::startChunks(array(
-			array(0.06, "Content-Length: 4\r\n\r\n"),
-			array(0.04, 's'), array(0.04, 'l'), array(0.04, 'o'), array(0.04, 'w'),
-		), false, false);
+		$peer = SCGITransportFixture::startChunks([
+			[0.06, "Content-Length: 4\r\n\r\n"],
+			[0.04, 's'], [0.04, 'l'], [0.04, 'o'], [0.04, 'w'],
+		], false, false);
 		try
 		{
 			$failure = null;
 			$result = rSCGITransport::send($peer->host(), $peer->port(), '<request/>', true,
-				array('connectTimeout' => 0.01) + self::BODY, $failure);
+				['connectTimeout' => 0.01] + self::BODY, $failure);
 			$this->assertTrue($result === 'slow' && $failure === null,
 				'a reply received within its total budget is independent from the connect timeout');
 		}
@@ -1232,12 +1208,12 @@ class SCGITransportTest extends TestCase
 
 	public function testTransferTimeoutIsFiniteAndPreservesFractions()
 	{
-		$cases = array(
-			array('1e309', 30, true, 'a non-finite timeout falls back to sixty seconds'),
-			array('1e309', 61, false, 'the finite fallback still expires'),
-			array(0.25, 0.2, true, 'a fraction inside the budget succeeds'),
-			array(0.25, 0.3, false, 'a fraction beyond the budget is refused'),
-		);
+		$cases = [
+			['1e309', 30, true, 'a non-finite timeout falls back to sixty seconds'],
+			['1e309', 61, false, 'the finite fallback still expires'],
+			[0.25, 0.2, true, 'a fraction inside the budget succeeds'],
+			[0.25, 0.3, false, 'a fraction beyond the budget is refused'],
+		];
 		foreach($cases as $case)
 		{
 			SCGITransportInjected::prepare('timeout-capture');
@@ -1246,7 +1222,7 @@ class SCGITransportTest extends TestCase
 			{
 				$failure = null;
 				$result = SCGITransportInjected::send('unused', 1, '<request/>', true,
-					array('transferTimeout' => $case[0]) + self::BODY,
+					['transferTimeout' => $case[0]] + self::BODY,
 					$failure);
 				$this->assertTrue($case[2] ? ($result === 'x' && $failure === null)
 					: ($result === null && $failure === 'read-timeout'), $case[3]);
@@ -1257,12 +1233,12 @@ class SCGITransportTest extends TestCase
 
 	public function testReadTimeoutMetadataIsNotCollapsedWithEOFOrReadError()
 	{
-		$cases = array(
+		$cases = [
 			'read-timeout-meta' => 'read-timeout',
 			'read-eof-meta' => 'closed-before-headers',
 			'read-empty' => 'read-timeout',
 			'read-false' => 'read-failed',
-		);
+		];
 		foreach($cases as $mode => $expected)
 		{
 			SCGITransportInjected::prepare($mode);
@@ -1292,13 +1268,13 @@ class SCGITransportTest extends TestCase
 
 	public function testSilentOpenPeerIsReadTimeout()
 	{
-		$peer = SCGITransportFixture::startChunks(array(array(3, "Content-Length: 1\r\n\r\nx")));
+		$peer = SCGITransportFixture::startChunks([[3, "Content-Length: 1\r\n\r\nx"]]);
 		try
 		{
 			$failure = null;
 			$started = microtime(true);
 			$result = rSCGITransport::send($peer->host(), $peer->port(), '<request/>', true,
-				array('transferTimeout' => 0.25) + self::BODY,
+				['transferTimeout' => 0.25] + self::BODY,
 				$failure);
 			$this->assertTrue($result === null && $failure === 'read-timeout',
 				'a silent open peer is a read timeout, not EOF');
@@ -1310,8 +1286,8 @@ class SCGITransportTest extends TestCase
 
 	public function testReadTimeoutShrinksAfterEarlierResponseProgress()
 	{
-		$peer = SCGITransportFixture::startChunks(array(
-			array(0.65, "Content-Length: 1\r\n\r\n"), array(2, 'x')));
+		$peer = SCGITransportFixture::startChunks([
+			[0.65, "Content-Length: 1\r\n\r\n"], [2, 'x']]);
 		try
 		{
 			$failure = null;
@@ -1372,13 +1348,13 @@ class SCGITransportTest extends TestCase
 
 	public function testMalformedContentLengthsFailClosed()
 	{
-		$cases = array(
-			array("Content-Length: \r\n\r\n", 'malformed-content-length'),
-			array("Content-Length: +1\r\n\r\nx", 'malformed-content-length'),
-			array("Content-Length: 1 0\r\n\r\n0123456789", 'malformed-content-length'),
-		);
-		foreach($cases as $case)
-			$this->assertRejectedFrame($case[0], 4, $case[1]);
+		$cases = [
+			["Content-Length: \r\n\r\n", 'malformed-content-length'],
+			["Content-Length: +1\r\n\r\nx", 'malformed-content-length'],
+			["Content-Length: 1 0\r\n\r\n0123456789", 'malformed-content-length'],
+		];
+		foreach($cases as $case) {
+			$this->assertRejectedFrame($case[0], 4, $case[1]); }
 	}
 
 	public function testZeroContentLengthFailsClosed()
@@ -1388,17 +1364,17 @@ class SCGITransportTest extends TestCase
 
 	public function testOversizeContentLengthsFailClosed()
 	{
-		$cases = array(
+		$cases = [
 			"Content-Length: 10\r\n\r\n0123456789",
 			"Content-Length: 999999999999999999999\r\n\r\n",
-		);
-		foreach($cases as $frame)
-			$this->assertRejectedFrame($frame, 4, 'response-too-large');
+		];
+		foreach($cases as $frame) {
+			$this->assertRejectedFrame($frame, 4, 'response-too-large'); }
 	}
 
 	public function testHeaderGrammarRejectsBareLfObsFoldAndInvalidNames()
 	{
-		$cases = array(
+		$cases = [
 			"Content-Length: 1\nX: y\r\n\r\nx",
 			"Content-Length: 1\r\n folded\r\n\r\nx",
 			"Bad Name: x\r\nContent-Length: 1\r\n\r\nx",
@@ -1406,9 +1382,9 @@ class SCGITransportTest extends TestCase
 			"NoColon\r\nContent-Length: 1\r\n\r\nx",
 			"X-Bad: \x00\r\nContent-Length: 1\r\n\r\nx",
 			"X-Bad: \x7f\r\nContent-Length: 1\r\n\r\nx",
-		);
-		foreach($cases as $frame)
-			$this->assertRejectedFrame($frame, 1024, 'malformed-header');
+		];
+		foreach($cases as $frame) {
+			$this->assertRejectedFrame($frame, 1024, 'malformed-header'); }
 	}
 
 	public function testHeaderBoundaryIncludesSplitDelimiterButRejectsOneByteMore()
@@ -1416,12 +1392,12 @@ class SCGITransportTest extends TestCase
 		$base = "Content-Length: 1\r\nX:";
 		$header = $base.str_repeat('a', rSCGITransport::MAX_HEADER_BYTES - strlen($base));
 		$delimiter = "\r\n\r\n";
-		foreach(array(1, 2, 3) as $split)
+		foreach([1, 2, 3] as $split)
 		{
-			$peer = SCGITransportFixture::startChunks(array(
-				array(0, $header.substr($delimiter, 0, $split)),
-				array(0.01, substr($delimiter, $split).'x'),
-			), false, false);
+			$peer = SCGITransportFixture::startChunks([
+				[0, $header.substr($delimiter, 0, $split)],
+				[0.01, substr($delimiter, $split).'x'],
+			], false, false);
 			try
 			{
 				$failure = null;
@@ -1477,8 +1453,8 @@ class SCGITransportTest extends TestCase
 			$code = 'require '.$this->phpLiteral($this->sourceRoot.'/php/scgitransport.php').';'
 				.'$f=null;$r=rSCGITransport::send($argv[1],(int)$argv[2],"<x/>",true,array("connectTimeout" => 2, "transferTimeout" => 30, "responseMode" => rSCGITransport::RESPONSE_RAW),$f);'
 				.'echo json_encode(array("length"=>is_string($r)?strlen($r):null,"failure"=>$f));';
-			$run = PhpProcess::run(array('-d', 'memory_limit=128M', '-r', $code,
-				$peer->host(), (string)$peer->port()), array('cwd' => $this->sourceRoot));
+			$run = PhpProcess::run(['-d', 'memory_limit=128M', '-r', $code,
+				$peer->host(), (string)$peer->port()], ['cwd' => $this->sourceRoot]);
 			$value = json_decode($run['out'], true);
 			$expected = strlen("Content-Length: ".$length."\r\n\r\n") + $length;
 			$this->assertTrue($run['code'] === 0 && is_array($value)
@@ -1510,12 +1486,12 @@ class SCGITransportTest extends TestCase
 				.'$GLOBALS["log_file"]=$argv[3];$GLOBALS["tempDirectory"]=$argv[4];$GLOBALS["tempDirectory_init_done"]=true;'
 				.'$r=rXMLRPCRequest::send("<x/>",true);'
 				.'echo is_string($r)?hash("sha256",$r):"false";';
-			$run = PhpProcess::run(array('-r', $code, $peer->host(), (string)$peer->port(), $log, $notDirectory),
-				array('cwd' => $this->sourceRoot));
+			$run = PhpProcess::run(['-r', $code, $peer->host(), (string)$peer->port(), $log, $notDirectory],
+				['cwd' => $this->sourceRoot]);
 			$passed = ($run['code'] === 0) && (trim($run['out']) === hash('sha256', $frame));
 			$message = 'a 2 MiB response completes in memory when no temporary file can be created';
-			if(!$passed)
-				$message .= ': '.json_encode(array(is_file($log) ? file_get_contents($log) : '', $run['err']));
+			if(!$passed) {
+				$message .= ': '.json_encode([is_file($log) ? file_get_contents($log) : '', $run['err']]); }
 			$this->assertTrue($passed, $message);
 		}
 		finally { @unlink($log); @unlink($notDirectory); $peer->close(); }
@@ -1527,7 +1503,7 @@ class SCGITransportTest extends TestCase
 		$frame = "Status: 200 OK\r\nContent-Length: ".strlen($body)."\r\n\r\n".$body;
 		// Full from the start, inside the first piece, and in the middle of the
 		// body with a short write at the boundary.
-		foreach(array(0, 1000, 1048576 + 5) as $capacity)
+		foreach([0, 1000, 1048576 + 5] as $capacity)
 		{
 			SCGITransportSpill::reset($capacity);
 			$peer = SCGITransportFixture::start($frame);
@@ -1537,8 +1513,8 @@ class SCGITransportTest extends TestCase
 				$connectError = null;
 				$directory = sys_get_temp_dir().'/configured-response';
 				$result = SCGITransportSpill::send($peer->host(), $peer->port(), '<x/>', true,
-					array('transferTimeout' => 30, 'maxResponseBytes' => null, 'responseMode' => rSCGITransport::RESPONSE_RAW,
-						'temporaryDirectory' => $directory) + self::BODY,
+					['transferTimeout' => 30, 'maxResponseBytes' => null, 'responseMode' => rSCGITransport::RESPONSE_RAW,
+						'temporaryDirectory' => $directory] + self::BODY,
 					$failure, $connectError);
 				$this->assertTrue(SCGITransportSpill::$opened === 1
 					&& SCGITransportSpillStream::$written === $capacity,
@@ -1560,7 +1536,7 @@ class SCGITransportTest extends TestCase
 		try
 		{
 			$GLOBALS['tempDirectory'] = sys_get_temp_dir().'/configured-spill';
-			foreach(array(null, sys_get_temp_dir().'/explicit-spill') as $override)
+			foreach([null, sys_get_temp_dir().'/explicit-spill'] as $override)
 			{
 				$peer = SCGITransportFixture::start($frame);
 				try
@@ -1573,9 +1549,9 @@ class SCGITransportTest extends TestCase
 					SCGITransportSpill::reset(PHP_INT_MAX);
 					$failure = null;
 					$connectError = null;
-					$options = array('responseMode' => rSCGITransport::RESPONSE_RAW);
-					if($override !== null)
-						$options['temporaryDirectory'] = $override;
+					$options = ['responseMode' => rSCGITransport::RESPONSE_RAW];
+					if($override !== null) {
+						$options['temporaryDirectory'] = $override; }
 					$result = SCGITransportSpill::sendConfigured('<x/>', true, $options, $failure);
 					$this->assertTrue($result === $frame && $failure === null
 						&& SCGITransportSpill::$directory === ($override ?? $GLOBALS['tempDirectory']),
@@ -1591,7 +1567,7 @@ class SCGITransportTest extends TestCase
 	{
 		$body = $this->patternedBody(2 * 1048576 + 37);
 		$frame = "Status: 200 OK\r\nContent-Length: ".strlen($body)."\r\n\r\n".$body;
-		foreach(array(0 => array(true, null), 1 => array(false, 'read-failed')) as $readShort => $expected)
+		foreach([0 => [true, null], 1 => [false, 'read-failed']] as $readShort => $expected)
 		{
 			SCGITransportSpill::reset(PHP_INT_MAX, $readShort);
 			$peer = SCGITransportFixture::start($frame);
@@ -1599,7 +1575,7 @@ class SCGITransportTest extends TestCase
 			{
 				$failure = null;
 				$result = SCGITransportSpill::send($peer->host(), $peer->port(), '<x/>', true,
-					array('connectTimeout' => 1, 'transferTimeout' => 30, 'responseMode' => rSCGITransport::RESPONSE_RAW),
+					['connectTimeout' => 1, 'transferTimeout' => 30, 'responseMode' => rSCGITransport::RESPONSE_RAW],
 					$failure);
 				$this->assertTrue(SCGITransportSpill::$opened === 1
 					&& SCGITransportSpillStream::$written === strlen($frame),
@@ -1618,7 +1594,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = SCGITransportSpill::send($peer->host(), $peer->port(), '<x/>', true,
-				array('connectTimeout' => 1, 'transferTimeout' => 30, 'responseMode' => rSCGITransport::RESPONSE_RAW),
+				['connectTimeout' => 1, 'transferTimeout' => 30, 'responseMode' => rSCGITransport::RESPONSE_RAW],
 				$failure);
 			$this->assertTrue($result === $small && $failure === null && SCGITransportSpill::$opened === 0,
 				'a response of 1 MiB stays in memory without a temporary file');
@@ -1639,15 +1615,15 @@ class SCGITransportTest extends TestCase
 			$GLOBALS['rpcLogCalls'] = false;
 			$GLOBALS['log_file'] = $log;
 			$GLOBALS['profileMask'] = 0600;
-			$warnings = array();
+			$warnings = [];
 			set_error_handler(function($severity, $message) use (&$warnings) {
-				if(error_reporting() & $severity)
-					$warnings[] = $message;
+				if(error_reporting() & $severity) {
+					$warnings[] = $message; }
 				return true;
 			});
 			try { $result = rXMLRPCRequest::send('<request/>', true); }
 			finally { restore_error_handler(); }
-			$lines = is_file($log) ? file($log, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : array();
+			$lines = is_file($log) ? file($log, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 			$this->assertTrue($result === false, 'core maps transport null strictly to legacy false');
 			$this->assertTrue(count($warnings) === 0,
 				'missing new globals use legacy-safe defaults without warnings: '.json_encode($warnings));
@@ -1673,7 +1649,7 @@ class SCGITransportTest extends TestCase
 			$rpcMaxResponseBytes = 1;
 			$rpcLogCalls = false;
 			$result = rXMLRPCRequest::send('<request/>', true);
-			$lines = is_file($log_file) ? file($log_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : array();
+			$lines = is_file($log_file) ? file($log_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 			$this->assertTrue($result === false, 'core maps configured response-limit refusal to false');
 			$this->assertTrue(count($lines) === 1 && preg_match('/rXMLRPCRequest: response-too-large$/', $lines[0]),
 				'core forwards its configured limit and logs that classified result once');
@@ -1705,10 +1681,10 @@ class SCGITransportTest extends TestCase
 	public function testCopiedRealRpc2UsesBodyModeOverUnixWithLegacyGlobals()
 	{
 		$body = '<?xml version="1.0"?><methodResponse><params></params></methodResponse>';
-		$peer = SCGITransportFixture::startChunks(array(array(0, "Status: 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ".strlen($body)."\r\n\r\n".$body)), false, true);
+		$peer = SCGITransportFixture::startChunks([[0, "Status: 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ".strlen($body)."\r\n\r\n".$body]], false, true);
 		try
 		{
-			$result = $this->runCopiedRpc2($peer->host(), '0', $this->allowedXml(), array('legacy' => true));
+			$result = $this->runCopiedRpc2($peer->host(), '0', $this->allowedXml(), ['legacy' => true]);
 			$this->assertTrue(strpos($result['status'], '200 OK') !== false,
 				'copied real rpc2 endpoint completes a UNIX SCGI request');
 			$this->assertEquals($body, $result['body'], 'rpc2 returns body mode without daemon headers');
@@ -1717,8 +1693,8 @@ class SCGITransportTest extends TestCase
 			$serverClean = strpos($result['serverError'], 'Warning') === false
 				&& strpos($result['serverError'], 'Notice') === false;
 			$message = 'legacy config without new globals produces no warning';
-			if(!$serverClean)
-				$message .= ': '.json_encode($result['serverError']);
+			if(!$serverClean) {
+				$message .= ': '.json_encode($result['serverError']); }
 			$this->assertTrue($serverClean, $message);
 			$request = $peer->request();
 			$this->assertTrue(strpos($request['header'], "UNTRUSTED_CONNECTION\0"."1\0") !== false,
@@ -1730,7 +1706,7 @@ class SCGITransportTest extends TestCase
 	public function testCopiedRealRpc2ConnectFailureKeepsItsHintAndConnectorError()
 	{
 		$host = 'unix://'.sys_get_temp_dir().'/missing-rpc2-'.uniqid().'.sock';
-		$result = $this->runCopiedRpc2($host, '0', $this->allowedXml(), array('legacy' => true));
+		$result = $this->runCopiedRpc2($host, '0', $this->allowedXml(), ['legacy' => true]);
 		$this->assertTrue(strpos($result['status'], '502 Bad Gateway') !== false,
 			'copied real rpc2 maps transport null to HTTP 502');
 		$this->assertTrue(substr_count($result['body'], 'Could not reach rTorrent over XMLRPC. Is rTorrent running?') === 1,
@@ -1746,30 +1722,30 @@ class SCGITransportTest extends TestCase
 	public function testCopiedRealRpc2ForwardsTransferBudgetAndResponseLimit()
 	{
 		$body = '<?xml version="1.0"?><methodResponse><params></params></methodResponse>';
-		$peer = SCGITransportFixture::startChunks(array(
-			array(1.2, "Content-Length: ".strlen($body)."\r\n\r\n"),
-			array(0, $body),
-		), false, false);
+		$peer = SCGITransportFixture::startChunks([
+			[1.2, "Content-Length: ".strlen($body)."\r\n\r\n"],
+			[0, $body],
+		], false, false);
 		try
 		{
-			$result = $this->runCopiedRpc2($peer->host(), (string)$peer->port(), $this->allowedXml(), array(
+			$result = $this->runCopiedRpc2($peer->host(), (string)$peer->port(), $this->allowedXml(), [
 				'connect' => 0.05, 'transfer' => 3, 'max' => 1024, 'socketDefault' => 1,
-			));
+			]);
 			$this->assertTrue(strpos($result['status'], '200 OK') !== false && $result['body'] === $body,
 				'rpc2 forwards transfer timeout independently from tight connect timeout');
 		}
 		finally { $peer->close(); }
 
-		$oversize = SCGITransportFixture::startChunks(array(array(0, "Content-Length: 200\r\n\r\n".str_repeat("x", 200))));
+		$oversize = SCGITransportFixture::startChunks([[0, "Content-Length: 200\r\n\r\n".str_repeat("x", 200)]]);
 		try
 		{
 			// The cap refuses the declared length as soon as the header arrives, so
 			// the budgets only bound a peer that is slow to answer. One second was
 			// not enough under parallel load: a stalled fixture made rpc2 log
 			// read-timeout instead of the refusal under test.
-			$result = $this->runCopiedRpc2($oversize->host(), (string)$oversize->port(), $this->allowedXml(), array(
+			$result = $this->runCopiedRpc2($oversize->host(), (string)$oversize->port(), $this->allowedXml(), [
 				'connect' => 10, 'transfer' => 10, 'max' => 160,
-			));
+			]);
 			$this->assertTrue(strpos($result['status'], '502 Bad Gateway') !== false,
 				'rpc2 forwards the configured response cap to the transport');
 			$this->assertTrue(preg_match_all('/ rpc2: response-too-large$/m', $result['rpcLog'], $matches) === 1,
@@ -1781,12 +1757,12 @@ class SCGITransportTest extends TestCase
 	public function testCopiedRpc2LegacyTransferBudgetIncludesALargerConnectTimeout()
 	{
 		$body = '<methodResponse><params></params></methodResponse>';
-		$peer = SCGITransportFixture::startChunks(array(
-			array(1.2, "Content-Length: ".strlen($body)."\r\n\r\n".$body)));
+		$peer = SCGITransportFixture::startChunks([
+			[1.2, "Content-Length: ".strlen($body)."\r\n\r\n".$body]]);
 		try
 		{
 			$result = $this->runCopiedRpc2($peer->host(), (string)$peer->port(), $this->allowedXml(),
-				array('legacy' => true, 'connect' => 3, 'socketDefault' => 1));
+				['legacy' => true, 'connect' => 3, 'socketDefault' => 1]);
 			$this->assertTrue(strpos($result['status'], '200 OK') !== false && $result['body'] === $body,
 				'the legacy rpc2 transfer budget preserves a connect timeout above the socket default');
 		}
@@ -1795,11 +1771,11 @@ class SCGITransportTest extends TestCase
 
 	public function testCopiedRpc2ConfiguredTransferTimeoutHasABoundedRefusal()
 	{
-		$peer = SCGITransportFixture::startChunks(array(array(3, "Content-Length: 1\r\n\r\nx")));
+		$peer = SCGITransportFixture::startChunks([[3, "Content-Length: 1\r\n\r\nx"]]);
 		try
 		{
 			$result = $this->runCopiedRpc2($peer->host(), (string)$peer->port(), $this->allowedXml(),
-				array('transfer' => 0.25, 'connect' => 1, 'socketDefault' => 2));
+				['transfer' => 0.25, 'connect' => 1, 'socketDefault' => 2]);
 			$this->assertTrue(strpos($result['status'], '502 Bad Gateway') !== false
 				&& preg_match_all('/ rpc2: read-timeout after the [0-9.]+-second transfer budget; raise \$rpcTransferTimeOut for slower replies$/m',
 					$result['rpcLog'], $matches) === 1,
@@ -1817,7 +1793,7 @@ class SCGITransportTest extends TestCase
 		try
 		{
 			$result = $this->runCopiedRpc2($peer->host(), (string)$peer->port(),
-				$this->allowedXml(), array('legacy' => true));
+				$this->allowedXml(), ['legacy' => true]);
 			$this->assertTrue(strpos($result['status'], '502 Bad Gateway') !== false,
 				'rpc2 refuses a complete-looking XML body shorter than its declared length');
 			$this->assertTrue(strpos($result['body'], '<fault>') !== false
@@ -1841,23 +1817,47 @@ class SCGITransportTest extends TestCase
 			$scgi_host = $peer->host(); $scgi_port = $peer->port(); $rpcTimeOut = 1; $rpcLogCalls = false;
 			$this->assertTrue(rXMLRPCRequest::send('<request/>') === false,
 				'core refuses an incomplete declared frame even when its XML looks complete');
-			$lines = is_file($log_file) ? file($log_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : array();
+			$lines = is_file($log_file) ? file($log_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 			$this->assertTrue(count($lines) === 1 && preg_match('/rXMLRPCRequest: truncated-body$/', $lines[0]),
 				'core logs the classified framing failure once');
 		}
 		finally { @unlink($log_file); $peer->close(); $globals->restore(); }
 	}
 
+	/** The pauses $sleeps took against the backoff: first, doubling, capped. */
+	private function assertBackoff($sleeps, $message)
+	{
+		$expected = rSCGITransport::FIRST_PAUSE;
+		$shaped = count($sleeps) > 0;
+		// The last pause may be cut short by the deadline.
+		for($i = 0; $i < count($sleeps) - 1; $i++)
+		{
+			$shaped = $shaped && (abs($sleeps[$i] - $expected) < 1e-9);
+			$expected = min($expected * 2, rSCGITransport::LONGEST_PAUSE);
+		}
+		$this->assertTrue($shaped, $message.': '.json_encode($sleeps));
+	}
+
+	/** The waits of SCGITransportWakeProbe in one direction. */
+	private function probeWaits($writing)
+	{
+		$waits = [];
+		foreach(SCGITransportWakeProbe::$waits as $wait) {
+			if($wait['writing'] === $writing) {
+				$waits[] = $wait['ready']; } }
+		return $waits;
+	}
+
 	/** Sends only a header declaring $length; the body read then fails unless the limit refused it. */
 	private function declaredLengthOutcome($limit, $length)
 	{
 		SCGITransportInjected::prepare('declared-length');
-		SCGITransportInjected::$readQueue = array("Content-Length: ".$length."\r\n\r\n");
+		SCGITransportInjected::$readQueue = ["Content-Length: ".$length."\r\n\r\n"];
 		try
 		{
 			$failure = null;
 			SCGITransportInjected::send('unused', 1, '<x/>', true,
-				array('maxResponseBytes' => $limit) + self::BODY, $failure);
+				['maxResponseBytes' => $limit] + self::BODY, $failure);
 			return $failure;
 		}
 		finally { SCGITransportInjected::finish(); }
@@ -1866,8 +1866,8 @@ class SCGITransportTest extends TestCase
 	private function patternedBody($length)
 	{
 		$body = '';
-		for($i = 0; strlen($body) < $length; $i++)
-			$body .= sprintf('%07d,', $i);
+		for($i = 0; strlen($body) < $length; $i++) {
+			$body .= sprintf('%07d,', $i); }
 		return substr($body, 0, $length);
 	}
 
@@ -1878,7 +1878,7 @@ class SCGITransportTest extends TestCase
 		{
 			$failure = null;
 			$result = rSCGITransport::send($peer->host(), $peer->port(), '<request/>', true,
-				array('maxResponseBytes' => $limit, 'responseMode' => rSCGITransport::RESPONSE_RAW) + self::BODY,
+				['maxResponseBytes' => $limit, 'responseMode' => rSCGITransport::RESPONSE_RAW] + self::BODY,
 				$failure);
 			$this->assertTrue($result === null && $failure === $expected,
 				$expected.' rejects its malformed frame');
@@ -1898,16 +1898,16 @@ class SCGITransportTest extends TestCase
 		$server = null;
 		try
 		{
-			if(!mkdir($tree, 0700, true))
-				throw new Exception('could not create copied rpc2 tree');
-			foreach(array('rpc2.php', 'php/xmlrpc_proxy.php', 'php/scgitransport.php') as $relative)
+			if(!mkdir($tree, 0700, true)) {
+				throw new Exception('could not create copied rpc2 tree'); }
+			foreach(['rpc2.php', 'php/xmlrpc_proxy.php', 'php/scgitransport.php'] as $relative)
 			{
 				$source = $this->sourceRoot.'/'.$relative;
 				$target = $tree.'/'.$relative;
-				if(!is_dir(dirname($target)) && !mkdir(dirname($target), 0700, true))
-					throw new Exception('could not create copied rpc2 source directory');
-				if(!copy($source, $target) || hash_file('sha256', $source) !== hash_file('sha256', $target))
-					throw new Exception('could not byte-copy production '.$relative);
+				if(!is_dir(dirname($target)) && !mkdir(dirname($target), 0700, true)) {
+					throw new Exception('could not create copied rpc2 source directory'); }
+				if(!copy($source, $target) || hash_file('sha256', $source) !== hash_file('sha256', $target)) {
+					throw new Exception('could not byte-copy production '.$relative); }
 			}
 			mkdir($tree.'/conf', 0700, true);
 			$config = <<<'PHP'
@@ -1933,21 +1933,21 @@ PHP;
 			$serverError = $tree.'/server.err';
 
 			// TestHttpServer adds these to the inherited environment.
-			$environment = array(
+			$environment = [
 				'SCGI_TEST_HOST' => $host,
 				'SCGI_TEST_PORT' => (string)$port,
 				'SCGI_TEST_RPC_LOG' => $rpcLog,
-			);
-			$arguments = array('-d', 'auto_prepend_file='.$tree.'/prepend.php');
-			if(isset($options['socketDefault']))
-				$arguments = array_merge($arguments, array('-d', 'default_socket_timeout='.$options['socketDefault']));
+			];
+			$arguments = ['-d', 'auto_prepend_file='.$tree.'/prepend.php'];
+			if(isset($options['socketDefault'])) {
+				$arguments = array_merge($arguments, ['-d', 'default_socket_timeout='.$options['socketDefault']]); }
 			$server = TestHttpServer::start($tree, $environment, $arguments);
 			// php -S can report inherited runtime configuration before it serves
 			// copied code. Keep that transcript, but judge rpc2 from this boundary.
 			clearstatcache(true, $serverError);
 			$requestErrorOffset = is_file($serverError) ? filesize($serverError) : 0;
-			if($requestErrorOffset === false)
-				throw new Exception('could not establish copied rpc2 diagnostic boundary');
+			if($requestErrorOffset === false) {
+				throw new Exception('could not establish copied rpc2 diagnostic boundary'); }
 			$started = microtime(true);
 			$result = TestHttpServer::rawPost($server->port(), '/rpc2.php', $body);
 			$result['elapsed'] = microtime(true) - $started;
@@ -1959,8 +1959,8 @@ PHP;
 		}
 		finally
 		{
-			if($server !== null)
-				$server->close();
+			if($server !== null) {
+				$server->close(); }
 			TestTree::remove($tree);
 		}
 	}

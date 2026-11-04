@@ -24,7 +24,7 @@ require_once(__DIR__ . '/../../php/rtorrent.php');
  */
 class UserDirectoryTest extends TestCase
 {
-	const TOP = '/torrents1/downloads/';
+	public const TOP = '/torrents1/downloads/';
 
 	private $previousSettings;
 	private $hadTopDirectory;
@@ -39,49 +39,17 @@ class UserDirectoryTest extends TestCase
 		$settings->home = '/home/someone';
 		$settings->iVersion = 0x904;
 		$settings->apiVersion = 0;
-		$settings->aliases = array();
+		$settings->aliases = [];
 		$this->previousSettings = self::swapSettings($settings);
 	}
 
 	public function tearDown()
 	{
 		self::swapSettings($this->previousSettings);
-		if($this->hadTopDirectory)
-			$GLOBALS['topDirectory'] = $this->previousTopDirectory;
-		else
-			unset($GLOBALS['topDirectory']);
-	}
-
-	private static function swapSettings($settings)
-	{
-		return Closure::bind(function ($settings) {
-			$previous = rTorrentSettings::$theSettings;
-			rTorrentSettings::$theSettings = $settings;
-			return $previous;
-		}, null, 'rTorrentSettings')->__invoke($settings);
-	}
-
-	/** [accepted, the directory afterwards] for $dir under $top. */
-	private function correct($dir, $top = self::TOP)
-	{
-		$GLOBALS['topDirectory'] = $top;
-		$ok = rTorrentSettings::get()->correctDirectory($dir);
-		return array($ok, $dir);
-	}
-
-	private function assertResolves($input, $expected, $top = self::TOP)
-	{
-		list($ok, $dir) = $this->correct($input, $top);
-		$this->assertTrue($ok === true, json_encode($input) . ' is accepted');
-		$this->assertEquals($expected, $dir, json_encode($input) . ' resolves to ' . json_encode($expected));
-		list($again, $twice) = $this->correct($dir, $top);
-		$this->assertTrue(($again === true) && ($twice === $dir), 'and resolving the result again changes nothing');
-	}
-
-	private function assertRefused($input, $why, $top = self::TOP)
-	{
-		list($ok) = $this->correct($input, $top);
-		$this->assertTrue($ok === false, 'refused: ' . $why);
+		if($this->hadTopDirectory) {
+			$GLOBALS['topDirectory'] = $this->previousTopDirectory; }
+		else {
+			unset($GLOBALS['topDirectory']); }
 	}
 
 	// ---- rule 1: relative to the top directory ------------------------------
@@ -125,16 +93,6 @@ class UserDirectoryTest extends TestCase
 		$this->assertResolves('//etc', '/torrents1/downloads/etc');
 		$this->assertResolves('/torrents1/downloads//trail/./dir/', '/torrents1/downloads/trail/dir');
 		$this->assertResolves('./x//y/.', '/torrents1/downloads/x/y');
-	}
-
-	/** Run $test with $default as rtorrent's default directory. */
-	private function withDefault($default, $test)
-	{
-		$settings = rTorrentSettings::get();
-		$previous = $settings->directory;
-		$settings->directory = $default;
-		try { $test(); }
-		finally { $settings->directory = $previous; }
 	}
 
 	public function testAStockInstallKeepsItsPaths()
@@ -205,17 +163,6 @@ class UserDirectoryTest extends TestCase
 		$this->assertRefused('/x/' . str_repeat('a', 256) . '/..', 'even one that ".." would remove');
 	}
 
-	/** A relative value that, joined under the top directory, is exactly $length bytes. */
-	private function relativeOfFinalLength($length)
-	{
-		$room = $length - strlen('/torrents1/downloads');
-		$value = '';
-		while (strlen($value) + 201 <= $room) {
-			$value .= '/' . str_repeat('d', 200);
-		}
-		return $value . '/' . str_repeat('e', $room - strlen($value) - 1);
-	}
-
 	public function testAResultOfPathMaxLessOneIsAcceptedAndOneMoreIsRefused()
 	{
 		$ok = $this->relativeOfFinalLength(4095);
@@ -249,5 +196,58 @@ class UserDirectoryTest extends TestCase
 		$dir = '/torrents1/downloads/x/../y';
 		$this->assertTrue(rTorrentSettings::get()->correctReportedDirectory($dir) === true
 			&& $dir === '/torrents1/downloads/y', 'and one inside it is normalised as before');
+	}
+
+	private static function swapSettings($settings)
+	{
+		return Closure::bind(function ($settings) {
+			$previous = rTorrentSettings::$theSettings;
+			rTorrentSettings::$theSettings = $settings;
+			return $previous;
+		}, null, 'rTorrentSettings')->__invoke($settings);
+	}
+
+	/** [accepted, the directory afterwards] for $dir under $top. */
+	private function correct($dir, $top = self::TOP)
+	{
+		$GLOBALS['topDirectory'] = $top;
+		$ok = rTorrentSettings::get()->correctDirectory($dir);
+		return [$ok, $dir];
+	}
+
+	private function assertResolves($input, $expected, $top = self::TOP)
+	{
+		list($ok, $dir) = $this->correct($input, $top);
+		$this->assertTrue($ok === true, json_encode($input) . ' is accepted');
+		$this->assertEquals($expected, $dir, json_encode($input) . ' resolves to ' . json_encode($expected));
+		list($again, $twice) = $this->correct($dir, $top);
+		$this->assertTrue(($again === true) && ($twice === $dir), 'and resolving the result again changes nothing');
+	}
+
+	private function assertRefused($input, $why, $top = self::TOP)
+	{
+		list($ok) = $this->correct($input, $top);
+		$this->assertTrue($ok === false, 'refused: ' . $why);
+	}
+
+	/** Run $test with $default as rtorrent's default directory. */
+	private function withDefault($default, $test)
+	{
+		$settings = rTorrentSettings::get();
+		$previous = $settings->directory;
+		$settings->directory = $default;
+		try { $test(); }
+		finally { $settings->directory = $previous; }
+	}
+
+	/** A relative value that, joined under the top directory, is exactly $length bytes. */
+	private function relativeOfFinalLength($length)
+	{
+		$room = $length - strlen('/torrents1/downloads');
+		$value = '';
+		while (strlen($value) + 201 <= $room) {
+			$value .= '/' . str_repeat('d', 200);
+		}
+		return $value . '/' . str_repeat('e', $room - strlen($value) - 1);
 	}
 }

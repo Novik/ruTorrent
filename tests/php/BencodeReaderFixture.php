@@ -32,69 +32,6 @@ trait BencodeReaderFixture
 		return $this->bdecodeString($data, $at);
 	}
 
-	private function bdecodeInteger($data, &$at)
-	{
-		$end = strpos($data, 'e', $at);
-		if ($end === false) {
-			throw new Exception('an integer without its terminator at offset ' . $at);
-		}
-		$digits = substr($data, $at + 1, $end - $at - 1);
-		if (preg_match('/^(0|-?[1-9][0-9]*)$/D', $digits) !== 1) {
-			throw new Exception('not a bencoded integer: ' . json_encode($digits));
-		}
-		$at = $end + 1;
-		return (int)$digits;
-	}
-
-	private function bdecodeContainer($data, &$at, $type)
-	{
-		$at++;
-		$value = array();
-		// Kept beside $value because PHP cannot hold a key of "0" as a string,
-		// which is the whole subject of some of the suites using this trait:
-		// the reader must not lose a distinction it is there to measure.
-		$keys = array();
-		while (isset($data[$at]) && ($data[$at] !== 'e')) {
-			if ($type === 'l') {
-				$value[] = $this->bdecode($data, $at);
-				continue;
-			}
-			$key = $this->bdecodeString($data, $at);
-			if ($keys && (strcmp(end($keys), $key) >= 0)) {
-				throw new Exception('dictionary keys out of order or repeated at offset ' . $at
-					. ': ' . json_encode(end($keys)) . ' then ' . json_encode($key));
-			}
-			$keys[] = $key;
-			$value[$key] = $this->bdecode($data, $at);
-		}
-		if (!isset($data[$at])) {
-			throw new Exception('a container without its terminator');
-		}
-		$at++;
-		return ($type === 'd') ? new BencodeDictionary($keys, $value) : $value;
-	}
-
-	/** A string, and the only shape a dictionary key may take. */
-	private function bdecodeString($data, &$at)
-	{
-		if (isset($data[$at]) && (strpos('ild', $data[$at]) !== false)) {
-			throw new Exception('a ' . $data[$at] . ' value where a string was required, at offset ' . $at);
-		}
-		$colon = strpos($data, ':', $at);
-		if ($colon === false) {
-			throw new Exception('a string without its length at offset ' . $at);
-		}
-		$length = substr($data, $at, $colon - $at);
-		if (preg_match('/^(0|[1-9][0-9]*)$/D', $length) !== 1) {
-			throw new Exception('not a bencoded string length: ' . json_encode($length));
-		}
-		if (($colon + 1 + (int)$length) > strlen($data)) {
-			throw new Exception('a string shorter than the ' . $length . ' bytes it declares');
-		}
-		$at = $colon + 1 + (int)$length;
-		return substr($data, $colon + 1, (int)$length);
-	}
-
 	/** The one value in $bytes, which has to account for all of $bytes. */
 	protected function bencodeValue($bytes, $what)
 	{
@@ -154,7 +91,7 @@ trait BencodeReaderFixture
 	/** A dictionary fixture, keeping each key as the string it is written as. */
 	protected function dict($pairs)
 	{
-		$keys = array();
+		$keys = [];
 		foreach ($pairs as $key => $ignored) {
 			$keys[] = (string)$key;
 		}
@@ -163,7 +100,7 @@ trait BencodeReaderFixture
 
 	protected function assertBencodeReaderIsStrict()
 	{
-		foreach (array(
+		foreach ([
 			'd3:fooe' => 'a dictionary with a key and no value',
 			'di1ei2ee' => 'a dictionary key that is an integer',
 			'dl1:ae1:be' => 'a dictionary key that is a list',
@@ -176,7 +113,7 @@ trait BencodeReaderFixture
 			'l1:ae1:b' => 'bytes after the end of the value',
 			'd1:a1:b' => 'a dictionary without its terminator',
 			'' => 'no value at all',
-		) as $bytes => $what) {
+		] as $bytes => $what) {
 			$refused = false;
 			try {
 				$at = 0;
@@ -188,6 +125,69 @@ trait BencodeReaderFixture
 			}
 			$this->assertTrue($refused, 'the bencode reader refuses ' . $what);
 		}
+	}
+
+	private function bdecodeInteger($data, &$at)
+	{
+		$end = strpos($data, 'e', $at);
+		if ($end === false) {
+			throw new Exception('an integer without its terminator at offset ' . $at);
+		}
+		$digits = substr($data, $at + 1, $end - $at - 1);
+		if (preg_match('/^(0|-?[1-9][0-9]*)$/D', $digits) !== 1) {
+			throw new Exception('not a bencoded integer: ' . json_encode($digits));
+		}
+		$at = $end + 1;
+		return (int)$digits;
+	}
+
+	private function bdecodeContainer($data, &$at, $type)
+	{
+		$at++;
+		$value = [];
+		// Kept beside $value because PHP cannot hold a key of "0" as a string,
+		// which is the whole subject of some of the suites using this trait:
+		// the reader must not lose a distinction it is there to measure.
+		$keys = [];
+		while (isset($data[$at]) && ($data[$at] !== 'e')) {
+			if ($type === 'l') {
+				$value[] = $this->bdecode($data, $at);
+				continue;
+			}
+			$key = $this->bdecodeString($data, $at);
+			if ($keys && (strcmp(end($keys), $key) >= 0)) {
+				throw new Exception('dictionary keys out of order or repeated at offset ' . $at
+					. ': ' . json_encode(end($keys)) . ' then ' . json_encode($key));
+			}
+			$keys[] = $key;
+			$value[$key] = $this->bdecode($data, $at);
+		}
+		if (!isset($data[$at])) {
+			throw new Exception('a container without its terminator');
+		}
+		$at++;
+		return ($type === 'd') ? new BencodeDictionary($keys, $value) : $value;
+	}
+
+	/** A string, and the only shape a dictionary key may take. */
+	private function bdecodeString($data, &$at)
+	{
+		if (isset($data[$at]) && (strpos('ild', $data[$at]) !== false)) {
+			throw new Exception('a ' . $data[$at] . ' value where a string was required, at offset ' . $at);
+		}
+		$colon = strpos($data, ':', $at);
+		if ($colon === false) {
+			throw new Exception('a string without its length at offset ' . $at);
+		}
+		$length = substr($data, $at, $colon - $at);
+		if (preg_match('/^(0|[1-9][0-9]*)$/D', $length) !== 1) {
+			throw new Exception('not a bencoded string length: ' . json_encode($length));
+		}
+		if (($colon + 1 + (int)$length) > strlen($data)) {
+			throw new Exception('a string shorter than the ' . $length . ' bytes it declares');
+		}
+		$at = $colon + 1 + (int)$length;
+		return substr($data, $colon + 1, (int)$length);
 	}
 }
 

@@ -23,28 +23,7 @@ class XmppPasswordProbe extends rXmpp
 
 class XmppPasswordTest extends TestCase
 {
-	const STORED = 'correct-horse-battery-staple';
-
-	// The right-hand side of "theWebUI.xmpp = <literal>;", decoded.
-	private function settings($fragment)
-	{
-		$fragment = trim($fragment);
-		$prefix = 'theWebUI.xmpp = ';
-		$this->assertTrue(substr($fragment, 0, strlen($prefix)) === $prefix
-			&& substr($fragment, -1) === ';',
-			'The answer is that one assignment: ' . $fragment);
-		return json_decode(substr($fragment, strlen($prefix), -1), true);
-	}
-
-	private function configured()
-	{
-		$xmpp = new XmppPasswordProbe();
-		$xmpp->jabberLogin = 'someone';
-		$xmpp->jabberServer = 'jabber.example';
-		$xmpp->jabberFor = 'someone-else@jabber.example';
-		$xmpp->jabberPasswd = self::STORED;
-		return $xmpp;
-	}
+	public const STORED = 'correct-horse-battery-staple';
 
 	public function testThePageNeverCarriesTheStoredPassword()
 	{
@@ -123,5 +102,26 @@ class XmppPasswordTest extends TestCase
 		$xmpp->get();
 		$this->assertTrue($xmpp->jabberPasswd === self::STORED,
 			'Emitting the page does not disturb the stored password');
+	}
+
+	// The right-hand side of "theWebUI.xmpp = <literal>;", decoded.
+	private function settings($fragment)
+	{
+		$fragment = trim($fragment);
+		$prefix = 'theWebUI.xmpp = ';
+		$this->assertTrue(substr($fragment, 0, strlen($prefix)) === $prefix
+			&& substr($fragment, -1) === ';',
+			'The answer is that one assignment: ' . $fragment);
+		return json_decode(substr($fragment, strlen($prefix), -1), true);
+	}
+
+	private function configured()
+	{
+		$xmpp = new XmppPasswordProbe();
+		$xmpp->jabberLogin = 'someone';
+		$xmpp->jabberServer = 'jabber.example';
+		$xmpp->jabberFor = 'someone-else@jabber.example';
+		$xmpp->jabberPasswd = self::STORED;
+		return $xmpp;
 	}
 }

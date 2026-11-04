@@ -28,15 +28,30 @@ class PluginArgvCheckTest extends TestCase
 		$this->wipe();
 	}
 
+	public function testWarningIsSentOnlyBeforePhp85()
+	{
+		$js = $this->output();
+		// The check runs only when a plugin needs php and php was found. The
+		// bundle may have been minified, so whitespace is not relied on.
+		$this->assertTrue(preg_match("/new\\s+rPlugin\\(\\s*'_task'/", $js) === 1
+			&& preg_match("/webExternalNotFoundError\\s*\\+\\s*' \\('\\s*\\+\\s*'php'/", $js) === 0,
+			'getplugins.php found php for the _task plugin');
+		$warns = strpos($js, 'theUILang.phpParameterUnavailable') !== false;
+		if (PHP_VERSION_ID < 80500) {
+			$this->assertTrue($warns, 'PHP ' . PHP_VERSION . ' with register_argc_argv=0 gets the warning'); }
+		else {
+			$this->assertTrue(!$warns, 'PHP ' . PHP_VERSION . ' gets no register_argc_argv warning'); }
+	}
+
 	private function wipe()
 	{
-		if (!is_dir($this->tree))
-			return;
+		if (!is_dir($this->tree)) {
+			return; }
 		$items = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
 			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item)
-			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+		foreach ($items as $item) {
+			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
 		@rmdir($this->tree);
 	}
 
@@ -57,24 +72,9 @@ class PluginArgvCheckTest extends TestCase
 			. 'chdir(' . var_export(dirname(dirname(__DIR__)) . '/php', true) . ");\n"
 			. 'require("getplugins.php");' . "\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 -d display_errors=0 -d register_argc_argv=0 '
 			. escapeshellarg($probe) . ' 2>&1', $output);
 		return implode("\n", $output);
-	}
-
-	public function testWarningIsSentOnlyBeforePhp85()
-	{
-		$js = $this->output();
-		// The check runs only when a plugin needs php and php was found. The
-		// bundle may have been minified, so whitespace is not relied on.
-		$this->assertTrue(preg_match("/new\\s+rPlugin\\(\\s*'_task'/", $js) === 1
-			&& preg_match("/webExternalNotFoundError\\s*\\+\\s*' \\('\\s*\\+\\s*'php'/", $js) === 0,
-			'getplugins.php found php for the _task plugin');
-		$warns = strpos($js, 'theUILang.phpParameterUnavailable') !== false;
-		if (PHP_VERSION_ID < 80500)
-			$this->assertTrue($warns, 'PHP ' . PHP_VERSION . ' with register_argc_argv=0 gets the warning');
-		else
-			$this->assertTrue(!$warns, 'PHP ' . PHP_VERSION . ' gets no register_argc_argv warning');
 	}
 }

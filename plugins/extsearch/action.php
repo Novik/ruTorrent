@@ -29,8 +29,8 @@ if(isset($_REQUEST['mode']))
 		}
 		case "loadtorrents":
 		{
-			if(!isset($HTTP_RAW_POST_DATA))
-				$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+			if(!isset($HTTP_RAW_POST_DATA)) {
+				$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 			if(isset($HTTP_RAW_POST_DATA))
 			{
 				$vars = explode('&', $HTTP_RAW_POST_DATA);
@@ -39,44 +39,36 @@ if(isset($_REQUEST['mode']))
 				$isStart = true;
 				$isAddPath = true;
 				$fast = false;
-				$urls = array();
-				$engs = array();
-				$ndx = array();
+				$urls = [];
+				$engs = [];
+				$ndx = [];
 				$teg = '';
 				foreach($vars as $var)
 				{
 					$parts = explode("=",$var);
-					if($parts[0]=="torrents_start_stopped")
-						$isStart = false;
-					else
-					if($parts[0]=="not_add_path")
-						$isAddPath = false;
-					else
-					if($parts[0]=="dir_edit")
-						$dir = rawurldecode($parts[1]);
-					else
-					if($parts[0]=="label")
-						$lbl = rawurldecode($parts[1]);
-					else
-					if($parts[0]=="fast_resume")
-						$fast = $parts[1];
-					else
-					if($parts[0]=="teg")
-						$teg = $parts[1];
-					else
-					if($parts[0]=="url")
-						$urls[] = rawurldecode($parts[1]);
-					else
-					if($parts[0]=="eng")
-						$engs[] = $parts[1];
-					else
-					if($parts[0]=="ndx")
-						$ndx[] = $parts[1];
+					if($parts[0]=="torrents_start_stopped") {
+						$isStart = false; }
+					elseif($parts[0]=="not_add_path") {
+						$isAddPath = false; }
+					elseif($parts[0]=="dir_edit") {
+						$dir = rawurldecode($parts[1]); }
+					elseif($parts[0]=="label") {
+						$lbl = rawurldecode($parts[1]); }
+					elseif($parts[0]=="fast_resume") {
+						$fast = $parts[1]; }
+					elseif($parts[0]=="teg") {
+						$teg = $parts[1]; }
+					elseif($parts[0]=="url") {
+						$urls[] = rawurldecode($parts[1]); }
+					elseif($parts[0]=="eng") {
+						$engs[] = $parts[1]; }
+					elseif($parts[0]=="ndx") {
+						$ndx[] = $parts[1]; }
 				}
 				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
-				$ret = array( "teg"=>$teg, "data"=>array() );
-				for($i = 0; $i< count($status); $i++)
-					$ret["data"][] = array( "hash"=>$status[$i], "ndx"=>$ndx[$i] );
+				$ret = [ "teg"=>$teg, "data"=>[] ];
+				for($i = 0; $i< count($status); $i++) {
+					$ret["data"][] = [ "hash"=>$status[$i], "ndx"=>$ndx[$i] ]; }
 				CachedEcho::send(JSON::safeEncode($ret),"application/json");
 			}
 			break;

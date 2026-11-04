@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function bodyBytesAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 // Use a real HTTP peer and the installed curl: a scripted curl would not
@@ -35,8 +35,8 @@ fclose($socket);
 fclose($server);
 echo json_encode(array('headers' => $headers, 'body' => base64_encode($body)));
 PHP;
-    $process = proc_open(array(PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer, $response),
-        array(0 => array('file', '/dev/null', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer, $response],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     bodyBytesAssert(is_resource($process), 'The loopback peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
@@ -75,9 +75,9 @@ PHP;
         $request = json_decode($capture, true);
         bodyBytesAssert(is_array($request) && isset($request['headers'], $request['body']), 'The peer captured a request');
         $request['body'] = base64_decode($request['body'], true);
-        return array($client, $request);
+        return [$client, $request];
     } finally {
-        foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
         if (is_resource($process)) {
             proc_terminate($process);
             proc_close($process);
@@ -85,7 +85,7 @@ PHP;
     }
 }
 
-$tests = array(
+$tests = [
     'a literal zero response is not EOF' => function () {
         list($client) = bodyBytesRequest(false, '', '0');
         bodyBytesAssert($client->results === '0', 'The one-byte HTTP response must be retained');
@@ -125,7 +125,7 @@ $tests = array(
         $file = tempnam(sys_get_temp_dir(), 'snoopy-body-');
         try {
             bodyBytesAssert(file_put_contents($file, 'canary') === 6, 'The local canary is written');
-            $bodies = array(
+            $bodies = [
                 'a leading at sign' => '@' . $file,
                 'a leading dash' => '-X POST',
                 'the spelling of a curl option' => '--data-raw',
@@ -134,10 +134,10 @@ $tests = array(
                 'a single quote' => "name=it's",
                 'a shell substitution' => 'name=$(id)`id`',
                 'a backslash' => 'name=a\\b',
-            );
+            ];
             foreach ($bodies as $label => $body) {
-                $sent = array();
-                foreach (array(false => 'socket', true => 'curl') as $curl => $transport) {
+                $sent = [];
+                foreach ([false => 'socket', true => 'curl'] as $curl => $transport) {
                     try {
                         list($client, $request) = bodyBytesRequest($curl, $body);
                     } catch (Throwable $error) {
@@ -167,14 +167,14 @@ $tests = array(
         }
     },
     'empty and ordinary bodies keep their bytes on both transports' => function () {
-        foreach (array(false, true) as $curl) {
-            foreach (array('', 'plain=body&value=0') as $body) {
+        foreach ([false, true] as $curl) {
+            foreach (['', 'plain=body&value=0'] as $body) {
                 list($client, $request) = bodyBytesRequest($curl, $body);
                 bodyBytesAssert($request['body'] === $body, 'Ordinary and empty bodies must be preserved');
             }
         }
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

@@ -27,10 +27,10 @@ class TorrentCreatePathSequenceTest extends TestCase
 	private $saved;
 
 	/** The contents of the files the torrent is built from. */
-	private $files = array(
+	private $files = [
 		'a.data'     => 'the first file',
 		'sub/b.data' => 'the second file, in a subdirectory',
-	);
+	];
 
 	public function setUp()
 	{
@@ -57,44 +57,6 @@ class TorrentCreatePathSequenceTest extends TestCase
 		@rmdir($this->root);
 	}
 
-	/**
-	 * The info dictionary the class builds out of those files.
-	 *
-	 * Torrent::files() sorts deepest path first and then by name, hashes the
-	 * files in that order as one stream, and records each one's length and its
-	 * path relative to the folder. The pieces are computed here from the same
-	 * contents, in that order, so nothing in the expected bytes comes from the
-	 * class.
-	 */
-	private function createdInfo($extra = array())
-	{
-		$order = array('sub/b.data', 'a.data');
-		$stream = '';
-		$entries = array();
-		foreach ($order as $relative) {
-			$stream .= $this->files[$relative];
-			$components = array();
-			foreach (explode('/', $relative) as $component) {
-				$components[] = $this->bstr($component);
-			}
-			$entries[] = $this->bdict(array(
-				'length' => $this->bint(strlen($this->files[$relative])),
-				'path'   => $this->blist($components),
-			));
-		}
-		$pairs = array(
-			'files'        => $this->blist($entries),
-			'name'         => $this->bstr('created-payload'),
-			'piece length' => $this->bint(16 * 1024),
-			'pieces'       => $this->bstr(sha1($stream, true)),
-		);
-		foreach ($extra as $key => $value) {
-			$pairs[$key] = $value;
-		}
-		ksort($pairs, SORT_STRING);
-		return $this->bdict($pairs);
-	}
-
 	// ---- plugins/create/createtorrent.php --------------------------------
 
 	/**
@@ -104,10 +66,10 @@ class TorrentCreatePathSequenceTest extends TestCase
 	public function testCreatingATorrentWritesEveryKeyTheFormCanSet()
 	{
 		$before = time();
-		$announce_list = array(
-			array('http://one.test/announce', 'http://one.test/announce2'),
-			array('udp://two.test/announce'),
-		);
+		$announce_list = [
+			['http://one.test/announce', 'http://one.test/announce2'],
+			['udp://two.test/announce'],
+		];
 		$trackersCount = 3;
 
 		// createtorrent.php lines 70-92.
@@ -122,22 +84,22 @@ class TorrentCreatePathSequenceTest extends TestCase
 		$this->assertTrue($torrent->errors() === false, 'the torrent was built without errors');
 
 		$written = (string)$torrent;
-		$expected = $this->bdict(array(
+		$expected = $this->bdict([
 			'announce'      => $this->bstr('http://one.test/announce'),
 			'announce-list' => $this->bannounceList($announce_list),
 			'comment'       => $this->bstr('made here'),
 			'created by'    => $this->bstr($this->ourCreator()),
 			'creation date' => $this->bint($this->stampedDate($written, $before)),
-			'info'          => $this->createdInfo(array(
+			'info'          => $this->createdInfo([
 				'private' => $this->bint(1),
 				'source'  => $this->bstr('XIRVIK'),
-			)),
-		));
+			]),
+		]);
 		$this->assertTrue($written === $expected, 'the built torrent is byte for byte what it should be');
-		$this->assertTrue($torrent->hash_info() === strtoupper(sha1($this->createdInfo(array(
+		$this->assertTrue($torrent->hash_info() === strtoupper(sha1($this->createdInfo([
 				'private' => $this->bint(1),
 				'source'  => $this->bstr('XIRVIK'),
-			)))),
+			]))),
 			'and its info hash is the hash of the info dictionary that was written');
 	}
 
@@ -148,12 +110,12 @@ class TorrentCreatePathSequenceTest extends TestCase
 		$torrent = new Torrent($this->source, 'http://only.test/announce', 16, null, null);
 
 		$written = (string)$torrent;
-		$expected = $this->bdict(array(
+		$expected = $this->bdict([
 			'announce'      => $this->bstr('http://only.test/announce'),
 			'created by'    => $this->bstr($this->ourCreator()),
 			'creation date' => $this->bint($this->stampedDate($written, $before)),
 			'info'          => $this->createdInfo(),
-		));
+		]);
 		$this->assertTrue($written === $expected, 'the torrent carries announce and nothing else');
 	}
 
@@ -161,14 +123,14 @@ class TorrentCreatePathSequenceTest extends TestCase
 	public function testCreatingATorrentWithNoTrackerStillStampsTheCreator()
 	{
 		$before = time();
-		$torrent = new Torrent($this->source, array(), 16, null, null);
+		$torrent = new Torrent($this->source, [], 16, null, null);
 
 		$written = (string)$torrent;
-		$expected = $this->bdict(array(
+		$expected = $this->bdict([
 			'created by'    => $this->bstr($this->ourCreator()),
 			'creation date' => $this->bint($this->stampedDate($written, $before)),
 			'info'          => $this->createdInfo(),
-		));
+		]);
 		$this->assertTrue($written === $expected, 'a trackerless torrent is built and stamped');
 	}
 
@@ -184,10 +146,10 @@ class TorrentCreatePathSequenceTest extends TestCase
 	{
 		$before = time();
 		$torrent = new Torrent($this->source, 'http://one.test/announce', 16, null, null);
-		$torrent->announce_list(array(
-			array('http://one.test/announce'),
-			array('udp://two.test/announce'),
-		));
+		$torrent->announce_list([
+			['http://one.test/announce'],
+			['udp://two.test/announce'],
+		]);
 		$torrent->comment('made here');
 
 		$written = (string)$torrent;
@@ -206,8 +168,8 @@ class TorrentCreatePathSequenceTest extends TestCase
 			"'created by' is written with our creator");
 		$this->assertTrue(strpos($written, $this->bstr('creation date') . $this->bint($stamped)) !== false,
 			"'creation date' is written with the time of the last write, not of the build");
-		$this->assertTrue($reread->announce_list() === array(
-				array('http://one.test/announce'), array('udp://two.test/announce')),
+		$this->assertTrue($reread->announce_list() === [
+				['http://one.test/announce'], ['udp://two.test/announce']],
 			"'announce-list' reads back through a save and a load");
 		$this->assertTrue($reread->comment() === 'made here', 'and so does the comment');
 	}
@@ -241,7 +203,7 @@ class TorrentCreatePathSequenceTest extends TestCase
 		$torrent = new Torrent($this->announceListTorrent());
 
 		// correct.php lines 69-91, with one tracker on the form.
-		$announce_list = array(array('http://corrected.test/announce'));
+		$announce_list = [['http://corrected.test/announce']];
 		$trackersCount = 1;
 		$torrent->clear_announce();
 		if (count($announce_list) > 0) {
@@ -255,25 +217,63 @@ class TorrentCreatePathSequenceTest extends TestCase
 		$torrent->source('XIRVIK');
 
 		$written = (string)$torrent;
-		$expected = $this->bdict(array(
+		$expected = $this->bdict([
 			'announce'      => $this->bstr('http://corrected.test/announce'),
-			'announce-list' => $this->bannounceList(array(
-				array('http://one.test/announce'),
-				array('udp://two.test/announce', 'udp://two.test/announce2'),
-			)),
+			'announce-list' => $this->bannounceList([
+				['http://one.test/announce'],
+				['udp://two.test/announce', 'udp://two.test/announce2'],
+			]),
 			'comment'       => $this->bstr('corrected'),
 			'created by'    => $this->bstr($this->sourceCreator()),
 			'creation date' => $this->bint($this->preservedDate($written)),
-			'info'          => $this->bdict(array(
+			'info'          => $this->bdict([
 				'length'       => $this->bint(1024),
 				'name'         => $this->bstr('test.data'),
 				'piece length' => $this->bint(16384),
 				'pieces'       => $this->bstr($this->pieces()),
 				'private'      => $this->bint(1),
 				'source'       => $this->bstr('XIRVIK'),
-			)),
-		));
+			]),
+		]);
 		$this->assertTrue($written === $expected,
 			'the form values are written, and the announce-list and the creator it came with are left alone');
+	}
+
+	/**
+	 * The info dictionary the class builds out of those files.
+	 *
+	 * Torrent::files() sorts deepest path first and then by name, hashes the
+	 * files in that order as one stream, and records each one's length and its
+	 * path relative to the folder. The pieces are computed here from the same
+	 * contents, in that order, so nothing in the expected bytes comes from the
+	 * class.
+	 */
+	private function createdInfo($extra = [])
+	{
+		$order = ['sub/b.data', 'a.data'];
+		$stream = '';
+		$entries = [];
+		foreach ($order as $relative) {
+			$stream .= $this->files[$relative];
+			$components = [];
+			foreach (explode('/', $relative) as $component) {
+				$components[] = $this->bstr($component);
+			}
+			$entries[] = $this->bdict([
+				'length' => $this->bint(strlen($this->files[$relative])),
+				'path'   => $this->blist($components),
+			]);
+		}
+		$pairs = [
+			'files'        => $this->blist($entries),
+			'name'         => $this->bstr('created-payload'),
+			'piece length' => $this->bint(16 * 1024),
+			'pieces'       => $this->bstr(sha1($stream, true)),
+		];
+		foreach ($extra as $key => $value) {
+			$pairs[$key] = $value;
+		}
+		ksort($pairs, SORT_STRING);
+		return $this->bdict($pairs);
 	}
 }

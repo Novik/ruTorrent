@@ -2,8 +2,8 @@
 
 class JPopsukiEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array(
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
+	public $categories = [
 		'All'=>'',
 		"Album"=>"&filter_cat[1]=1",
 		"Single"=>"&filter_cat[2]=1",
@@ -14,34 +14,34 @@ class JPopsukiEngine extends commonEngine
 		"TV-Drama"=>"&filter_cat[7]=1",
 		"Fansubs"=>"&filter_cat[8]=1",
 		"Pictures"=>"&filter_cat[9]=1",
-		"Misc"=>"&filter_cat[10]=1"
-		);
+		"Misc"=>"&filter_cat[10]=1",
+		];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://jpopsuki.eu';
-		if($useGlobalCats)
-			$categories = array(
+		if($useGlobalCats) {
+			$categories = [
 				'all'=>'',
 				'tv'=>'&filter_cat[5]=1&filter_cat[6]=1&filter_cat[7]=1',
 				'music'=>'&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1',
-				'pictures'=>'&filter_cat[9]=1'
-				 );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+				'pictures'=>'&filter_cat[9]=1',
+				 ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=s6&order_way=DESC&disablegrouping=1&page='.$pg );
 			sleep( 1 );
 			if( ($cli==false) || (strpos($cli->results, ">Your search did not match anything.<")!==false) ||
-				(strpos($cli->results, ">Password")!==false))
-				break;
+				(strpos($cli->results, ">Password")!==false)) {
+				break; }
 			$res = preg_match_all('`<tr class="torrent.*<a href=\'torrents\.php.*>(?P<cat>.*)</a></td>.*'.
 				'<span>\[<a href="torrents\.php\?action=download&amp;(?P<link>.*)".*'.
 				'(<a href="artist\.php\?id=.*>(?P<name1>.*))?'.
@@ -70,13 +70,13 @@ class JPopsukiEngine extends commonEngine
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

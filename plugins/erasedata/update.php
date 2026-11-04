@@ -1,7 +1,7 @@
 <?php
 
-if( count( $argv ) > 1 )
-	$_SERVER['REMOTE_USER'] = $argv[1];
+if( count( $argv ) > 1 ) {
+	$_SERVER['REMOTE_USER'] = $argv[1]; }
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
@@ -13,8 +13,8 @@ eval(FileUtil::getPluginConf('erasedata'));
 function eLog( $str )
 {
 	global $erasedebug_enabled;
-	if($erasedebug_enabled)
-		FileUtil::toLog( "erasedata: ".$str );
+	if($erasedebug_enabled) {
+		FileUtil::toLog( "erasedata: ".$str ); }
 }
 
 function sortByLevel( $a, $b )
@@ -44,11 +44,11 @@ function isUsableBasePath($base)
 function resolveBasePath($base)
 {
 	$base = rtrim($base,'/');
-	if(($base === '') || is_link($base))
-		return('');
+	if(($base === '') || is_link($base)) {
+		return(''); }
 	$real = realpath($base);
-	if($real === false)
-		return('');
+	if($real === false) {
+		return(''); }
 	$real = rtrim($real,'/');
 	return($real === '' ? '' : $real);
 }
@@ -76,28 +76,28 @@ function containedPathUnderBase($file, $base, $real_base)
 {
 	$base = rtrim($base,'/');
 	$real_base = rtrim($real_base,'/');
-	if(($base === '') || ($real_base === ''))
-		return('');
-	if($file === $base)
-		return($real_base);
-	if(strncmp($file,$base.'/',strlen($base)+1) !== 0)
-		return('');
+	if(($base === '') || ($real_base === '')) {
+		return(''); }
+	if($file === $base) {
+		return($real_base); }
+	if(strncmp($file,$base.'/',strlen($base)+1) !== 0) {
+		return(''); }
 	$parts = explode('/', substr($file,strlen($base)+1));
 	$leaf = array_pop($parts);
-	if(($leaf === '') || ($leaf === '.') || ($leaf === '..'))
-		return('');
+	if(($leaf === '') || ($leaf === '.') || ($leaf === '..')) {
+		return(''); }
 	$path = $real_base;
 	foreach($parts as $part)
 	{
-		if(($part === '') || ($part === '.') || ($part === '..'))
-			return('');
+		if(($part === '') || ($part === '.') || ($part === '..')) {
+			return(''); }
 		$path .= '/'.$part;
 		$st = @lstat($path);
 		// Not there, so no file of the download is below it either.
-		if($st === false)
-			return('');
-		if(($st['mode'] & 0170000) != 0040000)
-			return('');
+		if($st === false) {
+			return(''); }
+		if(($st['mode'] & 0170000) != 0040000) {
+			return(''); }
 	}
 	return($path.'/'.$leaf);
 }
@@ -143,13 +143,13 @@ function quarantineLegacyList($item)
 		}
 		$aside = $item.'.unverified.'.$n;
 	}
-	if(@rename($item,$aside))
+	if(@rename($item,$aside)) {
 		FileUtil::toLog('erasedata: '.basename($item).' was queued by an earlier version and '.
 			'cannot be told apart from a planted list; moved to '.basename($aside).
-			' and its data left in place');
-	else
+			' and its data left in place'); }
+	else {
 		FileUtil::toLog('erasedata: '.basename($item).' was queued by an earlier version and '.
-			'could not be moved aside; it was not acted on');
+			'could not be moved aside; it was not acted on'); }
 }
 
 function parseOneItem($item)
@@ -158,9 +158,9 @@ function parseOneItem($item)
 	eLog('*** Parse item '.$item);
 	$lines = file($item,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 	$cnt = count($lines);
-	if($cnt<=3)
-		return;
-	$dirs = array();
+	if($cnt<=3) {
+		return; }
+	$dirs = [];
 	$force_delete = (intval($lines[$cnt-1]) == 2) && $enableForceDeletion;
 	$is_multi = intval($lines[$cnt-2]);
 	$base_path = $lines[$cnt-3];
@@ -184,7 +184,7 @@ function parseOneItem($item)
 	// entries, so this is also what ties the base the list declares to the
 	// files it declares: a list whose entries are not files of its own base is
 	// not the list of one download, and none of it is acted on.
-	$files = array();
+	$files = [];
 	foreach($lines as $file)
 	{
 		$path = containedPathUnderBase($file,$base_path,$real_base);
@@ -210,10 +210,10 @@ function parseOneItem($item)
 	{
 		foreach( $files as $file )
 		{
-			if(@unlink($file))
-				eLog('Successfully delete file '.$file);
-			else
-				eLog('FAIL Delete file '.$file);
+			if(@unlink($file)) {
+				eLog('Successfully delete file '.$file); }
+			else {
+				eLog('FAIL Delete file '.$file); }
 			if($is_multi && (strlen($file) > strlen($real_base)+1))
 			{
 				$dir = $real_base;
@@ -231,24 +231,24 @@ function parseOneItem($item)
 	{
 		if($force_delete)
 		{
-			if(@deleteDir($real_base))
-				eLog('Successfully forced delete dir '.$real_base);
-			else
-				eLog('FAIL force delete dir '.$real_base);
+			if(@deleteDir($real_base)) {
+				eLog('Successfully forced delete dir '.$real_base); }
+			else {
+				eLog('FAIL force delete dir '.$real_base); }
 		}
 		else
 		{
 			$dirs = array_unique($dirs);
 			usort( $dirs, "sortByLevel" );
-			foreach( $dirs as $dir )
-				if(@rmdir($dir))
-					eLog('Successfully delete dir '.$dir);
-				else
-					eLog('FAIL delete dir '.$dir);
-			if(@rmdir($real_base))
-				eLog('Successfully delete dir '.$real_base);
-			else
-				eLog('FAIL delete dir '.$real_base);
+			foreach( $dirs as $dir ) {
+				if(@rmdir($dir)) {
+					eLog('Successfully delete dir '.$dir); }
+				else {
+					eLog('FAIL delete dir '.$dir); } }
+			if(@rmdir($real_base)) {
+				eLog('Successfully delete dir '.$real_base); }
+			else {
+				eLog('FAIL delete dir '.$real_base); }
 		}
 	}
 }
@@ -261,27 +261,27 @@ $lock = $listPath.'/scheduler.lock';
 if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 {
 	touch($lock);
-       	$list = array();
-	$legacy = array();
+       	$list = [];
+	$legacy = [];
 	if($handle = @opendir($listPath))
 	{
 	        while(false !== ($file = readdir($handle)))
 		{
 			$fname = $listPath.'/'.$file;
-			if($file == "." || $file == ".." || !is_file($fname))
-				continue;
+			if($file == "." || $file == ".." || !is_file($fname)) {
+				continue; }
 			$ext = pathinfo($file,PATHINFO_EXTENSION);
-			if($ext == "list2")
-				$list[] = $fname;
+			if($ext == "list2") {
+				$list[] = $fname; }
 			// Moved aside after the directory has been read rather than during
 			// it, so the scan is not walking a directory it is changing.
-			else if($ext == "list")
-				$legacy[] = $fname;
+			elseif($ext == "list") {
+				$legacy[] = $fname; }
 		}
 		closedir($handle);
 	}
-	foreach( $legacy as $item )
-		quarantineLegacyList($item);
+	foreach( $legacy as $item ) {
+		quarantineLegacyList($item); }
 	// A list is published once rtorrent has confirmed the erase, but the same
 	// hash can be loaded again before this pass -- by hand, from a watch
 	// directory, from an RSS rule -- and rtorrent then finds the files on
@@ -318,37 +318,37 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 	}
 	unlink($lock);
 }
-else
-	eLog('Busy, wait for next time.');
+else {
+	eLog('Busy, wait for next time.'); }
 
 function deleteDir($dir)
 {
-	if(empty($dir))
-		return(false);
+	if(empty($dir)) {
+		return(false); }
 	// lstat(), so a symlink is seen as a symlink. is_dir() follows one, and
 	// recursing through it empties whatever it points at: one directory of the
 	// download being a link then decides what is deleted outside the download.
 	// A link is removed as the name it is, and what it points at is left.
 	$st = @lstat($dir);
-	if($st === false)
-		return(false);
-	if(($st['mode'] & 0170000) != 0040000)
-		return(@unlink($dir));
+	if($st === false) {
+		return(false); }
+	if(($st['mode'] & 0170000) != 0040000) {
+		return(@unlink($dir)); }
 	$files = @scandir($dir);
-	if($files === false)
-		return(false);
+	if($files === false) {
+		return(false); }
 	$empty = true;
-	foreach(array_diff($files, array('.','..')) as $file)
+	foreach(array_diff($files, ['.','..']) as $file)
 	{
 		$path = $dir.'/'.$file;
 		$s = @lstat($path);
 		if(($s !== false) && (($s['mode'] & 0170000) == 0040000))
 		{
-			if(!deleteDir($path))
-				$empty = false;
+			if(!deleteDir($path)) {
+				$empty = false; }
 		}
-		elseif(!@unlink($path))
-			$empty = false;
+		elseif(!@unlink($path)) {
+			$empty = false; }
 	}
 	$gone = @rmdir($dir);
 	return($gone && $empty);

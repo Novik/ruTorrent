@@ -13,19 +13,19 @@ function array_diff_assoc_recursive($array1, $array2)
 	{
 		if(is_array($value))
 		{
-			if(!isset($array2[$key]))
-				$difference[$key] = $value;
-			elseif(!is_array($array2[$key]))
-				$difference[$key] = $value;
+			if(!isset($array2[$key])) {
+				$difference[$key] = $value; }
+			elseif(!is_array($array2[$key])) {
+				$difference[$key] = $value; }
 			else
 			{
 				$diff = array_diff_assoc_recursive($value, $array2[$key]);
-				if($diff!==false)
-					$difference[$key] = $diff;
+				if($diff!==false) {
+					$difference[$key] = $diff; }
 			}
 		}
-		elseif(!isset($array2[$key]) || $array2[$key] != $value)
-			$difference[$key] = $value;
+		elseif(!isset($array2[$key]) || $array2[$key] != $value) {
+			$difference[$key] = $value; }
 	}
 	return(isset($difference) ? $difference : false);
 }
@@ -38,19 +38,31 @@ class rpcCache
         public function __construct()
         {
 		$this->dir = FileUtil::getSettingsPath()."/httprpc";
-		if(!is_dir($this->dir))
-			FileUtil::makeDirectory($this->dir);
+		if(!is_dir($this->dir)) {
+			FileUtil::makeDirectory($this->dir); }
         }
 
-	protected function store( $torrents = array() )
+	public function calcDifference( &$cid, &$torrents, &$dTorrents )
+	{
+		$oldTorrents = $this->load( $cid );
+		$cid = $this->store( $torrents );
+		$mod = array_diff_assoc_recursive($torrents,$oldTorrents);
+		$del = array_diff_key($oldTorrents,$torrents);
+		foreach($del as $hash=>$val) {
+			$dTorrents[] = $hash; }
+		$torrents = ($mod===false) ? [] : $mod;
+		return(count($oldTorrents)>0);
+	}
+
+	protected function store( $torrents = [] )
 	{
 	        $cid = 0;
 		$result = serialize($torrents);
 		if($result!==false)
 		{
 			$cid = crc32($result);
-			if(file_put_contents($this->dir.'/'.dechex($cid),$result)!=strlen($result))
-				@unlink($this->dir.'/'.dechex($cid));
+			if(file_put_contents($this->dir.'/'.dechex($cid),$result)!=strlen($result)) {
+				@unlink($this->dir.'/'.dechex($cid)); }
 		}
 		$this->strip();
 		return($cid);
@@ -58,15 +70,15 @@ class rpcCache
 
 	protected function load( $cid )
 	{
-		$torrents = array();
+		$torrents = [];
 		if($cid)
 		{
 			$ret = @file_get_contents($this->dir.'/'.dechex($cid));
 			if($ret!==false)
 			{
-				$torrents = unserialize($ret, array( 'allowed_classes'=>false ));
-				if($torrents===false)
-					$torrents = array();
+				$torrents = unserialize($ret, [ 'allowed_classes'=>false ]);
+				if($torrents===false) {
+					$torrents = []; }
 			}
 		}
 		return($torrents);
@@ -76,12 +88,12 @@ class rpcCache
 	{
 		if($dh = opendir($this->dir))
 		{
-			$files = array();
+			$files = [];
 		        while(($file = readdir($dh)) !== false)
 		        {
 				$filename = $this->dir.'/'.$file;
-		        	if(is_file($filename))
-		        	         $files[$filename] = filemtime($filename);
+		        	if(is_file($filename)) {
+		        	         $files[$filename] = filemtime($filename); }
 		        }
 		        closedir($dh);
 		        if(count($files)>MAX_CACHE)
@@ -92,23 +104,11 @@ class rpcCache
 		        	{
 					@unlink( $file );
 					$i++;
-					if($i>(MAX_CACHE-MIN_CACHE))
-						break;
+					if($i>(MAX_CACHE-MIN_CACHE)) {
+						break; }
 				}
 			}
 		}
-	}
-
-	public function calcDifference( &$cid, &$torrents, &$dTorrents )
-	{
-		$oldTorrents = $this->load( $cid );
-		$cid = $this->store( $torrents );
-		$mod = array_diff_assoc_recursive($torrents,$oldTorrents);
-		$del = array_diff_key($oldTorrents,$torrents);
-		foreach($del as $hash=>$val)
-			$dTorrents[] = $hash;
-		$torrents = ($mod===false) ? array() : $mod;
-		return(count($oldTorrents)>0);
 	}
 
 }

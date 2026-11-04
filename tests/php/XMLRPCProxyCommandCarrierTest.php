@@ -24,86 +24,6 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 {
 	private $root = '/torrents1';
 
-	/** The command names conf/xmlrpc_proxy.php ships, near enough. */
-	private function safeParams()
-	{
-		return array(
-			'd.custom1.set', 'd.custom.set', 'd.directory.set',
-			'd.directory_base.set', 'd.priority.set', 'd.open', 'd.close',
-			'd.start', 'd.stop', 'd.set_custom', 'd.set_connection_seed',
-		);
-	}
-
-	private function decide($xml, $confined = true)
-	{
-		$options = $confined
-			? array('directory' => array('root' => $this->root, 'resolve' => null))
-			: array();
-		return XMLRPCProxy::decide($xml, 'sanitize', $this->safeParams(), false, $options);
-	}
-
-	private function call($method, $params)
-	{
-		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
-			. '</methodName><params>';
-		foreach($params as $p)
-			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
-				. '</string></value></param>';
-		return $xml . '</params></methodCall>';
-	}
-
-	private function systemMulticall($members)
-	{
-		$xml = '<?xml version="1.0"?><methodCall><methodName>system.multicall'
-			. '</methodName><params><param><value><array><data>';
-		foreach($members as $member)
-		{
-			$xml .= '<value><struct><member><name>methodName</name><value><string>'
-				. htmlspecialchars($member[0], ENT_NOQUOTES)
-				. '</string></value></member>'
-				. '<member><name>params</name><value><array><data>';
-			foreach($member[1] as $p)
-				$xml .= '<value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
-					. '</string></value>';
-			$xml .= '</data></array></value></member></struct></value>';
-		}
-		return $xml . '</data></array></value></param></params></methodCall>';
-	}
-
-	/**
-	 * Refused here, not handed to rtorrent with a header to sort out: nothing
-	 * is sent, nothing is trusted, and the command named in the refusal is the
-	 * one the caller wrote.
-	 */
-	private function assertRefused($decision, $method, $what)
-	{
-		$this->assertTrue($decision['action'] === 'reject',
-			$what . ' is refused (action=' . $decision['action'] . ')');
-		$this->assertTrue($decision['payload'] === '',
-			$what . ' sends no payload');
-		$this->assertTrue($decision['trusted'] === false,
-			$what . ' is not trusted');
-		$this->assertTrue($decision['method'] === $method,
-			$what . ' names ' . $method . ' (named ' . var_export($decision['method'], true) . ')');
-	}
-
-	/**
-	 * Forwarded, with the bytes stated rather than assumed.
-	 */
-	private function assertForwarded($decision, $absent, $present, $what, $trusted = false)
-	{
-		$this->assertTrue($decision['action'] === 'send',
-			$what . ' is forwarded (action=' . $decision['action'] . ')');
-		$this->assertTrue($decision['trusted'] === $trusted,
-			$what . ' is forwarded ' . ($trusted ? 'trusted' : 'untrusted'));
-		foreach((array)$absent as $bytes)
-			$this->assertTrue(strpos($decision['payload'], $bytes) === false,
-				$what . ' does not put ' . var_export($bytes, true) . ' on the wire');
-		foreach((array)$present as $bytes)
-			$this->assertTrue(strpos($decision['payload'], $bytes) !== false,
-				$what . ' puts ' . var_export($bytes, true) . ' on the wire');
-	}
-
 	// ------------------------------------------------------------------
 	// A system.multicall member's command parameters.
 	// ------------------------------------------------------------------
@@ -115,8 +35,8 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testASystemMulticallSendsTheParameterItValidated()
 	{
-		$decision = $this->decide($this->systemMulticall(array(
-			array('d.multicall', array('main', '', 'd.custom1.set=x;execute=cat,/etc/passwd')))));
+		$decision = $this->decide($this->systemMulticall([
+			['d.multicall', ['main', '', 'd.custom1.set=x;execute=cat,/etc/passwd']]]));
 
 		$this->assertForwarded($decision,
 			'd.custom1.set=x;execute=cat,/etc/passwd',
@@ -131,9 +51,9 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testASystemMulticallCannotSmuggleASecondDirectorySetter()
 	{
-		$decision = $this->decide($this->systemMulticall(array(
-			array('d.multicall', array('main', '',
-				'd.directory.set=/torrents1/a;d.directory.set=/var/www/html')))));
+		$decision = $this->decide($this->systemMulticall([
+			['d.multicall', ['main', '',
+				'd.directory.set=/torrents1/a;d.directory.set=/var/www/html']]]));
 
 		$this->assertForwarded($decision,
 			'd.directory.set=/torrents1/a;d.directory.set=/var/www/html',
@@ -148,8 +68,8 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testTheRebuiltPayloadIsWhatThisSideWouldAccept()
 	{
-		$first = $this->decide($this->systemMulticall(array(
-			array('d.multicall', array('main', '', 'd.custom1.set=x;execute=cat,/etc/passwd')))));
+		$first = $this->decide($this->systemMulticall([
+			['d.multicall', ['main', '', 'd.custom1.set=x;execute=cat,/etc/passwd']]]));
 		$second = $this->decide($first['payload']);
 
 		$this->assertTrue($second['action'] === 'send',
@@ -183,12 +103,12 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 
 		$decision = $this->decide($request);
 
-		$this->assertForwarded($decision, array(), array(
+		$this->assertForwarded($decision, [], [
 			'<base64>' . $torrent . '</base64>',   // the torrent keeps its type
 			'<string>d.name=</string>',            // a read command is not rebuilt away
 			'system.listMethods',                  // a member this does not classify is kept
 			'd.custom1.set="keep"',                // and the one it does rebuild is rebuilt
-		), 'a mixed system.multicall');
+		], 'a mixed system.multicall');
 	}
 
 	/**
@@ -197,8 +117,8 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testASystemMulticallWithNothingToRebuildIsForwardedVerbatim()
 	{
-		$request = $this->systemMulticall(array(
-			array('d.name', array(str_repeat('A', 40)))));
+		$request = $this->systemMulticall([
+			['d.name', [str_repeat('A', 40)]]]);
 		$decision = $this->decide($request);
 
 		$this->assertTrue($decision['action'] === 'send', 'a read multicall is forwarded');
@@ -207,27 +127,12 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 		$this->assertTrue($decision['trusted'] === false, 'and untrusted');
 	}
 
-	// ------------------------------------------------------------------
-	// Directory setters called as calls.
-	// ------------------------------------------------------------------
-
-	/**
-	 * Both setters, under the name a 0.16.x daemon registers and the name a
-	 * 0.9.x one does. php/methods-0.9.4.php is what says they are the same
-	 * command.
-	 */
-	private function directorySpellings()
-	{
-		return array('d.directory.set', 'd.set_directory',
-			'd.directory_base.set', 'd.set_directory_base');
-	}
-
 	public function testATopLevelDirectorySetterOutsideTheRootIsRefused()
 	{
 		foreach($this->directorySpellings() as $name)
 		{
 			$decision = $this->decide($this->call($name,
-				array(str_repeat('A', 40), '/var/www/html')));
+				[str_repeat('A', 40), '/var/www/html']));
 			$this->assertRefused($decision, $name, 'a top-level ' . $name . ' to /var/www/html');
 			$this->assertTrue(strpos($decision['payload'], '/var/www/html') === false,
 				$name . ' does not put /var/www/html on the wire');
@@ -238,7 +143,7 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	{
 		foreach($this->directorySpellings() as $name)
 		{
-			$request = $this->call($name, array(str_repeat('A', 40), '/torrents1/ok'));
+			$request = $this->call($name, [str_repeat('A', 40), '/torrents1/ok']);
 			$decision = $this->decide($request);
 			$this->assertTrue($decision['action'] === 'send',
 				'a top-level ' . $name . ' inside the root is forwarded');
@@ -253,8 +158,8 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	{
 		foreach($this->directorySpellings() as $name)
 		{
-			$decision = $this->decide($this->systemMulticall(array(
-				array($name, array(str_repeat('A', 40), '/var/www/html')))));
+			$decision = $this->decide($this->systemMulticall([
+				[$name, [str_repeat('A', 40), '/var/www/html']]]));
 			$this->assertRefused($decision, $name,
 				'a system.multicall member ' . $name . ' to /var/www/html');
 		}
@@ -265,12 +170,12 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 		foreach($this->directorySpellings() as $name)
 		{
 			$decision = $this->decide($this->call('d.multicall',
-				array('main', '', $name . '=/var/www/html')));
+				['main', '', $name . '=/var/www/html']));
 			$this->assertRefused($decision, $name,
 				'a d.multicall carrying ' . $name . '=/var/www/html');
 
-			$decision = $this->decide($this->systemMulticall(array(
-				array('d.multicall', array('main', '', $name . '=/var/www/html')))));
+			$decision = $this->decide($this->systemMulticall([
+				['d.multicall', ['main', '', $name . '=/var/www/html']]]));
 			$this->assertRefused($decision, $name,
 				'a system.multicall carrying ' . $name . '=/var/www/html');
 		}
@@ -283,7 +188,7 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	public function testNoStatedBoundaryIsNotPoliced()
 	{
 		$decision = $this->decide($this->call('d.directory.set',
-			array(str_repeat('A', 40), '/var/www/html')), false);
+			[str_repeat('A', 40), '/var/www/html']), false);
 		$this->assertTrue($decision['action'] === 'send',
 			'with no boundary stated a directory setter is forwarded');
 		$this->assertTrue($decision['trusted'] === false, 'and untrusted');
@@ -295,25 +200,9 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testTheGlobalDirectorySetterIsRefusedOutright()
 	{
-		foreach(array('directory.default.set', 'set_directory') as $name)
-			$this->assertRefused($this->decide($this->call($name, array('/torrents1/ok'))),
-				$name, 'the global setter ' . $name);
-	}
-
-	// ------------------------------------------------------------------
-	// Evaluators.
-	// ------------------------------------------------------------------
-
-	/**
-	 * Every name in $evaluatorMethods, enumerated from the property rather
-	 * than written out here, so one added later is covered by this file
-	 * without it being edited.
-	 */
-	private function evaluators()
-	{
-		$property = new ReflectionProperty('XMLRPCProxy', 'evaluatorMethods');
-		$property->setAccessible(true);
-		return $property->getValue();
+		foreach(['directory.default.set', 'set_directory'] as $name) {
+			$this->assertRefused($this->decide($this->call($name, ['/torrents1/ok'])),
+				$name, 'the global setter ' . $name); }
 	}
 
 	public function testTheEvaluatorsAreEnumerated()
@@ -329,7 +218,7 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 		foreach($this->evaluators() as $name)
 		{
 			$decision = $this->decide($this->call($name,
-				array(str_repeat('A', 40), 'd.is_active=', 'execute=cat,/etc/passwd')));
+				[str_repeat('A', 40), 'd.is_active=', 'execute=cat,/etc/passwd']));
 			$this->assertRefused($decision, 'execute',
 				'a top-level ' . $name . ' carrying execute');
 		}
@@ -339,8 +228,8 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	{
 		foreach($this->evaluators() as $name)
 		{
-			$decision = $this->decide($this->systemMulticall(array(
-				array($name, array(str_repeat('A', 40), 'd.is_active=', 'import=/tmp/evil.rc')))));
+			$decision = $this->decide($this->systemMulticall([
+				[$name, [str_repeat('A', 40), 'd.is_active=', 'import=/tmp/evil.rc']]]));
 			$this->assertRefused($decision, 'import',
 				'a system.multicall member ' . $name . ' carrying import');
 		}
@@ -353,14 +242,14 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	public function testAnEvaluatorIsReadFromItsFirstArgument()
 	{
 		$this->assertRefused($this->decide($this->call('branch',
-			array('execute=cat,/etc/passwd', 'd.name=', 'd.name='))),
+			['execute=cat,/etc/passwd', 'd.name=', 'd.name='])),
 			'execute', 'a branch whose conditional is execute');
 	}
 
 	public function testAnEvaluatorCannotCarryADirectoryOutsideTheRoot()
 	{
 		$this->assertRefused($this->decide($this->call('branch',
-			array(str_repeat('A', 40), 'd.is_active=', 'd.directory.set=/var/www/html'))),
+			[str_repeat('A', 40), 'd.is_active=', 'd.directory.set=/var/www/html'])),
 			'd.directory.set', 'a branch carrying a directory outside the root');
 	}
 
@@ -372,11 +261,11 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	 */
 	public function testRuTorrentsOwnSuperseedBranchIsStillForwarded()
 	{
-		$request = $this->call('branch', array(
+		$request = $this->call('branch', [
 			str_repeat('A', 40),
 			'd.is_active=',
 			'cat=$d.stop=,$d.close=,$d.set_connection_seed=seed,$d.open=,$d.start=',
-			'd.set_connection_seed=seed'));
+			'd.set_connection_seed=seed']);
 		$decision = $this->decide($request);
 
 		$this->assertTrue($decision['action'] === 'send',
@@ -397,5 +286,116 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 			"a ';' starts a new command and the name after it is judged");
 		$this->assertTrue(XMLRPCProxy::refusedCommandName('d.custom1.set=season 1') === null,
 			'and ordinary argument text is still not judged');
+	}
+
+	/** The command names conf/xmlrpc_proxy.php ships, near enough. */
+	private function safeParams()
+	{
+		return [
+			'd.custom1.set', 'd.custom.set', 'd.directory.set',
+			'd.directory_base.set', 'd.priority.set', 'd.open', 'd.close',
+			'd.start', 'd.stop', 'd.set_custom', 'd.set_connection_seed',
+		];
+	}
+
+	private function decide($xml, $confined = true)
+	{
+		$options = $confined
+			? ['directory' => ['root' => $this->root, 'resolve' => null]]
+			: [];
+		return XMLRPCProxy::decide($xml, 'sanitize', $this->safeParams(), false, $options);
+	}
+
+	private function call($method, $params)
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
+			. '</methodName><params>';
+		foreach($params as $p) {
+			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
+				. '</string></value></param>'; }
+		return $xml . '</params></methodCall>';
+	}
+
+	private function systemMulticall($members)
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>system.multicall'
+			. '</methodName><params><param><value><array><data>';
+		foreach($members as $member)
+		{
+			$xml .= '<value><struct><member><name>methodName</name><value><string>'
+				. htmlspecialchars($member[0], ENT_NOQUOTES)
+				. '</string></value></member>'
+				. '<member><name>params</name><value><array><data>';
+			foreach($member[1] as $p) {
+				$xml .= '<value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
+					. '</string></value>'; }
+			$xml .= '</data></array></value></member></struct></value>';
+		}
+		return $xml . '</data></array></value></param></params></methodCall>';
+	}
+
+	/**
+	 * Refused here, not handed to rtorrent with a header to sort out: nothing
+	 * is sent, nothing is trusted, and the command named in the refusal is the
+	 * one the caller wrote.
+	 */
+	private function assertRefused($decision, $method, $what)
+	{
+		$this->assertTrue($decision['action'] === 'reject',
+			$what . ' is refused (action=' . $decision['action'] . ')');
+		$this->assertTrue($decision['payload'] === '',
+			$what . ' sends no payload');
+		$this->assertTrue($decision['trusted'] === false,
+			$what . ' is not trusted');
+		$this->assertTrue($decision['method'] === $method,
+			$what . ' names ' . $method . ' (named ' . var_export($decision['method'], true) . ')');
+	}
+
+	/**
+	 * Forwarded, with the bytes stated rather than assumed.
+	 */
+	private function assertForwarded($decision, $absent, $present, $what, $trusted = false)
+	{
+		$this->assertTrue($decision['action'] === 'send',
+			$what . ' is forwarded (action=' . $decision['action'] . ')');
+		$this->assertTrue($decision['trusted'] === $trusted,
+			$what . ' is forwarded ' . ($trusted ? 'trusted' : 'untrusted'));
+		foreach((array)$absent as $bytes) {
+			$this->assertTrue(strpos($decision['payload'], $bytes) === false,
+				$what . ' does not put ' . var_export($bytes, true) . ' on the wire'); }
+		foreach((array)$present as $bytes) {
+			$this->assertTrue(strpos($decision['payload'], $bytes) !== false,
+				$what . ' puts ' . var_export($bytes, true) . ' on the wire'); }
+	}
+
+	// ------------------------------------------------------------------
+	// Directory setters called as calls.
+	// ------------------------------------------------------------------
+
+	/**
+	 * Both setters, under the name a 0.16.x daemon registers and the name a
+	 * 0.9.x one does. php/methods-0.9.4.php is what says they are the same
+	 * command.
+	 */
+	private function directorySpellings()
+	{
+		return ['d.directory.set', 'd.set_directory',
+			'd.directory_base.set', 'd.set_directory_base'];
+	}
+
+	// ------------------------------------------------------------------
+	// Evaluators.
+	// ------------------------------------------------------------------
+
+	/**
+	 * Every name in $evaluatorMethods, enumerated from the property rather
+	 * than written out here, so one added later is covered by this file
+	 * without it being edited.
+	 */
+	private function evaluators()
+	{
+		$property = new ReflectionProperty('XMLRPCProxy', 'evaluatorMethods');
+		$property->setAccessible(true);
+		return $property->getValue();
 	}
 }

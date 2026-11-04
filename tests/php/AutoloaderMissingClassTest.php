@@ -12,28 +12,16 @@ require_once(__DIR__ . "/../../php/util.php");
  */
 class AutoloaderMissingClassTest extends TestCase
 {
-	protected $warnings = array();
-
-	protected function warningsWhileResolving($class, $autoload = true)
-	{
-		$this->warnings = array();
-		set_error_handler(function ($no, $str) {
-			$this->warnings[] = $str;
-			return true;
-		});
-		$found = class_exists($class, $autoload);
-		restore_error_handler();
-		return array($found, $this->warnings);
-	}
+	protected $warnings = [];
 
 	public function testAnUnknownClassResolvesWithoutADiagnostic()
 	{
 		list($found, $warnings) = $this->warningsWhileResolving("NoSuchUtilityClass");
 		$this->assertTrue(!$found, "An unknown class is reported as absent");
 		$this->assertEquals(
-			array(),
+			[],
 			$warnings,
-			"Asking for an unknown class emits nothing: " . json_encode($warnings)
+			"Asking for an unknown class emits nothing: " . json_encode($warnings),
 		);
 	}
 
@@ -42,9 +30,9 @@ class AutoloaderMissingClassTest extends TestCase
 		list($found, $warnings) = $this->warningsWhileResolving("Vendor\\\\Package\\\\NoSuchUtilityClass");
 		$this->assertTrue(!$found, "An unknown namespaced class is reported as absent");
 		$this->assertEquals(
-			array(),
+			[],
 			$warnings,
-			"Asking for an unknown namespaced class emits nothing: " . json_encode($warnings)
+			"Asking for an unknown namespaced class emits nothing: " . json_encode($warnings),
 		);
 	}
 
@@ -52,14 +40,26 @@ class AutoloaderMissingClassTest extends TestCase
 	{
 		$this->assertTrue(
 			!class_exists("TimeFormat", false),
-			"TimeFormat is not already declared, so the autoloader is what resolves it"
+			"TimeFormat is not already declared, so the autoloader is what resolves it",
 		);
 		list($found, $warnings) = $this->warningsWhileResolving("TimeFormat");
 		$this->assertTrue($found, "A class under php/utility/ loads through the autoloader");
 		$this->assertEquals(
-			array(),
+			[],
 			$warnings,
-			"Loading a utility class emits nothing: " . json_encode($warnings)
+			"Loading a utility class emits nothing: " . json_encode($warnings),
 		);
+	}
+
+	protected function warningsWhileResolving($class, $autoload = true)
+	{
+		$this->warnings = [];
+		set_error_handler(function ($no, $str) {
+			$this->warnings[] = $str;
+			return true;
+		});
+		$found = class_exists($class, $autoload);
+		restore_error_handler();
+		return [$found, $this->warnings];
 	}
 }

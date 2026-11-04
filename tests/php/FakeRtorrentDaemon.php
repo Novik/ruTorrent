@@ -19,50 +19,16 @@ require_once(__DIR__.'/SCGIRequest.php');
  */
 class FakeRtorrentDaemon
 {
+
+	public const FAULT = '__fault__';
+	public const RAW = '__raw__';
+	public const PACED = '__paced__';
 	private $socket;
 	private $pid = 0;
 	private $process;
 	private $port;
 	private $logFile;
 	private $bodyLogFile;
-
-	const FAULT = '__fault__';
-	const RAW = '__raw__';
-	const PACED = '__paced__';
-
-	/**
-	 * A reply entry that makes the daemon answer with a fault instead of
-	 * values, for a test that needs the caller's request to fail.
-	 */
-	public static function fault($message, $code = -501)
-	{
-		return array(self::FAULT => array('code' => $code, 'message' => $message));
-	}
-
-	/**
-	 * A reply entry that makes the daemon answer with exactly these bytes and
-	 * close the connection: an answer captured from a real rtorrent, SCGI
-	 * headers and all, or one cut short the way a daemon that stopped
-	 * mid-write leaves it.
-	 */
-	public static function raw($bytes)
-	{
-		return array(self::RAW => $bytes);
-	}
-
-	/**
-	 * A reply entry that makes the daemon write these pieces in order, waiting
-	 * $pause microseconds between them, and close. The wait is what makes each
-	 * piece a read of its own on the other end: a reader blocked in fread()
-	 * gets the piece that woke it, not the whole reply. An answer written in
-	 * one call cannot show where a reader's reads fall, because the kernel is
-	 * free to hand it over in any division at all -- including, under TCP, one
-	 * that puts a single byte in a read by itself.
-	 */
-	public static function paced($pieces, $pause = 300000)
-	{
-		return array(self::PACED => array('pieces' => $pieces, 'pause' => $pause));
-	}
 
 	/**
 	 * $replies is a list, one per request: each entry is the list of values
@@ -79,7 +45,7 @@ class FakeRtorrentDaemon
 	 * method names. $replyClassFiles must define its test-owned class before the
 	 * worker unserializes it.
 	 */
-	public function __construct($replies, $logFile, $worker = false, $replyClassFiles = array())
+	public function __construct($replies, $logFile, $worker = false, $replyClassFiles = [])
 	{
 		$this->logFile = $logFile;
 		// Keep bodies separate so calls() remains a plain method-name list.
@@ -98,8 +64,8 @@ class FakeRtorrentDaemon
 		if($replies instanceof Closure)
 		{
 			if(!function_exists('pcntl_fork') || !function_exists('pcntl_waitpid')
-				|| !function_exists('posix_kill'))
-				throw new RuntimeException('a closure reply requires pcntl and posix; use a serializable reply plan');
+				|| !function_exists('posix_kill')) {
+				throw new RuntimeException('a closure reply requires pcntl and posix; use a serializable reply plan'); }
 			$this->listen();
 			$this->pid = pcntl_fork();
 			if($this->pid === -1)
@@ -130,58 +96,45 @@ class FakeRtorrentDaemon
 		$this->startProcess($replies, $replyClassFiles);
 	}
 
-	private function listen()
+	/**
+	 * A reply entry that makes the daemon answer with a fault instead of
+	 * values, for a test that needs the caller's request to fail.
+	 */
+	public static function fault($message, $code = -501)
 	{
-		$this->socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
-		if($this->socket === false)
-			throw new RuntimeException('cannot listen: ' . $errstr);
-		$name = stream_socket_get_name($this->socket, false);
-		$this->port = (int)substr($name, strrpos($name, ':') + 1);
+		return [self::FAULT => ['code' => $code, 'message' => $message]];
 	}
 
-	private function startProcess($replies, $replyClassFiles)
+	/**
+	 * A reply entry that makes the daemon answer with exactly these bytes and
+	 * close the connection: an answer captured from a real rtorrent, SCGI
+	 * headers and all, or one cut short the way a daemon that stopped
+	 * mid-write leaves it.
+	 */
+	public static function raw($bytes)
 	{
-		$source = 'require ' . var_export(__FILE__, true) . ';';
-		// Test-owned serializable responders must be defined before the
-		// worker unserializes its plan, also when pcntl is unavailable.
-		foreach($replyClassFiles as $file)
-			$source .= 'require_once '.var_export($file, true).';';
-		$source .= 'FakeRtorrentDaemon::runWorker();';
-		// An argv command owns the PHP process directly, without a shell to orphan it.
-		$command = array(PHP_BINARY, '-d', 'display_errors=stderr', '-r', $source);
-		$plan = serialize(array('replies' => $replies, 'logFile' => $this->logFile));
-		$this->process = proc_open($command, array(
-			0 => array('pipe', 'r'),
-			1 => array('pipe', 'w'),
-			2 => array('file', $this->logFile . '.server.err', 'a'),
-		), $pipes, dirname($this->logFile));
-		if(!is_resource($this->process))
-			throw new RuntimeException('cannot start a daemon process');
-		$sent = 0;
-		while($sent < strlen($plan))
-		{
-			$written = @fwrite($pipes[0], substr($plan, $sent));
-			if($written === false || $written === 0) break;
-			$sent += $written;
-		}
-		fclose($pipes[0]);
-		stream_set_timeout($pipes[1], 10);
-		$ready = ($sent === strlen($plan)) ? fgets($pipes[1]) : false;
-		fclose($pipes[1]);
-		if(!is_string($ready) || !preg_match('/^[1-9][0-9]*\n$/D', $ready))
-		{
-			$this->stop();
-			throw new RuntimeException('fake daemon process did not announce a port: '
-				. @file_get_contents($this->logFile . '.server.err'));
-		}
-		$this->port = (int)$ready;
+		return [self::RAW => $bytes];
+	}
+
+	/**
+	 * A reply entry that makes the daemon write these pieces in order, waiting
+	 * $pause microseconds between them, and close. The wait is what makes each
+	 * piece a read of its own on the other end: a reader blocked in fread()
+	 * gets the piece that woke it, not the whole reply. An answer written in
+	 * one call cannot show where a reader's reads fall, because the kernel is
+	 * free to hand it over in any division at all -- including, under TCP, one
+	 * that puts a single byte in a read by itself.
+	 */
+	public static function paced($pieces, $pause = 300000)
+	{
+		return [self::PACED => ['pieces' => $pieces, 'pause' => $pause]];
 	}
 
 	public static function runWorker()
 	{
 		$plan = @unserialize(stream_get_contents(STDIN));
-		if(!is_array($plan) || !array_key_exists('replies', $plan) || !isset($plan['logFile']))
-			throw new RuntimeException('invalid fake daemon reply plan');
+		if(!is_array($plan) || !array_key_exists('replies', $plan) || !isset($plan['logFile'])) {
+			throw new RuntimeException('invalid fake daemon reply plan'); }
 		new self($plan['replies'], $plan['logFile'], true);
 	}
 
@@ -194,7 +147,7 @@ class FakeRtorrentDaemon
 	public function calls()
 	{
 		$log = file_exists($this->logFile) ? trim(file_get_contents($this->logFile)) : '';
-		return $log === '' ? array() : explode("\n", $log);
+		return $log === '' ? [] : explode("\n", $log);
 	}
 
 	/**
@@ -203,11 +156,11 @@ class FakeRtorrentDaemon
 	 */
 	public function bodies()
 	{
-		if(!file_exists($this->bodyLogFile))
-			return array();
+		if(!file_exists($this->bodyLogFile)) {
+			return []; }
 		$log = file_get_contents($this->bodyLogFile);
-		if($log === '' || $log === false)
-			return array();
+		if($log === '' || $log === false) {
+			return []; }
 		$records = explode("\x00--REQ--\x00", $log);
 		array_pop($records);
 		return $records;
@@ -227,11 +180,58 @@ class FakeRtorrentDaemon
 		}
 		if (is_resource($this->process)) {
 			$status = proc_get_status($this->process);
-			if($status['running']) @proc_terminate($this->process);
+			if($status['running']) { @proc_terminate($this->process); }
 			@proc_close($this->process);
 			$this->process = null;
 		}
-		if (is_resource($this->socket)) @fclose($this->socket);
+		if (is_resource($this->socket)) { @fclose($this->socket); }
+	}
+
+	private function listen()
+	{
+		$this->socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
+		if($this->socket === false) {
+			throw new RuntimeException('cannot listen: ' . $errstr); }
+		$name = stream_socket_get_name($this->socket, false);
+		$this->port = (int)substr($name, strrpos($name, ':') + 1);
+	}
+
+	private function startProcess($replies, $replyClassFiles)
+	{
+		$source = 'require ' . var_export(__FILE__, true) . ';';
+		// Test-owned serializable responders must be defined before the
+		// worker unserializes its plan, also when pcntl is unavailable.
+		foreach($replyClassFiles as $file) {
+			$source .= 'require_once '.var_export($file, true).';'; }
+		$source .= 'FakeRtorrentDaemon::runWorker();';
+		// An argv command owns the PHP process directly, without a shell to orphan it.
+		$command = [PHP_BINARY, '-d', 'display_errors=stderr', '-r', $source];
+		$plan = serialize(['replies' => $replies, 'logFile' => $this->logFile]);
+		$this->process = proc_open($command, [
+			0 => ['pipe', 'r'],
+			1 => ['pipe', 'w'],
+			2 => ['file', $this->logFile . '.server.err', 'a'],
+		], $pipes, dirname($this->logFile));
+		if(!is_resource($this->process)) {
+			throw new RuntimeException('cannot start a daemon process'); }
+		$sent = 0;
+		while($sent < strlen($plan))
+		{
+			$written = @fwrite($pipes[0], substr($plan, $sent));
+			if($written === false || $written === 0) { break; }
+			$sent += $written;
+		}
+		fclose($pipes[0]);
+		stream_set_timeout($pipes[1], 10);
+		$ready = ($sent === strlen($plan)) ? fgets($pipes[1]) : false;
+		fclose($pipes[1]);
+		if(!is_string($ready) || !preg_match('/^[1-9][0-9]*\n$/D', $ready))
+		{
+			$this->stop();
+			throw new RuntimeException('fake daemon process did not announce a port: '
+				. @file_get_contents($this->logFile . '.server.err'));
+		}
+		$this->port = (int)$ready;
 	}
 
 	private function serve($replies)
@@ -288,10 +288,10 @@ class FakeRtorrentDaemon
 
 	private function methodNames($body)
 	{
-		$names = array();
+		$names = [];
 		if (preg_match('|<methodName>(.*)</methodName>|Us', $body, $outer)) {
 			if ($outer[1] !== 'system.multicall') {
-				return array($outer[1]);
+				return [$outer[1]];
 			}
 		}
 		if (preg_match_all(
@@ -312,7 +312,7 @@ class FakeRtorrentDaemon
 	 */
 	private static function escapeText($value)
 	{
-		return strtr($value, array('&' => '&amp;', '<' => '&lt;', '>' => '&gt;'));
+		return strtr($value, ['&' => '&amp;', '<' => '&lt;', '>' => '&gt;']);
 	}
 
 	private function reply($values)

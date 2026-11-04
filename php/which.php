@@ -6,30 +6,18 @@ class WhichCache
 	public $hash = "which.dat";
 	public $modified = false;
 	public $changed = true;
-	private $filePath = array();
+	private $filePath = [];
 
 	public function getFilePath($exe)
 	{
 		if(!$this->isFilePathSet($exe))
 		{
-			if($this->setFilePath($exe))
-				return($this->filePath[$exe]);
+			if($this->setFilePath($exe)) {
+				return($this->filePath[$exe]); }
 
 			return false;
 		}
 		return($this->filePath[$exe]);
-	}
-
-	private function isFilePathSet($exe)
-	{
-		return(isset($this->filePath[$exe]) && !empty($this->filePath[$exe]));
-	}
-
-	private function setFilePath($exe)
-	{
-		$this->filePath[$exe] = exec('command -v '.$exe);
-		$this->changed = is_executable($this->filePath[$exe]);
-		return($this->changed);
 	}
 
 	public function pruneCache()
@@ -42,6 +30,18 @@ class WhichCache
 				$this->changed = true;
 			}
 		}
+	}
+
+	private function isFilePathSet($exe)
+	{
+		return(isset($this->filePath[$exe]) && !empty($this->filePath[$exe]));
+	}
+
+	private function setFilePath($exe)
+	{
+		$this->filePath[$exe] = exec('command -v '.$exe);
+		$this->changed = is_executable($this->filePath[$exe]);
+		return($this->changed);
 	}
 }
 
@@ -80,8 +80,8 @@ class WhichInstance
 function findEXE( $exe )
 {
 	global $pathToExternals;
-	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
+	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe])) {
+		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false); }
 
 	return(WhichInstance::load()->getFilePath($exe));
 }

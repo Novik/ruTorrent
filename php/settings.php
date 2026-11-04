@@ -5,29 +5,33 @@ require_once( 'cache.php');
 
 class rTorrentSettings
 {
+	// rtorrent 0.16.21. system.sockets.available_alloc and the per-category
+	// limits do not exist before it, so the whole probe is gated on this.
+	public const SOCKET_ALLOC_VERSION = 0x1015;
+	// NAME_MAX and PATH_MAX as Linux counts them, in bytes. PATH_MAX includes
+	// the terminating NUL, so the longest path a call can name is one less.
+	public const DIRECTORY_NAME_MAX = 255;
+	public const DIRECTORY_PATH_MAX = 4095;
 	public $hash = "rtorrent.dat";
 	public $modified = false;
 	public $linkExist = false;
 	public $badXMLRPCVersion = true;
 	public $directory = '/tmp';
 	public $session = null;
-	public $gid = array();
+	public $gid = [];
 	public $uid = -1;
 	public $iVersion = null;
 	public $version;
 	public $libVersion;
 	public $apiVersion = 0;
-	// rtorrent 0.16.21. system.sockets.available_alloc and the per-category
-	// limits do not exist before it, so the whole probe is gated on this.
-	const SOCKET_ALLOC_VERSION = 0x1015;
 
 	public $socketAllocBudget = 0;
 	public $socketHttpAllocMax = 0;
 	public $socketFilesAllocMax = 0;
 	public $socketFilesAllocMin = 0;
-	public $plugins = array();
-	public $hooks = array();
-	public $aliases = array();
+	public $plugins = [];
+	public $hooks = [];
+	public $aliases = [];
 	public $started = 0;
 	public $server = '';
 	public $portRange = '6890-6999';
@@ -38,7 +42,7 @@ class rTorrentSettings
 	public $tz = null;
 	public $ip = '0.0.0.0';
 
-	static private $theSettings = null;
+	private static $theSettings = null;
 
 	private function __construct()
     	{
@@ -63,8 +67,8 @@ class rTorrentSettings
 	public function getPluginData($plugin)
 	{
 		$ret = null;
-		if(array_key_exists($plugin,$this->plugins))
-			$ret = $this->plugins[$plugin];
+		if(array_key_exists($plugin,$this->plugins)) {
+			$ret = $this->plugins[$plugin]; }
 		return($ret);
 	}
 	public function isPluginRegistered($plugin)
@@ -74,11 +78,11 @@ class rTorrentSettings
 
 	public function registerEventHook( $plugin, $ename, $level = 10, $save = false )
 	{
-		$subject = array
-		(
+		$subject = 
+		[
 			"name" => $plugin,
 			"level" => $level,
-		);
+		];
 
 		$sort = function ($a,$b)
 		{
@@ -107,27 +111,6 @@ class rTorrentSettings
 			$this->store();
 		}
 	}
-	protected function unregisterEventHookPrim( $plugin, $ename )
-	{
-	        if( array_key_exists($ename, $this->hooks) )
-	        {
-			foreach( $this->hooks[$ename] as $i => $subject )
-			{
-				// A cache written before 63f15c6c holds the plugin name alone
-				// where a subject array sits now, and either shape answers for
-				// the same registration.
-				if(($subject["name"] ?? $subject) === $plugin)
-				{
-					unset($this->hooks[$ename][$i]);
-					if( empty($this->hooks[$ename]) )
-					{
-						unset($this->hooks[$ename]);
-					}
-					break;
-				}
-			}
-		}
-	}
 	public function unregisterEventHook( $plugin, $ename, $save = true )
 	{
 		if(is_array($ename))
@@ -150,7 +133,7 @@ class rTorrentSettings
 	{
 		if( array_key_exists($ename,$this->hooks))
 		{
-			$prm = array($prm);
+			$prm = [$prm];
 			foreach( $this->hooks[$ename] as $hook )
 			{
 				$file = dirname(__FILE__).'/../plugins/'.$hook['name'].'/hooks.php';
@@ -176,18 +159,18 @@ class rTorrentSettings
 		// makes one unanswered request speak for the install: the alias map is
 		// empty, and getCommand() then hands back the pre-0.9 spelling of every
 		// renamed command until something probes again.
-		if(!$this->linkExist)
-			return(false);
+		if(!$this->linkExist) {
+			return(false); }
 		$cache = new rCache();
 		return($cache->set($this));
 	}
-	static public function get( $create = false )
+	public static function get( $create = false )
 	{
 		if(is_null(self::$theSettings))
 		{
 			self::$theSettings = new rTorrentSettings();
-			if($create)
-				self::$theSettings->obtain();
+			if($create) {
+				self::$theSettings->obtain(); }
 			else
 			{
 				$cache = new rCache();
@@ -205,8 +188,8 @@ class rTorrentSettings
 				// Inside the guard above, not after it: obtain() builds
 				// commands of its own, and every command asks get() for the
 				// settings again.
-				if(empty(self::$theSettings->iVersion))
-					self::$theSettings->obtain();
+				if(empty(self::$theSettings->iVersion)) {
+					self::$theSettings->obtain(); }
 			}
 		}
 		return(self::$theSettings);
@@ -220,23 +203,23 @@ class rTorrentSettings
 			$this->version = $req->val[0];
 			$parts = explode('.', $this->version);
 			$this->iVersion = 0;
-			for($i = 0; $i<count($parts); $i++)
-				$this->iVersion = ($this->iVersion<<8) + $parts[$i];
+			for($i = 0; $i<count($parts); $i++) {
+				$this->iVersion = ($this->iVersion<<8) + $parts[$i]; }
 
 			if($this->iVersion>0x806)
 			{
-				$this->aliases = array
-				(
-					"d.set_peer_exchange" 		=> array( "name"=>"d.peer_exchange.set", "prm"=>0 ),
-					"d.set_connection_seed"		=> array( "name"=>"d.connection_seed.set", "prm"=>0 ),
-				);
+				$this->aliases = 
+				[
+					"d.set_peer_exchange" 		=> [ "name"=>"d.peer_exchange.set", "prm"=>0 ],
+					"d.set_connection_seed"		=> [ "name"=>"d.connection_seed.set", "prm"=>0 ],
+				];
 			}
 			if($this->iVersion==0x808)
 			{
 				$req = new rXMLRPCRequest( new rXMLRPCCommand("file.prioritize_toc") );
 				$req->important = false;
-				if($req->success())
-					$this->iVersion=0x809;
+				if($req->success()) {
+					$this->iVersion=0x809; }
 			}
 			if($this->iVersion<0x900)
 			{
@@ -269,8 +252,8 @@ class rTorrentSettings
 			{
 				$req = new rXMLRPCRequest( new rXMLRPCCommand("system.api_version") );
 				$req->important = false;
-				if($req->success())
-					$this->apiVersion = $req->val[0];
+				if($req->success()) {
+					$this->apiVersion = $req->val[0]; }
 			}
 			// system.sockets.available_alloc is the total the configurable
 			// categories may share. internal and rpc are not exposed on the
@@ -278,26 +261,26 @@ class rTorrentSettings
 			// connections have between them. Absent before rtorrent 0.16.21.
 			if(self::socketAllocSupported($this->iVersion))
 			{
-				$req = new rXMLRPCRequest( array(
+				$req = new rXMLRPCRequest( [
 					new rXMLRPCCommand("system.sockets.available_alloc"),
 					new rXMLRPCCommand("system.sockets.internal.max_size"),
 					new rXMLRPCCommand("system.sockets.rpc.max_size"),
 					new rXMLRPCCommand("system.sockets.http.max_alloc.limit"),
 					new rXMLRPCCommand("system.sockets.files.max_alloc.limit"),
-					new rXMLRPCCommand("system.sockets.files.min_alloc.limit") ) );
+					new rXMLRPCCommand("system.sockets.files.min_alloc.limit") ] );
 				$req->important = false;
-				if($req->success())
-					$this->applySocketAllocLimits($req->val);
+				if($req->success()) {
+					$this->applySocketAllocLimits($req->val); }
 			}
 
 			$req = new rXMLRPCRequest(new rXMLRPCCommand(
 				"convert.kb",
-				array('',floatval(1024))
+				['',floatval(1024)],
 			));
 			if($req->run())
 			{
-				if(!$req->fault)
-					$this->badXMLRPCVersion = false;
+				if(!$req->fault) {
+					$this->badXMLRPCVersion = false; }
 				// The size limit is a request, not a reading. Sent inside the
 				// batch below, a refusal would take every reading with it.
 				//
@@ -312,7 +295,7 @@ class rTorrentSettings
 				$req->important = false;
 				$req->success();
 
-				$req = new rXMLRPCRequest( array(
+				$req = new rXMLRPCRequest( [
 					new rXMLRPCCommand("get_directory"),
 					new rXMLRPCCommand("get_session"),
 					new rXMLRPCCommand("system.library_version"),
@@ -320,7 +303,7 @@ class rTorrentSettings
 					new rXMLRPCCommand("get_port_range"),
 					new rXMLRPCCommand("get_bind"),
 					new rXMLRPCCommand("get_ip"),
-					) );
+					] );
 				if($req->success())
 				{
 					$this->directory = $req->val[0];
@@ -336,8 +319,8 @@ class rTorrentSettings
 					{
 						$req = new rXMLRPCRequest( new rXMLRPCCommand("network.listen.port") );
 						$req->important = false;
-						if($req->success())
-							$this->port = intval($req->val[0]);
+						if($req->success()) {
+							$this->port = intval($req->val[0]); }
 					}
 
 					if(User::isLocalMode())
@@ -345,23 +328,23 @@ class rTorrentSettings
 	                                        if(!empty($this->session))
 	                                        {
 							$this->started = @filemtime($this->session.'/rtorrent.lock');
-							if($this->started===false)
-								$this->started = 0;
+							if($this->started===false) {
+								$this->started = 0; }
 						}
 						$id = Utility::getExternal('id');
 						$req = new rXMLRPCRequest(
-        						new rXMLRPCCommand("execute_capture",array("sh","-c",$id." -u ; ".$id." -G ; echo ~ ")));
+        						new rXMLRPCCommand("execute_capture",["sh","-c",$id." -u ; ".$id." -G ; echo ~ "]));
 						if($req->run() && !$req->fault && (($line=explode("\n",$req->val[0]))!==false) && (count($line)>2))
 						{
 							$this->uid = intval(trim($line[0]));
 							$this->gid = explode(' ',trim($line[1]));
 							$this->home = trim($line[2]);
 							if(!empty($this->directory) &&
-								($this->directory[0]=='~'))
-								$this->directory = $this->home.substr($this->directory,1);
+								($this->directory[0]=='~')) {
+								$this->directory = $this->home.substr($this->directory,1); }
 						}
-						else
-							$this->idNotFound = true;
+						else {
+							$this->idNotFound = true; }
 					}
 					$this->store();
 				}
@@ -400,21 +383,21 @@ class rTorrentSettings
 		// ratio.enable, ratio.disable and ratio.command are group.NAME.*
 		// on every version.
 		if(($this->iVersion >= 0x904) && ($this->iVersion < 0x0f00) &&
-			preg_match('/^ratio\.(min|max|upload)(\.set)?$/', $cmd))
-			return( new rXMLRPCCommand( "group2.".$ratio.".".$cmd, $args ) );
+			preg_match('/^ratio\.(min|max|upload)(\.set)?$/', $cmd)) {
+			return( new rXMLRPCCommand( "group2.".$ratio.".".$cmd, $args ) ); }
 		if(($this->iVersion >= 0x1000) && (substr($cmd, -4) === ".set"))
 		{
-			if(!is_array($args)) $args = array($args);
+			if(!is_array($args)) { $args = [$args]; }
 			array_unshift($args, "");
 		}
 		return( new rXMLRPCCommand( "group.".$ratio.".".$cmd, $args ) );
 	}
 	public function getEventCommand($cmd1,$cmd2,$args)
 	{
-		if($this->iVersion<0x804)
-			$cmd = new rXMLRPCCommand($cmd1);
-		else
-			$cmd = new rXMLRPCCommand('system.method.set_key','event.download.'.$cmd2);
+		if($this->iVersion<0x804) {
+			$cmd = new rXMLRPCCommand($cmd1); }
+		else {
+			$cmd = new rXMLRPCCommand('system.method.set_key','event.download.'.$cmd2); }
 		$cmd->addParameters($args);
 		return($cmd);
 	}
@@ -444,11 +427,11 @@ class rTorrentSettings
 	 */
 	public function applySocketAllocLimits( $val )
 	{
-		if(!is_array($val) || (count($val)!=6))
-			return(false);
-		foreach($val as $v)
-			if(!is_numeric($v))
-				return(false);
+		if(!is_array($val) || (count($val)!=6)) {
+			return(false); }
+		foreach($val as $v) {
+			if(!is_numeric($v)) {
+				return(false); } }
 		$this->socketAllocBudget = max(0,$val[0]-$val[1]-$val[2]);
 		$this->socketHttpAllocMax = $val[3];
 		$this->socketFilesAllocMax = $val[4];
@@ -479,10 +462,10 @@ class rTorrentSettings
 	public function getAbsScheduleCommand($name,$interval,$cmd)	// $interval in seconds
 	{
 		global $schedule_rand;
-		if(!isset($schedule_rand))
-			$schedule_rand = 10;
+		if(!isset($schedule_rand)) {
+			$schedule_rand = 10; }
 		$startAt = $interval+rand(0,$schedule_rand);
-		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
+		return( new rXMLRPCCommand("schedule", [ $name.User::getUser(), $startAt."", $interval."", $cmd ]) );
 	}
 	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null,$now = null)	// $interval in minutes
 	{
@@ -508,34 +491,30 @@ class rTorrentSettings
 		// single instant. Production callers pass nothing and get time().
 		$interval = $interval*60;
 		$startAt = self::getAlignedStart($name,$interval,$now);
-		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
+		return( new rXMLRPCCommand("schedule", [ $name.User::getUser(), $startAt."", $interval."", $cmd ]) );
 	}
-	static public function getAlignedStart($name,$interval,$now = null)	// $interval in seconds
+	public static function getAlignedStart($name,$interval,$now = null)	// $interval in seconds
 	{
 		global $schedule_rand;
-		if(!isset($schedule_rand))
-			$schedule_rand = 10;
-		if($interval<1)
-			return(0);
-		if(is_null($now))
-			$now = time();
+		if(!isset($schedule_rand)) {
+			$schedule_rand = 10; }
+		if($interval<1) {
+			return(0); }
+		if(is_null($now)) {
+			$now = time(); }
 		$offset = ($schedule_rand>0) ? (abs(crc32($name.User::getUser())) % ($schedule_rand+1)) : 0;
 		$startAt = (($offset-$now) % $interval + $interval) % $interval;
 		return($startAt<1 ? $interval : $startAt);
 	}
 	public function getAlignedScheduleCommand($name,$interval,$cmd)	// $interval in seconds
 	{
-		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(),
-			self::getAlignedStart($name,$interval)."", $interval."", $cmd )) );
+		return( new rXMLRPCCommand("schedule", [ $name.User::getUser(),
+			self::getAlignedStart($name,$interval)."", $interval."", $cmd ]) );
 	}
 	public function getRemoveScheduleCommand($name)
 	{
 		return(	new rXMLRPCCommand("schedule_remove", $name.User::getUser()) );
 	}
-	// NAME_MAX and PATH_MAX as Linux counts them, in bytes. PATH_MAX includes
-	// the terminating NUL, so the longest path a call can name is one less.
-	const DIRECTORY_NAME_MAX = 255;
-	const DIRECTORY_PATH_MAX = 4095;
 
 	/**
 	 * The absolute directory a user's typed directory names, or false.
@@ -555,33 +534,27 @@ class rTorrentSettings
 	public static function userDirectory($dir, $top, $default = '')
 	{
 		if(!is_string($dir) || (strpos($dir, "\0") !== false) ||
-			preg_match('`[A-Za-z][A-Za-z0-9+.-]*://`', $dir) || (stripos($dir, 'magnet:?') !== false))
-			return(false);
-		foreach(explode('/', $dir) as $name)
-			if(strlen($name) > self::DIRECTORY_NAME_MAX)
-				return(false);
+			preg_match('`[A-Za-z][A-Za-z0-9+.-]*://`', $dir) || (stripos($dir, 'magnet:?') !== false)) {
+			return(false); }
+		foreach(explode('/', $dir) as $name) {
+			if(strlen($name) > self::DIRECTORY_NAME_MAX) {
+				return(false); } }
 		$top = FileUtil::fullpath('/'.$top);
 		$rooted = FileUtil::fullpath('/'.$dir);
-		if(($dir !== '') && ($dir[0] === '/'))
-			$path = $rooted;
+		if(($dir !== '') && ($dir[0] === '/')) {
+			$path = $rooted; }
 		else
 		{
 			$base = FileUtil::fullpath('/'.$default);
-			if(!is_string($default) || ($default === '') || !self::isUnder($base, $top))
-				$base = $top;
+			if(!is_string($default) || ($default === '') || !self::isUnder($base, $top)) {
+				$base = $top; }
 			$path = FileUtil::fullpath($base.'/'.$dir);
 		}
-		if(!self::isUnder($path, $top))
-			$path = FileUtil::fullpath($top.$rooted);
-		if(strlen($path) > self::DIRECTORY_PATH_MAX)
-			return(false);
+		if(!self::isUnder($path, $top)) {
+			$path = FileUtil::fullpath($top.$rooted); }
+		if(strlen($path) > self::DIRECTORY_PATH_MAX) {
+			return(false); }
 		return($path);
-	}
-
-	/** Whether the normalised absolute $path is $top or under it. */
-	private static function isUnder($path, $top)
-	{
-		return(($top === '/') || ($path === $top) || (strpos($path, $top.'/') === 0));
 	}
 
 	/**
@@ -593,16 +566,16 @@ class rTorrentSettings
 	{
 		global $topDirectory;
 		$resolved = self::userDirectory($dir, $topDirectory, $this->directory);
-		if($resolved === false)
-			return(false);
+		if($resolved === false) {
+			return(false); }
 		$dir = $resolved;
 		if($resolve_links)
 		{
 			$path = realpath($dir);
-			if(!$path)
-				$dir = FileUtil::addslash(realpath(dirname($dir))).basename($dir);
-			else
-				$dir = $path;
+			if(!$path) {
+				$dir = FileUtil::addslash(realpath(dirname($dir))).basename($dir); }
+			else {
+				$dir = $path; }
 		}
 		return(strpos(FileUtil::addslash($dir),FileUtil::addslash($topDirectory))===0);
 	}
@@ -617,8 +590,8 @@ class rTorrentSettings
 	public function correctReportedDirectory(&$dir)
 	{
 		global $topDirectory;
-		if(strlen($dir) && ($dir[0]=='~'))
-			$dir = $this->home.substr($dir,1);
+		if(strlen($dir) && ($dir[0]=='~')) {
+			$dir = $this->home.substr($dir,1); }
 		$dir = FileUtil::fullpath($dir,$this->directory);
 		return(strpos(FileUtil::addslash($dir),$topDirectory)===0);
 	}
@@ -635,19 +608,19 @@ class rTorrentSettings
 	// 0.16.19 reports a regular XMLRPC fault instead.
 	public function getSocketAllocCategory( $name )
 	{
-		if($this->iVersion<0x1013)
-			return(null);
-		if($name=="nmax_open_files")
-			return("files");
-		if($name=="nmax_open_http")
-			return("http");
+		if($this->iVersion<0x1013) {
+			return(null); }
+		if($name=="nmax_open_files") {
+			return("files"); }
+		if($name=="nmax_open_http") {
+			return("http"); }
 		return(null);
 	}
 	public function patchDeprecatedCommand( $cmd, $name )
 	{
 		if((array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"]) ||
-			(($this->iVersion>=0x904) && (strpos($cmd->command,"group2.")===0)))
-			$cmd->addParameter("");
+			(($this->iVersion>=0x904) && (strpos($cmd->command,"group2.")===0))) {
+			$cmd->addParameter(""); }
 	}
 	public function maxContentSize()
 	{
@@ -660,14 +633,12 @@ class rTorrentSettings
 			foreach($commands as $cmd)
 			{
 				$prefix = '';
-				if(strpos($cmd->command, 't.') === 0)
-					$prefix = ':t';
-				else
-				if(strpos($cmd->command, 'p.') === 0)
-					$prefix = ':p';
-				else
-				if(strpos($cmd->command, 'f.') === 0)
-					$prefix = ':f';
+				if(strpos($cmd->command, 't.') === 0) {
+					$prefix = ':t'; }
+				elseif(strpos($cmd->command, 'p.') === 0) {
+					$prefix = ':p'; }
+				elseif(strpos($cmd->command, 'f.') === 0) {
+					$prefix = ':f'; }
 				if(!empty($prefix) &&
 					(count($cmd->params)>1) &&
 					(substr($cmd->command, -10) !== '.multicall') &&
@@ -678,5 +649,32 @@ class rTorrentSettings
 				}
 			}
 		}
+	}
+	protected function unregisterEventHookPrim( $plugin, $ename )
+	{
+	        if( array_key_exists($ename, $this->hooks) )
+	        {
+			foreach( $this->hooks[$ename] as $i => $subject )
+			{
+				// A cache written before 63f15c6c holds the plugin name alone
+				// where a subject array sits now, and either shape answers for
+				// the same registration.
+				if(($subject["name"] ?? $subject) === $plugin)
+				{
+					unset($this->hooks[$ename][$i]);
+					if( empty($this->hooks[$ename]) )
+					{
+						unset($this->hooks[$ename]);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	/** Whether the normalised absolute $path is $top or under it. */
+	private static function isUnder($path, $top)
+	{
+		return(($top === '/') || ($path === $top) || (strpos($path, $top.'/') === 0));
 	}
 }

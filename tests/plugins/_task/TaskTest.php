@@ -18,7 +18,7 @@ class TaskTest extends TestCase
 {
 	// No system hands out a pid this large: a kill for it reaches the shell
 	// and signals nothing.
-	const UNUSED_PID = '999999999';
+	public const UNUSED_PID = '999999999';
 
 	protected $tasks = null;
 	protected $marker = null;
@@ -38,29 +38,6 @@ class TaskTest extends TestCase
 	{
 		@unlink($this->marker);
 		$this->removeDir($this->outside);
-	}
-
-	protected function removeDir($dir)
-	{
-		foreach (array('pid', 'status', 'flags', 'params') as $file) {
-			@unlink($dir.'/'.$file);
-		}
-		@rmdir($dir);
-	}
-
-	// A task the plugin itself could have produced: a real id, and the flags
-	// value that makes rTask::run() use the local shell rather than rtorrent.
-	protected function makeTask($pid, $params = null)
-	{
-		$id = uniqid(time(), true);
-		$dir = rTask::formatPath($id);
-		mkdir($dir, 0777, true);
-		file_put_contents($dir.'/pid', $pid);
-		file_put_contents($dir.'/flags', rTask::FLG_RUN_AS_WEB);
-		if (!is_null($params)) {
-			file_put_contents($dir.'/params', $params);
-		}
-		return array($id, $dir);
 	}
 
 	public function testKillRunsNothingFromANonNumericPidFile()
@@ -92,10 +69,10 @@ class TaskTest extends TestCase
 			$this->assertEquals('-P '.self::UNUSED_PID."\n", file_exists($record) ? file_get_contents($record) : '',
 				'Only the pid other than 1 reaches the shell');
 		} finally {
-			if ($previous === null) unset($GLOBALS['pathToExternals']['pgrep']);
-			else $GLOBALS['pathToExternals']['pgrep'] = $previous;
-			foreach (array($pgrep, $record) as $path)
-				if (file_exists($path)) unlink($path);
+			if ($previous === null) { unset($GLOBALS['pathToExternals']['pgrep']); }
+			else { $GLOBALS['pathToExternals']['pgrep'] = $previous; }
+			foreach ([$pgrep, $record] as $path) {
+				if (file_exists($path)) { unlink($path); } }
 		}
 	}
 
@@ -107,6 +84,68 @@ class TaskTest extends TestCase
 		rTask::kill($id);
 		sleep(1);
 		$this->assertEquals(false, posix_kill($pid, 0), 'The named process is gone');
+	}
+
+	public function testKillStopsEveryChildOfTheTask()
+	{
+		// A task shell with three children, as a pipeline would have.
+		$pids = $this->startTree('sleep 31 & echo $!; sleep 32 & echo $!; sleep 33 & echo $!; echo $$; wait');
+		$this->assertEquals(4, count($pids), 'A task shell and three children were started');
+		$this->assertKillStops(end($pids), $pids);
+	}
+
+	public function testKillStopsTheProgramsAPluginScriptStarts()
+	{
+		// A task shell running a plugin script, which runs the program
+		// that does the work, as create's inner.sh runs createtorrent.php.
+		$pids = $this->startTree('echo $$; sh -c '.escapeshellarg('echo $$; sleep 34 & echo $!; wait').'; sleep 35');
+		$this->assertEquals(3, count($pids), 'A task shell, a script and its program were started');
+		$this->assertKillStops($pids[0], $pids);
+	}
+
+	public function testCheckDoesNotConstructClassesNamedByTheParamsFile()
+	{
+		list($id, $dir) = $this->makeTask('999999', serialize(new TaskPayload()));
+		$ret = rTask::check($id);
+		$this->assertEquals(false, TaskPayload::$woken,
+			'No class from the params file is woken');
+		$this->assertEquals(true, $ret['params'] instanceof __PHP_Incomplete_Class,
+			'The object arrives inert');
+		$this->removeDir($dir);
+	}
+
+	public function testCheckOfAPathOutsideTheTasksDirectoryFindsNoTask()
+	{
+		mkdir($this->outside, 0777, true);
+		file_put_contents($this->outside.'/pid', '424242');
+		file_put_contents($this->outside.'/params', serialize(['leaked' => 'data']));
+		$ret = rTask::check('../'.basename($this->outside));
+		$this->assertEquals(0, $ret['pid'], 'No pid is read from outside the tasks directory');
+		$this->assertEquals([], $ret['params'], 'No params are read from there either');
+		$this->assertEquals(true, is_file($this->outside.'/pid'), 'And nothing there was touched');
+	}
+
+	protected function removeDir($dir)
+	{
+		foreach (['pid', 'status', 'flags', 'params'] as $file) {
+			@unlink($dir.'/'.$file);
+		}
+		@rmdir($dir);
+	}
+
+	// A task the plugin itself could have produced: a real id, and the flags
+	// value that makes rTask::run() use the local shell rather than rtorrent.
+	protected function makeTask($pid, $params = null)
+	{
+		$id = uniqid(time(), true);
+		$dir = rTask::formatPath($id);
+		mkdir($dir, 0777, true);
+		file_put_contents($dir.'/pid', $pid);
+		file_put_contents($dir.'/flags', rTask::FLG_RUN_AS_WEB);
+		if (!is_null($params)) {
+			file_put_contents($dir.'/params', $params);
+		}
+		return [$id, $dir];
 	}
 
 	// A process counts as stopped once it is gone or a zombie.
@@ -149,51 +188,12 @@ class TaskTest extends TestCase
 				$this->assertEquals(false, $this->running($pid), 'Process '.$pid.' is stopped');
 			}
 		} finally {
-			if ($previous === null) unset($GLOBALS['pathToExternals']['pgrep']);
-			else $GLOBALS['pathToExternals']['pgrep'] = $previous;
+			if ($previous === null) { unset($GLOBALS['pathToExternals']['pgrep']); }
+			else { $GLOBALS['pathToExternals']['pgrep'] = $previous; }
 			unlink($pgrep);
 			foreach ($pids as $pid) {
 				@posix_kill($pid, 9);
 			}
 		}
-	}
-
-	public function testKillStopsEveryChildOfTheTask()
-	{
-		// A task shell with three children, as a pipeline would have.
-		$pids = $this->startTree('sleep 31 & echo $!; sleep 32 & echo $!; sleep 33 & echo $!; echo $$; wait');
-		$this->assertEquals(4, count($pids), 'A task shell and three children were started');
-		$this->assertKillStops(end($pids), $pids);
-	}
-
-	public function testKillStopsTheProgramsAPluginScriptStarts()
-	{
-		// A task shell running a plugin script, which runs the program
-		// that does the work, as create's inner.sh runs createtorrent.php.
-		$pids = $this->startTree('echo $$; sh -c '.escapeshellarg('echo $$; sleep 34 & echo $!; wait').'; sleep 35');
-		$this->assertEquals(3, count($pids), 'A task shell, a script and its program were started');
-		$this->assertKillStops($pids[0], $pids);
-	}
-
-	public function testCheckDoesNotConstructClassesNamedByTheParamsFile()
-	{
-		list($id, $dir) = $this->makeTask('999999', serialize(new TaskPayload()));
-		$ret = rTask::check($id);
-		$this->assertEquals(false, TaskPayload::$woken,
-			'No class from the params file is woken');
-		$this->assertEquals(true, $ret['params'] instanceof __PHP_Incomplete_Class,
-			'The object arrives inert');
-		$this->removeDir($dir);
-	}
-
-	public function testCheckOfAPathOutsideTheTasksDirectoryFindsNoTask()
-	{
-		mkdir($this->outside, 0777, true);
-		file_put_contents($this->outside.'/pid', '424242');
-		file_put_contents($this->outside.'/params', serialize(array('leaked' => 'data')));
-		$ret = rTask::check('../'.basename($this->outside));
-		$this->assertEquals(0, $ret['pid'], 'No pid is read from outside the tasks directory');
-		$this->assertEquals(array(), $ret['params'], 'No params are read from there either');
-		$this->assertEquals(true, is_file($this->outside.'/pid'), 'And nothing there was touched');
 	}
 }

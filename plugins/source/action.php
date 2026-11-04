@@ -1,8 +1,8 @@
 <?php
 require_once( '../../php/rtorrent.php' );
 
-if(isset($_REQUEST['result']))
-	CachedEcho::send('noty(theUILang.cantFindTorrent,"error");',"text/html");
+if(isset($_REQUEST['result'])) {
+	CachedEcho::send('noty(theUILang.cantFindTorrent,"error");',"text/html"); }
 if(isset($_POST['hash']))
 {
 	$query = urldecode($_POST['hash']);
@@ -10,27 +10,27 @@ if(isset($_POST['hash']))
 	if(count($hashes) == 1)
 	{
 		$torrent = rTorrent::getSource($_POST['hash']);
-		if($torrent)
-			$torrent->send();
+		if($torrent) {
+			$torrent->send(); }
 	}
 	else
 	{
-		if(!class_exists('ZipArchive'))
-			CachedEcho::send('noty("PHP module \'zip\' is not installed.","error");',"text/html");
+		if(!class_exists('ZipArchive')) {
+			CachedEcho::send('noty("PHP module \'zip\' is not installed.","error");',"text/html"); }
 		foreach($hashes as $hash)
 		{
-			$req = new rXMLRPCRequest( array(
+			$req = new rXMLRPCRequest( [
 				new rXMLRPCCommand("get_session"),
-				new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
+				new rXMLRPCCommand("d.get_tied_to_file",$hash)] );
 			if($req->run() && !$req->fault)
 			{
 				$fname = $req->val[0].$hash.".torrent";
 				if(empty($req->val[0]) || !is_readable($fname))
 				{
-					if(strlen($req->val[1]) && is_readable($req->val[1]))
-						$fname = $req->val[1];
-					else
-						$fname = null;
+					if(strlen($req->val[1]) && is_readable($req->val[1])) {
+						$fname = $req->val[1]; }
+					else {
+						$fname = null; }
 				}
 				if($fname)
 				{
@@ -47,7 +47,7 @@ if(isset($_POST['hash']))
 			$fn = 1;
 			$zippath = FileUtil::getTempFilename('source','zip');
 
-			$zip = new ZipArchive;
+			$zip = new ZipArchive();
 			$zip->open($zippath, ZipArchive::CREATE);
 			foreach(array_combine($filepaths, $files) as $filepath => $file)
 			{
@@ -58,8 +58,8 @@ if(isset($_POST['hash']))
 			}
 			$zip->close();
 
-			if(SendFile::send($zippath, "application/zip", null, false))
-				unlink($zippath);
+			if(SendFile::send($zippath, "application/zip", null, false)) {
+				unlink($zippath); }
 
 			exit();
 		}

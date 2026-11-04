@@ -4,8 +4,8 @@
 
 class TolokaEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>100 );
-	public $categories = array( 'all'=>'' );
+	public $defaults = [ "public"=>false, "page_size"=>100 ];
+	public $categories = [ 'all'=>'' ];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -26,8 +26,8 @@ class TolokaEngine extends commonEngine
 					$item["cat"] = $torrent->forum_name;
 					$ret[$torrent->link] = $item;
 					$added++;
-					if($added >= $limit)
-					return;
+					if($added >= $limit) {
+					return; }
 				}
 			}
 		}

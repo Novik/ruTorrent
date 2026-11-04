@@ -17,25 +17,25 @@ class rScheduler
 	public $hash = "scheduler.dat";
 	public $modified = false;
 	public $enabled = 0;
-	public $UL = array();
-	public $DL = array();
-	public $week = array();
-	public $seedStopped = array();
-	public $leechStopped = array();
+	public $UL = [];
+	public $DL = [];
+	public $week = [];
+	public $seedStopped = [];
+	public $leechStopped = [];
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new rScheduler();
-		if(!$cache->get($rt))
-			$rt->fillWeek();
+		if(!$cache->get($rt)) {
+			$rt->fillWeek(); }
 		return($rt);
 	}
 	public function fillWeek()
 	{
-		$this->week = array();
-		for($i=0; $i<7; $i++)
-			$this->week[] = array_fill(0,24,SCH_FAST);
+		$this->week = [];
+		for($i=0; $i<7; $i++) {
+			$this->week[] = array_fill(0,24,SCH_FAST); }
 		$this->enabled = 0;
 		$this->UL = array_fill(0,3,1);
 		$this->DL = array_fill(0,3,1);
@@ -47,20 +47,14 @@ class rScheduler
 	}
 	public function get()
 	{
-		$table = array(
+		$table = [
 			"UL" => self::numbers($this->UL),
 			"DL" => self::numbers($this->DL),
 			"enabled" => intval($this->enabled),
-			"week" => array() );
-		foreach((array)$this->week as $item)
-			$table["week"][] = self::numbers($item);
+			"week" => [] ];
+		foreach((array)$this->week as $item) {
+			$table["week"][] = self::numbers($item); }
 		return("theWebUI.scheduleTable = ".JSON::jsValue($table).";\n");
-	}
-	// array_values keeps a restored row encoding as a JSON array rather than
-	// as an object, whatever keys it came back with.
-	static protected function numbers( $list )
-	{
-		return(array_map("intval",array_values((array)$list)));
 	}
 	public function set()
 	{
@@ -69,35 +63,35 @@ class rScheduler
 		{
 			for($j = 0; $j<24; $j++)
 			{
-				if(isset($_REQUEST['day_'.$i."_".$j]))
-					$this->week[$i][$j] = intval($_REQUEST['day_'.$i."_".$j]);
+				if(isset($_REQUEST['day_'.$i."_".$j])) {
+					$this->week[$i][$j] = intval($_REQUEST['day_'.$i."_".$j]); }
 			}
 		}
-		if(isset($_REQUEST['UL0']))
-			$this->UL[0] = intval($_REQUEST['UL0']);
-		if(isset($_REQUEST['DL0']))
-			$this->DL[0] = intval($_REQUEST['DL0']);
-		if(isset($_REQUEST['UL1']))
-			$this->UL[1] = intval($_REQUEST['UL1']);
-		if(isset($_REQUEST['DL1']))
-			$this->DL[1] = intval($_REQUEST['DL1']);
-		if(isset($_REQUEST['UL2']))
-			$this->UL[2] = intval($_REQUEST['UL2']);
-		if(isset($_REQUEST['DL2']))
-			$this->DL[2] = intval($_REQUEST['DL2']);
-		if(isset($_REQUEST['enabled']))
-			$this->enabled = intval($_REQUEST['enabled']);
+		if(isset($_REQUEST['UL0'])) {
+			$this->UL[0] = intval($_REQUEST['UL0']); }
+		if(isset($_REQUEST['DL0'])) {
+			$this->DL[0] = intval($_REQUEST['DL0']); }
+		if(isset($_REQUEST['UL1'])) {
+			$this->UL[1] = intval($_REQUEST['UL1']); }
+		if(isset($_REQUEST['DL1'])) {
+			$this->DL[1] = intval($_REQUEST['DL1']); }
+		if(isset($_REQUEST['UL2'])) {
+			$this->UL[2] = intval($_REQUEST['UL2']); }
+		if(isset($_REQUEST['DL2'])) {
+			$this->DL[2] = intval($_REQUEST['DL2']); }
+		if(isset($_REQUEST['enabled'])) {
+			$this->enabled = intval($_REQUEST['enabled']); }
                 $this->apply();
 	}
-	static public function setSpeed( $ul, $dl )
+	public static function setSpeed( $ul, $dl )
 	{
 		$req = new rXMLRPCRequest(
-			array(
+			[
 				new rXMLRPCCommand( "set_upload_rate", intval($ul)*1024 ),
-				new rXMLRPCCommand( "set_download_rate", intval($dl)*1024 ) ) );
+				new rXMLRPCCommand( "set_download_rate", intval($dl)*1024 ) ] );
 		return($req->run() && !$req->fault);
 	}
-	static public function processArray( $hashes, $cmd1, $cmd2 )
+	public static function processArray( $hashes, $cmd1, $cmd2 )
 	{
 		$req = new rXMLRPCRequest();
 		foreach($hashes as $hash=>$val)
@@ -107,18 +101,18 @@ class rScheduler
 		}
 		return($req->run() && !$req->fault);
 	}
-	static public function getActiveTorrents()
+	public static function getActiveTorrents()
 	{
 		$delta = 2;
-		$cmd = new rXMLRPCCommand("d.multicall", array("started",getCmd("d.get_hash="),getCmd("d.get_connection_current=") ));
+		$cmd = new rXMLRPCCommand("d.multicall", ["started",getCmd("d.get_hash="),getCmd("d.get_connection_current=") ]);
 		if(rTorrentSettings::get()->iVersion>=0x805)
 		{
 			$cmd->addParameter( getCmd("d.get_custom=")."sch_ignore" );
 			$delta = 3;
 		}
 		$req = new rXMLRPCRequest(  $cmd );
-		$seeds = array();
-		$leeches = array();
+		$seeds = [];
+		$leeches = [];
 		if($req->run() && !$req->fault)
 		{
 			for($i=0; $i<count($req->val); $i+=$delta)
@@ -126,14 +120,14 @@ class rScheduler
 				$hash = $req->val[$i];
 				if( ($delta==2) || empty($req->val[$i+2]) )
 				{
-					if($req->val[$i+1]=='leech')
-						$leeches[$hash] = true;
-					else
-						$seeds[$hash] = true;
+					if($req->val[$i+1]=='leech') {
+						$leeches[$hash] = true; }
+					else {
+						$seeds[$hash] = true; }
 				}
 			}
 		}
-		return( array("seeds"=>$seeds,"leeches"=>$leeches) );
+		return( ["seeds"=>$seeds,"leeches"=>$leeches] );
 	}
 	public function apply()
 	{
@@ -141,16 +135,16 @@ class rScheduler
 		{
 			$di = getdate();
 			$wDay = $di["wday"] - 1;
-			if($wDay<0)
-				$wDay = 6;
+			if($wDay<0) {
+				$wDay = 6; }
 			$no = $this->week[$wDay][$di["hours"]];
 			switch($no)
 			{
 				case SCH_FAST:
 				{
 					self::processArray(array_merge($this->seedStopped,$this->leechStopped),"d.open","d.start");
-					$this->seedStopped = array();
-					$this->leechStopped = array();
+					$this->seedStopped = [];
+					$this->leechStopped = [];
 					self::setSpeed( SCH_DEF_UL, SCH_DEF_DL );
 					break;
 				}
@@ -159,8 +153,8 @@ class rScheduler
 				case SCH_RESTRICT3:
 				{
 					self::processArray(array_merge($this->seedStopped,$this->leechStopped),"d.open","d.start");
-					$this->seedStopped = array();
-					$this->leechStopped = array();
+					$this->seedStopped = [];
+					$this->leechStopped = [];
 					self::setSpeed( $this->UL[$no-SCH_RESTRICT1], $this->DL[$no-SCH_RESTRICT1] );
 					break;
 				}
@@ -178,15 +172,21 @@ class rScheduler
 				case SCH_SEEDONLY:
 				{
 					$active = self::getActiveTorrents();
-					if(self::processArray($active["leeches"],"d.stop","d.close"))
-						$this->leechStopped = array_merge($this->leechStopped,$active["leeches"]);
+					if(self::processArray($active["leeches"],"d.stop","d.close")) {
+						$this->leechStopped = array_merge($this->leechStopped,$active["leeches"]); }
 					self::processArray($this->seedStopped,"d.open","d.start");
-					$this->seedStopped = array();
+					$this->seedStopped = [];
 					self::setSpeed( SCH_DEF_UL, 1 );
 					break;
 				}
 			}
 		}
                 $this->store();
+	}
+	// array_values keeps a restored row encoding as a JSON array rather than
+	// as an object, whatever keys it came back with.
+	protected static function numbers( $list )
+	{
+		return(array_map("intval",array_values((array)$list)));
 	}
 }

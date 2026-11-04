@@ -8,8 +8,8 @@ require_once(__DIR__.'/TestTree.php');
 /** Offers scripted ports before free ones, so a test can drive start()'s retry. */
 class ScriptedPortHttpServer extends TestHttpServer
 {
-	public static $ports = array();
-	public static $offered = array();
+	public static $ports = [];
+	public static $offered = [];
 
 	protected static function choosePort()
 	{
@@ -21,48 +21,6 @@ class ScriptedPortHttpServer extends TestHttpServer
 
 class TestHttpServerTest extends TestCase
 {
-	private function tree($label)
-	{
-		$tree = sys_get_temp_dir().'/rt-http-'.$label.'-'.uniqid('', true);
-		mkdir($tree, 0700);
-		return $tree;
-	}
-
-	/** Runs $code in a PHP child with TestHttpServer loaded and the tree as $argv[1]. */
-	private function runChild($code, $tree, $arguments = array())
-	{
-		return PhpProcess::run(array_merge(PhpProcess::sameIni(),
-			array('-d', 'display_errors=stderr'), $arguments, array('-r',
-			'require '.var_export(__DIR__.'/TestHttpServer.php', true).';'.$code, $tree)),
-			array('timeout' => 30));
-	}
-
-	/** A process that ignores SIGTERM, as a server stuck in a handler can. */
-	private function startStubborn()
-	{
-		$process = proc_open(array('/bin/sh', '-c', 'trap "" TERM; echo ready; exec sleep 8'),
-			array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
-		if(!is_resource($process))
-			throw new Exception('could not start a process that ignores SIGTERM');
-		$ready = fgets($pipes[1]);
-		foreach($pipes as $pipe)
-			fclose($pipe);
-		if($ready !== "ready\n")
-		{
-			proc_terminate($process, 9);
-			proc_close($process);
-			throw new Exception('the process that ignores SIGTERM did not get ready');
-		}
-		return $process;
-	}
-
-	private static function setPrivate($object, $name, $value)
-	{
-		$property = new ReflectionProperty(get_class($object), $name);
-		if(PHP_VERSION_ID < 80100)
-			$property->setAccessible(true);
-		$property->setValue($object, $value);
-	}
 
 	public function testProcessStartupFailureNamesItsCauseAndRemovesTheRouterWrapper()
 	{
@@ -74,14 +32,14 @@ class TestHttpServerTest extends TestCase
 				.'catch(Throwable $e) { $error=get_class($e).": ".$e->getMessage(); }'
 				.'echo json_encode(array("error"=>$error,"left"=>array_merge('
 				.'glob($argv[1]."/__test_router_*"),glob($argv[1]."/__test_http_*"))));',
-				$tree, array('-d', 'log_errors=0', '-d', 'disable_functions=proc_open'));
+				$tree, ['-d', 'log_errors=0', '-d', 'disable_functions=proc_open']);
 			$result = json_decode($run['out'], true);
 			$this->assertEquals(0, $run['code'], 'HTTP startup failure remains catchable');
 			$this->assertEquals('', $run['err'], 'HTTP startup failure emits no unhandled error');
 			$this->assertTrue(is_array($result)
 				&& $result['error'] === 'Exception: could not start the HTTP test server process: proc_open is unavailable',
 				'the failure names the process that could not start: '.json_encode($result['error'] ?? $run['out']));
-			$this->assertTrue(is_array($result) && $result['left'] === array(),
+			$this->assertTrue(is_array($result) && $result['left'] === [],
 				'failed HTTP startup removes its wrapper and readiness file');
 		}
 		finally { TestTree::remove($tree); }
@@ -95,17 +53,17 @@ class TestHttpServerTest extends TestCase
 			.', "routed\n", FILE_APPEND); echo "routed"; return true;');
 		try
 		{
-			$server = TestHttpServer::start($tree, array(), array(), $tree.'/router.php');
+			$server = TestHttpServer::start($tree, [], [], $tree.'/router.php');
 			$this->assertTrue(!file_exists($tree.'/calls'), 'readiness never runs the application router');
 			$result = TestHttpServer::rawGet($server->port(), '/application');
 			$this->assertEquals('routed', $result['body'], 'ordinary requests reach the application router');
 			$this->assertEquals("routed\n", file_get_contents($tree.'/calls'), 'one request invokes the router once');
 			$server->close();
-			$this->assertEquals(array(), glob($tree.'/__test_router_*'), 'closing the server removes its router wrapper');
+			$this->assertEquals([], glob($tree.'/__test_router_*'), 'closing the server removes its router wrapper');
 		}
 		finally
 		{
-			if($server !== null) $server->close();
+			if($server !== null) { $server->close(); }
 			TestTree::remove($tree);
 		}
 	}
@@ -118,8 +76,8 @@ class TestHttpServerTest extends TestCase
 		$name = stream_socket_get_name($holder, false);
 		$taken = (int)substr($name, strrpos($name, ':') + 1);
 		$server = null;
-		ScriptedPortHttpServer::$ports = array($taken);
-		ScriptedPortHttpServer::$offered = array();
+		ScriptedPortHttpServer::$ports = [$taken];
+		ScriptedPortHttpServer::$offered = [];
 		try
 		{
 			$server = ScriptedPortHttpServer::start($tree);
@@ -132,8 +90,8 @@ class TestHttpServerTest extends TestCase
 		}
 		finally
 		{
-			ScriptedPortHttpServer::$ports = array();
-			if($server !== null) $server->close();
+			ScriptedPortHttpServer::$ports = [];
+			if($server !== null) { $server->close(); }
 			fclose($holder);
 			TestTree::remove($tree);
 		}
@@ -147,10 +105,10 @@ class TestHttpServerTest extends TestCase
 		file_put_contents($foreignTree.'/router.php', '<?php file_put_contents('.var_export($foreignTree.'/hits', true)
 			.', $_SERVER["REQUEST_URI"]."\n", FILE_APPEND); echo "foreign"; return true;');
 		$foreign = null;
-		ScriptedPortHttpServer::$offered = array();
+		ScriptedPortHttpServer::$offered = [];
 		try
 		{
-			$foreign = TestHttpServer::start($foreignTree, array(), array(), $foreignTree.'/router.php');
+			$foreign = TestHttpServer::start($foreignTree, [], [], $foreignTree.'/router.php');
 			ScriptedPortHttpServer::$ports = array_fill(0, 20, $foreign->port());
 			$error = null;
 			try
@@ -174,8 +132,8 @@ class TestHttpServerTest extends TestCase
 		}
 		finally
 		{
-			ScriptedPortHttpServer::$ports = array();
-			if($foreign !== null) $foreign->close();
+			ScriptedPortHttpServer::$ports = [];
+			if($foreign !== null) { $foreign->close(); }
 			TestTree::remove($foreignTree);
 			TestTree::remove($tree);
 		}
@@ -191,8 +149,8 @@ class TestHttpServerTest extends TestCase
 			// A stock php.ini leaves E out of variables_order, and $_ENV empty.
 			$run = $this->runChild('$server = TestHttpServer::start($argv[1], array("TEST_HTTP_ADDED" => "added"));'
 				.'try { echo TestHttpServer::rawGet($server->port(), "/env.php")["body"]; } finally { $server->close(); }',
-				$tree, array('-d', 'variables_order=GPCS'));
-			$this->assertTrue(json_decode($run['out'], true) === array(getenv('PATH'), getenv('TMPDIR'), 'added'),
+				$tree, ['-d', 'variables_order=GPCS']);
+			$this->assertTrue(json_decode($run['out'], true) === [getenv('PATH'), getenv('TMPDIR'), 'added'],
 				'PATH and TMPDIR are inherited beside the added variable: '.json_encode($run));
 		}
 		finally { TestTree::remove($tree); }
@@ -221,7 +179,7 @@ class TestHttpServerTest extends TestCase
 		}
 		finally
 		{
-			if($server !== null) $server->close();
+			if($server !== null) { $server->close(); }
 			TestTree::remove($tree);
 		}
 	}
@@ -246,7 +204,7 @@ class TestHttpServerTest extends TestCase
 
 	public function testAServerDoesNotOutliveATestThatEndsByExitOrFatalError()
 	{
-		foreach(array('exit(3);', 'test_http_server_undefined_function();') as $ending)
+		foreach(['exit(3);', 'test_http_server_undefined_function();'] as $ending)
 		{
 			$tree = $this->tree('shutdown');
 			$port = $pid = 0;
@@ -256,18 +214,18 @@ class TestHttpServerTest extends TestCase
 					.'$process = new ReflectionProperty("TestHttpServer", "process");'
 					.'if(PHP_VERSION_ID < 80100) $process->setAccessible(true);'
 					.'echo $server->port(), " ", proc_get_status($process->getValue($server))["pid"], "\n";'.$ending,
-					$tree, array('-d', 'log_errors=0', '-d', 'display_errors=0'));
-				list($port, $pid) = array_map('intval', explode(' ', trim($run['out'])) + array(0, 0));
+					$tree, ['-d', 'log_errors=0', '-d', 'display_errors=0']);
+				list($port, $pid) = array_map('intval', explode(' ', trim($run['out'])) + [0, 0]);
 				$this->assertTrue($port > 0 && $pid > 0, 'the child started a server: '.json_encode($run));
 				$client = @fsockopen('127.0.0.1', $port, $errno, $error, 1);
 				$this->assertTrue($client === false, $ending.' leaves no server answering on its port');
-				if($client !== false) fclose($client);
+				if($client !== false) { fclose($client); }
 				$this->assertTrue(!self::isServer($pid, $tree), $ending.' leaves no php -S process behind');
 			}
 			finally
 			{
 				// A leaked server is this test's own; stop it before reporting.
-				if(self::isServer($pid, $tree)) exec('kill -9 '.(int)$pid);
+				if(self::isServer($pid, $tree)) { exec('kill -9 '.(int)$pid); }
 				TestTree::remove($tree);
 			}
 		}
@@ -291,10 +249,52 @@ class TestHttpServerTest extends TestCase
 				$tree);
 			$this->assertTrue($run['out'] === 'routed+closed' || $run['out'] === 'no pcntl',
 				'the parent still reaches its server, and the child closed only its own: '.json_encode($run));
-			if($run['out'] === 'no pcntl')
-				echo "Skipped: no pcntl_fork in this runtime\n";
+			if($run['out'] === 'no pcntl') {
+				echo "Skipped: no pcntl_fork in this runtime\n"; }
 		}
 		finally { TestTree::remove($tree); }
+	}
+	private function tree($label)
+	{
+		$tree = sys_get_temp_dir().'/rt-http-'.$label.'-'.uniqid('', true);
+		mkdir($tree, 0700);
+		return $tree;
+	}
+
+	/** Runs $code in a PHP child with TestHttpServer loaded and the tree as $argv[1]. */
+	private function runChild($code, $tree, $arguments = [])
+	{
+		return PhpProcess::run(array_merge(PhpProcess::sameIni(),
+			['-d', 'display_errors=stderr'], $arguments, ['-r',
+			'require '.var_export(__DIR__.'/TestHttpServer.php', true).';'.$code, $tree]),
+			['timeout' => 30]);
+	}
+
+	/** A process that ignores SIGTERM, as a server stuck in a handler can. */
+	private function startStubborn()
+	{
+		$process = proc_open(['/bin/sh', '-c', 'trap "" TERM; echo ready; exec sleep 8'],
+			[0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+		if(!is_resource($process)) {
+			throw new Exception('could not start a process that ignores SIGTERM'); }
+		$ready = fgets($pipes[1]);
+		foreach($pipes as $pipe) {
+			fclose($pipe); }
+		if($ready !== "ready\n")
+		{
+			proc_terminate($process, 9);
+			proc_close($process);
+			throw new Exception('the process that ignores SIGTERM did not get ready');
+		}
+		return $process;
+	}
+
+	private static function setPrivate($object, $name, $value)
+	{
+		$property = new ReflectionProperty(get_class($object), $name);
+		if(PHP_VERSION_ID < 80100) {
+			$property->setAccessible(true); }
+		$property->setValue($object, $value);
 	}
 
 	private static function isServer($pid, $tree)

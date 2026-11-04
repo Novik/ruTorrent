@@ -4,9 +4,9 @@ require_once( dirname(__FILE__)."/cloudflare.php" );
 
 class _cloudflareHooks
 {
-	static protected $in_progress = false;
+	protected static $in_progress = false;
 
-	static public function OnURLFetched( $prm )
+	public static function OnURLFetched( $prm )
 	{
 		if(!self::$in_progress &&
 			($prm['method']=='GET'))

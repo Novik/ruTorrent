@@ -2,42 +2,28 @@
 
 class TorrentDownloadsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>50 );
-	public $categories = array( 'all'=>'0', 'Anime'=>'1', 'Books'=>'2', 'Games'=>'3',
-		'Movies'=>'4', 'Music'=>'5', 'Software'=>'7', 'TV Shows'=>'8', 'Other'=>'9' );
-
-	protected static function getInnerCategory($cat)
-	{
-		$categories = array(
-			'1'=>'Anime',
-			'2'=>'Books',
-			'3'=>'Games',
-			'4'=>'Movies',
-			'5'=>'Music',
-			'7'=>'Software',
-			'8'=>'TV Shows',
-			'9'=>'Other');
-		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
-	}
+	public $defaults = [ "public"=>true, "page_size"=>50 ];
+	public $categories = [ 'all'=>'0', 'Anime'=>'1', 'Books'=>'2', 'Games'=>'3',
+		'Movies'=>'4', 'Music'=>'5', 'Software'=>'7', 'TV Shows'=>'8', 'Other'=>'9' ];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://www.torrentdownloads.me';
-		if($useGlobalCats)
-			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'books'=>'2' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'books'=>'2' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/search/?page='.$pg.'&search='.$what.'&s_cat='.$cat.'&srt=seeds&order=desc' );
-			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
-				break;
+			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) ) {
+				break; }
 
 			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt="">'.
 				'<a href="/torrent/(?P<id>.*)/.*"[^>]*>(?P<name>.*)</a>.*'.
@@ -57,17 +43,31 @@ class TorrentDownloadsEngine extends commonEngine
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						if(!$item["seeds"] && !$item["peers"])
-							continue;
+						if(!$item["seeds"] && !$item["peers"]) {
+							continue; }
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
+	}
+
+	protected static function getInnerCategory($cat)
+	{
+		$categories = [
+			'1'=>'Anime',
+			'2'=>'Books',
+			'3'=>'Games',
+			'4'=>'Movies',
+			'5'=>'Music',
+			'7'=>'Software',
+			'8'=>'TV Shows',
+			'9'=>'Other'];
+		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
 	}
 }

@@ -42,19 +42,19 @@ fclose($peer);
 fclose($server);
 PHP;
     $process = proc_open(
-        array(PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker, base64_encode($bytes)),
-        array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
-        $pipes
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker, base64_encode($bytes)],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
     );
-    if (!is_resource($process)) throw new RuntimeException('Could not start the HTTP peer');
+    if (!is_resource($process)) { throw new RuntimeException('Could not start the HTTP peer'); }
     $socket = false;
     try {
         fclose($pipes[0]);
         stream_set_timeout($pipes[1], 5);
         $address = fgets($pipes[1]);
-        if ($address === false) throw new RuntimeException('The HTTP peer did not announce its address');
+        if ($address === false) { throw new RuntimeException('The HTTP peer did not announce its address'); }
         $socket = stream_socket_client('tcp://' . trim($address), $errno, $error, 5);
-        if ($socket === false) throw new RuntimeException('Could not connect to the HTTP peer: ' . $error);
+        if ($socket === false) { throw new RuntimeException('Could not connect to the HTTP peer: ' . $error); }
         $client = new Snoopy();
         $client->read_timeout = 2;
         $client->host = '127.0.0.1';
@@ -66,30 +66,30 @@ PHP;
         fclose($pipes[2]);
         $exit = proc_close($process);
         $process = null;
-        if ($exit !== 0 || $stderr !== '')
-            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr);
-        return array('fetched' => $fetched, 'status' => $client->status,
-            'headers' => $client->headers, 'body' => $client->results);
+        if ($exit !== 0 || $stderr !== '') {
+            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr); }
+        return ['fetched' => $fetched, 'status' => $client->status,
+            'headers' => $client->headers, 'body' => $client->results];
     } finally {
-        if (is_resource($socket)) fclose($socket);
+        if (is_resource($socket)) { fclose($socket); }
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
             proc_close($process);
         }
     }
 }
 
 $failures = 0;
-$cases = array(
+$cases = [
     // Every byte of a header block that ends without its blank line has to be
     // accounted for in $headers, whatever the last line says.
-    'a last header line of zero is kept' => array("HTTP/1.0 200 OK\r\nX-A: 1\r\n0", '200', ''),
-    'a last header line of zero with nothing before it is kept' => array('0', 0, ''),
-    'a last header line of one is kept' => array("HTTP/1.0 200 OK\r\nX-A: 1\r\n1", '200', ''),
-    'a zero line inside a complete header block is kept' => array(
-        "HTTP/1.0 200 OK\r\n0\r\nX-A: 1\r\n\r\nbody", '200', 'body'),
-);
+    'a last header line of zero is kept' => ["HTTP/1.0 200 OK\r\nX-A: 1\r\n0", '200', ''],
+    'a last header line of zero with nothing before it is kept' => ['0', 0, ''],
+    'a last header line of one is kept' => ["HTTP/1.0 200 OK\r\nX-A: 1\r\n1", '200', ''],
+    'a zero line inside a complete header block is kept' => [
+        "HTTP/1.0 200 OK\r\n0\r\nX-A: 1\r\n\r\nbody", '200', 'body'],
+];
 foreach ($cases as $name => $case) {
     try {
         list($bytes, $status, $body) = $case;
@@ -97,16 +97,16 @@ foreach ($cases as $name => $case) {
         // The header block is everything up to the blank line, which ends the
         // block and is not one of its lines.
         $block = explode("\r\n\r\n", $bytes, 2);
-        $expected = array('fetched' => true, 'status' => $status,
-            'headers' => $block[0] === '' ? array() : explode("\r\n", $block[0]), 'body' => $body);
+        $expected = ['fetched' => true, 'status' => $status,
+            'headers' => $block[0] === '' ? [] : explode("\r\n", $block[0]), 'body' => $body];
         foreach ($expected['headers'] as $line => $text) {
             // explode() drops the terminator fgets() keeps, except on the last
             // line of a block that has none.
-            if (($line + 1) < count($expected['headers']) || isset($block[1]))
-                $expected['headers'][$line] = $text . "\r\n";
+            if (($line + 1) < count($expected['headers']) || isset($block[1])) {
+                $expected['headers'][$line] = $text . "\r\n"; }
         }
-        if ($seen !== $expected)
-            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen));
+        if ($seen !== $expected) {
+            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen)); }
         echo 'ok - ', $name, "\n";
     } catch (Throwable $error) {
         $failures++;

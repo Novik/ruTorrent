@@ -13,35 +13,35 @@ execute = {sh,-c,/usr/local/bin/php /usr/local/www/rt/php/initplugins.php user_n
  * All plugins would be run according their runlevel
  */
 
-if( !chdir( dirname( __FILE__ ) ) )
-        exit();
+if( !chdir( dirname( __FILE__ ) ) ) {
+        exit(); }
 
 function pluginsSort($a, $b)
 {
 	$lvl1 = (float) $a["level"];
 	$lvl2 = (float) $b["level"];
-	if($lvl1>$lvl2)
-		return(1);
-	if($lvl1<$lvl2)
-		return(-1);
+	if($lvl1>$lvl2) {
+		return(1); }
+	if($lvl1<$lvl2) {
+		return(-1); }
 	return( strcmp($a["name"],$b["name"]) );
 }
 
 
 function getPluginInfo( $name, $permissions )
 {
-        $info = array(
-		'rtorrent.php.error'=>array(),
-		'rtorrent.external.error'=>array(),
-		'rtorrent.script.error'=>array(),
+        $info = [
+		'rtorrent.php.error'=>[],
+		'rtorrent.external.error'=>[],
+		'rtorrent.script.error'=>[],
 		'rtorrent.version'=>0x802,
 		'plugin.runlevel'=>10.0,
-		'plugin.dependencies'=>array(),
-		'php.extensions.error'=>array(),
+		'plugin.dependencies'=>[],
+		'php.extensions.error'=>[],
 		'php.version'=>0x50000,
 		'plugin.may_be_shutdowned'=>1,
 		'plugin.may_be_launched'=>1,
-		);
+		];
 	$fname = "../plugins/".$name."/plugin.info";
 	if(is_readable($fname))
 	{
@@ -96,18 +96,18 @@ function getPluginInfo( $name, $permissions )
 		}
 		if($permissions!==false)
 		{
-			if(!getFlag($permissions,$name,"enabled"))
-				return(false);
+			if(!getFlag($permissions,$name,"enabled")) {
+				return(false); }
 		}
 	}
 	return(array_key_exists("plugin.version",$info) ? $info : false);
 }
 
-if( !function_exists( 'preg_match_all' ) )
-	exit();
+if( !function_exists( 'preg_match_all' ) ) {
+	exit(); }
 
-if( count( $argv ) > 1 )
-	$_SERVER['REMOTE_USER'] = $argv[1];
+if( count( $argv ) > 1 ) {
+	$_SERVER['REMOTE_USER'] = $argv[1]; }
 
 require_once( "which.php" );
 require_once( "pluginflags.php" );
@@ -115,25 +115,25 @@ require_once( "settings.php" );
 
 // Check/init: $tempDirectory.
 $tmp = FileUtil::getTempDirectory();
-if(!is_dir($tmp) || !@file_exists($tmp.'.') || !is_readable($tmp) || !is_writable($tmp))
-	exit();
+if(!is_dir($tmp) || !@file_exists($tmp.'.') || !is_readable($tmp) || !is_writable($tmp)) {
+	exit(); }
 
 $theSettings = rTorrentSettings::get(true);
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 {
 	$plg = FileUtil::getConfFile('plugins.ini');
-	if(!$plg)
-		$plg = "../conf/plugins.ini";
+	if(!$plg) {
+		$plg = "../conf/plugins.ini"; }
 	$permissions = parse_ini_file($plg,true);
-	$init = array();
-	$names = array();
+	$init = [];
+	$names = [];
 	$phpVersion = phpversion();
-	if( ($pos=strpos($phpVersion, '-'))!==false )
-		$phpVersion = substr($phpVersion,0,$pos);
+	if( ($pos=strpos($phpVersion, '-'))!==false ) {
+		$phpVersion = substr($phpVersion,0,$pos); }
 	$phpIVersion = explode('.',$phpVersion);
 	$phpIVersion = (intval($phpIVersion[0])<<16) + (intval($phpIVersion[1])<<8) + intval($phpIVersion[2]);
 
-	$userPermissions = array( "__hash__"=>"plugins.dat" );
+	$userPermissions = [ "__hash__"=>"plugins.dat" ];
 	$cache = new rCache();
 	$cache->get($userPermissions);
 
@@ -143,20 +143,20 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	{
 		if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
 		{
-			if(!array_key_exists($file,$userPermissions))
-				$userPermissions[$file] = (bool)getFlag($permissions,$file,"enabledByDefault");
+			if(!array_key_exists($file,$userPermissions)) {
+				$userPermissions[$file] = (bool)getFlag($permissions,$file,"enabledByDefault"); }
 			$info = getPluginInfo( $file, $permissions );
 			if($info &&
 				$info["plugin.may_be_launched"] &&
 				(getFlag($permissions,$file,"enabled")=="user-defined") &&
-				!$userPermissions[$file])
-				$info = false;
+				!$userPermissions[$file]) {
+				$info = false; }
 			if(($info!==false) &&
 				($info['php.version']<=$phpIVersion) &&
 				($info['rtorrent.version']<=$theSettings->iVersion))
 			{
-				if(count($info['rtorrent.external.error']))
-					eval( FileUtil::getPluginConf( $file ) );
+				if(count($info['rtorrent.external.error'])) {
+					eval( FileUtil::getPluginConf( $file ) ); }
 				$extError = false;
 				foreach( $info['rtorrent.external.error'] as $external )
 				{
@@ -166,8 +166,8 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 						break;
 					}
 				}
-				if($extError)
-					continue;
+				if($extError) {
+					continue; }
 				foreach( $info['rtorrent.script.error'] as $external )
 				{
 				       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
@@ -178,8 +178,8 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 						break;
 					}
 				}
-				if($extError)
-					continue;
+				if($extError) {
+					continue; }
 				foreach( $info['rtorrent.php.error'] as $external )
 				{
 			       		$fname = $rootPath.'/plugins/'.$file.'/'.$external;
@@ -190,20 +190,20 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 						break;
 					}
 				}
-				if($extError)
-					continue;
-				foreach( $info['php.extensions.error'] as $extension )
+				if($extError) {
+					continue; }
+				foreach( $info['php.extensions.error'] as $extension ) {
 					if(!in_array( $extension, $loadedExtensions ))
 					{
 						$extError = true;
 						break;
-					}
-				if($extError)
-					continue;
+					} }
+				if($extError) {
+					continue; }
 				$php = "../plugins/".$file."/init.php";
-				if(!is_readable($php))
-					$php = NULL;
-				$init[] = array( "php" => $php, "name" => $file, "level" => $info["plugin.runlevel"], "deps"=>$info["plugin.dependencies"] );
+				if(!is_readable($php)) {
+					$php = null; }
+				$init[] = [ "php" => $php, "name" => $file, "level" => $info["plugin.runlevel"], "deps"=>$info["plugin.dependencies"] ];
 				$names[] = $file;
 			}
 		}
@@ -213,11 +213,11 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	$do_diagnostic = false;
 	$jResult = '';
 	$jEnd = '';
-	$pInfo = array( "perms" => 0x0100 );
+	$pInfo = [ "perms" => 0x0100 ];
 	foreach($init as $plugin)
 	{
-		if($plugin["php"] && !count(array_diff( $plugin["deps"], $names )))
-			require_once( $plugin["php"] );
+		if($plugin["php"] && !count(array_diff( $plugin["deps"], $names ))) {
+			require_once( $plugin["php"] ); }
 
 	}
 	$theSettings->store();

@@ -30,15 +30,15 @@
 class TorrentAdditionSourceScanner
 {
 	/** Argument index (0 based) of $addition on each entry point. */
-	const ADDITION_ARGUMENT = array(
+	public const ADDITION_ARGUMENT = [
 		'sendTorrent' => 8,
 		'sendMagnet'  => 5,
-	);
+	];
 
 	private $root;
 
 	/** One tokenizing pass per tree, reused by every alias table. */
-	static private $cache = array();
+	private static $cache = [];
 
 	public function __construct($root)
 	{
@@ -49,7 +49,7 @@ class TorrentAdditionSourceScanner
 	 * The command an element names, under the settings installed now. null
 	 * when the element could not be reduced to one.
 	 */
-	static public function commandName($element)
+	public static function commandName($element)
 	{
 		if ($element['alias'] !== null) {
 			return getCmd($element['alias']);
@@ -60,8 +60,8 @@ class TorrentAdditionSourceScanner
 	/** Every .php file under php/ and plugins/. */
 	public function sourceFiles()
 	{
-		$files = array();
-		foreach (array('php', 'plugins') as $dir) {
+		$files = [];
+		foreach (['php', 'plugins'] as $dir) {
 			$base = $this->root . '/' . $dir;
 			if (!is_dir($base)) {
 				continue;
@@ -87,7 +87,7 @@ class TorrentAdditionSourceScanner
 		if (isset(self::$cache[$this->root])) {
 			return self::$cache[$this->root];
 		}
-		$sites = array();
+		$sites = [];
 		foreach ($this->sourceFiles() as $file) {
 			foreach ($this->callSitesIn($file) as $site) {
 				$sites[] = $site;
@@ -100,7 +100,7 @@ class TorrentAdditionSourceScanner
 	private function callSitesIn($file)
 	{
 		$tokens = $this->significantTokens(file_get_contents($file));
-		$sites = array();
+		$sites = [];
 		foreach ($tokens as $i => $token) {
 			if ($token[0] !== T_STRING || !isset(self::ADDITION_ARGUMENT[$token[1]])) {
 				continue;
@@ -115,14 +115,14 @@ class TorrentAdditionSourceScanner
 			$method = $token[1];
 			$args = $this->splitArguments($tokens, $i + 1);
 			$index = self::ADDITION_ARGUMENT[$method];
-			$site = array(
+			$site = [
 				'file'      => $this->relative($file),
 				'line'      => $token[2],
 				'method'    => $method,
 				'argc'      => count($args),
-				'elements'  => array(),
+				'elements'  => [],
 				'hasAddition' => false,
-			);
+			];
 			if (isset($args[$index])) {
 				$site['hasAddition'] = true;
 				$site['elements'] = $this->resolveExpression($args[$index], $tokens, $file);
@@ -135,17 +135,17 @@ class TorrentAdditionSourceScanner
 	/** Tokens with whitespace and comments dropped, single chars normalised. */
 	private function significantTokens($code)
 	{
-		$out = array();
+		$out = [];
 		foreach (token_get_all($code) as $token) {
 			if (is_array($token)) {
 				if ($token[0] === T_WHITESPACE || $token[0] === T_COMMENT ||
 					$token[0] === T_DOC_COMMENT) {
 					continue;
 				}
-				$out[] = array($token[0], $token[1], $token[2]);
+				$out[] = [$token[0], $token[1], $token[2]];
 			} else {
 				$line = count($out) ? $out[count($out) - 1][2] : 0;
-				$out[] = array(-1, $token, $line);
+				$out[] = [-1, $token, $line];
 			}
 		}
 		return $out;
@@ -158,8 +158,8 @@ class TorrentAdditionSourceScanner
 	private function splitArguments($tokens, $open)
 	{
 		$depth = 0;
-		$args = array();
-		$current = array();
+		$args = [];
+		$current = [];
 		for ($i = $open; $i < count($tokens); $i++) {
 			$text = $tokens[$i][1];
 			if ($text === '(' || $text === '[' || $text === '{') {
@@ -177,7 +177,7 @@ class TorrentAdditionSourceScanner
 				}
 			} elseif ($text === ',' && $depth === 1) {
 				$args[] = $current;
-				$current = array();
+				$current = [];
 				continue;
 			}
 			$current[] = $tokens[$i];
@@ -194,13 +194,13 @@ class TorrentAdditionSourceScanner
 	{
 		$expr = $this->trimParens($expr);
 		if (!count($expr)) {
-			return array();
+			return [];
 		}
 		if (count($expr) === 1 && strtolower($expr[0][1]) === 'null') {
-			return array();
+			return [];
 		}
 		if ($this->isArrayLiteral($expr)) {
-			$elements = array();
+			$elements = [];
 			foreach ($this->arrayElements($expr) as $element) {
 				$elements[] = $this->reduceElement($element);
 			}
@@ -209,13 +209,13 @@ class TorrentAdditionSourceScanner
 		if (count($expr) === 1 && $expr[0][0] === T_VARIABLE && $depth < 3) {
 			return $this->resolveVariable($expr[0][1], $tokens, $file, $depth, 0, count($tokens));
 		}
-		return array($this->unresolved($expr, 'the addition argument is neither null, an array literal nor a local variable'));
+		return [$this->unresolved($expr, 'the addition argument is neither null, an array literal nor a local variable')];
 	}
 
 	/** Every assignment to $name between $from and $to, reduced. */
 	private function resolveVariable($name, $tokens, $file, $depth, $from, $to)
 	{
-		$elements = array();
+		$elements = [];
 		$seen = false;
 		for ($i = $from; $i < $to; $i++) {
 			if ($tokens[$i][0] !== T_VARIABLE || $tokens[$i][1] !== $name) {
@@ -270,8 +270,8 @@ class TorrentAdditionSourceScanner
 			}
 		}
 		if (!$seen) {
-			return array($this->unresolved(array(array(T_VARIABLE, $name, 0)),
-				'no assignment to ' . $name . ' found in the file'));
+			return [$this->unresolved([[T_VARIABLE, $name, 0]],
+				'no assignment to ' . $name . ' found in the file')];
 		}
 		return $elements;
 	}
@@ -336,13 +336,13 @@ class TorrentAdditionSourceScanner
 
 	private function named($source, $alias, $literal)
 	{
-		return array('expr' => $source, 'alias' => $alias, 'literal' => $literal, 'reason' => null);
+		return ['expr' => $source, 'alias' => $alias, 'literal' => $literal, 'reason' => null];
 	}
 
 	private function unresolved($expr, $reason)
 	{
-		return array('expr' => $this->source($expr), 'alias' => null,
-			'literal' => null, 'reason' => $reason);
+		return ['expr' => $this->source($expr), 'alias' => null,
+			'literal' => null, 'reason' => $reason];
 	}
 
 	private function source($expr)
@@ -359,7 +359,7 @@ class TorrentAdditionSourceScanner
 		$quote = substr($raw, 0, 1);
 		$body = substr($raw, 1, -1);
 		if ($quote === "'") {
-			return str_replace(array("\\'", '\\\\'), array("'", '\\'), $body);
+			return str_replace(["\\'", '\\\\'], ["'", '\\'], $body);
 		}
 		return stripcslashes($body);
 	}
@@ -403,8 +403,8 @@ class TorrentAdditionSourceScanner
 		$open = ($expr[0][0] === T_ARRAY) ? 1 : 0;
 		$close = $this->matching($expr, $open);
 		$inner = array_slice($expr, $open + 1, $close - $open - 1);
-		$elements = array();
-		$current = array();
+		$elements = [];
+		$current = [];
 		$depth = 0;
 		foreach ($inner as $token) {
 			$t = $token[1];
@@ -416,7 +416,7 @@ class TorrentAdditionSourceScanner
 				if (count($current)) {
 					$elements[] = $current;
 				}
-				$current = array();
+				$current = [];
 				continue;
 			}
 			$current[] = $token;
@@ -431,7 +431,7 @@ class TorrentAdditionSourceScanner
 	private function statementAfter($tokens, $start)
 	{
 		$depth = 0;
-		$out = array();
+		$out = [];
 		for ($i = $start; $i < count($tokens); $i++) {
 			$t = $tokens[$i][1];
 			if ($t === '(' || $t === '[' || $t === '{') {
@@ -482,7 +482,7 @@ class TorrentAdditionSourceScanner
 					if ($close < 0) {
 						return null;
 					}
-					return array($j + 1, $j + $close);
+					return [$j + 1, $j + $close];
 				}
 				if ($tokens[$j][1] === ';') {
 					break;

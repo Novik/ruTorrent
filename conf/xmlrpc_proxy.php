@@ -23,7 +23,7 @@
 	// 'd.custom1.set'. A parameter naming anything else is dropped from a
 	// load.* (the torrent is still added) and makes a multicall go to rtorrent
 	// untouched and untrusted.
-	$XMLRPCProxySafeParams = array(
+	$XMLRPCProxySafeParams = [
 		'd.custom1.set',            // label
 		'd.custom2.set',            // custom field
 		'd.custom3.set',            // custom field
@@ -58,7 +58,7 @@
 		'd.set_custom3',            // d.custom3.set
 		'd.set_throttle_name',      // d.throttle_name.set
 		'd.set_connection_seed',    // d.connection_seed.set
-	);
+	];
 
 	// Let a caller name a path on rtorrent's own filesystem in load.start or
 	// load.normal (default: false).

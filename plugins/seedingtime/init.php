@@ -10,25 +10,25 @@ $fillSeedingtime =
 	getCmd('branch=').getCmd('d.get_custom').'=seedingtime,,\"'.
 	getCmd('d.set_custom').'=seedingtime,$'.getCmd('d.get_custom').'=addtime\""';
 
-$req = new rXMLRPCRequest( array(
-	$theSettings->getOnFinishedCommand(array("seedingtime".User::getUser(),
-		getCmd('d.set_custom').'=seedingtime,"$'.getCmd('execute_capture').'={date,+%s}"')),
-	$theSettings->getOnInsertCommand(array("addtime".User::getUser(),
-		getCmd('d.set_custom').'=addtime,"$'.getCmd('execute_capture').'={date,+%s}"')),
+$req = new rXMLRPCRequest( [
+	$theSettings->getOnFinishedCommand(["seedingtime".User::getUser(),
+		getCmd('d.set_custom').'=seedingtime,"$'.getCmd('execute_capture').'={date,+%s}"']),
+	$theSettings->getOnInsertCommand(["addtime".User::getUser(),
+		getCmd('d.set_custom').'=addtime,"$'.getCmd('execute_capture').'={date,+%s}"']),
 
-	$theSettings->getOnHashdoneCommand(array("seedingtimecheck".User::getUser(),
-		$fillSeedingtime)),
-	));
+	$theSettings->getOnHashdoneCommand(["seedingtimecheck".User::getUser(),
+		$fillSeedingtime]),
+	]);
 
 // Kept out of the request above: a daemon that refuses the pass must still
 // get its event handlers and leave the plugin enabled.
 $backfill = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall",
-	array("main", $fillSeedingtime)) );
+	["main", $fillSeedingtime]) );
 
 if($req->success())
 {
         $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
         $backfill->run();
 }
-else
-        $jResult .= "plugin.disable(); noty('seedingtime: '+theUILang.pluginCantStart,'error');";
+else {
+        $jResult .= "plugin.disable(); noty('seedingtime: '+theUILang.pluginCantStart,'error');"; }

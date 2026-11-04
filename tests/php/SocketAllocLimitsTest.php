@@ -16,11 +16,6 @@ require_once(__DIR__ . '/../../php/settings.php');
  */
 class SocketAllocLimitsTest extends TestCase
 {
-	private function settings()
-	{
-		$reflection = new ReflectionClass('rTorrentSettings');
-		return $reflection->newInstanceWithoutConstructor();
-	}
 
 	public function testTheProbeIsSentOnlyFromTheReleaseThatAnswersIt()
 	{
@@ -48,7 +43,7 @@ class SocketAllocLimitsTest extends TestCase
 	{
 		$settings = $this->settings();
 		// available, internal, rpc, http max, files max, files min
-		$this->assertTrue($settings->applySocketAllocLimits(array(65536, 1024, 1448, 4096, 65536, 4)),
+		$this->assertTrue($settings->applySocketAllocLimits([65536, 1024, 1448, 4096, 65536, 4]),
 			'a well-formed answer is taken');
 		$this->assertEquals(63064, $settings->socketAllocBudget,
 			'the budget is the total less the categories the page does not offer');
@@ -60,7 +55,7 @@ class SocketAllocLimitsTest extends TestCase
 	public function testABudgetCannotBeNegative()
 	{
 		$settings = $this->settings();
-		$settings->applySocketAllocLimits(array(1024, 2048, 512, 4096, 65536, 4));
+		$settings->applySocketAllocLimits([1024, 2048, 512, 4096, 65536, 4]);
 		$this->assertEquals(0, $settings->socketAllocBudget,
 			'a total already spent leaves nothing to share rather than a negative budget');
 	}
@@ -68,7 +63,7 @@ class SocketAllocLimitsTest extends TestCase
 	public function testAnAnswerOfTheWrongShapeLeavesTheDefaults()
 	{
 		$settings = $this->settings();
-		$this->assertTrue(!$settings->applySocketAllocLimits(array(65536, 1024, 1448)),
+		$this->assertTrue(!$settings->applySocketAllocLimits([65536, 1024, 1448]),
 			'a short answer is refused');
 		$this->assertEquals(0, $settings->socketAllocBudget, 'and the budget stays unknown');
 		$this->assertEquals(0, $settings->socketFilesAllocMax, 'and so do the limits');
@@ -77,9 +72,14 @@ class SocketAllocLimitsTest extends TestCase
 	public function testAnAnswerThatIsNotNumbersLeavesTheDefaults()
 	{
 		$settings = $this->settings();
-		$this->assertTrue(!$settings->applySocketAllocLimits(array('n/a', 1024, 1448, 4096, 65536, 4)),
+		$this->assertTrue(!$settings->applySocketAllocLimits(['n/a', 1024, 1448, 4096, 65536, 4]),
 			'an answer that is not numbers is refused');
 		$this->assertEquals(0, $settings->socketAllocBudget,
 			'rather than offering the user a limit computed from it');
+	}
+	private function settings()
+	{
+		$reflection = new ReflectionClass('rTorrentSettings');
+		return $reflection->newInstanceWithoutConstructor();
 	}
 }

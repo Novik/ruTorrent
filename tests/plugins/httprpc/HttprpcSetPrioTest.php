@@ -18,9 +18,9 @@ require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
  */
 class HttprpcSetPrioTest extends TestCase
 {
+	public const HASH = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 	private $base;
 	private $daemon;
-	const HASH = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
 	public function setUp()
 	{
@@ -35,6 +35,41 @@ class HttprpcSetPrioTest extends TestCase
 			$this->daemon = null;
 		}
 		$this->removeTree($this->base);
+	}
+
+	public function testEveryFileNamedIsTheFileSet()
+	{
+		$this->setprio(['2', '3', '11']);
+		$this->assertEquals(['2', '3', '11'], $this->filesSet(),
+			'each index named is set, and no other file is: ' . json_encode($this->filesSet()));
+	}
+
+	/**
+	 * The shape plugins/mobile sent for every folder priority change: an
+	 * empty segment ahead of the real indexes.
+	 */
+	public function testAnEmptySegmentSetsNoFile()
+	{
+		$this->setprio(['', '2', '3']);
+		$this->assertEquals(['2', '3'], $this->filesSet(),
+			'an empty v names no file, so file 0 is left alone: ' . json_encode($this->filesSet()));
+	}
+
+	public function testAValueThatIsNotANumberSetsNoFile()
+	{
+		foreach (['x', '1x', ' 1', '+1', '-1', '0x2', '1.0'] as $value) {
+			$this->setprio([$value]);
+			$this->assertEquals([], $this->filesSet(),
+				'"' . $value . '" is not a file index, so it sets no file, and it set '
+					. json_encode($this->filesSet()));
+		}
+	}
+
+	public function testTheTorrentIsStillToldToApplyThem()
+	{
+		$this->setprio(['', '2']);
+		$this->assertTrue($this->daemon->received('d.update_priorities'),
+			'rtorrent is asked to apply the change: ' . json_encode($this->daemon->calls()));
 	}
 
 	private function removeTree($path)
@@ -59,7 +94,7 @@ class HttprpcSetPrioTest extends TestCase
 		// leave one here rather than have the script probe and spend the
 		// reply the request under test needs.
 		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
-		$this->daemon = new FakeRtorrentDaemon(array(array(0, 0, 0)), $this->base . '/calls.log');
+		$this->daemon = new FakeRtorrentDaemon([[0, 0, 0]], $this->base . '/calls.log');
 
 		$driver = $this->base . '/drive-setprio.php';
 		file_put_contents($driver, "<?php\n"
@@ -74,7 +109,7 @@ class HttprpcSetPrioTest extends TestCase
 			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
 			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($driver) . ' 2>&1', $output);
 		return implode("\n", $output);
@@ -88,7 +123,7 @@ class HttprpcSetPrioTest extends TestCase
 	 */
 	private function filesSet()
 	{
-		$files = array();
+		$files = [];
 		foreach ($this->daemon->bodies() as $body) {
 			if (preg_match_all('`<string>' . self::HASH . ':f([^<]*)</string>`', $body, $matches)) {
 				foreach ($matches[1] as $file) {
@@ -106,40 +141,5 @@ class HttprpcSetPrioTest extends TestCase
 			$body .= '&v=' . $value;
 		}
 		return $this->post($body . '&s=' . $priority);
-	}
-
-	public function testEveryFileNamedIsTheFileSet()
-	{
-		$this->setprio(array('2', '3', '11'));
-		$this->assertEquals(array('2', '3', '11'), $this->filesSet(),
-			'each index named is set, and no other file is: ' . json_encode($this->filesSet()));
-	}
-
-	/**
-	 * The shape plugins/mobile sent for every folder priority change: an
-	 * empty segment ahead of the real indexes.
-	 */
-	public function testAnEmptySegmentSetsNoFile()
-	{
-		$this->setprio(array('', '2', '3'));
-		$this->assertEquals(array('2', '3'), $this->filesSet(),
-			'an empty v names no file, so file 0 is left alone: ' . json_encode($this->filesSet()));
-	}
-
-	public function testAValueThatIsNotANumberSetsNoFile()
-	{
-		foreach (array('x', '1x', ' 1', '+1', '-1', '0x2', '1.0') as $value) {
-			$this->setprio(array($value));
-			$this->assertEquals(array(), $this->filesSet(),
-				'"' . $value . '" is not a file index, so it sets no file, and it set '
-					. json_encode($this->filesSet()));
-		}
-	}
-
-	public function testTheTorrentIsStillToldToApplyThem()
-	{
-		$this->setprio(array('', '2'));
-		$this->assertTrue($this->daemon->received('d.update_priorities'),
-			'rtorrent is asked to apply the change: ' . json_encode($this->daemon->calls()));
 	}
 }

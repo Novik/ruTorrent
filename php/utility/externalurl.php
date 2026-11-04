@@ -30,32 +30,32 @@ class ExternalURL
 	// resolves it against the page it is on -- but a stored address must not be
 	// able to put something in front of a user that navigates back into the
 	// panel it came from, so the set here is deliberately the smaller one.
-	static public function isOpenable( $url )
+	public static function isOpenable( $url )
 	{
-		if(!is_string($url))
-			return(false);
+		if(!is_string($url)) {
+			return(false); }
 		// The parser removes tab, LF and CR from anywhere in the address and
 		// trims leading and trailing C0 controls and spaces before it reads
 		// the scheme, so "ht\ttps://host/x" names http as surely as
 		// " javascript:" names javascript.
-		$url = str_replace(array("\t","\n","\r"),'',trim($url,"\x00..\x20"));
+		$url = str_replace(["\t","\n","\r"],'',trim($url,"\x00..\x20"));
 		preg_match('~^(?:(https?|ftps?|magnet):)?(//)?~i',$url,$m);
 		$scheme = isset($m[1]) ? strtolower($m[1]) : '';
 		$hasAuthority = isset($m[2]) && ($m[2]==='//');
-		if(($scheme==='') && !$hasAuthority)
+		if(($scheme==='') && !$hasAuthority) {
 			// A reference the browser would resolve against the panel's own
 			// page. isExternalURL() opens one, because window.open() does; a
 			// feed must not be able to put one in front of the user.
-			return(false);
-		if($scheme==='magnet')
+			return(false); }
+		if($scheme==='magnet') {
 			// An opaque body, with no authority to make a host of.
-			return(true);
+			return(true); }
 		$rest = substr($url,strlen($m[0]));
 		// ftps is not one of the schemes the parser calls special, so it takes
 		// an opaque body the way magnet does. http, https and ftp are, and the
 		// parser refuses one of those without a host.
-		if(!$hasAuthority)
-			return(($scheme==='ftps') || ($rest!==''));
+		if(!$hasAuthority) {
+			return(($scheme==='ftps') || ($rest!=='')); }
 		return(self::hasOpenableHost($rest,$scheme!=='ftps'));
 	}
 
@@ -65,7 +65,7 @@ class ExternalURL
 	// hold an ipv6 address, or a port outside 0-65535 all make the whole
 	// address fail to parse, and an item carrying one is a row in the feed
 	// that does nothing when it is opened.
-	static protected function hasOpenableHost( $rest, $special )
+	protected static function hasOpenableHost( $rest, $special )
 	{
 		$authority = preg_split('~[/?#]~',$rest,2)[0];
 		$credentials = false;
@@ -76,10 +76,10 @@ class ExternalURL
 		}
 		if(substr($authority,0,1)==='[')
 		{
-			if(($close = strpos($authority,']'))===false)
-				return(false);
-			if(filter_var(substr($authority,1,$close-1),FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)===false)
-				return(false);
+			if(($close = strpos($authority,']'))===false) {
+				return(false); }
+			if(filter_var(substr($authority,1,$close-1),FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)===false) {
+				return(false); }
 			$port = substr($authority,$close+1);
 		}
 		else
@@ -91,12 +91,12 @@ class ExternalURL
 				$port = substr($host,$colon);
 				$host = substr($host,0,$colon);
 			}
-			if($host==='')
+			if($host==='') {
 				// A special scheme always needs a host. A scheme that does not
 				// may leave it out, but not while naming a user or a port.
-				return(!$special && !$credentials && ($port===''));
-			if(preg_match('~[\x00-\x20#/:<>?@\[\\\\\]^|]~',$host)===1)
-				return(false);
+				return(!$special && !$credentials && ($port==='')); }
+			if(preg_match('~[\x00-\x20#/:<>?@\[\\\\\]^|]~',$host)===1) {
+				return(false); }
 			if($special)
 			{
 				// HTTP, HTTPS and FTP decode their domain before checking it.
@@ -104,19 +104,19 @@ class ExternalURL
 				// Only a host that needs decoding needs the decoder.
 				if(strpos($host,'%')!==false)
 				{
-					if(!function_exists('rawurldecode'))
-						return(false);
+					if(!function_exists('rawurldecode')) {
+						return(false); }
 					$host = rawurldecode($host);
 				}
 				if((preg_match('~[\x00-\x20\x7f%#/:<>?@\[\\\\\]^|]~',$host)!==0) ||
-					(preg_match('//u',$host)!==1))
-					return(false);
+					(preg_match('//u',$host)!==1)) {
+					return(false); }
 			}
 		}
-		if($port==='')
-			return(true);
-		if(preg_match('~^:([0-9]*)$~',$port,$p)!==1)
-			return(false);
+		if($port==='') {
+			return(true); }
+		if(preg_match('~^:([0-9]*)$~',$port,$p)!==1) {
+			return(false); }
 		return(($p[1]==='') || ((int)$p[1]<=65535));
 	}
 }

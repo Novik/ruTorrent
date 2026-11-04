@@ -38,7 +38,7 @@ function yggSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -48,13 +48,13 @@ class YggProbeClient
 {
     public $status = 200;
     public $results = 'ok';
-    public $cookies = array();
+    public $cookies = [];
     public $referer = '';
-    public $requests = array();
+    public $requests = [];
 
     public function fetch($url, $method = 'GET', $contentType = '', $body = '')
     {
-        $this->requests[] = array($url, $method, $body);
+        $this->requests[] = [$url, $method, $body];
         return true;
     }
 
@@ -167,7 +167,7 @@ function yggResetLog()
         if (PHP_VERSION_ID < 80100) {
             $latch->setAccessible(true);
         }
-        $latch->setValue(null, array());
+        $latch->setValue(null, []);
     }
     if (is_file($log_file)) {
         unlink($log_file);
@@ -176,7 +176,7 @@ function yggResetLog()
 
 function yggPosts($client)
 {
-    $posts = array();
+    $posts = [];
     foreach ($client->requests as $request) {
         if ($request[1] === 'POST') {
             $posts[] = $request;
@@ -185,7 +185,7 @@ function yggPosts($client)
     return $posts;
 }
 
-$tests = array(
+$tests = [
     'the setting reaches the account when accounts.php is first included from a method' => function () {
         yggSame(true, array_key_exists('yggTorrentOrigin', $GLOBALS),
             'the plugin configuration must be read into the global scope');
@@ -203,9 +203,9 @@ $tests = array(
         $account = new YggProbeAccount();
         $client = new YggProbeClient();
         $account->check($client, 'fake-user', 'fake-pass', 0);
-        yggSame(array('https://yggtorrent.example', 'GET', ''), $client->requests[0],
+        yggSame(['https://yggtorrent.example', 'GET', ''], $client->requests[0],
             'the landing page is fetched from the configured origin');
-        yggSame(array('https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='),
+        yggSame(['https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='],
             $client->requests[1], 'the credentials are posted to the configured origin');
         yggSame(2, count($client->requests), 'and nothing else is requested');
         foreach ($client->requests as $request) {
@@ -222,11 +222,11 @@ $tests = array(
         $account->check($client, 'fake-user', 'fake-pass', 0);
         $account->check($client, 'fake-user', 'fake-pass', 0);
         (new YggProbeAccount())->check($client, 'fake-user', 'fake-pass', 0);
-        yggSame(array(), $client->requests, 'no request leaves without an origin');
+        yggSame([], $client->requests, 'no request leaves without an origin');
         yggSame(0, $account->data->stored + $account->data->removed, 'the session cache is left alone');
         $log = yggLog();
         yggSame(1, substr_count($log, "\n"), 'one log line for the account, not one per call: ' . $log);
-        foreach (array('loginmgr: YggTorrent is not used', '$yggTorrentOrigin is not set', 'plugins/loginmgr/conf.local.php') as $part) {
+        foreach (['loginmgr: YggTorrent is not used', '$yggTorrentOrigin is not set', 'plugins/loginmgr/conf.local.php'] as $part) {
             yggSame(true, strpos($log, $part) !== false, 'the log line names ' . $part . ': ' . $log);
         }
     },
@@ -258,13 +258,13 @@ $tests = array(
         $client->results = "S'identifier</a>";
         yggSame(false, $account->fetch($client, $url, 'fake-user', 'fake-pass', 'GET', '', ''),
             'the download is refused');
-        yggSame(array(), $client->requests, 'and no request, let alone a credential POST, leaves for that host');
+        yggSame([], $client->requests, 'and no request, let alone a credential POST, leaves for that host');
     },
 
     'a download link is claimed on the configured host only' => function () {
         yggConfigure('https://yggtorrent.example');
         $account = new YggProbeAccount();
-        $cases = array(
+        $cases = [
             'https://yggtorrent.example/engine/download_torrent?id=1' => true,
             'https://YGGTORRENT.EXAMPLE./engine/download_torrent?id=1&x=2' => true,
             'https://yggtorrent.example:443/engine/download_torrent?id=1' => true,
@@ -281,7 +281,7 @@ $tests = array(
             'https://yggtorrent.example/engine/download_torrent?xid=1' => false,
             '' => false,
             '/engine/download_torrent?id=1' => false,
-        );
+        ];
         foreach ($cases as $url => $expected) {
             yggSame($expected, $account->test($url), 'test(' . var_export($url, true) . ')');
         }
@@ -293,11 +293,11 @@ $tests = array(
         $url = 'https://yggtorrent.example/engine/download_torrent?id=7';
         $client = new YggProbeClient();
         yggSame(true, $account->fetch($client, $url, 'fake-user', 'fake-pass', 'GET', '', ''), 'the download succeeds');
-        yggSame(array(
-            array($url, 'GET', ''),
-            array('https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='),
-            array($url, 'GET', ''),
-        ), $client->requests, 'landing page, credential POST, then the download');
+        yggSame([
+            [$url, 'GET', ''],
+            ['https://yggtorrent.example/user/login', 'POST', 'id=fake-user&pass=fake-pass&submit='],
+            [$url, 'GET', ''],
+        ], $client->requests, 'landing page, credential POST, then the download');
         yggSame(1, $account->data->stored, 'the session is cached');
     },
 
@@ -318,12 +318,12 @@ $tests = array(
     // ---- the configured value ----------------------------------------------
 
     'a configured origin is folded and keeps its port' => function () {
-        foreach (array(
+        foreach ([
             'https://yggtorrent.example' => 'https://yggtorrent.example',
             'https://yggtorrent.example/' => 'https://yggtorrent.example',
             'HTTPS://YggTorrent.Example.:8443/' => 'https://yggtorrent.example:8443',
             'https://ww4.yggtorrent.example:443' => 'https://ww4.yggtorrent.example:443',
-        ) as $configured => $origin) {
+        ] as $configured => $origin) {
             yggConfigure($configured);
             $account = new YggProbeAccount();
             yggSame($origin, $account->url, 'origin of ' . var_export($configured, true));
@@ -335,13 +335,13 @@ $tests = array(
     },
 
     'a value that is not an https origin disables the account' => function () {
-        foreach (array(
+        foreach ([
             'http://yggtorrent.example', 'yggtorrent.example', 'https://user:pass@yggtorrent.example',
             'https://user@yggtorrent.example', 'https://yggtorrent.example/engine', 'https://yggtorrent.example?x=1',
             'https://yggtorrent.example#x', 'https://ygg torrent.example', "https://yggtorrent.example\n",
             'https://ygg..example', 'https://-ygg.example', 'https://ygg_torrent.example', 'https://yggtorrent.example:0',
-            'https://[::1]', ' https://yggtorrent.example', array('https://yggtorrent.example'), null, 0,
-        ) as $configured) {
+            'https://[::1]', ' https://yggtorrent.example', ['https://yggtorrent.example'], null, 0,
+        ] as $configured) {
             yggConfigure($configured);
             $account = new YggProbeAccount();
             yggSame('', $account->url, 'origin of ' . var_export($configured, true));
@@ -349,14 +349,14 @@ $tests = array(
             $account->check($client, 'fake-user', 'fake-pass', 0);
             yggSame(false, $account->test('https://yggtorrent.example/engine/download_torrent?id=1'),
                 'nothing is claimed with ' . var_export($configured, true));
-            yggSame(array(), $client->requests, 'nothing is sent with ' . var_export($configured, true));
+            yggSame([], $client->requests, 'nothing is sent with ' . var_export($configured, true));
         }
         yggConfigure('https://yggtorrent.example?x=1');
         yggResetLog();
         (new YggProbeAccount())->check(new YggProbeClient(), 'fake-user', 'fake-pass', 0);
         yggSame(true, strpos(yggLog(), '$yggTorrentOrigin is not an https origin') !== false, 'the reason is classified');
         yggSame(false, strpos(yggLog(), 'x=1'), 'and the value is not quoted, since it may carry a password');
-        yggConfigure(array('https://yggtorrent.example'));
+        yggConfigure(['https://yggtorrent.example']);
         yggResetLog();
         (new YggProbeAccount())->check(new YggProbeClient(), 'fake-user', 'fake-pass', 0);
         yggSame(true, strpos(yggLog(), '$yggTorrentOrigin is not a string') !== false, 'a value of another type has its own reason');
@@ -366,7 +366,7 @@ $tests = array(
 
     'the credentials are posted only after the landing page answered' => function () {
         yggConfigure('https://yggtorrent.example');
-        foreach (array(200 => 1, 204 => 1, 302 => 0, 403 => 0, 503 => 0) as $status => $posts) {
+        foreach ([200 => 1, 204 => 1, 302 => 0, 403 => 0, 503 => 0] as $status => $posts) {
             $client = new YggProbeClient();
             $client->status = $status;
             (new YggProbeAccount())->check($client, 'fake-user', 'fake-pass', 0);
@@ -374,7 +374,7 @@ $tests = array(
             yggSame('https://yggtorrent.example', $client->requests[0][0], 'the landing request is made');
         }
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

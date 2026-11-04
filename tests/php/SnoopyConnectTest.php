@@ -20,17 +20,17 @@ function stream_socket_client($address, &$errno, &$error, $timeout, $flags, $con
 }
 $source = file_get_contents(__DIR__ . '/../../php/Snoopy.class.inc');
 $start = strpos($source, 'class Snoopy');
-if ($start === false) throw new \RuntimeException('Production class not found');
+if ($start === false) { throw new \RuntimeException('Production class not found'); }
 eval('namespace SnoopyConnectFixture; ' . substr($source, $start));
 
 function connectAssert($condition, $message)
 {
-    if (!$condition) throw new \RuntimeException($message);
+    if (!$condition) { throw new \RuntimeException($message); }
 }
 
 function connectFailure($errno, $error, $expectedStatus, $expectedError)
 {
-    foreach (array('' => 'fsockopen', '127.0.0.1' => 'stream_socket_client') as $bind => $call) {
+    foreach (['' => 'fsockopen', '127.0.0.1' => 'stream_socket_client'] as $bind => $call) {
         $GLOBALS['connectErrno'] = $errno;
         $GLOBALS['connectError'] = $error;
         $GLOBALS['connectCall'] = null;
@@ -44,15 +44,15 @@ function connectFailure($errno, $error, $expectedStatus, $expectedError)
     }
 }
 
-$tests = array(
+$tests = [
     'positive errno is never an HTTP status or another negative failure' => function () {
-        foreach (array(110, 111, 100, 101, 10061) as $errno) {
+        foreach ([110, 111, 100, 101, 10061] as $errno) {
             connectFailure($errno, 'Controlled socket failure', -102, 'connection failed (' . $errno . ')');
         }
     },
     'zero and legacy negative errno preserve their categories' => function () {
-        foreach (array(0 => 'connection failed (0)', -3 => 'socket creation failed (-3)',
-            -4 => 'dns lookup failure (-4)', -5 => 'connection refused or timed out (-5)') as $errno => $message) {
+        foreach ([0 => 'connection failed (0)', -3 => 'socket creation failed (-3)',
+            -4 => 'dns lookup failure (-4)', -5 => 'connection refused or timed out (-5)'] as $errno => $message) {
             connectFailure($errno, 'Controlled socket failure', $errno, $message);
         }
     },
@@ -63,7 +63,7 @@ $tests = array(
             0, 'connection failed (0)');
         connectFailure(0, '', 0, 'connection failed (0)');
     },
-);
+];
 $failures = 0;
 foreach ($tests as $name => $test) {
     try {

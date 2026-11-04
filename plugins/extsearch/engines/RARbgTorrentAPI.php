@@ -1,9 +1,12 @@
 <?php
 class RARbgTorrentAPIEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>75 );
- 	public $categories = array
- 	(
+
+ 	public const MIN_INTERVAL = 3;
+ 	public const MAX_TRIES = 3;
+	public $defaults = [ "public"=>true, "page_size"=>75 ];
+ 	public $categories = 
+ 	[
  		"all"=>"0",
  		"XXX (18+)"=>"4",
  		"Movies/XVID"=>"14",
@@ -26,19 +29,16 @@ class RARbgTorrentAPIEngine extends commonEngine
  		"Games/PC RIP"=>"28",
  		"Games/PS3"=>"40",
  		"Games/XBOX-360"=>"32",
- 		"Software/PC ISO"=>"33"
- 	);
-
- 	const MIN_INTERVAL = 3;
- 	const MAX_TRIES = 3;
+ 		"Software/PC ISO"=>"33",
+ 	];
 
  	protected $lastRequestTime = 0;
 
  	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
  	{
 		$client = $this->makeClient($url);
-		if($encode)
-			$url = Snoopy::linkencode($url);
+		if($encode) {
+			$url = Snoopy::linkencode($url); }
 		for( $i=0; $i<self::MAX_TRIES; $i++ )
 		{
 			$delta = max( self::MIN_INTERVAL - (time() - $this->lastRequestTime), 0 );
@@ -73,23 +73,23 @@ class RARbgTorrentAPIEngine extends commonEngine
 		if( $token!==false )
 		{
 			$added = 0;
-			if($useGlobalCats)
-				$categories = array
-				(
+			if($useGlobalCats) {
+				$categories = 
+				[
 					'all'=>'0',
 					'movies'=>'14;48;17;44;45;47;50;51;52;42;46',
 					'tv'=>'18;41;49',
 					'music'=>'23;25',
 					'games'=>'27;28;40;32',
-					'software'=>'33'
-				 );
-			else
-				$categories = &$this->categories;
+					'software'=>'33',
+				 ]; }
+			else {
+				$categories = &$this->categories; }
 
-			if(!array_key_exists($cat,$categories))
-				$cat = $categories['all'];
-			else
-				$cat = $categories[$cat];
+			if(!array_key_exists($cat,$categories)) {
+				$cat = $categories['all']; }
+			else {
+				$cat = $categories[$cat]; }
         		$cli = $this->fetch( "https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&token=$token&format=json_extended&mode=search&search_string=$what&category=$cat&limit=100&sort=seeders" );
 			if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"torrent_results") )
 			{

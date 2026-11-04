@@ -2,7 +2,7 @@
 eval(FileUtil::getPluginConf($plugin["name"]));
 
 $st = FileUtil::getSettingsPath();
-FileUtil::makeDirectory( array($st.'/rss',$st.'/rss/cache') );
+FileUtil::makeDirectory( [$st.'/rss',$st.'/rss/cache'] );
 $needStart = User::isLocalMode() && $theSettings->linkExist;
 if($needStart)
 {
@@ -13,8 +13,8 @@ if($needStart)
 	{
 		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
-	else
-		$jResult .= "plugin.disable(); noty('rss: '+theUILang.pluginCantStart,'error');";
+	else {
+		$jResult .= "plugin.disable(); noty('rss: '+theUILang.pluginCantStart,'error');"; }
 }
-else
-	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+else {
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]); }

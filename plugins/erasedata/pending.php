@@ -23,20 +23,20 @@ if(!function_exists('erasedataQueueRequest'))
 	function erasedataQueueRequest($listPath, $hash, $force)
 	{
 		global $profileMask;
-		if(!preg_match('/^[0-9A-Fa-f]{40}$/', $hash))
-			return(false);
-		if(($force!=="1") && ($force!=="2"))
-			$force = "1";
-		if(is_file($listPath."/".$hash.".list2"))
+		if(!preg_match('/^[0-9A-Fa-f]{40}$/', $hash)) {
+			return(false); }
+		if(($force!=="1") && ($force!=="2")) {
+			$force = "1"; }
+		if(is_file($listPath."/".$hash.".list2")) {
       // Already collected, waiting for the garbage collector to apply it.
-			return(true);
+			return(true); }
 		$marker = $listPath."/".$hash.".pending";
 		// Exclusive create: two firings racing on one hash cannot both conclude
 		// they are first, and a caller that fires again before the queue is
 		// drained is a no-op rather than a second request.
 		$fp = @fopen($marker, "x");
-		if($fp===false)
-			return(is_file($marker));
+		if($fp===false) {
+			return(is_file($marker)); }
 		@fwrite($fp, $force."\n0\n");
 		@fclose($fp);
 		@chmod($marker, (isset($profileMask) ? $profileMask : 0666) & 0666);
@@ -55,8 +55,8 @@ if(!function_exists('erasedataDrainQueue'))
 	{
     // Check the lock to see if another process has already taken responsibilty for draining the queue.
 		$lock = @fopen($listPath."/drain.lock", "c");
-		if($lock===false)
-			return(-1);
+		if($lock===false) {
+			return(-1); }
 		if(!@flock($lock, LOCK_EX | LOCK_NB))
 		{
 			fclose($lock);
@@ -68,15 +68,15 @@ if(!function_exists('erasedataDrainQueue'))
 		require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 		require_once( dirname(__FILE__)."/removewithdata.php" );
 
-		$attempted = array();
+		$attempted = [];
 		$done = 0;
 		while(true)
 		{
 			$batch = erasedataPendingHashes($listPath, $attempted);
-			if(!count($batch))
-				break;
-			foreach($batch as $hash=>$force)
-				$attempted[$hash] = true;
+			if(!count($batch)) {
+				break; }
+			foreach($batch as $hash=>$force) {
+				$attempted[$hash] = true; }
 			$done += erasedataDrainOnce($listPath, $batch, $maxAttempts);
 		}
 
@@ -90,10 +90,10 @@ if(!function_exists('erasedataDrainQueue'))
 	// drainer already running rather than waiting for the caller's next sweep.
 	function erasedataPendingHashes($listPath, $attempted)
 	{
-		$ret = array();
+		$ret = [];
 		$pending = @glob($listPath.'/*.pending');
-		if(!is_array($pending))
-			return($ret);
+		if(!is_array($pending)) {
+			return($ret); }
 		sort($pending);
 		foreach($pending as $item)
 		{
@@ -103,8 +103,8 @@ if(!function_exists('erasedataDrainQueue'))
 				@unlink($item);
 				continue;
 			}
-			if(array_key_exists($hash, $attempted))
-				continue;
+			if(array_key_exists($hash, $attempted)) {
+				continue; }
 			// Collected by the web UI's "Remove and delete data" between the
 			// marker being written and this pass.
 			if(is_file($listPath.'/'.$hash.'.list2'))
@@ -126,23 +126,23 @@ if(!function_exists('erasedataDrainQueue'))
 		$live = erasedataLiveHashes();
 		if(is_array($live))
 		{
-			foreach(array_keys($batch) as $hash)
+			foreach(array_keys($batch) as $hash) {
 				if(!array_key_exists(strtoupper($hash), $live))
 				{
 					@unlink($listPath.'/'.$hash.'.pending');
 					unset($batch[$hash]);
-				}
+				} }
 		}
-		if(!count($batch))
-			return(0);
+		if(!count($batch)) {
+			return(0); }
 
     // Split the batch into at most two arrays, one for each force mode (1 and 2).
-		$byForce = array("1"=>array(), "2"=>array());
-		foreach($batch as $hash=>$force)
-			$byForce[$force][] = $hash;
-		foreach($byForce as $force=>$hashes)
-			if(count($hashes))
-				erasedataRemoveWithData($hashes, $force);
+		$byForce = ["1"=>[], "2"=>[]];
+		foreach($batch as $hash=>$force) {
+			$byForce[$force][] = $hash; }
+		foreach($byForce as $force=>$hashes) {
+			if(count($hashes)) {
+				erasedataRemoveWithData($hashes, $force); } }
 
     // Clear the successful deletions from the queue by checking for the .list2
     // file that is created by erasedataRemoveWithData() when it succeeds.
@@ -165,8 +165,8 @@ if(!function_exists('erasedataDrainQueue'))
 					" attempts, torrent not erased");
 				@unlink($marker);
 			}
-			else
-				@file_put_contents($marker, $force."\n".$attempts."\n");
+			else {
+				@file_put_contents($marker, $force."\n".$attempts."\n"); }
 		}
 		return(count($batch));
 	}
@@ -177,7 +177,7 @@ if(!function_exists('erasedataDrainQueue'))
 	function erasedataLiveHashes(&$why = null)
 	{
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall",
-			array("default", getCmd("d.get_hash="))) );
+			["default", getCmd("d.get_hash=")]) );
 		$req->important = false;
 		if(!$req->success())
 		{
@@ -185,9 +185,9 @@ if(!function_exists('erasedataDrainQueue'))
 			return(null);
 		}
 		$why = null;
-		$ret = array();
-		foreach($req->val as $hash)
-			$ret[strtoupper($hash)] = true;
+		$ret = [];
+		foreach($req->val as $hash) {
+			$ret[strtoupper($hash)] = true; }
 		return($ret);
 	}
 }

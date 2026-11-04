@@ -68,7 +68,7 @@ function kinozalTorrent($name, $id)
     $raw = strictTorrentRaw($name, 'http://tr2.torrent4me.com/ann?uk=K0I5ZrJ6If1', kinozalTopicUrl($id));
     $torrent = @new Torrent($raw);
     strictAssertTrue(!$torrent->errors(), 'torrent fixture must parse');
-    return array($raw, (string) $torrent->hash_info(), $torrent);
+    return [$raw, (string) $torrent->hash_info(), $torrent];
 }
 
 $suite = new StrictTestSuite();
@@ -83,9 +83,9 @@ $suite->test('a guest answer from the details endpoint is a reachability error',
     strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
         'a login wall proves nothing about the topic');
     strictAssertSame(
-        array(array('fetchComplex', kinozalDetailsUrl(2148020))),
+        [['fetchComplex', kinozalDetailsUrl(2148020)]],
         Snoopy::$requests,
-        'the chain stops at the details request'
+        'the chain stops at the details request',
     );
     strictAssertSame(0, ruTrackerChecker::$createCalls, 'the replacement path is never entered');
 });
@@ -107,12 +107,12 @@ $suite->test('two guest answers in a row stop the rest of the cycle from asking 
     strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $third,
         'a skipped topic keeps the same retryable verdict it would have got the hard way');
     strictAssertSame(
-        array(
-            array('fetchComplex', kinozalDetailsUrl(2148020)),
-            array('fetchComplex', kinozalDetailsUrl(2144802)),
-        ),
+        [
+            ['fetchComplex', kinozalDetailsUrl(2148020)],
+            ['fetchComplex', kinozalDetailsUrl(2144802)],
+        ],
         Snoopy::$requests,
-        'the third topic costs no request: the session is by then known to be gone'
+        'the third topic costs no request: the session is by then known to be gone',
     );
 });
 
@@ -212,9 +212,9 @@ $suite->test('a matching info hash is up to date without a download', function (
 
     strictAssertSame(ruTrackerChecker::STE_UPTODATE, $result, 'the tracker still lists our hash');
     strictAssertSame(
-        array(array('fetchComplex', kinozalDetailsUrl(2148020))),
+        [['fetchComplex', kinozalDetailsUrl(2148020)]],
         Snoopy::$requests,
-        'an up-to-date topic is never downloaded'
+        'an up-to-date topic is never downloaded',
     );
 });
 
@@ -245,7 +245,7 @@ $suite->test('a download redirected to the login page is a reachability error', 
     // redirect chain does not end in a 200: the 302 itself, with the
     // login.php Location it carries on the live site.
     Snoopy::queue(kinozalDownloadUrl(2148020), 302, '',
-        array('Location: //kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D2148020'));
+        ['Location: //kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D2148020']);
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $oldHash, $oldTorrent);
 
@@ -322,7 +322,7 @@ $suite->test('a server error on the details endpoint is a reachability error', f
 });
 
 $suite->test('every Kinozal mirror in the comment is handled', function () {
-    foreach (array('kinozal.tv', 'kinozal.me', 'kinozal.guru') as $host) {
+    foreach (['kinozal.tv', 'kinozal.me', 'kinozal.guru'] as $host) {
         kinozalReset();
         list($raw, $hash, $torrent) = kinozalTorrent('current.mkv', 2148020);
         $url = 'https://' . $host . '/details.php?id=2148020';

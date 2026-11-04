@@ -3,5 +3,5 @@
 $LogTab_array = [
     'max_entries' => 100,
     'log_count' => 5,
-    'load_style' => 'noty' // options are "noty" or "log". Noty show popup on right. log just loads messages on Log TAB but no popup.
+    'load_style' => 'noty', // options are "noty" or "log". Noty show popup on right. log just loads messages on Log TAB but no popup.
 ];

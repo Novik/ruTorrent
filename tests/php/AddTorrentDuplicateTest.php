@@ -24,8 +24,8 @@ require_once(__DIR__ . '/../../php/Torrent.php');
  */
 class AddTorrentDuplicateTest extends TestCase
 {
-	const LOADED = '1111111111111111111111111111111111111111';
-	const FRESH = '2222222222222222222222222222222222222222';
+	public const LOADED = '1111111111111111111111111111111111111111';
+	public const FRESH = '2222222222222222222222222222222222222222';
 
 	private $base;
 	private $daemon;
@@ -44,13 +44,105 @@ class AddTorrentDuplicateTest extends TestCase
 		TestTree::remove($this->base);
 	}
 
+	public function testAMagnetAlreadyLoadedIsADuplicateNotAnAddition()
+	{
+		$urls = 'magnet:?xt=urn:btih:' . self::LOADED . '&dn=loaded' . "\n"
+			. 'magnet:?xt=urn:btih:' . self::FRESH . "\n"
+			. 'magnet:?xt=urn:btih:' . strtolower(self::FRESH);
+		$results = $this->add([self::LOADED], 3, 'application/x-www-form-urlencoded',
+			'url=' . rawurlencode($urls));
+		$this->assertEquals(['Duplicate', 'Success', 'Duplicate'], $results,
+			'the loaded magnet and the second copy of the new one are duplicates: ' . json_encode($results));
+		$this->assertEquals(3, $this->loadCalls(), 'each magnet was still sent');
+	}
+
+	public function testAnUploadedTorrentAlreadyLoadedIsADuplicateAndNotKept()
+	{
+		$results = $this->upload(true, ['one.torrent']);
+		$this->assertEquals(['Duplicate'], $results,
+			'an upload of a loaded torrent is a duplicate: ' . json_encode($results));
+		$this->assertEquals(1, $this->loadCalls(), 'the upload was still sent');
+		$this->assertEquals([], $this->kept(), 'and the uploaded copy is not kept');
+	}
+
+	public function testTheSecondCopyInOneUploadIsADuplicate()
+	{
+		$results = $this->upload(false, ['one.torrent', 'two.torrent']);
+		$this->assertEquals(['Success', 'Duplicate'], $results,
+			'the second copy of the same torrent is a duplicate: ' . json_encode($results));
+		$this->assertEquals(2, $this->loadCalls(), 'both uploads were sent');
+		$this->assertEquals(['one.torrent'], $this->kept(),
+			'only the upload that was added is kept: ' . json_encode($this->kept()));
+	}
+
+	public function testAnUploadRtorrentRefusesIsFailedAndNotKept()
+	{
+		$results = $this->upload(false, ['one.torrent'],
+			[FakeRtorrentDaemon::fault('Could not create download')]);
+		$this->assertEquals(['Failed'], $results,
+			'a load rtorrent refused is a failure: ' . json_encode($results));
+		$this->assertEquals(1, $this->loadCalls(), 'the upload was still sent');
+		$this->assertEquals([], $this->kept(),
+			'and the refused copy is not kept: ' . json_encode($this->kept()));
+	}
+
+	public function testAMagnetRtorrentRefusesIsFailed()
+	{
+		$results = $this->add([self::LOADED],
+			[FakeRtorrentDaemon::fault('Could not create download')],
+			'application/x-www-form-urlencoded',
+			'url=' . rawurlencode('magnet:?xt=urn:btih:' . self::FRESH));
+		$this->assertEquals(['Failed'], $results,
+			'a magnet rtorrent refused is a failure: ' . json_encode($results));
+		$this->assertEquals(1, $this->loadCalls(), 'the magnet was still sent');
+	}
+
+	/**
+	 * Randomizing the info hash adds a key to the info dictionary, so the
+	 * torrent gets a new info hash. The tracker of a private torrent knows it
+	 * only by its info hash and refuses a randomized copy as unregistered, so
+	 * a private torrent is sent as it is.
+	 */
+	public function testRandomizingLeavesAPrivateTorrentsHashAlone()
+	{
+		$this->torrent($hash, true);
+		$results = $this->upload(true, ['one.torrent'], null, ['randomize_hash' => '1'], true);
+		$this->assertEquals($hash, $this->sentHash(), 'rtorrent was sent the private torrent with its own hash');
+		$this->assertEquals(['Duplicate'], $results,
+			'so a loaded one is still a duplicate: ' . json_encode($results));
+	}
+
+	public function testRandomizingStillGivesAPublicTorrentANewHash()
+	{
+		$this->torrent($hash);
+		$results = $this->upload(true, ['one.torrent'], null, ['randomize_hash' => '1']);
+		$sent = $this->sentHash();
+		$this->assertTrue(($sent !== null) && ($sent !== $hash),
+			'rtorrent was sent the public torrent with a new hash: ' . json_encode($sent));
+		$this->assertEquals(['Success'], $results,
+			'so a loaded one is added as a new torrent: ' . json_encode($results));
+	}
+
+	public function testTheResultPageShowsADuplicateAsAnAlert()
+	{
+		$root = realpath(__DIR__ . '/../..');
+		$driver = $this->base . '/drive-result.php';
+		file_put_contents($driver, "<?php\n"
+			. '$_REQUEST = array("result" => array("Duplicate"), "name" => array("x.torrent"));' . "\n"
+			. 'chdir(' . var_export($root . '/php', true) . ");\n"
+			. 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n");
+		$output = shell_exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver));
+		$this->assertEquals('noty("x.torrent - "+theUILang["addTorrent"+"Duplicate"],"alert");', $output,
+			'a duplicate is named with its own wording in the alert style');
+	}
+
 	private function stop()
 	{
 		if ($this->daemon !== null) {
 			$this->daemon->stop();
 			$this->daemon = null;
 		}
-		if ($this->server !== null) $this->server->close();
+		if ($this->server !== null) { $this->server->close(); }
 		$this->server = null;
 	}
 
@@ -78,8 +170,8 @@ class AddTorrentDuplicateTest extends TestCase
 	{
 		$this->stop();
 		$root = realpath(__DIR__ . '/../..');
-		$replies = array_merge(array($loaded),
-			is_array($loads) ? $loads : array_fill(0, $loads, array(0)));
+		$replies = array_merge([$loaded],
+			is_array($loads) ? $loads : array_fill(0, $loads, [0]));
 		// An install whose interface has been opened has a settings cache.
 		// This script is driven against a profile of its own, so leave one
 		// there rather than have it probe and spend the replies below.
@@ -99,14 +191,14 @@ class AddTorrentDuplicateTest extends TestCase
 			. 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n"
 			. "return true;\n");
 
-		$this->server = TestHttpServer::start($this->base, array(), PhpProcess::sameIni(), $router);
+		$this->server = TestHttpServer::start($this->base, [], PhpProcess::sameIni(), $router);
 		$response = TestHttpServer::rawPost($this->server->port(), '/php/addtorrent.php', $body, $contentType);
 		if (!isset($response['headers']['location'])
 			|| !preg_match('`^[^?]*\?(.*)$`', $response['headers']['location'], $location)) {
-			return array('no redirect: ' . $response['body']);
+			return ['no redirect: ' . $response['body']];
 		}
 		parse_str($location[1], $query);
-		return isset($query['result']) ? $query['result'] : array();
+		return isset($query['result']) ? $query['result'] : [];
 	}
 
 	private function loadCalls()
@@ -119,19 +211,7 @@ class AddTorrentDuplicateTest extends TestCase
 		}));
 	}
 
-	public function testAMagnetAlreadyLoadedIsADuplicateNotAnAddition()
-	{
-		$urls = 'magnet:?xt=urn:btih:' . self::LOADED . '&dn=loaded' . "\n"
-			. 'magnet:?xt=urn:btih:' . self::FRESH . "\n"
-			. 'magnet:?xt=urn:btih:' . strtolower(self::FRESH);
-		$results = $this->add(array(self::LOADED), 3, 'application/x-www-form-urlencoded',
-			'url=' . rawurlencode($urls));
-		$this->assertEquals(array('Duplicate', 'Success', 'Duplicate'), $results,
-			'the loaded magnet and the second copy of the new one are duplicates: ' . json_encode($results));
-		$this->assertEquals(3, $this->loadCalls(), 'each magnet was still sent');
-	}
-
-	private function upload($loaded, $names, $loads = null, $fields = array(), $private = false)
+	private function upload($loaded, $names, $loads = null, $fields = [], $private = false)
 	{
 		foreach ($this->kept() as $file) {
 			unlink($this->base . '/profile/torrents/' . $file);
@@ -149,14 +229,14 @@ class AddTorrentDuplicateTest extends TestCase
 				. "Content-Type: application/x-bittorrent\r\n\r\n" . $torrent . "\r\n";
 		}
 		$body .= '--' . $boundary . "--\r\n";
-		return $this->add($loaded ? array(self::LOADED, $hash) : array(self::LOADED),
+		return $this->add($loaded ? [self::LOADED, $hash] : [self::LOADED],
 			$loads === null ? count($names) : $loads,
 			'multipart/form-data; boundary=' . $boundary, $body);
 	}
 
 	private function kept()
 	{
-		return array_values(array_diff(scandir($this->base . '/profile/torrents'), array('.', '..')));
+		return array_values(array_diff(scandir($this->base . '/profile/torrents'), ['.', '..']));
 	}
 
 	/** The info hash of the torrent rtorrent was sent: the load is the only call with a base64 value. */
@@ -169,85 +249,5 @@ class AddTorrentDuplicateTest extends TestCase
 			}
 		}
 		return null;
-	}
-
-	public function testAnUploadedTorrentAlreadyLoadedIsADuplicateAndNotKept()
-	{
-		$results = $this->upload(true, array('one.torrent'));
-		$this->assertEquals(array('Duplicate'), $results,
-			'an upload of a loaded torrent is a duplicate: ' . json_encode($results));
-		$this->assertEquals(1, $this->loadCalls(), 'the upload was still sent');
-		$this->assertEquals(array(), $this->kept(), 'and the uploaded copy is not kept');
-	}
-
-	public function testTheSecondCopyInOneUploadIsADuplicate()
-	{
-		$results = $this->upload(false, array('one.torrent', 'two.torrent'));
-		$this->assertEquals(array('Success', 'Duplicate'), $results,
-			'the second copy of the same torrent is a duplicate: ' . json_encode($results));
-		$this->assertEquals(2, $this->loadCalls(), 'both uploads were sent');
-		$this->assertEquals(array('one.torrent'), $this->kept(),
-			'only the upload that was added is kept: ' . json_encode($this->kept()));
-	}
-
-	public function testAnUploadRtorrentRefusesIsFailedAndNotKept()
-	{
-		$results = $this->upload(false, array('one.torrent'),
-			array(FakeRtorrentDaemon::fault('Could not create download')));
-		$this->assertEquals(array('Failed'), $results,
-			'a load rtorrent refused is a failure: ' . json_encode($results));
-		$this->assertEquals(1, $this->loadCalls(), 'the upload was still sent');
-		$this->assertEquals(array(), $this->kept(),
-			'and the refused copy is not kept: ' . json_encode($this->kept()));
-	}
-
-	public function testAMagnetRtorrentRefusesIsFailed()
-	{
-		$results = $this->add(array(self::LOADED),
-			array(FakeRtorrentDaemon::fault('Could not create download')),
-			'application/x-www-form-urlencoded',
-			'url=' . rawurlencode('magnet:?xt=urn:btih:' . self::FRESH));
-		$this->assertEquals(array('Failed'), $results,
-			'a magnet rtorrent refused is a failure: ' . json_encode($results));
-		$this->assertEquals(1, $this->loadCalls(), 'the magnet was still sent');
-	}
-
-	/**
-	 * Randomizing the info hash adds a key to the info dictionary, so the
-	 * torrent gets a new info hash. The tracker of a private torrent knows it
-	 * only by its info hash and refuses a randomized copy as unregistered, so
-	 * a private torrent is sent as it is.
-	 */
-	public function testRandomizingLeavesAPrivateTorrentsHashAlone()
-	{
-		$this->torrent($hash, true);
-		$results = $this->upload(true, array('one.torrent'), null, array('randomize_hash' => '1'), true);
-		$this->assertEquals($hash, $this->sentHash(), 'rtorrent was sent the private torrent with its own hash');
-		$this->assertEquals(array('Duplicate'), $results,
-			'so a loaded one is still a duplicate: ' . json_encode($results));
-	}
-
-	public function testRandomizingStillGivesAPublicTorrentANewHash()
-	{
-		$this->torrent($hash);
-		$results = $this->upload(true, array('one.torrent'), null, array('randomize_hash' => '1'));
-		$sent = $this->sentHash();
-		$this->assertTrue(($sent !== null) && ($sent !== $hash),
-			'rtorrent was sent the public torrent with a new hash: ' . json_encode($sent));
-		$this->assertEquals(array('Success'), $results,
-			'so a loaded one is added as a new torrent: ' . json_encode($results));
-	}
-
-	public function testTheResultPageShowsADuplicateAsAnAlert()
-	{
-		$root = realpath(__DIR__ . '/../..');
-		$driver = $this->base . '/drive-result.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_REQUEST = array("result" => array("Duplicate"), "name" => array("x.torrent"));' . "\n"
-			. 'chdir(' . var_export($root . '/php', true) . ");\n"
-			. 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n");
-		$output = shell_exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver));
-		$this->assertEquals('noty("x.torrent - "+theUILang["addTorrent"+"Duplicate"],"alert");', $output,
-			'a duplicate is named with its own wording in the alert style');
 	}
 }

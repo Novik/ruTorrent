@@ -28,7 +28,7 @@ class ProbeLiteralAccount extends commonAccount
 class ProbeLiteralManager extends accountManager
 {
     public $stored = 0;
-    public $forgotten = array();
+    public $forgotten = [];
     public function store() { $this->stored++; return true; }
     public function setHandlers() {}
     protected function forgetSession($name) { $this->forgotten[] = $name; return true; }
@@ -46,7 +46,7 @@ function litAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -54,8 +54,8 @@ function litAssertSame($expected, $actual, $message)
 function litManager($account = 'tracker.example')
 {
     $manager = new ProbeLiteralManager();
-    $manager->accounts = array(
-        $account => array(
+    $manager->accounts = [
+        $account => [
             'name' => $account,
             'login' => '',
             'password' => '',
@@ -63,8 +63,8 @@ function litManager($account = 'tracker.example')
             'auto' => 0,
             'path' => __DIR__ . '/../../../plugins/loginmgr/accounts.php',
             'object' => 'ProbeLiteralAccount',
-        ),
-    );
+        ],
+    ];
     return $manager;
 }
 
@@ -82,26 +82,26 @@ function litAssignedValue($javascript)
     $prefix = 'theWebUI.theAccounts = ';
     litAssertTrue(
         strncmp($javascript, $prefix, strlen($prefix)) === 0,
-        'The answer must be that one assignment: ' . var_export($javascript, true)
+        'The answer must be that one assignment: ' . var_export($javascript, true),
     );
     litAssertTrue(
         substr($javascript, -2) === ";\n",
-        'The assignment must end at its terminator: ' . var_export($javascript, true)
+        'The assignment must end at its terminator: ' . var_export($javascript, true),
     );
     $literal = substr($javascript, strlen($prefix), -2);
     $value = json_decode($literal, true);
     litAssertTrue(
         json_last_error() === JSON_ERROR_NONE,
         'What is assigned is not one json literal, so a stored value ended it: '
-        . var_export($literal, true)
+        . var_export($literal, true),
     );
     // The flags JSON::jsValue() carries keep these out of the bytes, so the
     // answer cannot close a string, an attribute or the element holding it.
-    foreach (array('<', '>', '&', "'", "\n", "\r") as $forbidden) {
+    foreach (['<', '>', '&', "'", "\n", "\r"] as $forbidden) {
         litAssertTrue(
             strpos($literal, $forbidden) === false,
             'The literal carries a raw ' . var_export($forbidden, true) . ': '
-            . var_export($literal, true)
+            . var_export($literal, true),
         );
     }
     return $value;
@@ -110,7 +110,7 @@ function litAssignedValue($javascript)
 // One payload per shape a stored value is written in. Each ends what the old
 // code had opened -- the object, the quoted string, the statement -- and then
 // runs something.
-$PAYLOADS = array(
+$PAYLOADS = [
     'ends the object' => '0, x: 0}; window.rutPwned = 1; void {y',
     'ends a string' => '"; window.rutPwned = 1; //',
     'ends a string with a quote of the other kind' => "'; window.rutPwned = 1; //",
@@ -118,38 +118,38 @@ $PAYLOADS = array(
     'carries a statement terminator' => '0; window.rutPwned = 1',
     'closes the element' => '</script><script>window.rutPwned = 1;</script>',
     'carries a backslash' => 'a\\\\"; window.rutPwned = 1; //',
-);
+];
 
 // Every scalar a settings request writes, and what set() must keep for each.
-$FIELDS = array('enabled', 'login', 'password', 'auto');
+$FIELDS = ['enabled', 'login', 'password', 'auto'];
 
-$tests = array();
+$tests = [];
 
 foreach ($FIELDS as $field) {
     foreach ($PAYLOADS as $shape => $payload) {
         $tests["a {$field} that {$shape} does not become script"] =
             function () use ($field, $payload) {
                 $manager = litManager();
-                $_REQUEST = array('tracker.example_' . $field => $payload);
+                $_REQUEST = ['tracker.example_' . $field => $payload];
                 $manager->set();
                 $accounts = litAssignedValue($manager->get());
                 litAssertTrue(
                     isset($accounts['tracker.example']),
-                    'The account is still described'
+                    'The account is still described',
                 );
-                $_REQUEST = array();
+                $_REQUEST = [];
             };
     }
 }
 
 $tests['set() keeps a flag, a number and a text, and nothing else'] = function () {
     $manager = litManager();
-    $_REQUEST = array(
+    $_REQUEST = [
         'tracker.example_enabled' => '1, x: 1',
         'tracker.example_auto' => '86400; window.rutPwned = 1',
         'tracker.example_login' => 'someuser',
         'tracker.example_password' => 'correct-horse',
-    );
+    ];
     $manager->set();
     $stored = $manager->accounts['tracker.example'];
     litAssertSame(1, $stored['enabled'], 'enabled is a flag');
@@ -157,33 +157,33 @@ $tests['set() keeps a flag, a number and a text, and nothing else'] = function (
     litAssertSame('someuser', $stored['login'], 'login is the text that was sent');
     litAssertSame('correct-horse', $stored['password'], 'password is the text that was sent');
     litAssertSame(1, $manager->stored, 'The write was stored once');
-    litAssertSame(array('tracker.example'), $manager->forgotten, 'The cached session was dropped');
-    $_REQUEST = array();
+    litAssertSame(['tracker.example'], $manager->forgotten, 'The cached session was dropped');
+    $_REQUEST = [];
 };
 
 $tests['an unchecked box clears the flag'] = function () {
     $manager = litManager();
     $manager->accounts['tracker.example']['enabled'] = 1;
-    $_REQUEST = array('tracker.example_enabled' => '0');
+    $_REQUEST = ['tracker.example_enabled' => '0'];
     $manager->set();
     litAssertSame(0, $manager->accounts['tracker.example']['enabled'], 'enabled is cleared');
     litAssertSame(0, litAssignedValue($manager->get())['tracker.example']['enabled'],
         'and the page is told so');
-    $_REQUEST = array();
+    $_REQUEST = [];
 };
 
 // Which accounts are enabled is not what is being changed here. getAccount()
 // decided that with a php truth test on the same field, so the flag carries
 // that same answer -- as a flag rather than as whatever was sent.
 $tests['the flag carries the truth value the old code acted on'] = function () {
-    foreach (array(array('1', 1), array('0', 0), array('', 0), array('yes', 1)) as $case) {
+    foreach ([['1', 1], ['0', 0], ['', 0], ['yes', 1]] as $case) {
         list($sent, $expected) = $case;
         $manager = litManager();
-        $_REQUEST = array('tracker.example_enabled' => $sent);
+        $_REQUEST = ['tracker.example_enabled' => $sent];
         $manager->set();
         litAssertSame($expected, $manager->accounts['tracker.example']['enabled'],
             'A sent ' . var_export($sent, true) . ' is stored as a flag');
-        $_REQUEST = array();
+        $_REQUEST = [];
     }
 };
 
@@ -191,18 +191,18 @@ $tests['the flag carries the truth value the old code acted on'] = function () {
 // request chooses its own parameter names.
 $tests['a value that is not a scalar is not stored'] = function () {
     $manager = litManager();
-    $_REQUEST = array(
-        'tracker.example_login' => array('a', 'b'),
-        'tracker.example_enabled' => array('1'),
-        'tracker.example_auto' => array('86400'),
-    );
+    $_REQUEST = [
+        'tracker.example_login' => ['a', 'b'],
+        'tracker.example_enabled' => ['1'],
+        'tracker.example_auto' => ['86400'],
+    ];
     $manager->set();
     $stored = $manager->accounts['tracker.example'];
     litAssertSame('', $stored['login'], 'login stays a text');
     litAssertSame(0, $stored['enabled'], 'enabled stays a flag');
     litAssertSame(0, $stored['auto'], 'auto stays a number');
     litAssignedValue($manager->get());
-    $_REQUEST = array();
+    $_REQUEST = [];
 };
 
 // A cache file written before set() normalised anything still holds whatever
@@ -237,12 +237,12 @@ $tests['the info answer is typed too'] = function () {
 $tests['a login full of punctuation survives the round trip'] = function () {
     $login = "o'brien \"x\" <&> \\ /\n\t";
     $manager = litManager();
-    $_REQUEST = array('tracker.example_login' => $login);
+    $_REQUEST = ['tracker.example_login' => $login];
     $manager->set();
     $accounts = litAssignedValue($manager->get());
     litAssertSame($login, $accounts['tracker.example']['login'],
         'The stored login is handed back exactly');
-    $_REQUEST = array();
+    $_REQUEST = [];
 };
 
 // An account name comes from a filename under plugins/loginmgr/accounts, and
@@ -256,7 +256,7 @@ $tests['an account name is a key, not syntax'] = function () {
 
 $tests['no account at all is still an object'] = function () {
     $manager = new ProbeLiteralManager();
-    $manager->accounts = array();
+    $manager->accounts = [];
     litAssertSame('theWebUI.theAccounts = {};' . "\n", $manager->get(),
         'An empty set is an empty object, which is what init.js iterates');
 };

@@ -31,7 +31,7 @@ class TorrentZeroNameTest extends TestCase
 	use BencodeReaderFixture;
 
 	/** Kilobytes, as the constructor takes it: the smallest it can express. */
-	const PIECE_KB = 1;
+	public const PIECE_KB = 1;
 
 	private $base;
 
@@ -41,13 +41,6 @@ class TorrentZeroNameTest extends TestCase
 	 * parent: two cases both wanting a directory named 0 must not meet.
 	 */
 	private $cases = 0;
-
-	private function caseDirectory()
-	{
-		$parent = $this->base . '/case-' . (++$this->cases);
-		$this->assertTrue(@mkdir($parent, 0700, true), 'case ' . $this->cases . ': its directory is created');
-		return $parent;
-	}
 
 	public function setUp()
 	{
@@ -61,140 +54,6 @@ class TorrentZeroNameTest extends TestCase
 		$this->remove($this->base);
 	}
 
-	private function remove($path)
-	{
-		if (is_dir($path) && !is_link($path)) {
-			foreach (array_diff(scandir($path), array('.', '..')) as $item) {
-				$this->remove($path . '/' . $item);
-			}
-			@rmdir($path);
-			return;
-		}
-		if (file_exists($path)) {
-			@unlink($path);
-		}
-	}
-
-	/** $layout maps a path relative to $directory to that file's content. */
-	private function write($directory, $layout)
-	{
-		foreach ($layout as $relative => $content) {
-			$path = $directory . '/' . $relative;
-			$parent = dirname($path);
-			if (!is_dir($parent)) {
-				$this->assertTrue(@mkdir($parent, 0700, true), $relative . ': its directory is created');
-			}
-			$this->assertTrue(file_put_contents($path, $content) === strlen($content),
-				$relative . ': the fixture is written whole (' . strlen($content) . ' bytes)');
-		}
-	}
-
-	/** Build from $input with the cwd at $cwd, and restore the cwd after. */
-	private function buildAt($cwd, $input, $what)
-	{
-		$was = getcwd();
-		$this->assertTrue(chdir($cwd), $what . ': the working directory is the fixture root');
-		try {
-			$torrent = new Torrent($input, array(), self::PIECE_KB);
-			$bytes = (string)$torrent;
-		} finally {
-			chdir($was);
-		}
-		$this->assertTrue($torrent->errors() === false, $what . ': the torrent is built without errors'
-			. ($torrent->errors() === false ? '' : ': ' . $this->firstError($torrent)));
-		return $bytes;
-	}
-
-	private function firstError($torrent)
-	{
-		$errors = $torrent->errors();
-		return is_array($errors) && $errors ? $errors[0]->getMessage() : json_encode($errors);
-	}
-
-	/**
-	 * The metainfo of the directory $name under the fixture root, built once
-	 * from the relative path and once from the absolute one, asserted to be
-	 * the same bytes, and checked against $layout.
-	 */
-	private function assertFolderIsDescribed($name, $layout)
-	{
-		$what = 'a directory named ' . json_encode($name);
-		$parent = $this->caseDirectory();
-		$directory = $parent . '/' . $name;
-		$this->assertTrue(@mkdir($directory, 0700, true), $what . ': it is created');
-		$this->write($directory, $layout);
-
-		$relative = $this->buildAt($parent, $name, $what . ' (relative)');
-		$absolute = $this->buildAt($parent, $directory, $what . ' (absolute)');
-		$this->assertTrue($relative === $absolute,
-			$what . ': the relative and absolute base directories describe the same torrent');
-
-		$info = $this->metainfo($relative, $what);
-		$this->assertTrue($info->get('name') === $name,
-			$what . ': the torrent is named after it, not after something inside it: '
-			. json_encode($info->get('name')));
-		$this->assertTrue(!$info->has('length') && $info->has('files'),
-			$what . ': it is multi-file metainfo');
-		$this->assertFilesAreDescribed($what, $info, $directory, $layout);
-	}
-
-	/**
-	 * Every file of $layout appears once, with its path relative to the base
-	 * directory and its complete length, and the pieces are the SHA-1s of
-	 * those files' bytes concatenated in the order the file list gives.
-	 */
-	private function assertFilesAreDescribed($what, $info, $directory, $layout)
-	{
-		$files = $info->get('files');
-		$this->assertTrue(is_array($files) && (count($files) === count($layout)),
-			$what . ': every file is listed, and only once: ' . (is_array($files) ? count($files) : 'not a list')
-			. ' of ' . count($layout));
-		$described = array();
-		$bytes = '';
-		foreach ((array)$files as $index => $file) {
-			$this->assertTrue($file instanceof BencodeDictionary, $what . ': entry ' . $index . ' is a dictionary');
-			$path = $file->get('path');
-			$this->assertTrue(is_array($path) && $path && (array_keys($path) === range(0, count($path) - 1)),
-				$what . ': entry ' . $index . ' has a path that is a non-empty list');
-			$joined = implode('/', (array)$path);
-			$this->assertTrue(!isset($described[$joined]), $what . ': ' . $joined . ' is listed once');
-			$described[$joined] = $file->get('length');
-			// Read through the path the torrent gives, from the base directory:
-			// that is what a client does with it.
-			$content = @file_get_contents($directory . '/' . $joined);
-			$this->assertTrue($content !== false, $what . ': ' . $joined . ' exists where the torrent says it does');
-			$bytes .= (string)$content;
-		}
-		foreach ($layout as $relative => $content) {
-			$this->assertTrue(isset($described[$relative]) || array_key_exists($relative, $described),
-				$what . ': ' . $relative . ' is in the file list (' . implode(', ', array_keys($described)) . ')');
-			$this->assertTrue(isset($described[$relative]) && ($described[$relative] === strlen($content)),
-				$what . ': ' . $relative . ' is listed with its complete length: '
-				. json_encode(isset($described[$relative]) ? $described[$relative] : null)
-				. ' of ' . strlen($content));
-		}
-		$this->assertPiecesMatch($what, $info, $bytes);
-	}
-
-	private function assertPiecesMatch($what, $info, $bytes)
-	{
-		$pieceLength = $info->get('piece length');
-		$this->assertTrue($pieceLength === (self::PIECE_KB * 1024),
-			$what . ': the piece length is the one asked for: ' . json_encode($pieceLength));
-		$pieces = $info->get('pieces');
-		$expected = (int)ceil(strlen($bytes) / $pieceLength);
-		$this->assertTrue(is_string($pieces) && ((strlen($pieces) % 20) === 0),
-			$what . ': pieces is a whole number of SHA-1 hashes');
-		$this->assertTrue(strlen($pieces) === ($expected * 20),
-			$what . ': pieces holds ' . (strlen((string)$pieces) / 20) . ' hashes, and ' . strlen($bytes)
-			. ' bytes in pieces of ' . $pieceLength . ' need ' . $expected);
-		for ($piece = 0; $piece < $expected; $piece++) {
-			$this->assertTrue(substr($pieces, $piece * 20, 20)
-					=== sha1(substr($bytes, $piece * $pieceLength, $pieceLength), true),
-				$what . ': hash ' . $piece . ' is the SHA-1 of piece ' . $piece);
-		}
-	}
-
 	/**
 	 * The base directory's path is "0". Everything the torrent says about the
 	 * content is derived from that path, so a builder that reads it as "no
@@ -205,19 +64,19 @@ class TorrentZeroNameTest extends TestCase
 	 */
 	public function testADirectoryNamedZeroIsTheTorrentName()
 	{
-		$this->assertFolderIsDescribed('0', array(
+		$this->assertFolderIsDescribed('0', [
 			'a.txt' => str_repeat('a', 100),
 			'sub/b.txt' => str_repeat('b', 100),
-		));
+		]);
 	}
 
 	/** The same shape under an ordinary name, as the control. */
 	public function testADirectoryWithAnOrdinaryNameIsTheTorrentName()
 	{
-		$this->assertFolderIsDescribed('z', array(
+		$this->assertFolderIsDescribed('z', [
 			'a.txt' => str_repeat('a', 100),
 			'sub/b.txt' => str_repeat('b', 100),
-		));
+		]);
 	}
 
 	/**
@@ -226,11 +85,11 @@ class TorrentZeroNameTest extends TestCase
 	 */
 	public function testNamesAroundZeroAreTheTorrentName()
 	{
-		foreach (array('00', '0.0', '-0', 'false', '0x0') as $name) {
-			$this->assertFolderIsDescribed($name, array(
+		foreach (['00', '0.0', '-0', 'false', '0x0'] as $name) {
+			$this->assertFolderIsDescribed($name, [
 				'a.txt' => str_repeat('a', 100),
 				'sub/b.txt' => str_repeat('b', 100),
-			));
+			]);
 		}
 	}
 
@@ -242,11 +101,11 @@ class TorrentZeroNameTest extends TestCase
 	public function testZeroAsDirectoryFileNameAndContentTogether()
 	{
 		$piece = self::PIECE_KB * 1024;
-		$this->assertFolderIsDescribed('0', array(
+		$this->assertFolderIsDescribed('0', [
 			'0' => '0',
 			'sub/0' => str_repeat('0', $piece - 1),
 			'sub/deeper/0.bin' => '0',
-		));
+		]);
 	}
 
 	/**
@@ -260,9 +119,9 @@ class TorrentZeroNameTest extends TestCase
 		$parent = $this->caseDirectory();
 		$directory = $parent . '/list';
 		$this->assertTrue(@mkdir($directory, 0700, true), 'the file list directory is created');
-		$layout = array('0' => '0', 'a.txt' => str_repeat('a', 2048), 'b.txt' => '0');
+		$layout = ['0' => '0', 'a.txt' => str_repeat('a', 2048), 'b.txt' => '0'];
 		$this->write($directory, $layout);
-		$paths = array();
+		$paths = [];
 		foreach (array_keys($layout) as $relative) {
 			$paths[] = $directory . '/' . $relative;
 		}
@@ -318,5 +177,146 @@ class TorrentZeroNameTest extends TestCase
 	public function testTheBencodeReaderIsStrict()
 	{
 		$this->assertBencodeReaderIsStrict();
+	}
+
+	private function caseDirectory()
+	{
+		$parent = $this->base . '/case-' . (++$this->cases);
+		$this->assertTrue(@mkdir($parent, 0700, true), 'case ' . $this->cases . ': its directory is created');
+		return $parent;
+	}
+
+	private function remove($path)
+	{
+		if (is_dir($path) && !is_link($path)) {
+			foreach (array_diff(scandir($path), ['.', '..']) as $item) {
+				$this->remove($path . '/' . $item);
+			}
+			@rmdir($path);
+			return;
+		}
+		if (file_exists($path)) {
+			@unlink($path);
+		}
+	}
+
+	/** $layout maps a path relative to $directory to that file's content. */
+	private function write($directory, $layout)
+	{
+		foreach ($layout as $relative => $content) {
+			$path = $directory . '/' . $relative;
+			$parent = dirname($path);
+			if (!is_dir($parent)) {
+				$this->assertTrue(@mkdir($parent, 0700, true), $relative . ': its directory is created');
+			}
+			$this->assertTrue(file_put_contents($path, $content) === strlen($content),
+				$relative . ': the fixture is written whole (' . strlen($content) . ' bytes)');
+		}
+	}
+
+	/** Build from $input with the cwd at $cwd, and restore the cwd after. */
+	private function buildAt($cwd, $input, $what)
+	{
+		$was = getcwd();
+		$this->assertTrue(chdir($cwd), $what . ': the working directory is the fixture root');
+		try {
+			$torrent = new Torrent($input, [], self::PIECE_KB);
+			$bytes = (string)$torrent;
+		} finally {
+			chdir($was);
+		}
+		$this->assertTrue($torrent->errors() === false, $what . ': the torrent is built without errors'
+			. ($torrent->errors() === false ? '' : ': ' . $this->firstError($torrent)));
+		return $bytes;
+	}
+
+	private function firstError($torrent)
+	{
+		$errors = $torrent->errors();
+		return is_array($errors) && $errors ? $errors[0]->getMessage() : json_encode($errors);
+	}
+
+	/**
+	 * The metainfo of the directory $name under the fixture root, built once
+	 * from the relative path and once from the absolute one, asserted to be
+	 * the same bytes, and checked against $layout.
+	 */
+	private function assertFolderIsDescribed($name, $layout)
+	{
+		$what = 'a directory named ' . json_encode($name);
+		$parent = $this->caseDirectory();
+		$directory = $parent . '/' . $name;
+		$this->assertTrue(@mkdir($directory, 0700, true), $what . ': it is created');
+		$this->write($directory, $layout);
+
+		$relative = $this->buildAt($parent, $name, $what . ' (relative)');
+		$absolute = $this->buildAt($parent, $directory, $what . ' (absolute)');
+		$this->assertTrue($relative === $absolute,
+			$what . ': the relative and absolute base directories describe the same torrent');
+
+		$info = $this->metainfo($relative, $what);
+		$this->assertTrue($info->get('name') === $name,
+			$what . ': the torrent is named after it, not after something inside it: '
+			. json_encode($info->get('name')));
+		$this->assertTrue(!$info->has('length') && $info->has('files'),
+			$what . ': it is multi-file metainfo');
+		$this->assertFilesAreDescribed($what, $info, $directory, $layout);
+	}
+
+	/**
+	 * Every file of $layout appears once, with its path relative to the base
+	 * directory and its complete length, and the pieces are the SHA-1s of
+	 * those files' bytes concatenated in the order the file list gives.
+	 */
+	private function assertFilesAreDescribed($what, $info, $directory, $layout)
+	{
+		$files = $info->get('files');
+		$this->assertTrue(is_array($files) && (count($files) === count($layout)),
+			$what . ': every file is listed, and only once: ' . (is_array($files) ? count($files) : 'not a list')
+			. ' of ' . count($layout));
+		$described = [];
+		$bytes = '';
+		foreach ((array)$files as $index => $file) {
+			$this->assertTrue($file instanceof BencodeDictionary, $what . ': entry ' . $index . ' is a dictionary');
+			$path = $file->get('path');
+			$this->assertTrue(is_array($path) && $path && (array_keys($path) === range(0, count($path) - 1)),
+				$what . ': entry ' . $index . ' has a path that is a non-empty list');
+			$joined = implode('/', (array)$path);
+			$this->assertTrue(!isset($described[$joined]), $what . ': ' . $joined . ' is listed once');
+			$described[$joined] = $file->get('length');
+			// Read through the path the torrent gives, from the base directory:
+			// that is what a client does with it.
+			$content = @file_get_contents($directory . '/' . $joined);
+			$this->assertTrue($content !== false, $what . ': ' . $joined . ' exists where the torrent says it does');
+			$bytes .= (string)$content;
+		}
+		foreach ($layout as $relative => $content) {
+			$this->assertTrue(isset($described[$relative]) || array_key_exists($relative, $described),
+				$what . ': ' . $relative . ' is in the file list (' . implode(', ', array_keys($described)) . ')');
+			$this->assertTrue(isset($described[$relative]) && ($described[$relative] === strlen($content)),
+				$what . ': ' . $relative . ' is listed with its complete length: '
+				. json_encode(isset($described[$relative]) ? $described[$relative] : null)
+				. ' of ' . strlen($content));
+		}
+		$this->assertPiecesMatch($what, $info, $bytes);
+	}
+
+	private function assertPiecesMatch($what, $info, $bytes)
+	{
+		$pieceLength = $info->get('piece length');
+		$this->assertTrue($pieceLength === (self::PIECE_KB * 1024),
+			$what . ': the piece length is the one asked for: ' . json_encode($pieceLength));
+		$pieces = $info->get('pieces');
+		$expected = (int)ceil(strlen($bytes) / $pieceLength);
+		$this->assertTrue(is_string($pieces) && ((strlen($pieces) % 20) === 0),
+			$what . ': pieces is a whole number of SHA-1 hashes');
+		$this->assertTrue(strlen($pieces) === ($expected * 20),
+			$what . ': pieces holds ' . (strlen((string)$pieces) / 20) . ' hashes, and ' . strlen($bytes)
+			. ' bytes in pieces of ' . $pieceLength . ' need ' . $expected);
+		for ($piece = 0; $piece < $expected; $piece++) {
+			$this->assertTrue(substr($pieces, $piece * 20, 20)
+					=== sha1(substr($bytes, $piece * $pieceLength, $pieceLength), true),
+				$what . ': hash ' . $piece . ' is the SHA-1 of piece ' . $piece);
+		}
 	}
 }

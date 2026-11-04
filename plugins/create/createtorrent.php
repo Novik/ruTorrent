@@ -1,7 +1,7 @@
 <?php
 
-if( count( $argv ) > 2 )
-	$_SERVER['REMOTE_USER'] = $argv[2];
+if( count( $argv ) > 2 ) {
+	$_SERVER['REMOTE_USER'] = $argv[2]; }
 if( count( $argv ) > 1 )
 {
 	require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
@@ -34,10 +34,10 @@ if( count( $argv ) > 1 )
 	$fname = rTask::formatPath($taskNo).'/params';
 	if(is_file($fname) && is_readable($fname))
 	{
-		$request = unserialize(file_get_contents( $fname ), array( 'allowed_classes'=>false ));
+		$request = unserialize(file_get_contents( $fname ), [ 'allowed_classes'=>false ]);
 		$comment = '';
-		$announce_list = array();
-		$trackers = array();
+		$announce_list = [];
+		$trackers = [];
 		$trackersCount = 0;
 		if(isset($request['trackers']))
 		{
@@ -55,13 +55,13 @@ if( count( $argv ) > 1 )
 					if(count($trackers)>0)
 					{
 						$announce_list[] = $trackers;
-						$trackers = array();
+						$trackers = [];
 					}
 				}
 			}
 		}
-		if(count($trackers)>0)
-			$announce_list[] = $trackers;
+		if(count($trackers)>0) {
+			$announce_list[] = $trackers; }
 		$path_edit = trim($request['path_edit']);
 		$piece_size = $request['piece_size'];
 		$callback_log = "log_stdout";
@@ -70,11 +70,11 @@ if( count( $argv ) > 1 )
 		if(count($announce_list)>0)
 		{
 			$torrent = new Torrent($path_edit,$announce_list[0][0],$piece_size,$callback_log,$callback_err);
-			if($trackersCount>1)
-				$torrent->announce_list($announce_list);
+			if($trackersCount>1) {
+				$torrent->announce_list($announce_list); }
 		}
-		else
-               	        $torrent = new Torrent($path_edit,array(),$piece_size,$callback_log,$callback_err);
+		else {
+               	        $torrent = new Torrent($path_edit,[],$piece_size,$callback_log,$callback_err); }
 
         if (isset($request['source']) && strlen($request['source']) !== 0) {
             $torrent->source(trim($request['source']));
@@ -83,8 +83,8 @@ if( count( $argv ) > 1 )
 		if(isset($request['comment']))
 		{
 			$comment = trim($request['comment']);
-			if(strlen($comment))
-				$torrent->comment($comment);
+			if(strlen($comment)) {
+				$torrent->comment($comment); }
 		}
 	        if($request['private'])
 		{
@@ -97,13 +97,13 @@ if( count( $argv ) > 1 )
 		{
 			$fname = FileUtil::getUniqueUploadedFilename($torrent->info['name'].'.torrent');
 			$path_edit = trim($request['path_edit']);
-			if(is_dir($path_edit))
-				$path_edit = FileUtil::addslash($path_edit);
+			if(is_dir($path_edit)) {
+				$path_edit = FileUtil::addslash($path_edit); }
 	        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 			{
         			$path_edit = dirname($path_edit);
-				if($resumed = rTorrent::fastResume($torrent,$path_edit))
-					$torrent = $resumed;
+				if($resumed = rTorrent::fastResume($torrent,$path_edit)) {
+					$torrent = $resumed; }
 				$torrent->save($fname);
 				rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, User::isLocalMode() );
 				@chmod($fname,$profileMask & 0666);

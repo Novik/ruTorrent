@@ -10,14 +10,14 @@ class rTheme
 	public $modified = false;
 	public $current = "";
 
-	static public function load()
+	public static function load()
 	{
 		global $defaultTheme;
 		$cache = new rCache();
 		$theme = new rTheme();
 		$theme->current = $defaultTheme;
-		if(!$cache->get($theme))
-			$theme->current = $defaultTheme;
+		if(!$cache->get($theme)) {
+			$theme->current = $defaultTheme; }
 		return($theme);
 	}
 

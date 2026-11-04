@@ -6,7 +6,7 @@ require_once( 'Torrent.php' );
 
 class rTorrent
 {
-	const RTORRENT_PACKET_LIMIT = 1572864;
+	public const RTORRENT_PACKET_LIMIT = 1572864;
 
 	// An addition is appended to the load call as a trailing parameter, and
 	// rtorrent reads every parameter a load command carries after the torrent
@@ -30,14 +30,538 @@ class rTorrent
 	// d.set_custom2 hold the label and the comment, which sendTorrent()
 	// already writes from its own parameters, and nothing builds
 	// d.set_custom4 or d.set_custom5 as an addition.
-	const ADDITION_COMMANDS = array(
+	public const ADDITION_COMMANDS = [
 		'd.set_throttle_name',
 		'd.set_connection_seed',
 		'view.set_visible',
 		'd.views.push_back_unique',
 		'd.set_custom',
 		'd.set_custom3',
-	);
+	];
+
+	private static $directoryRefused = false;
+
+	/**
+	 * Whether one addition may be sent. Each permitted name is compared both as
+	 * written and as the running daemon's alias table spells it, because that is
+	 * how a caller builds one: getCmd('d.set_throttle_name=').$name.
+	 *
+	 * The name is the first thing the daemon reads and not the only one, so the
+	 * text after it is judged as well -- a caller appends values of its own and
+	 * a request's alike, and an RSS filter's throttle and ratio arrive in the
+	 * POST body, so a name that matches says nothing about what follows it.
+	 *
+	 * additionArguments() has already refused the text if the daemon would read
+	 * a second command out of it, or throw the load away. One danger survives
+	 * that, and it is the one quoting cannot reach: parse_command_execute()
+	 * hands an argument back to parse_command() and calls it when its first
+	 * byte is a '$', and it reads that byte after parse_string() has taken the
+	 * quotes off (src/rpc/parse_commands.cc). So the test is on the argument as
+	 * the command will receive it, which is also why the extratio plugin's
+	 * d.set_custom=x-extratio1,"$execute_capture={...}" works as it does.
+	 */
+	public static function isValidAddition( $addition )
+	{
+		if(!is_string($addition)) {
+			return(false); }
+		$eq = strpos($addition,'=');
+		if($eq===false) {
+			return(false); }
+		$name = substr($addition,0,$eq);
+		$permittedName = false;
+		foreach(self::ADDITION_COMMANDS as $permitted) {
+			if(($name===$permitted) ||
+				($name===rTorrentSettings::get()->getCommand($permitted)))
+			{
+				$permittedName = true;
+				break;
+			} }
+		if(!$permittedName) {
+			return(false); }
+		$arguments = self::additionArguments(substr($addition,$eq+1));
+		if($arguments===false) {
+			return(false); }
+		foreach($arguments as $value) {
+			if(isset($value[0]) && ($value[0]==='$')) {
+				return(false); } }
+		return(true);
+	}
+
+	/**
+	 * A list holding one addition that may not be sent sends none of itself: an
+	 * add is one load call, so dropping the offending entry would still perform
+	 * the rest of an operation that was not the one asked for.
+	 *
+	 * Public because a caller that erases the download before it loads it again
+	 * has to ask before the erase. sendTorrent() answering false afterwards is
+	 * a download that no longer exists.
+	 */
+	public static function areValidAdditions( $addition )
+	{
+		if(is_null($addition)) {
+			return(true); }
+		if(!is_array($addition)) {
+			return(false); }
+		foreach($addition as $prm) {
+			if(!self::isValidAddition($prm)) {
+				return(false); } }
+		return(true);
+	}
+
+	/**
+	 * Build one addition: the command, '=', and each value quoted, the values
+	 * separated by the comma rtorrent separates arguments with.
+	 *
+	 * A value is an argument to a command the daemon parses itself, so it is
+	 * quoted exactly as the download directory beside it is. Pasted in as bare
+	 * text it stops being one argument: a comma splits it in two, a space makes
+	 * the daemon throw the whole load away, and a semicolon or a newline ends
+	 * the command and hands the daemon whatever follows as the next one to run.
+	 * Quoted, all of those are bytes of the value.
+	 *
+	 * Values are taken one per parameter rather than pre-joined, so nothing
+	 * here has to find the boundary between two of them: a command taking
+	 * several -- d.set_custom takes a key and a value -- names them separately
+	 * and each is quoted on its own.
+	 *
+	 * The value must be in its own bytes: rXMLRPCRequest::unescapeValue() puts
+	 * a value read back from the daemon into that form.
+	 *
+	 * Answers false for a value it will not build, and false is not a valid
+	 * addition, so the list holding it is refused whole rather than sent short.
+	 */
+	public static function additionCommand( $command, ...$values )
+	{
+		if(!count($values)) {
+			return(false); }
+		$quoted = [];
+		foreach($values as $value)
+		{
+			if(is_int($value)) {
+				$value = (string)$value; }
+			if(!is_string($value)) {
+				return(false); }
+			// The one form quoting does not reach. rtorrent takes the quotes
+			// off and then runs an argument whose first byte is '$' as a
+			// command of its own (parse_command_execute,
+			// src/rpc/parse_commands.cc), so it is refused instead -- as
+			// XMLRPCProxy::rebuildSafeLoadParam() refuses it on the way in.
+			if(isset($value[0]) && ($value[0]==='$')) {
+				return(false); }
+			// Refused here as well as in isValidAddition(), so a caller is
+			// told at the point it builds one rather than at the point the
+			// list is sent.
+			if(strpos($value,"\0")!==false) {
+				return(false); }
+			$quoted[] = self::quoteCommandArg($value);
+		}
+		return(getCmd($command.'=').implode(',',$quoted));
+	}
+
+	public static function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
+	{
+		self::$directoryRefused = false;
+		if(!self::areValidAdditions($addition)) {
+			return(false); }
+		$hash = false;
+		$mustSave = is_object($fname);
+		$torrent = $mustSave ? $fname : new Torrent($fname);
+
+		if(!$torrent->errors())
+		{
+			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
+			{
+				$torrent = $resume;
+				$mustSave = true;
+			}
+			else
+			{
+				if($isNew && isset($torrent->{'libtorrent_resume'}))
+				{
+					unset($torrent->{'libtorrent_resume'});
+					$mustSave = true;
+				}
+			}
+			if($isNew && isset($torrent->{'rtorrent'}))
+			{
+				unset($torrent->{'rtorrent'});
+				$mustSave = true;
+			}
+			$raw_value = base64_encode($torrent->__toString());
+			$filename = is_object($fname) ? $torrent->getFileName() : $fname;
+			if(strlen($raw_value)<self::RTORRENT_PACKET_LIMIT)
+			{
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
+				$cmd->addParameter($raw_value,"base64");
+				if(!is_null($filename) && !$saveTorrent) {
+					@unlink($filename); }
+			}
+			else
+			{
+				if(!User::isLocalMode())
+				{
+					// we can't send torrent to the other host without FS sharing
+					return(false);
+				}
+				if(is_null($filename))
+				{
+					$filename = FileUtil::getTempFilename($torrent->name(), 'torrent');
+					$mustSave = true;
+				}
+				if($mustSave)
+				{
+					// because torrent may be changed in memory
+					$torrent->save($filename);
+				}
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
+				$cmd->addParameter($filename);
+			}
+			if(!is_null($filename) && (rTorrentSettings::get()->iVersion>=0x805)) {
+				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(FileUtil::getFileName($filename))); }
+			$req = new rXMLRPCRequest();
+			$directory = self::parseDirectory($directory, $isAddPath);
+			if($directory && (strlen($directory)>0))
+			{
+				if(!self::prepareDirectory($directory, $isNew, $req)) {
+					return(false); }
+				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
+			}
+			$comment = $torrent->comment();
+			if($comment)
+			{
+				if(UTF::isInvalidUTF8($comment)) {
+					$comment = UTF::win2utf($comment); }
+				if(strlen($comment)>0)
+				{
+					$comment = "VRS24mrker".rawurlencode($comment);
+					if(strlen($comment)<=4096) {
+						$cmd->addParameter(getCmd("d.set_custom2=").$comment); }
+				}
+			}
+			if($label && (strlen($label)>0))
+			{
+				$label = rawurlencode($label);
+				if(strlen($label)<=4096) {
+					$cmd->addParameter(getCmd("d.set_custom1=").$label); }
+			}
+			if(is_array($addition)) {
+				foreach($addition as $key=>$prm) {
+					$cmd->addParameter($prm,'string'); } }
+			$req->addCommand( $cmd );
+			if($req->run() && !$req->fault) {
+				$hash = $torrent->hash_info(); }
+		}
+		return($hash);
+	}
+
+	public static function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label, $addition = null)
+	{
+		self::$directoryRefused = false;
+		if(!self::areValidAdditions($addition)) {
+			return(false); }
+	        $hpos = stripos($magnet,'xt=urn:btih:');
+	        if($hpos!==false)
+	        {
+	        	$hpos+=12;
+	        	$fpos = stripos($magnet,'&',$hpos);
+			if($fpos===false) {
+				$fpos = strlen($magnet); }
+			$hash = strtoupper(substr($magnet,$hpos,$fpos-$hpos));
+                        if(strlen($hash)==32) {
+		        	$hash = Decode::base32decode($hash); }
+	        	if(strlen($hash)==40)
+	        	{
+				$req = new rXMLRPCRequest();
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
+				$cmd->addParameter($magnet);
+				$directory = self::parseDirectory($directory, $isAddPath);
+				if($directory && (strlen($directory)>0))
+				{
+					if(!self::prepareDirectory($directory, true, $req)) {
+						return(false); }
+					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
+				}
+				if($label && (strlen($label)>0))
+				{
+					$label = rawurlencode($label);
+					if(strlen($label)<=4096) {
+						$cmd->addParameter(getCmd("d.set_custom1=").$label); }
+				}
+				if(is_array($addition)) {
+					foreach($addition as $key=>$prm) {
+						$cmd->addParameter($prm,'string'); } }
+				$req->addCommand( $cmd );
+				if($req->success()) {
+					return($hash); }
+			}
+		}
+		return(false);
+	}
+
+	// The info hashes rtorrent has loaded, upper case, as keys. rtorrent
+	// answers a load for a hash it already has without a fault and drops
+	// the new copy, so the answer to the load alone cannot tell an
+	// addition from a duplicate.
+	public static function loadedHashes()
+	{
+		$hashes = [];
+		$req = new rXMLRPCRequest( new rXMLRPCCommand("download_list") );
+		if($req->success()) {
+			foreach($req->val as $hash) {
+				$hashes[strtoupper($hash)] = true; } }
+		return($hashes);
+	}
+
+	public static function getSource($hash, $knownPaths = null)
+	{
+		// Batched readers pass the paths they already hold; false means none.
+		// The reply reader escapes backslashes and double quotes.
+		if($knownPaths === null)
+		{
+			$req = new rXMLRPCRequest( [
+				new rXMLRPCCommand("get_session"),
+				new rXMLRPCCommand("d.get_tied_to_file",$hash)] );
+			$knownPaths = ($req->run() && !$req->fault) ?
+				array_map(['rXMLRPCRequest', 'unescapeValue'], $req->val) : false;
+		}
+		if(!is_array($knownPaths) || !isset($knownPaths[0], $knownPaths[1])) {
+			return(false); }
+		$fname = $knownPaths[0].$hash.".torrent";
+		if(empty($knownPaths[0]) || !is_readable($fname))
+		{
+			if(strlen($knownPaths[1]) && is_readable($knownPaths[1])) {
+				$fname = $knownPaths[1]; }
+			else {
+				$fname = null; }
+		}
+		if($fname)
+		{
+			$torrent = new Torrent( $fname );
+			if( !$torrent->errors() )
+			{
+				if(isset($torrent->{'libtorrent_resume'})) {
+					unset($torrent->{'libtorrent_resume'}); }
+				if(isset($torrent->{'rtorrent'})) {
+					unset($torrent->{'rtorrent'}); }
+				return($torrent);
+			}
+		}
+		return(false);
+	}
+
+	// The session directory and tied file of every loaded torrent, in one
+	// request, for callers that read several sources. Keyed by hash. The
+	// reply reader escapes backslashes and double quotes; these paths are
+	// returned unescaped.
+	public static function getSourcePaths()
+	{
+		$req = new rXMLRPCRequest( [
+			new rXMLRPCCommand("get_session"),
+			new rXMLRPCCommand("d.multicall", ["main", getCmd("d.get_hash="), getCmd("d.get_tied_to_file=")]) ] );
+		$paths = [];
+		if($req->run() && !$req->fault && (count($req->val) % 2 == 1)) {
+			for($i = 1; $i < count($req->val); $i += 2) {
+				$paths[$req->val[$i]] = [rXMLRPCRequest::unescapeValue($req->val[0]),
+					rXMLRPCRequest::unescapeValue($req->val[$i+1])]; } }
+		return($paths);
+	}
+
+	public static function fastResume($torrent, $base, $add_path = true)
+	{
+	        $files = [];
+	        $info = $torrent->info;
+	        $psize = intval($info['piece length']);
+	        if($base=='')
+	        {
+	        	$base = rTorrentSettings::get()->directory;
+		}
+	        if($psize && rTorrentSettings::get()->correctDirectory($base))
+	        {
+		        $base = FileUtil::addslash($base);
+	                $tsize = 0.0;
+			// Raw components and those under the legacy UTF-8 aliases a daemon
+			// can load: a string name.utf-8 and a list of strings path.utf-8.
+			$root = [$info['name']];
+			$rootAlias = (isset($info['name.utf-8']) && is_string($info['name.utf-8'])) ? [$info['name.utf-8']] : $root;
+			if(isset($info['files']))
+			{
+				if(!$add_path) {
+					$root = $rootAlias = []; }
+				foreach($info['files'] as $key=>$file)
+				{
+				        $tsize+=floatval($file['length']);
+					$alias = $file['path'];
+					if(isset($file['path.utf-8']) && is_array($file['path.utf-8']) &&
+						(array_values($file['path.utf-8']) === array_filter($file['path.utf-8'], 'is_string'))) {
+						$alias = $file['path.utf-8']; }
+					$path = array_merge($root, $file['path']);
+					if(!self::isCertifiable($path, array_merge($rootAlias, $alias))) {
+						return(false); }
+					$files[] = implode('/', $path);
+				}
+			}
+			else
+			{
+				if(!self::isCertifiable($root, $rootAlias)) {
+					return(false); }
+				$tsize = floatval($info['length']);
+				$files[] = $info['name'];
+			}
+			$chunks = intval(($tsize + $psize - 1) / $psize);
+			$torrent->{'libtorrent_resume'}['bitfield'] = intval($chunks);
+			if(!isset($torrent->{'libtorrent_resume'}['files'])) {
+				$torrent->{'libtorrent_resume'}['files'] = []; }
+			foreach($files as $key=>$file)
+			{
+				$ss = LFS::stat($base.$file);
+				if($ss===false) {
+					return(false); }
+				if(count($torrent->{'libtorrent_resume'}['files'])<$key) {
+					$torrent->{'libtorrent_resume'}['files'][$key]['mtime'] = $ss["mtime"]; }
+				else {
+					$torrent->{'libtorrent_resume'}['files'][$key] = [ "priority" => 2, "mtime" => $ss["mtime"] ]; }
+			}
+			return($torrent);
+		}
+		return(false);
+	}
+
+	/**
+	 * Quote a value for use inside an rtorrent command string.
+	 *
+	 * The commands handed to load/load_raw are not typed parameters: rtorrent
+	 * parses them itself (src/rpc/parse.cc), ending a quoted argument at the
+	 * first unescaped '"' and reading '\' as an escape. A value wrapped in
+	 * quotes without escaping therefore ends the argument early -- a download
+	 * directory holding a quote silently loses everything from that quote on,
+	 * and the command around it stops parsing.
+	 *
+	 * Mirrors the escaping XMLRPCProxy::rebuildSafeLoadParam() applies to the
+	 * command strings it rebuilds -- the escaping, and not the rest of what it
+	 * does. That one also refuses an argument beginning with '$', which
+	 * quoting cannot make safe, and it splits a value on commas so a command
+	 * taking several arguments keeps them. A caller quoting a single argument
+	 * here wants neither; a caller building an addition wants the first, and
+	 * gets it from additionCommand().
+	 *
+	 * The value must be the one the download really has. A value read back
+	 * through rXMLRPCRequest::run() arrives already escaped and has to go
+	 * through rXMLRPCRequest::unescapeValue() first, or this escapes the
+	 * escaping and the path gains a backslash.
+	 */
+	public static function quoteCommandArg($value)
+	{
+		// The order of the pairs is what makes this correct, and it must not be
+		// changed: str_replace() works through the arrays left to right and can
+		// revisit a value an earlier pair inserted. Escaping the quote first
+		// would double the backslash that escaping just added, leaving a live
+		// quote behind it -- so the backslash pair has to come first.
+		return('"'.str_replace(['\\', '"'], ['\\\\', '\\"'], $value).'"');
+	}
+
+	/**
+	 * Whether the last sendTorrent() or sendMagnet() that answered false did
+	 * so because of the download's directory: refused, or rtorrent could not
+	 * make it. addtorrent.php tells the user so rather than that the add
+	 * failed.
+	 */
+	public static function refusedDirectory()
+	{
+		return(self::$directoryRefused);
+	}
+
+	/**
+	 * Whether $dir, a directory correctDirectory() accepted, is still inside
+	 * $topDirectory once the symbolic links along it are followed.
+	 *
+	 * correctDirectory() compares the path as written; rtorrent's "mkdir -p"
+	 * and its file writes follow links. So the deepest part of $dir that
+	 * exists is resolved and the rest, which mkdir will create, re-attached.
+	 * That rest is compared as written, so it has to be plain names: a "."
+	 * or ".." in it is refused. So is a path no part of which can be seen to
+	 * exist, as under an open_basedir that hides the root.
+	 * A part that exists but does not resolve -- a dangling link, or a link
+	 * into a directory this user cannot enter -- is refused rather than read
+	 * as a plain name.
+	 *
+	 * Only a local rtorrent shares this filesystem, so for a remote one the
+	 * text check is all there is. A top directory that does not exist is
+	 * compared as written.
+	 */
+	public static function isInsideTopDirectory($dir)
+	{
+		global $topDirectory;
+		$top = FileUtil::addslash($topDirectory);
+		if(($top === '/') || !User::isLocalMode()) {
+			return(true); }
+		// The realpath cache outlives a request in PHP-FPM; links may have changed since.
+		clearstatcache(true);
+		$realTop = realpath($top);
+		$realTop = FileUtil::addslash(($realTop === false) ? $top : $realTop);
+		if(!is_string($dir) || ($dir === '') || ($dir[0] !== '/')) {
+			return(false); }
+		$path = ($dir === '/') ? '/' : rtrim($dir, '/');
+		$rest = '';
+		while(!file_exists($path) && !is_link($path))
+		{
+			$parent = dirname($path);
+			// Only the root is its own parent; open_basedir can hide even that.
+			if($parent === $path) {
+				return(false); }
+			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
+			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
+			$name = FileUtil::getFileName($path);
+			// The rest is compared as written, so a "." or ".." in it is
+			// refused rather than resolved.
+			if(($name === '.') || ($name === '..')) {
+				return(false); }
+			$rest = '/'.$name.$rest;
+			$path = $parent;
+		}
+		$real = realpath($path);
+		if($real === false) {
+			return(false); }
+		return(strpos(FileUtil::addslash(rtrim($real, '/').$rest), $realTop) === 0);
+	}
+
+	/**
+	 * Resolve, in place, the directory a download is loaded into, and see
+	 * that it exists. False when it is refused or cannot be made.
+	 *
+	 * A new download's directory is one a user typed: correctDirectory()
+	 * resolves it under the top directory and isInsideTopDirectory() follows
+	 * its links. It is made before the load is sent, in a request of its own,
+	 * so a directory that cannot be made leaves nothing loaded.
+	 *
+	 * A reload sends back the directory rtorrent reported. It is judged as
+	 * one, and its mkdir is added to $req to go with the load: the caller has
+	 * already erased the download, so loading it where it cannot be written
+	 * keeps it, and refusing would lose it.
+	 */
+	protected static function prepareDirectory(&$directory, $isNew, $req)
+	{
+		if($isNew)
+		{
+			if(!rTorrentSettings::get()->correctDirectory($directory) ||
+				!self::isInsideTopDirectory($directory)) {
+				return(self::directoryFailed()); }
+			$mkdir = new rXMLRPCRequest( new rXMLRPCCommand( 'execute', ['mkdir','-p',$directory] ) );
+			return($mkdir->success() ? true : self::directoryFailed());
+		}
+		if(!rTorrentSettings::get()->correctReportedDirectory($directory)) {
+			return(self::directoryFailed()); }
+		$req->addCommand( new rXMLRPCCommand( 'execute', ['mkdir','-p',$directory] ) );
+		return(true);
+	}
+
+	protected static function parseDirectory($directory, $isAddPath)
+	{
+		if(!$isAddPath && (!$directory || (strlen($directory)==0)))
+		{
+			$directory = rTorrentSettings::get()->directory;
+		}
+		return($directory);
+	}
 
 	/**
 	 * Read the argument text of an addition the way rtorrent reads it, and
@@ -74,25 +598,25 @@ class rTorrent
 	 * The arguments come back with the quoting undone, because that is the form
 	 * the one remaining danger is read in: see isValidAddition().
 	 */
-	static private function additionArguments( $text )
+	private static function additionArguments( $text )
 	{
 		// A NUL ends a command wherever the daemon reads the text from a
 		// NUL-terminated buffer, and no value a caller builds carries one, so
 		// it is refused before the quoting can be argued about.
-		if(strpos($text,"\0")!==false)
-			return(false);
-		$arguments = array();
+		if(strpos($text,"\0")!==false) {
+			return(false); }
+		$arguments = [];
 		$i = 0;
 		$n = strlen($text);
 		while(true)
 		{
 			// parse_list(): only a space and a tab are skipped here, which is
 			// why a leading space does not hide the byte parse_object() reads.
-			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
-				$i++;
+			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t"))) {
+				$i++; }
 			// parse_object(): the evaluated forms, on the raw byte.
-			if(($i<$n) && (($text[$i]==='{') || ($text[$i]==='(')))
-				return(false);
+			if(($i<$n) && (($text[$i]==='{') || ($text[$i]==='('))) {
+				return(false); }
 			$value = '';
 			if(($i<$n) && ($text[$i]==='"'))
 			{
@@ -110,14 +634,14 @@ class rTorrent
 					{
 						$i++;
 						// "Escape character at end of input."
-						if($i>=$n)
-							return(false);
+						if($i>=$n) {
+							return(false); }
 					}
 					$value .= $text[$i++];
 				}
 				// "Missing closing quote."
-				if(!$closed)
-					return(false);
+				if(!$closed) {
+					return(false); }
 			}
 			else
 			{
@@ -125,20 +649,20 @@ class rTorrent
 				{
 					$c = $text[$i];
 					// parse_is_delim_command: ',', ';' and isspace().
-					if(($c===',') || ($c===';') || (strpos(" \t\n\r\v\f",$c)!==false))
-						break;
+					if(($c===',') || ($c===';') || (strpos(" \t\n\r\v\f",$c)!==false)) {
+						break; }
 					if($c==='\\')
 					{
 						$i++;
-						if($i>=$n)
-							return(false);
+						if($i>=$n) {
+							return(false); }
 					}
 					$value .= $text[$i++];
 				}
 			}
 			$arguments[] = $value;
-			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
-				$i++;
+			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t"))) {
+				$i++; }
 			if(($i<$n) && ($text[$i]===','))
 			{
 				$i++;
@@ -146,398 +670,13 @@ class rTorrent
 			}
 			break;
 		}
-		while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
-			$i++;
+		while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t"))) {
+			$i++; }
 		// Anything left is either a command the daemon would run after this one
 		// or the junk that makes it throw away the load.
-		if($i<$n)
-			return(false);
+		if($i<$n) {
+			return(false); }
 		return($arguments);
-	}
-
-	/**
-	 * Whether one addition may be sent. Each permitted name is compared both as
-	 * written and as the running daemon's alias table spells it, because that is
-	 * how a caller builds one: getCmd('d.set_throttle_name=').$name.
-	 *
-	 * The name is the first thing the daemon reads and not the only one, so the
-	 * text after it is judged as well -- a caller appends values of its own and
-	 * a request's alike, and an RSS filter's throttle and ratio arrive in the
-	 * POST body, so a name that matches says nothing about what follows it.
-	 *
-	 * additionArguments() has already refused the text if the daemon would read
-	 * a second command out of it, or throw the load away. One danger survives
-	 * that, and it is the one quoting cannot reach: parse_command_execute()
-	 * hands an argument back to parse_command() and calls it when its first
-	 * byte is a '$', and it reads that byte after parse_string() has taken the
-	 * quotes off (src/rpc/parse_commands.cc). So the test is on the argument as
-	 * the command will receive it, which is also why the extratio plugin's
-	 * d.set_custom=x-extratio1,"$execute_capture={...}" works as it does.
-	 */
-	static public function isValidAddition( $addition )
-	{
-		if(!is_string($addition))
-			return(false);
-		$eq = strpos($addition,'=');
-		if($eq===false)
-			return(false);
-		$name = substr($addition,0,$eq);
-		$permittedName = false;
-		foreach(self::ADDITION_COMMANDS as $permitted)
-			if(($name===$permitted) ||
-				($name===rTorrentSettings::get()->getCommand($permitted)))
-			{
-				$permittedName = true;
-				break;
-			}
-		if(!$permittedName)
-			return(false);
-		$arguments = self::additionArguments(substr($addition,$eq+1));
-		if($arguments===false)
-			return(false);
-		foreach($arguments as $value)
-			if(isset($value[0]) && ($value[0]==='$'))
-				return(false);
-		return(true);
-	}
-
-	/**
-	 * A list holding one addition that may not be sent sends none of itself: an
-	 * add is one load call, so dropping the offending entry would still perform
-	 * the rest of an operation that was not the one asked for.
-	 *
-	 * Public because a caller that erases the download before it loads it again
-	 * has to ask before the erase. sendTorrent() answering false afterwards is
-	 * a download that no longer exists.
-	 */
-	static public function areValidAdditions( $addition )
-	{
-		if(is_null($addition))
-			return(true);
-		if(!is_array($addition))
-			return(false);
-		foreach($addition as $prm)
-			if(!self::isValidAddition($prm))
-				return(false);
-		return(true);
-	}
-
-	/**
-	 * Build one addition: the command, '=', and each value quoted, the values
-	 * separated by the comma rtorrent separates arguments with.
-	 *
-	 * A value is an argument to a command the daemon parses itself, so it is
-	 * quoted exactly as the download directory beside it is. Pasted in as bare
-	 * text it stops being one argument: a comma splits it in two, a space makes
-	 * the daemon throw the whole load away, and a semicolon or a newline ends
-	 * the command and hands the daemon whatever follows as the next one to run.
-	 * Quoted, all of those are bytes of the value.
-	 *
-	 * Values are taken one per parameter rather than pre-joined, so nothing
-	 * here has to find the boundary between two of them: a command taking
-	 * several -- d.set_custom takes a key and a value -- names them separately
-	 * and each is quoted on its own.
-	 *
-	 * The value must be in its own bytes: rXMLRPCRequest::unescapeValue() puts
-	 * a value read back from the daemon into that form.
-	 *
-	 * Answers false for a value it will not build, and false is not a valid
-	 * addition, so the list holding it is refused whole rather than sent short.
-	 */
-	static public function additionCommand( $command, ...$values )
-	{
-		if(!count($values))
-			return(false);
-		$quoted = array();
-		foreach($values as $value)
-		{
-			if(is_int($value))
-				$value = (string)$value;
-			if(!is_string($value))
-				return(false);
-			// The one form quoting does not reach. rtorrent takes the quotes
-			// off and then runs an argument whose first byte is '$' as a
-			// command of its own (parse_command_execute,
-			// src/rpc/parse_commands.cc), so it is refused instead -- as
-			// XMLRPCProxy::rebuildSafeLoadParam() refuses it on the way in.
-			if(isset($value[0]) && ($value[0]==='$'))
-				return(false);
-			// Refused here as well as in isValidAddition(), so a caller is
-			// told at the point it builds one rather than at the point the
-			// list is sent.
-			if(strpos($value,"\0")!==false)
-				return(false);
-			$quoted[] = self::quoteCommandArg($value);
-		}
-		return(getCmd($command.'=').implode(',',$quoted));
-	}
-
-	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
-	{
-		self::$directoryRefused = false;
-		if(!self::areValidAdditions($addition))
-			return(false);
-		$hash = false;
-		$mustSave = is_object($fname);
-		$torrent = $mustSave ? $fname : new Torrent($fname);
-
-		if(!$torrent->errors())
-		{
-			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
-			{
-				$torrent = $resume;
-				$mustSave = true;
-			}
-			else
-			{
-				if($isNew && isset($torrent->{'libtorrent_resume'}))
-				{
-					unset($torrent->{'libtorrent_resume'});
-					$mustSave = true;
-				}
-			}
-			if($isNew && isset($torrent->{'rtorrent'}))
-			{
-				unset($torrent->{'rtorrent'});
-				$mustSave = true;
-			}
-			$raw_value = base64_encode($torrent->__toString());
-			$filename = is_object($fname) ? $torrent->getFileName() : $fname;
-			if(strlen($raw_value)<self::RTORRENT_PACKET_LIMIT)
-			{
-				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
-				$cmd->addParameter($raw_value,"base64");
-				if(!is_null($filename) && !$saveTorrent)
-					@unlink($filename);
-			}
-			else
-			{
-				if(!User::isLocalMode())
-				{
-					// we can't send torrent to the other host without FS sharing
-					return(false);
-				}
-				if(is_null($filename))
-				{
-					$filename = FileUtil::getTempFilename($torrent->name(), 'torrent');
-					$mustSave = true;
-				}
-				if($mustSave)
-				{
-					// because torrent may be changed in memory
-					$torrent->save($filename);
-				}
-				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
-				$cmd->addParameter($filename);
-			}
-			if(!is_null($filename) && (rTorrentSettings::get()->iVersion>=0x805))
-				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(FileUtil::getFileName($filename)));
-			$req = new rXMLRPCRequest();
-			$directory = self::parseDirectory($directory, $isAddPath);
-			if($directory && (strlen($directory)>0))
-			{
-				if(!self::prepareDirectory($directory, $isNew, $req))
-					return(false);
-				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
-			}
-			$comment = $torrent->comment();
-			if($comment)
-			{
-				if(UTF::isInvalidUTF8($comment))
-					$comment = UTF::win2utf($comment);
-				if(strlen($comment)>0)
-				{
-					$comment = "VRS24mrker".rawurlencode($comment);
-					if(strlen($comment)<=4096)
-						$cmd->addParameter(getCmd("d.set_custom2=").$comment);
-				}
-			}
-			if($label && (strlen($label)>0))
-			{
-				$label = rawurlencode($label);
-				if(strlen($label)<=4096)
-					$cmd->addParameter(getCmd("d.set_custom1=").$label);
-			}
-			if(is_array($addition))
-				foreach($addition as $key=>$prm)
-					$cmd->addParameter($prm,'string');
-			$req->addCommand( $cmd );
-			if($req->run() && !$req->fault)
-				$hash = $torrent->hash_info();
-		}
-		return($hash);
-	}
-
-	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label, $addition = null)
-	{
-		self::$directoryRefused = false;
-		if(!self::areValidAdditions($addition))
-			return(false);
-	        $hpos = stripos($magnet,'xt=urn:btih:');
-	        if($hpos!==false)
-	        {
-	        	$hpos+=12;
-	        	$fpos = stripos($magnet,'&',$hpos);
-			if($fpos===false)
-				$fpos = strlen($magnet);
-			$hash = strtoupper(substr($magnet,$hpos,$fpos-$hpos));
-                        if(strlen($hash)==32)
-		        	$hash = Decode::base32decode($hash);
-	        	if(strlen($hash)==40)
-	        	{
-				$req = new rXMLRPCRequest();
-				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
-				$cmd->addParameter($magnet);
-				$directory = self::parseDirectory($directory, $isAddPath);
-				if($directory && (strlen($directory)>0))
-				{
-					if(!self::prepareDirectory($directory, true, $req))
-						return(false);
-					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
-				}
-				if($label && (strlen($label)>0))
-				{
-					$label = rawurlencode($label);
-					if(strlen($label)<=4096)
-						$cmd->addParameter(getCmd("d.set_custom1=").$label);
-				}
-				if(is_array($addition))
-					foreach($addition as $key=>$prm)
-						$cmd->addParameter($prm,'string');
-				$req->addCommand( $cmd );
-				if($req->success())
-					return($hash);
-			}
-		}
-		return(false);
-	}
-
-	// The info hashes rtorrent has loaded, upper case, as keys. rtorrent
-	// answers a load for a hash it already has without a fault and drops
-	// the new copy, so the answer to the load alone cannot tell an
-	// addition from a duplicate.
-	static public function loadedHashes()
-	{
-		$hashes = array();
-		$req = new rXMLRPCRequest( new rXMLRPCCommand("download_list") );
-		if($req->success())
-			foreach($req->val as $hash)
-				$hashes[strtoupper($hash)] = true;
-		return($hashes);
-	}
-
-	static public function getSource($hash, $knownPaths = null)
-	{
-		// Batched readers pass the paths they already hold; false means none.
-		// The reply reader escapes backslashes and double quotes.
-		if($knownPaths === null)
-		{
-			$req = new rXMLRPCRequest( array(
-				new rXMLRPCCommand("get_session"),
-				new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
-			$knownPaths = ($req->run() && !$req->fault) ?
-				array_map(array('rXMLRPCRequest', 'unescapeValue'), $req->val) : false;
-		}
-		if(!is_array($knownPaths) || !isset($knownPaths[0], $knownPaths[1]))
-			return(false);
-		$fname = $knownPaths[0].$hash.".torrent";
-		if(empty($knownPaths[0]) || !is_readable($fname))
-		{
-			if(strlen($knownPaths[1]) && is_readable($knownPaths[1]))
-				$fname = $knownPaths[1];
-			else
-				$fname = null;
-		}
-		if($fname)
-		{
-			$torrent = new Torrent( $fname );
-			if( !$torrent->errors() )
-			{
-				if(isset($torrent->{'libtorrent_resume'}))
-					unset($torrent->{'libtorrent_resume'});
-				if(isset($torrent->{'rtorrent'}))
-					unset($torrent->{'rtorrent'});
-				return($torrent);
-			}
-		}
-		return(false);
-	}
-
-	// The session directory and tied file of every loaded torrent, in one
-	// request, for callers that read several sources. Keyed by hash. The
-	// reply reader escapes backslashes and double quotes; these paths are
-	// returned unescaped.
-	static public function getSourcePaths()
-	{
-		$req = new rXMLRPCRequest( array(
-			new rXMLRPCCommand("get_session"),
-			new rXMLRPCCommand("d.multicall", array("main", getCmd("d.get_hash="), getCmd("d.get_tied_to_file="))) ) );
-		$paths = array();
-		if($req->run() && !$req->fault && (count($req->val) % 2 == 1))
-			for($i = 1; $i < count($req->val); $i += 2)
-				$paths[$req->val[$i]] = array(rXMLRPCRequest::unescapeValue($req->val[0]),
-					rXMLRPCRequest::unescapeValue($req->val[$i+1]));
-		return($paths);
-	}
-
-	static public function fastResume($torrent, $base, $add_path = true)
-	{
-	        $files = array();
-	        $info = $torrent->info;
-	        $psize = intval($info['piece length']);
-	        if($base=='')
-	        {
-	        	$base = rTorrentSettings::get()->directory;
-		}
-	        if($psize && rTorrentSettings::get()->correctDirectory($base))
-	        {
-		        $base = FileUtil::addslash($base);
-	                $tsize = 0.0;
-			// Raw components and those under the legacy UTF-8 aliases a daemon
-			// can load: a string name.utf-8 and a list of strings path.utf-8.
-			$root = array($info['name']);
-			$rootAlias = (isset($info['name.utf-8']) && is_string($info['name.utf-8'])) ? array($info['name.utf-8']) : $root;
-			if(isset($info['files']))
-			{
-				if(!$add_path)
-					$root = $rootAlias = array();
-				foreach($info['files'] as $key=>$file)
-				{
-				        $tsize+=floatval($file['length']);
-					$alias = $file['path'];
-					if(isset($file['path.utf-8']) && is_array($file['path.utf-8']) &&
-						(array_values($file['path.utf-8']) === array_filter($file['path.utf-8'], 'is_string')))
-						$alias = $file['path.utf-8'];
-					$path = array_merge($root, $file['path']);
-					if(!self::isCertifiable($path, array_merge($rootAlias, $alias)))
-						return(false);
-					$files[] = implode('/', $path);
-				}
-			}
-			else
-			{
-				if(!self::isCertifiable($root, $rootAlias))
-					return(false);
-				$tsize = floatval($info['length']);
-				$files[] = $info['name'];
-			}
-			$chunks = intval(($tsize + $psize - 1) / $psize);
-			$torrent->{'libtorrent_resume'}['bitfield'] = intval($chunks);
-			if(!isset($torrent->{'libtorrent_resume'}['files']))
-				$torrent->{'libtorrent_resume'}['files'] = array();
-			foreach($files as $key=>$file)
-			{
-				$ss = LFS::stat($base.$file);
-				if($ss===false)
-					return(false);
-				if(count($torrent->{'libtorrent_resume'}['files'])<$key)
-					$torrent->{'libtorrent_resume'}['files'][$key]['mtime'] = $ss["mtime"];
-				else
-					$torrent->{'libtorrent_resume'}['files'][$key] = array( "priority" => 2, "mtime" => $ss["mtime"] );
-			}
-			return($torrent);
-		}
-		return(false);
 	}
 
 	/**
@@ -547,153 +686,14 @@ class rTorrent
 	 * single file too; up to 0.16.13 an alias can be loaded through
 	 * encoding.add. libtorrent 0.16.22 and later replace a '/' inside a component.
 	 */
-	static private function isCertifiable($path, $alias)
+	private static function isCertifiable($path, $alias)
 	{
 		return(($alias === $path) && (strpos(implode('', $path), '/') === false));
 	}
 
-	/**
-	 * Quote a value for use inside an rtorrent command string.
-	 *
-	 * The commands handed to load/load_raw are not typed parameters: rtorrent
-	 * parses them itself (src/rpc/parse.cc), ending a quoted argument at the
-	 * first unescaped '"' and reading '\' as an escape. A value wrapped in
-	 * quotes without escaping therefore ends the argument early -- a download
-	 * directory holding a quote silently loses everything from that quote on,
-	 * and the command around it stops parsing.
-	 *
-	 * Mirrors the escaping XMLRPCProxy::rebuildSafeLoadParam() applies to the
-	 * command strings it rebuilds -- the escaping, and not the rest of what it
-	 * does. That one also refuses an argument beginning with '$', which
-	 * quoting cannot make safe, and it splits a value on commas so a command
-	 * taking several arguments keeps them. A caller quoting a single argument
-	 * here wants neither; a caller building an addition wants the first, and
-	 * gets it from additionCommand().
-	 *
-	 * The value must be the one the download really has. A value read back
-	 * through rXMLRPCRequest::run() arrives already escaped and has to go
-	 * through rXMLRPCRequest::unescapeValue() first, or this escapes the
-	 * escaping and the path gains a backslash.
-	 */
-	static public function quoteCommandArg($value)
-	{
-		// The order of the pairs is what makes this correct, and it must not be
-		// changed: str_replace() works through the arrays left to right and can
-		// revisit a value an earlier pair inserted. Escaping the quote first
-		// would double the backslash that escaping just added, leaving a live
-		// quote behind it -- so the backslash pair has to come first.
-		return('"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $value).'"');
-	}
-
-	private static $directoryRefused = false;
-
-	/**
-	 * Whether the last sendTorrent() or sendMagnet() that answered false did
-	 * so because of the download's directory: refused, or rtorrent could not
-	 * make it. addtorrent.php tells the user so rather than that the add
-	 * failed.
-	 */
-	static public function refusedDirectory()
-	{
-		return(self::$directoryRefused);
-	}
-
-	/**
-	 * Resolve, in place, the directory a download is loaded into, and see
-	 * that it exists. False when it is refused or cannot be made.
-	 *
-	 * A new download's directory is one a user typed: correctDirectory()
-	 * resolves it under the top directory and isInsideTopDirectory() follows
-	 * its links. It is made before the load is sent, in a request of its own,
-	 * so a directory that cannot be made leaves nothing loaded.
-	 *
-	 * A reload sends back the directory rtorrent reported. It is judged as
-	 * one, and its mkdir is added to $req to go with the load: the caller has
-	 * already erased the download, so loading it where it cannot be written
-	 * keeps it, and refusing would lose it.
-	 */
-	static protected function prepareDirectory(&$directory, $isNew, $req)
-	{
-		if($isNew)
-		{
-			if(!rTorrentSettings::get()->correctDirectory($directory) ||
-				!self::isInsideTopDirectory($directory))
-				return(self::directoryFailed());
-			$mkdir = new rXMLRPCRequest( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
-			return($mkdir->success() ? true : self::directoryFailed());
-		}
-		if(!rTorrentSettings::get()->correctReportedDirectory($directory))
-			return(self::directoryFailed());
-		$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
-		return(true);
-	}
-
-	static private function directoryFailed()
+	private static function directoryFailed()
 	{
 		self::$directoryRefused = true;
 		return(false);
-	}
-
-	/**
-	 * Whether $dir, a directory correctDirectory() accepted, is still inside
-	 * $topDirectory once the symbolic links along it are followed.
-	 *
-	 * correctDirectory() compares the path as written; rtorrent's "mkdir -p"
-	 * and its file writes follow links. So the deepest part of $dir that
-	 * exists is resolved and the rest, which mkdir will create, re-attached.
-	 * That rest is compared as written, so it has to be plain names: a "."
-	 * or ".." in it is refused. So is a path no part of which can be seen to
-	 * exist, as under an open_basedir that hides the root.
-	 * A part that exists but does not resolve -- a dangling link, or a link
-	 * into a directory this user cannot enter -- is refused rather than read
-	 * as a plain name.
-	 *
-	 * Only a local rtorrent shares this filesystem, so for a remote one the
-	 * text check is all there is. A top directory that does not exist is
-	 * compared as written.
-	 */
-	static public function isInsideTopDirectory($dir)
-	{
-		global $topDirectory;
-		$top = FileUtil::addslash($topDirectory);
-		if(($top === '/') || !User::isLocalMode())
-			return(true);
-		// The realpath cache outlives a request in PHP-FPM; links may have changed since.
-		clearstatcache(true);
-		$realTop = realpath($top);
-		$realTop = FileUtil::addslash(($realTop === false) ? $top : $realTop);
-		if(!is_string($dir) || ($dir === '') || ($dir[0] !== '/'))
-			return(false);
-		$path = ($dir === '/') ? '/' : rtrim($dir, '/');
-		$rest = '';
-		while(!file_exists($path) && !is_link($path))
-		{
-			$parent = dirname($path);
-			// Only the root is its own parent; open_basedir can hide even that.
-			if($parent === $path)
-				return(false);
-			// Not basename(): on PHP 7.4 it loses names the locale cannot decode,
-			// non-ASCII ones in C and non-UTF-8 ones in a UTF-8 locale.
-			$name = FileUtil::getFileName($path);
-			// The rest is compared as written, so a "." or ".." in it is
-			// refused rather than resolved.
-			if(($name === '.') || ($name === '..'))
-				return(false);
-			$rest = '/'.$name.$rest;
-			$path = $parent;
-		}
-		$real = realpath($path);
-		if($real === false)
-			return(false);
-		return(strpos(FileUtil::addslash(rtrim($real, '/').$rest), $realTop) === 0);
-	}
-
-	static protected function parseDirectory($directory, $isAddPath)
-	{
-		if(!$isAddPath && (!$directory || (strlen($directory)==0)))
-		{
-			$directory = rTorrentSettings::get()->directory;
-		}
-		return($directory);
 	}
 }

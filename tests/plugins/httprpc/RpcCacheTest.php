@@ -29,41 +29,25 @@ class RpcCacheTest extends TestCase
 
 	public function tearDown()
 	{
-		foreach(glob($this->dir.'/*') as $f)
-			@unlink($f);
+		foreach(glob($this->dir.'/*') as $f) {
+			@unlink($f); }
 		@rmdir($this->dir);
-	}
-
-	private function torrents($hashes)
-	{
-		$ret = array();
-		foreach($hashes as $hash)
-			$ret[$hash] = array("1", "name of ".$hash, "0");
-		return($ret);
-	}
-
-	private function difference($cid, $hashes)
-	{
-		$torrents = $this->torrents($hashes);
-		$deleted = array();
-		$hadPrevious = $this->cache->calcDifference($cid, $torrents, $deleted);
-		return(array("cid"=>$cid, "changed"=>$torrents, "deleted"=>$deleted, "hadPrevious"=>$hadPrevious));
 	}
 
 	public function testFirstAnswerIsFullAndSaysSo()
 	{
-		$first = $this->difference(0, array("A", "B"));
+		$first = $this->difference(0, ["A", "B"]);
 		$this->assertTrue(!$first["hadPrevious"], 'nothing to diff against on the first request');
-		$this->assertEquals(array("A","B"), array_keys($first["changed"]), 'the whole list is answered');
-		$this->assertEquals(array(), $first["deleted"], 'and it carries no deletions');
+		$this->assertEquals(["A","B"], array_keys($first["changed"]), 'the whole list is answered');
+		$this->assertEquals([], $first["deleted"], 'and it carries no deletions');
 	}
 
 	public function testDeletionIsReportedAgainstThePreviousState()
 	{
-		$first = $this->difference(0, array("A", "B"));
-		$second = $this->difference($first["cid"], array("A"));
+		$first = $this->difference(0, ["A", "B"]);
+		$second = $this->difference($first["cid"], ["A"]);
 		$this->assertTrue($second["hadPrevious"], 'the previous state was found');
-		$this->assertEquals(array("B"), $second["deleted"], 'B is reported as deleted');
+		$this->assertEquals(["B"], $second["deleted"], 'B is reported as deleted');
 	}
 
 	// The state files are a ring of ten, so a client that polls slowly while
@@ -71,15 +55,31 @@ class RpcCacheTest extends TestCase
 	// client if the directory cannot be written at all.
 	public function testALostStateIsAnnouncedAsFullRatherThanLosingTheDeletion()
 	{
-		$first = $this->difference(0, array("A", "B"));
-		foreach(glob($this->dir.'/*') as $f)
-			@unlink($f);
+		$first = $this->difference(0, ["A", "B"]);
+		foreach(glob($this->dir.'/*') as $f) {
+			@unlink($f); }
 
-		$second = $this->difference($first["cid"], array("A"));
+		$second = $this->difference($first["cid"], ["A"]);
 
 		$this->assertTrue(!$second["hadPrevious"], 'the state the client named is gone');
-		$this->assertEquals(array(), $second["deleted"], 'so no deletion can be derived');
-		$this->assertEquals(array("A"), array_keys($second["changed"]),
+		$this->assertEquals([], $second["deleted"], 'so no deletion can be derived');
+		$this->assertEquals(["A"], array_keys($second["changed"]),
 			'and the answer is the whole list, which is what lets the client drop B itself');
+	}
+
+	private function torrents($hashes)
+	{
+		$ret = [];
+		foreach($hashes as $hash) {
+			$ret[$hash] = ["1", "name of ".$hash, "0"]; }
+		return($ret);
+	}
+
+	private function difference($cid, $hashes)
+	{
+		$torrents = $this->torrents($hashes);
+		$deleted = [];
+		$hadPrevious = $this->cache->calcDifference($cid, $torrents, $deleted);
+		return(["cid"=>$cid, "changed"=>$torrents, "deleted"=>$deleted, "hadPrevious"=>$hadPrevious]);
 	}
 }

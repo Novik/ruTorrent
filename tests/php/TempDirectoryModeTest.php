@@ -24,23 +24,17 @@ class TempDirectoryModeTest extends TestCase
 		$tempDirectory = null;
 		$tempDirectory_init_done = false;
 		$profileMask = 0777;
-		foreach(glob($this->root.'/*') ?: array() as $path)
+		foreach(glob($this->root.'/*') ?: [] as $path)
 		{
-			if(is_link($path) || is_file($path)) @unlink($path);
-			else if(is_dir($path))
+			if(is_link($path) || is_file($path)) { @unlink($path); }
+			elseif(is_dir($path))
 			{
-				foreach(glob($path.'/*') ?: array() as $entry) @unlink($entry);
+				foreach(glob($path.'/*') ?: [] as $entry) { @unlink($entry); }
 				@rmdir($path);
 			}
 		}
 		@rmdir($this->root);
 		umask($this->umask);
-	}
-
-	private function mode($path)
-	{
-		clearstatcache(true, $path);
-		return(fileperms($path) & 07777);
 	}
 
 	public function testExistingCustomTempDirectoryKeepsItsProtectedMode()
@@ -83,5 +77,11 @@ class TempDirectoryModeTest extends TestCase
 		$this->assertEquals($path.'/', FileUtil::getTempDirectory());
 		$this->assertEquals(0750, $this->mode($path),
 			'a missing selected temp path still uses the configured mask');
+	}
+
+	private function mode($path)
+	{
+		clearstatcache(true, $path);
+		return(fileperms($path) & 07777);
 	}
 }

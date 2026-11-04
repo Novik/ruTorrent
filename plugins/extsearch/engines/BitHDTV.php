@@ -6,9 +6,9 @@
 
 class BitHDTVEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.bit-hdtv.com|h_sl=XXX;h_sp=XXX;h_su=XXX" );
-	public $categories = array
-	(
+	public $defaults = [ "public"=>false, "page_size"=>50, "cookies"=>"www.bit-hdtv.com|h_sl=XXX;h_sp=XXX;h_su=XXX" ];
+	public $categories = 
+	[
 		'All'=>'&cat=0',
 		'Movies'=>'&cat=7',
 		'TV'=>'&cat=10',
@@ -17,7 +17,7 @@ class BitHDTVEngine extends commonEngine
 		'Music Videos'=>'&cat=8',
 		'Audio Tracks'=>'&cat=6',
 		'Other'=>'&cat=9',
-	);
+	];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -25,26 +25,26 @@ class BitHDTVEngine extends commonEngine
 		$url = 'https://www.bit-hdtv.com';
 		if($useGlobalCats)
 		{
-			$categories = array
-			(
+			$categories = 
+			[
 				'all'=>'&cat=0',
 				'movies'=>'&cat=7',
 				'tv'=>'&cat=10',
 				'music'=>'&cat=6',
-			);
+			];
 		}
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?search='.$what.'&sort=7&type=desc&options=0&seeded=1&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>No match!</h2>")!==false)
-				|| (strpos($cli->results, '>Password:<')!==false))
-				break;
+				|| (strpos($cli->results, '>Password:<')!==false)) {
+				break; }
 			$res = preg_match_all('`<a href="torrents\.php\?cat=.*" alt=\'(?P<cat>.*)\' >.*</a></td>.*'.
 				'<td .*><a title="(?P<name>.*)" href=\'.*id=(?P<id>\d+)\'">.*</td>.*'.
 				'<td .*>.*</td>.*'.
@@ -78,13 +78,13 @@ class BitHDTVEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

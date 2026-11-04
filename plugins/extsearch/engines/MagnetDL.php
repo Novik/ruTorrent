@@ -2,23 +2,17 @@
 
 class MagnetDLEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>40 );
+	public $defaults = [ "public"=>true, "page_size"=>40 ];
 
-	public $categories = array( 'All'=>'' );
+	public $categories = [ 'All'=>'' ];
 
 	protected static $seconds = [
 		'min'	=> 60,
 		'hour'	=> 3600,
 		'day'	=> 86400,
 		'month'	=> 2592000,
-		'year'	=> 31536000
+		'year'	=> 31536000,
 	];
-
-	protected static function getTime($now,$ago,$unit)
-	{
-		$delta = (array_key_exists($unit,self::$seconds) ? self::$seconds[$unit] : 0);
-		return ($now - ($ago * $delta));
-	}
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -40,17 +34,17 @@ class MagnetDLEngine extends commonEngine
 		// Search engine requires to have the first letter/number of what we search
 		$firstWhatChar = $what[0];
 
-		if($useGlobalCats)
-			$categories = array(
-			'all'=>''
-			);
-		else
-			$categories = &$this->categories;
+		if($useGlobalCats) {
+			$categories = [
+			'all'=>'',
+			]; }
+		else {
+			$categories = &$this->categories; }
 
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		$maxPage = 10;
 
@@ -59,8 +53,8 @@ class MagnetDLEngine extends commonEngine
 			$search = $url . '/' . $firstWhatChar . '/' . $what . '/se/desc/' . $page . '/';
 			$cli = $this->fetch($search);
 
-			if (($cli == false) || (strpos($cli->results, "Found <strong>0</strong>") !== false))
-				break;
+			if (($cli == false) || (strpos($cli->results, "Found <strong>0</strong>") !== false)) {
+				break; }
 
 			$res = preg_match_all('`<td class="m"><a href="magnet:(?P<link>[^"]*)" .*>.*</td>'.
 				'<td class="n"><a href="(?P<desc>.*)" title="(?P<name>.*)">.*</td>'.
@@ -86,13 +80,19 @@ class MagnetDLEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["peers"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if ($added >= $limit)
-							return;
+						if ($added >= $limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
+	}
+
+	protected static function getTime($now,$ago,$unit)
+	{
+		$delta = (array_key_exists($unit,self::$seconds) ? self::$seconds[$unit] : 0);
+		return ($now - ($ago * $delta));
 	}
 }

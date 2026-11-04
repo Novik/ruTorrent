@@ -5,11 +5,6 @@ require_once(__DIR__ . '/../../../plugins/ratio/ratio.php');
 
 class EraseWithDataCommandTest extends TestCase
 {
-	private function command($force)
-	{
-		$rat = new rRatio();
-		return($rat->getEraseWithDataCommand($force));
-	}
 
 	public function testStopsAndClosesBeforeDeleting()
 	{
@@ -51,5 +46,10 @@ class EraseWithDataCommandTest extends TestCase
 			'Remove data asks for the download\'s own files');
 		$this->assertTrue(strpos($this->command("2"), $hash . ',2,') !== false,
 			'Remove data (All) asks for the whole base path');
+	}
+	private function command($force)
+	{
+		$rat = new rRatio();
+		return($rat->getEraseWithDataCommand($force));
 	}
 }

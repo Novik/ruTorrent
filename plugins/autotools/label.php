@@ -1,13 +1,13 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
 if( count( $argv ) > 1 )
 {
 	$usr = ($argv[1]=='--daemon') ? 3 : 2;
-	if( count( $argv ) > $usr )
-		$_SERVER['REMOTE_USER'] = $argv[$usr];
+	if( count( $argv ) > $usr ) {
+		$_SERVER['REMOTE_USER'] = $argv[$usr]; }
 }
 
 require_once( "./util_rt.php" );
@@ -33,7 +33,7 @@ rtSemLock( $AutoLabel_Sem );
 function Debug( $str )
 {
 	global $autodebug_enabled;
-	if( $autodebug_enabled ) rtDbg( "AutoLabel", $str );
+	if( $autodebug_enabled ) { rtDbg( "AutoLabel", $str ); }
 }
 
 Debug( "" );
@@ -45,7 +45,7 @@ if( count( $argv ) < 2 )
 	Debug( "called without arguments (hash wanted)" );
 	$is_ok = false;
 }
-else $hash = $argv[1];
+else { $hash = $argv[1]; }
 
 // Read configuration
 $label = "";
@@ -53,21 +53,21 @@ if( $is_ok )
 {
 	$at = rAutoTools::load();
 	Debug( "enabled         : ".$at->enable_label );
-	if( !$at->enable_label )
-		$is_ok = false;
+	if( !$at->enable_label ) {
+		$is_ok = false; }
 	Debug( "template        : \"".$at->label_template."\"" );
 	$label = $at->label_template;
-	if( strlen( trim( $label ) ) == 0 ) $label = "{DIR}";
+	if( strlen( trim( $label ) ) == 0 ) { $label = "{DIR}"; }
 }
 
 // Get info from rTorrent
 if( $is_ok && strpos( $label, "{DIR}" ) !== false )
 {
-	$req = new rXMLRPCRequest( array (
+	$req = new rXMLRPCRequest(  [
 		new rXMLRPCCommand( "d.get_directory", $hash ),
 		new rXMLRPCCommand( "d.get_custom3",   $hash ),
 		new rXMLRPCCommand( "d.is_multi_file", $hash ),
-	) );
+	] );
 	if( $req->run() && !$req->fault )
 	{
 		$is_multy_file = ( $req->val[2] != 0 );
@@ -89,10 +89,10 @@ if( $is_ok && strpos( $label, "{DIR}" ) !== false )
 			$is_ok = false;
 		}
 		else {
-			if( $is_multy_file )
-				$torrent_dir = rtRemoveLastToken( $torrent_dir, '/' );
+			if( $is_multy_file ) {
+				$torrent_dir = rtRemoveLastToken( $torrent_dir, '/' ); }
 			$lbl_dir = rtGetRelativePath( $default_dir, $torrent_dir );
-			if( $lbl_dir == "./" ) $lbl_dir = "";
+			if( $lbl_dir == "./" ) { $lbl_dir = ""; }
 			$label = str_replace( "{DIR}", $lbl_dir, $label );
 		}
 	}
@@ -105,19 +105,19 @@ if( $is_ok && strpos( $label, "{DIR}" ) !== false )
 // Get info about tracker
 if( $is_ok && strpos( $label, "{TRACKER}" ) !== false )
 {
-	$req = new rXMLRPCRequest( array(
+	$req = new rXMLRPCRequest( [
 		new rXMLRPCCommand( "t.multicall",
-			array( $hash, "", getCmd("t.is_enabled="), getCmd("t.get_type="), getCmd("t.get_group="), getCmd("t.get_url=") )
-		)
-	));
+			[ $hash, "", getCmd("t.is_enabled="), getCmd("t.get_type="), getCmd("t.get_group="), getCmd("t.get_url=") ],
+		),
+	]);
 	$req->setParseByTypes();
 	if( $req->run() && !$req->fault )
 	{
 		for( $i = 0; $i < count( $req->strings ); $i++ )
 		{
 			// enabled, type == 1, group == 0
-			if( $req->i8s[$i*3] == 0 || $req->i8s[$i*3+1] != 1 || $req->i8s[$i*3+2] != 0 )
-				continue;
+			if( $req->i8s[$i*3] == 0 || $req->i8s[$i*3+1] != 1 || $req->i8s[$i*3+2] != 0 ) {
+				continue; }
 			$lbl_tracker = parse_url( $req->strings[$i], PHP_URL_HOST );
 			// if tracker is not an IP address, then
 			if( preg_match( "/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/", $lbl_tracker ) != 1 )
@@ -127,8 +127,8 @@ if( $is_ok && strpos( $label, "{TRACKER}" ) !== false )
 				if( $pos !== false )
 				{
 					$tmp = substr( $lbl_tracker, $pos + 1 );
-					if( strpos( $tmp, '.' ) !== false )
-						$lbl_tracker = $tmp;
+					if( strpos( $tmp, '.' ) !== false ) {
+						$lbl_tracker = $tmp; }
 				}
 			}
 			Debug( "tracker         : ".$lbl_tracker );
@@ -152,10 +152,10 @@ if( $is_ok &&
 
 	Debug( "count           : \"".count( $match )."\"" );
 	Debug( "match[1]        : \"".$match[1]."\"" );
-	if( count( $match ) > 1 && strlen( $match[1] ) > 0 )
-		$lbl_now = TimeFormat::strftime( $match[1] );
-	else
-		$lbl_now = TimeFormat::strftime( '%Y-%m-%d' );
+	if( count( $match ) > 1 && strlen( $match[1] ) > 0 ) {
+		$lbl_now = TimeFormat::strftime( $match[1] ); }
+	else {
+		$lbl_now = TimeFormat::strftime( '%Y-%m-%d' ); }
 	$label = str_replace( $match[0], $lbl_now, $label );
 }
 
@@ -163,8 +163,8 @@ if( $is_ok &&
 if( $is_ok )
 {
 	Debug( "label           : \"".$label."\"" );
-	if( ($label != "") && rtExec( "d.set_custom1", array( $hash, UTF::raw_url_encode( $label ) ), $autodebug_enabled ))
-		rTorrentSettings::get()->pushEvent( "LabelChanged", array( "hash"=>$hash, "label"=>$label ) );
+	if( ($label != "") && rtExec( "d.set_custom1", [ $hash, UTF::raw_url_encode( $label ) ], $autodebug_enabled )) {
+		rTorrentSettings::get()->pushEvent( "LabelChanged", [ "hash"=>$hash, "label"=>$label ] ); }
 }
 
 Debug( "--- end ---" );

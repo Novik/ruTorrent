@@ -87,103 +87,6 @@ class TorrentAdditionCallerTest extends TestCase
 		@rmdir($this->base);
 	}
 
-	/**
-	 * installSettingsFor() with correctDirectory() answered, so an add reaches
-	 * the point where it builds a payload.
-	 */
-	private function installAddSettingsFor($iVersion)
-	{
-		$settings = $this->installSettingsFor($iVersion);
-		$reflection = new ReflectionClass('AdditionCallerSettings');
-		$add = $reflection->newInstanceWithoutConstructor();
-		foreach (array('iVersion', 'apiVersion', 'aliases', 'directory') as $field) {
-			$add->{$field} = $settings->{$field};
-		}
-		$property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-		$property->setAccessible(true);
-		$property->setValue(null, $add);
-		return $add;
-	}
-
-	private function takeLog()
-	{
-		$log = file_exists($this->logFile) ? file_get_contents($this->logFile) : '';
-		@unlink($this->logFile);
-		return $log;
-	}
-
-	/** What one add would have sent, for a given addition list. */
-	private function payloadFor($addition)
-	{
-		$this->takeLog();
-		rTorrent::sendTorrent(new Torrent($this->torrentFile), true, true,
-			null, null, true, false, true, $addition);
-		return $this->takeLog();
-	}
-
-	/**
-	 * The addition the named file builds, as the file builds it: the element
-	 * expressions are read out of the source and each one is evaluated through
-	 * the same getCmd() the caller calls, so the list moves with both the
-	 * caller and the alias table.
-	 */
-	private function additionBuiltBy($file)
-	{
-		$scanner = new TorrentAdditionSourceScanner($this->repoRoot());
-		$addition = array();
-		$unresolved = array();
-		$found = false;
-		foreach ($scanner->callSites() as $site) {
-			if ($site['file'] !== $file || !count($site['elements'])) {
-				continue;
-			}
-			$found = true;
-			foreach ($site['elements'] as $element) {
-				$name = TorrentAdditionSourceScanner::commandName($element);
-				if ($name === null) {
-					$unresolved[] = $element['expr'] . ' -- ' . $element['reason'];
-					continue;
-				}
-				// The value each element carries is the caller's runtime data
-				// and is not what the guard reads; the command name is.
-				$addition[] = $name . '=test-value';
-			}
-		}
-		return array('found' => $found, 'addition' => $addition, 'unresolved' => $unresolved);
-	}
-
-	/**
-	 * One caller, under every alias table: its addition is readable, every
-	 * element passes the guard, and the list as a whole passes.
-	 */
-	private function assertCallerSurvivesTheGuard($file, $note)
-	{
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			$this->installSettingsFor($iVersion);
-			$built = $this->additionBuiltBy($file);
-
-			$this->assertTrue($built['found'],
-				$file . ' is found building an addition (' . $note . ')');
-			$this->assertTrue($built['unresolved'] === array(),
-				'on rtorrent ' . $version . ' every element ' . $file . ' builds can be read'
-				. (count($built['unresolved'])
-					? '; unreadable: ' . implode(' | ', $built['unresolved']) : ''));
-
-			$refused = array();
-			foreach ($built['addition'] as $entry) {
-				if (!rTorrent::isValidAddition($entry)) {
-					$refused[] = $entry;
-				}
-			}
-			$this->assertTrue($refused === array(),
-				'on rtorrent ' . $version . ' the guard accepts every addition ' . $file
-				. ' builds' . (count($refused) ? '; refused: ' . implode(', ', $refused) : ''));
-			$this->assertTrue($this->areValidAdditions($built['addition']) === true,
-				'on rtorrent ' . $version . ' the whole list ' . $file . ' passes survives '
-				. 'areValidAdditions(), which drops the add on one refused entry');
-		}
-	}
-
 	// ---- the callers -----------------------------------------------------
 
 	public function testTheEditPluginsAdditionSurvivesTheGuard()
@@ -216,37 +119,6 @@ class TorrentAdditionCallerTest extends TestCase
 			'set directory: d.erase then reload with fast resume');
 	}
 
-	// ---- the checker's builder, called outright --------------------------
-
-	/**
-	 * plugins/rutracker_check/check.php is declarations and one
-	 * eval(FileUtil::getPluginConf()), so the class body is taken out of it
-	 * and evaluated here -- with the real getCmd(), unlike
-	 * tests/plugins/rutracker_check/CheckerTest.php, which stubs getCmd() to
-	 * the identity and so cannot see an alias problem at all.
-	 */
-	private function loadChecker()
-	{
-		if (class_exists('ruTrackerChecker', false)) {
-			return;
-		}
-		$source = file_get_contents($this->repoRoot() . '/plugins/rutracker_check/check.php');
-		$offset = strpos($source, 'class ruTrackerChecker');
-		if ($offset === false) {
-			throw new RuntimeException('ruTrackerChecker was not found in check.php');
-		}
-		eval(substr($source, $offset));
-	}
-
-	private function buildReplacementAddition($connectionSeed, $throttle, $ratioViews, $existingViews)
-	{
-		$this->loadChecker();
-		$method = new ReflectionMethod('ruTrackerChecker', 'buildReplacementAddition');
-		$method->setAccessible(true);
-		return $method->invoke(null, $connectionSeed, $throttle, $ratioViews, $existingViews,
-			constant('ruTrackerChecker::STE_UPDATED'), 'marker-value');
-	}
-
 	/**
 	 * The list the checker's own builder returns, run through the guard. Both
 	 * of its branches are covered: a view it confirmed against rtorrent's view
@@ -259,7 +131,7 @@ class TorrentAdditionCallerTest extends TestCase
 			$this->installSettingsFor($iVersion);
 
 			$confirmed = $this->buildReplacementAddition('seed', 'slow',
-				array('rat_1'), array('rat_1' => true));
+				['rat_1'], ['rat_1' => true]);
 			$this->assertTrue(count($confirmed) >= 7,
 				'on rtorrent ' . $version . ' the builder returns the replacement list; entries: '
 				. count($confirmed));
@@ -268,12 +140,12 @@ class TorrentAdditionCallerTest extends TestCase
 				. 'the guard: ' . implode(' | ', $confirmed));
 
 			$unconfirmed = $this->buildReplacementAddition('seed', 'slow',
-				array('rat_1'), null);
+				['rat_1'], null);
 			$this->assertTrue($this->areValidAdditions($unconfirmed) === true,
 				'on rtorrent ' . $version . ' the unconfirmed-view list passes too: '
 				. implode(' | ', $unconfirmed));
 
-			$noThrottle = $this->buildReplacementAddition('seed', '', array(), array());
+			$noThrottle = $this->buildReplacementAddition('seed', '', [], []);
 			$this->assertTrue($this->areValidAdditions($noThrottle) === true,
 				'on rtorrent ' . $version . ' so does the list with no throttle and no views: '
 				. implode(' | ', $noThrottle));
@@ -296,10 +168,10 @@ class TorrentAdditionCallerTest extends TestCase
 	 */
 	public function testTheErasingCallersReloadBuildsAPayload()
 	{
-		foreach (array(
+		foreach ([
 			'plugins/edit/action.php'       => 'the Edit torrent save',
 			'plugins/retrackers/update.php' => 'the retracker rewrite',
-		) as $file => $what) {
+		] as $file => $what) {
 			foreach ($this->supportedVersions() as $iVersion => $version) {
 				$this->installSettingsFor($iVersion);
 				$built = $this->additionBuiltBy($file);
@@ -334,11 +206,11 @@ class TorrentAdditionCallerTest extends TestCase
 	{
 		$this->installAddSettingsFor(0x1012);
 
-		$this->assertTrue($this->payloadFor(array('execute=/bin/sh,-c,id')) === '',
+		$this->assertTrue($this->payloadFor(['execute=/bin/sh,-c,id']) === '',
 			'a refused addition sends no payload, so a caller that erased first has '
 			. 'nothing left to reload');
-		$this->assertTrue($this->payloadFor(array(
-				getCmd('d.set_throttle_name=') . 'slow', null)) === '',
+		$this->assertTrue($this->payloadFor([
+				getCmd('d.set_throttle_name=') . 'slow', null]) === '',
 			'and a null entry refuses the list just the same, which is what the edit '
 			. 'plugin used to pass when the throttle plugin was not registered');
 	}
@@ -354,7 +226,7 @@ class TorrentAdditionCallerTest extends TestCase
 		$this->installSettingsFor(0x1012);
 		$this->assertTrue(rTorrent::isValidAddition(null) === false,
 			'a null addition names no command and is refused');
-		$this->assertTrue($this->areValidAdditions(array(null)) === false,
+		$this->assertTrue($this->areValidAdditions([null]) === false,
 			'and a list holding one is refused whole');
 	}
 
@@ -368,7 +240,7 @@ class TorrentAdditionCallerTest extends TestCase
 	{
 		$this->installSettingsFor(0x1012);
 		$built = $this->additionBuiltBy('plugins/edit/action.php');
-		$this->assertTrue($built['unresolved'] === array(),
+		$this->assertTrue($built['unresolved'] === [],
 			'every element of the edit plugin addition is a command it built, not a '
 			. 'variable that may be unset'
 			. (count($built['unresolved'])
@@ -377,5 +249,133 @@ class TorrentAdditionCallerTest extends TestCase
 			$this->assertTrue(is_string($entry) && strpos($entry, '=') !== false,
 				'the edit plugin addition entry ' . var_export($entry, true) . ' names a command');
 		}
+	}
+
+	/**
+	 * installSettingsFor() with correctDirectory() answered, so an add reaches
+	 * the point where it builds a payload.
+	 */
+	private function installAddSettingsFor($iVersion)
+	{
+		$settings = $this->installSettingsFor($iVersion);
+		$reflection = new ReflectionClass('AdditionCallerSettings');
+		$add = $reflection->newInstanceWithoutConstructor();
+		foreach (['iVersion', 'apiVersion', 'aliases', 'directory'] as $field) {
+			$add->{$field} = $settings->{$field};
+		}
+		$property = new ReflectionProperty('rTorrentSettings', 'theSettings');
+		$property->setAccessible(true);
+		$property->setValue(null, $add);
+		return $add;
+	}
+
+	private function takeLog()
+	{
+		$log = file_exists($this->logFile) ? file_get_contents($this->logFile) : '';
+		@unlink($this->logFile);
+		return $log;
+	}
+
+	/** What one add would have sent, for a given addition list. */
+	private function payloadFor($addition)
+	{
+		$this->takeLog();
+		rTorrent::sendTorrent(new Torrent($this->torrentFile), true, true,
+			null, null, true, false, true, $addition);
+		return $this->takeLog();
+	}
+
+	/**
+	 * The addition the named file builds, as the file builds it: the element
+	 * expressions are read out of the source and each one is evaluated through
+	 * the same getCmd() the caller calls, so the list moves with both the
+	 * caller and the alias table.
+	 */
+	private function additionBuiltBy($file)
+	{
+		$scanner = new TorrentAdditionSourceScanner($this->repoRoot());
+		$addition = [];
+		$unresolved = [];
+		$found = false;
+		foreach ($scanner->callSites() as $site) {
+			if ($site['file'] !== $file || !count($site['elements'])) {
+				continue;
+			}
+			$found = true;
+			foreach ($site['elements'] as $element) {
+				$name = TorrentAdditionSourceScanner::commandName($element);
+				if ($name === null) {
+					$unresolved[] = $element['expr'] . ' -- ' . $element['reason'];
+					continue;
+				}
+				// The value each element carries is the caller's runtime data
+				// and is not what the guard reads; the command name is.
+				$addition[] = $name . '=test-value';
+			}
+		}
+		return ['found' => $found, 'addition' => $addition, 'unresolved' => $unresolved];
+	}
+
+	/**
+	 * One caller, under every alias table: its addition is readable, every
+	 * element passes the guard, and the list as a whole passes.
+	 */
+	private function assertCallerSurvivesTheGuard($file, $note)
+	{
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			$this->installSettingsFor($iVersion);
+			$built = $this->additionBuiltBy($file);
+
+			$this->assertTrue($built['found'],
+				$file . ' is found building an addition (' . $note . ')');
+			$this->assertTrue($built['unresolved'] === [],
+				'on rtorrent ' . $version . ' every element ' . $file . ' builds can be read'
+				. (count($built['unresolved'])
+					? '; unreadable: ' . implode(' | ', $built['unresolved']) : ''));
+
+			$refused = [];
+			foreach ($built['addition'] as $entry) {
+				if (!rTorrent::isValidAddition($entry)) {
+					$refused[] = $entry;
+				}
+			}
+			$this->assertTrue($refused === [],
+				'on rtorrent ' . $version . ' the guard accepts every addition ' . $file
+				. ' builds' . (count($refused) ? '; refused: ' . implode(', ', $refused) : ''));
+			$this->assertTrue($this->areValidAdditions($built['addition']) === true,
+				'on rtorrent ' . $version . ' the whole list ' . $file . ' passes survives '
+				. 'areValidAdditions(), which drops the add on one refused entry');
+		}
+	}
+
+	// ---- the checker's builder, called outright --------------------------
+
+	/**
+	 * plugins/rutracker_check/check.php is declarations and one
+	 * eval(FileUtil::getPluginConf()), so the class body is taken out of it
+	 * and evaluated here -- with the real getCmd(), unlike
+	 * tests/plugins/rutracker_check/CheckerTest.php, which stubs getCmd() to
+	 * the identity and so cannot see an alias problem at all.
+	 */
+	private function loadChecker()
+	{
+		if (class_exists('ruTrackerChecker', false)) {
+			return;
+		}
+		$source = file_get_contents($this->repoRoot() . '/plugins/rutracker_check/check.php');
+		$offset = strpos($source, 'class ruTrackerChecker');
+		if ($offset === false) {
+			throw new RuntimeException('ruTrackerChecker was not found in check.php');
+		}
+		eval(substr($source, $offset));
+	}
+
+	private function buildReplacementAddition($connectionSeed, $throttle, $ratioViews, $existingViews)
+	{
+		$this->loadChecker();
+		$method = new ReflectionMethod('ruTrackerChecker', 'buildReplacementAddition');
+		$method->setAccessible(true);
+		return $method->invoke(null, $connectionSeed, $throttle, $ratioViews, $existingViews,
+			constant('ruTrackerChecker::STE_UPDATED'), 'marker-value');
 	}
 }

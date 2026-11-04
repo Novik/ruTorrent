@@ -6,7 +6,7 @@ class ffmpegSettings
 {
 	public $hash = "ffmpeg.dat";
 	public $modified = false;
-	public $data = array(
+	public $data = [
 		'exusewidth'=>0,
 		'exfrmwidth'=>320,
 		'exfrmcount'=>3,
@@ -14,24 +14,24 @@ class ffmpegSettings
 		'exfrminterval'=>5,
 		'explayinterval'=>3,
 		'exformat'=>0,
-		);
+		];
 	// The frame number reaches this from a request: the name it builds must
 	// stay one entry inside the task directory.
-	static public function frameName( $dir, $no, $isPNG )
+	public static function frameName( $dir, $no, $isPNG )
 	{
 		return( $dir.'/frame'.intval($no).($isPNG ? '.png' : '.jpg') );
 	}
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new ffmpegSettings();
 		if($cache->get($rt))
 		{
-			if(!array_key_exists('exusewidth',$rt->data))
-				$rt->data['exusewidth']=0;
-			if(!array_key_exists('exformat',$rt->data))
-				$rt->data['exformat']=0;
+			if(!array_key_exists('exusewidth',$rt->data)) {
+				$rt->data['exusewidth']=0; }
+			if(!array_key_exists('exformat',$rt->data)) {
+				$rt->data['exformat']=0; }
 		}
 		return($rt);
 	}
@@ -50,12 +50,12 @@ class ffmpegSettings
 		{
 			$val = isset($_REQUEST[$name]) ? intval($_REQUEST[$name]) : 0;
 		}
-		if($this->data['exfrminterval']<=0)
-			$this->data['exfrminterval'] = 5;
-		if($this->data['exfrmcount']<=0)
-			$this->data['exfrmcount'] = 3;
-		if($this->data['exfrmwidth']<=32)
-			$this->data['exfrmwidth'] = 128;
+		if($this->data['exfrminterval']<=0) {
+			$this->data['exfrminterval'] = 5; }
+		if($this->data['exfrmcount']<=0) {
+			$this->data['exfrmcount'] = 3; }
+		if($this->data['exfrmwidth']<=32) {
+			$this->data['exfrmwidth'] = 128; }
                 $this->store();
 		return($this->get());
 	}

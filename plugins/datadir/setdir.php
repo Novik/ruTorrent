@@ -1,7 +1,7 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
 # Script arguments are:
 # 0: script name
@@ -11,8 +11,8 @@ if( !chdir( dirname( __FILE__) ) )
 # 4: flag, "1" means "move datafiles"
 # 5: flag, "1" means "fast resume"
 # 6: username
-if( count( $argv ) > 6 )
-	$_SERVER['REMOTE_USER'] = $argv[6];
+if( count( $argv ) > 6 ) {
+	$_SERVER['REMOTE_USER'] = $argv[6]; }
 
 require_once( '../../php/xmlrpc.php' );
 require_once( './util_setdir.php' );
@@ -25,7 +25,7 @@ rtSemLock( $DataDir_Sem );
 function Debug( $str )
 {
 	global $datadir_debug_enabled;
-	if( $datadir_debug_enabled ) rtDbg( "SetDir", $str );
+	if( $datadir_debug_enabled ) { rtDbg( "SetDir", $str ); }
 }
 
 Debug( "" );

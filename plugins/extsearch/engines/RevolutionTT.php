@@ -2,8 +2,8 @@
 
 class RevolutionTTEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array(
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
+	public $categories = [
 		'All'=>'&cat=0',
 		'Anime'=>'&cat=23',
 		'Appz/Misc'=>'&cat=22',
@@ -35,8 +35,8 @@ class RevolutionTTEngine extends commonEngine
 		'XXX'=>'&cat=9',
 		'XXX/0DAY'=>'&cat=49',
 		'XXX/DVDR'=>'&cat=47',
-		'XXX/HD'=>'&cat=48'
-		);
+		'XXX/HD'=>'&cat=48',
+		];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -50,24 +50,24 @@ class RevolutionTTEngine extends commonEngine
 			$this->unconfiguredOriginEntry('RevolutionTT','revolutionTTOrigin',$ret);
 			return;
 		}
-		if($useGlobalCats)
-			$categories = array(
+		if($useGlobalCats) {
+			$categories = [
 				'all'=>'&cat=0',
 				'anime'=>'&cat=23',
-				'books'=>'&cat=36'
-				);
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+				'books'=>'&cat=36',
+				]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&titleonly=1&sort=7&type=desc&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing Found!</h2>")!==false)
-				|| (strpos($cli->results, '>Login</title>')!==false))
-				break;
+				|| (strpos($cli->results, '>Login</title>')!==false)) {
+				break; }
 			$res = preg_match_all('`<img border="0" src="/pic/caticons/.*" alt="(?P<cat>.*)" />.*'.
 				'<td .*><a .*>(?P<name>.*)</a>.*</td>.*'.
 				'<td .*>.*</td>.*'.
@@ -103,13 +103,13 @@ class RevolutionTTEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

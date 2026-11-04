@@ -59,8 +59,8 @@ function image_name($prefix, $req_field)
 	$res = null;
 	if (isset($_REQUEST[$req_field])) {
 		$dir = $basepath . '/' . $prefix;
-		if (!is_dir($dir))
-			FileUtil::makeDirectory($dir);
+		if (!is_dir($dir)) {
+			FileUtil::makeDirectory($dir); }
 		$name = rawurldecode($_REQUEST[$req_field]);
 		$name = get_alias(function_exists('mb_strtolower')
 			? mb_strtolower($name, 'utf-8')
@@ -70,16 +70,16 @@ function image_name($prefix, $req_field)
 			|| strlen($name) > 200
 			|| strpos($res, '/./') !== false
 			|| strpos($res, '/../') !== false
-			|| strpos($res, '//') !== false)
+			|| strpos($res, '//') !== false) {
 			// restrict to sane sub-directory paths
-			bad('Invalid ' . $req_field . ': '.$name);
+			bad('Invalid ' . $req_field . ': '.$name); }
 	}
 	return $res;
 }
 
 $png_name = image_name('labels', 'label');
-if ($png_name === null)
-	$png_name = image_name('trackers', 'tracker');
+if ($png_name === null) {
+	$png_name = image_name('trackers', 'tracker'); }
 
 if ($png_name !== null) {
 	$targetdir = dirname($png_name);
@@ -90,18 +90,18 @@ if ($png_name !== null) {
 			$targetdir = dirname($targetdir);
 		}
 		exit;
-	} else if (isset($_POST['upload'])) {
+	} elseif (isset($_POST['upload'])) {
 		$filename = $_FILES['uploadfile']["name"];
 		$tempname = $_FILES['uploadfile']["tmp_name"];
 
-		if (!is_dir($targetdir))
-			FileUtil::makeDirectory($targetdir);
-		if (!is_dir($targetdir))
-			bad('Failed to create dir: ' . $targetdir);
-		if (mime_content_type($tempname) !== 'image/png')
-			bad('Only image/png supported!');
-		if (!move_uploaded_file($tempname, $png_name))
-			bad('Image upload failed!');
+		if (!is_dir($targetdir)) {
+			FileUtil::makeDirectory($targetdir); }
+		if (!is_dir($targetdir)) {
+			bad('Failed to create dir: ' . $targetdir); }
+		if (mime_content_type($tempname) !== 'image/png') {
+			bad('Only image/png supported!'); }
+		if (!move_uploaded_file($tempname, $png_name)) {
+			bad('Image upload failed!'); }
 		exit;
 	} else {
 		try_send_image($png_name);
@@ -128,10 +128,10 @@ if ($png_name !== null) {
 				@$client->fetchComplex($url);
 				if ($client->status == 200) {
 					file_put_contents($ico_name, $client->results);
-					if (strpos(mime_content_type($ico_name), "image/")===false)
-						@unlink($ico_name);
-					else
-						try_send_image($ico_name, 'image/x-icon');
+					if (strpos(mime_content_type($ico_name), "image/")===false) {
+						@unlink($ico_name); }
+					else {
+						try_send_image($ico_name, 'image/x-icon'); }
 				}
 			}
 		}

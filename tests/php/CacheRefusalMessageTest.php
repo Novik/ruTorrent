@@ -16,7 +16,7 @@ class RefusalTargetPayload
 {
 	public $hash = 'refusal-target.dat';
 	public $modified = false;
-	public $rows = array();
+	public $rows = [];
 	public $held = null;
 }
 
@@ -27,9 +27,9 @@ class RefusalDeclaringPayload
 	public $modified = false;
 	public $held = null;
 
-	static public function cacheClasses()
+	public static function cacheClasses()
 	{
-		return array('RefusalHeldPayload');
+		return ['RefusalHeldPayload'];
 	}
 }
 
@@ -67,16 +67,6 @@ class CacheRefusalMessageTest extends TestCase
 		@rmdir($_ENV['RU_PROFILE_PATH']);
 	}
 
-	private function plant($name, $payload)
-	{
-		file_put_contents($this->settings . '/' . $name, $payload);
-	}
-
-	private function logged()
-	{
-		return trim((string)@file_get_contents($this->log));
-	}
-
 	public function testTheRefusalNamesTheClassTheFileMayNotHold()
 	{
 		// setUp() runs once per file, so each case starts from an empty log.
@@ -85,7 +75,7 @@ class CacheRefusalMessageTest extends TestCase
 		// object of a class it does not declare -- the shape log_history.dat
 		// had before #3333.
 		$stored = new RefusalTargetPayload();
-		$stored->rows = array('a');
+		$stored->rows = ['a'];
 		$stored->held = new RefusalHeldPayload();
 		$stored->held->name = 'nested';
 		$this->assertTrue((new rCache())->set($stored) === true, 'the file was written');
@@ -113,5 +103,15 @@ class CacheRefusalMessageTest extends TestCase
 
 		$this->assertTrue($ok === true, 'a declared class loads: ' . $this->logged());
 		$this->assertEquals('', $this->logged(), 'and nothing is logged');
+	}
+
+	private function plant($name, $payload)
+	{
+		file_put_contents($this->settings . '/' . $name, $payload);
+	}
+
+	private function logged()
+	{
+		return trim((string)@file_get_contents($this->log));
 	}
 }

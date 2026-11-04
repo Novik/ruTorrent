@@ -2,8 +2,8 @@
 
 class GimmePeersEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.gimmepeers.com|pass=XXX;uid=XXX;" );
-	public $categoryNames = array(
+	public $defaults = [ "public"=>false, "page_size"=>35, "cookies"=>"www.gimmepeers.com|pass=XXX;uid=XXX;" ];
+	public $categoryNames = [
 		'1' => 'Anime',
 		'2' => 'App-MAC',
 		'3' => 'Tutorials',
@@ -34,9 +34,9 @@ class GimmePeersEngine extends commonEngine
 		'28' => 'Sports',
 		'29' => 'Books (a)',
 		'49' => 'xXx-SD',
-		'50' => 'xXx-HD'
-	);
-	public $categories = array( 'all'=>'',
+		'50' => 'xXx-HD',
+	];
+	public $categories = [ 'all'=>'',
 		#misc
         '|--Misc' => '&c1=1&c8=1&c28=1&c3=1',
 		'|--|--Anime' => '&c1=1',
@@ -82,8 +82,8 @@ class GimmePeersEngine extends commonEngine
 		#pr0n
         '|--pr0n' => '&c50=1&c49=1',
 		'|--|--xXx-HD' => '&c50=1',
-		'|--|--xXx-SD' => '&c49=1'
-    );
+		'|--|--xXx-SD' => '&c49=1',
+    ];
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
 	{
@@ -91,7 +91,7 @@ class GimmePeersEngine extends commonEngine
 		$url = 'https://www.gimmepeers.com';
 		if($useGlobalCats) {
 		    error_log("torrentday: use global cats: " . $cat);
-            $categories = array(
+            $categories = [
                 'all' => '',
                 'movies' =>
                     '&c13=1' .
@@ -121,7 +121,7 @@ class GimmePeersEngine extends commonEngine
                 'software' => '&c27=1' . '&c2=1' . '&c4=1' . '&c6=1',
                 'books' => '&c29=1' . '&c5=1',
 
-            );
+            ];
         } else {
 		    error_log("gimmepeers uses local category " . $cat);
 			$categories = &$this->categories;
@@ -139,8 +139,8 @@ class GimmePeersEngine extends commonEngine
 			error_log("gimmepeers url: ".$finalUrl);
             $cli = $this->fetch($finalUrl);
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
-				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
-				break;
+				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false)) {
+				break; }
 			$data = $cli->results;
 
 			$res = preg_match_all('`<td><a href="browse.php\?cat=(?P<cat>[^"]*)"><img.*'.
@@ -179,27 +179,27 @@ class GimmePeersEngine extends commonEngine
 						if($item["seeds"] > 0 || $item["peers"] > 0) {
                             $ret[$link] = $item;
                             $added++;
-                            if($added>=$limit)
-                                return;
+                            if($added>=$limit) {
+                                return; }
                         }
 					}
 				}
 			}
-			else
-				error_log("gimmepeers returned no matches");
+			else {
+				error_log("gimmepeers returned no matches"); }
 				break;
 		}
 	}
 
-	function clearDate($inputDate) {
+	public function clearDate($inputDate) {
         $result = $inputDate;
         // removes potential content before the date starts (at the moment, this is mainly 720p, 1080p, etc.)
         do {
             $pipePosition = strpos($result, '|');
-            if($pipePosition !== FALSE) {
+            if($pipePosition !== false) {
                 $result = trim(substr($result, $pipePosition+1));
             }
-        } while($pipePosition !== FALSE);
+        } while($pipePosition !== false);
         return $result;
     }
 }

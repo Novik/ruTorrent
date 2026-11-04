@@ -14,40 +14,39 @@ class rXMLRPCParam
 	public function __construct( $aType, $aValue )
 	{
 		$this->type = $aType;
-		if(($this->type=="i8") || ($this->type=="i4"))
-			$this->value = self::integerText($this->type,$aValue);
-		else
-			$this->value = htmlspecialchars($aValue,ENT_NOQUOTES,"UTF-8");
+		if(($this->type=="i8") || ($this->type=="i4")) {
+			$this->value = self::integerText($this->type,$aValue); }
+		else {
+			$this->value = htmlspecialchars($aValue,ENT_NOQUOTES,"UTF-8"); }
 	}
 
 	// $value as the text of an XMLRPC $type, a float rounded half away from
 	// zero, or null if it is not a number that type holds. INF, NAN and a
 	// float beyond 64 bits have no such text: number_format() would write
 	// them as "inf", "nan" and a run of digits, none of which is an integer.
-	static public function integerText( $type, $value )
+	public static function integerText( $type, $value )
 	{
-		if(is_string($value) && is_numeric($value))
-			$value = $value + 0;
+		if(is_string($value) && is_numeric($value)) {
+			$value = $value + 0; }
 		if(is_float($value))
 		{
-			if(!is_finite($value))
-				return(null);
+			if(!is_finite($value)) {
+				return(null); }
 			$value = round($value);
 			// -2^63 and 2^63 are exact as floats, and the largest float
 			// below 2^63 is 2^63-1024.
-			if(($value<-9223372036854775808.0) || ($value>=9223372036854775808.0))
-				return(null);
+			if(($value<-9223372036854775808.0) || ($value>=9223372036854775808.0)) {
+				return(null); }
 			$text = number_format($value,0,'.','');
 		}
-		else
-		if(is_int($value))
+		elseif(is_int($value)) {
 			// Not number_format(), which before PHP 8.3 takes a float and
 			// turns PHP_INT_MAX into 2^63.
-			$text = strval($value);
-		else
-			return(null);
-		if(($type=="i4") && (($value<XMLRPC_MIN_I4) || ($value>XMLRPC_MAX_I4)))
-			return(null);
+			$text = strval($value); }
+		else {
+			return(null); }
+		if(($type=="i4") && (($value<XMLRPC_MIN_I4) || ($value>XMLRPC_MAX_I4))) {
+			return(null); }
 		return($text);
 	}
 }
@@ -68,106 +67,106 @@ class rXMLRPCCommand
 	// of the 1001 names system.listMethods answers with on 0.9.8, not one
 	// carries another character. Anything else is refused rather than escaped,
 	// because escaping it would only send a name no daemon answers to.
-	const NAME_PATTERN = '/^[a-z0-9_.]+$/i';
+	public const NAME_PATTERN = '/^[a-z0-9_.]+$/i';
 
 	public $command;
 	public $params;
 
-	static public function isValidCommandName( $name )
-	{
-		return(is_string($name) && (preg_match(self::NAME_PATTERN,$name)===1));
-	}
-
 	public function __construct( $cmd, $args = null )
 	{
 		$this->command = getCmd($cmd);
-		if(!self::isValidCommandName($this->command))
-			throw new rXMLRPCInvalidCommandName($this->command);
-		$this->params = array();
+		if(!self::isValidCommandName($this->command)) {
+			throw new rXMLRPCInvalidCommandName($this->command); }
+		$this->params = [];
 		rTorrentSettings::get()->patchDeprecatedCommand($this,$cmd);
 		if($args!==null)
 		{
-		        if(is_array($args))
-				foreach($args as $prm)
-					$this->addParameter($prm);
-			else
-				$this->addParameter($args);
+		        if(is_array($args)) {
+				foreach($args as $prm) {
+					$this->addParameter($prm); } }
+			else {
+				$this->addParameter($args); }
 		}
+	}
+
+	public static function isValidCommandName( $name )
+	{
+		return(is_string($name) && (preg_match(self::NAME_PATTERN,$name)===1));
 	}
 
 	public function addParameters( $args )
 	{
 		if($args!==null)
 		{
-			if(is_array($args))
-				foreach($args as $prm)
-					$this->addParameter($prm);
-			else
-				$this->addParameter($args);
+			if(is_array($args)) {
+				foreach($args as $prm) {
+					$this->addParameter($prm); } }
+			else {
+				$this->addParameter($args); }
 		}
 	}
 
 	public function addParameter( $aValue, $aType = null )
 	{
-		if($aType===null)
-			$aType = self::getPrmType( $aValue );
+		if($aType===null) {
+			$aType = self::getPrmType( $aValue ); }
 		$this->params[] = new rXMLRPCParam( $aType, $aValue );
 	}
 
-	static protected function getPrmType( $prm )
+	protected static function getPrmType( $prm )
 	{
-		if(is_int($prm) && ($prm>=XMLRPC_MIN_I4) && ($prm<=XMLRPC_MAX_I4))
-			return('i4');
-		if(is_float($prm))
-			return('i8');
+		if(is_int($prm) && ($prm>=XMLRPC_MIN_I4) && ($prm<=XMLRPC_MAX_I4)) {
+			return('i4'); }
+		if(is_float($prm)) {
+			return('i8'); }
 		return('string');
 	}
 }
 
 class rXMLRPCRequest
 {
-	protected $commands = array();
-	protected $content = "";
-	protected $commandOffset = 0;
-	public $i8s = array();
-	public $strings = array();
-	public $val = array();
+	public $i8s = [];
+	public $strings = [];
+	public $val = [];
 	public $fault = false;
 	public $faultString = '';
 	// The transport's classified failure when it returned no answer, else null.
 	public $transportFailure = null;
 	public $parseByTypes = false;
 	public $important = true;
+	protected $commands = [];
+	protected $content = "";
+	protected $commandOffset = 0;
 
 	public function __construct( $cmds = null )
 	{
 		if($cmds)
 		{
-		        if(is_array($cmds))
-				foreach($cmds as $cmd)
-					$this->addCommand($cmd);
-			else
-				$this->addCommand($cmds);
+		        if(is_array($cmds)) {
+				foreach($cmds as $cmd) {
+					$this->addCommand($cmd); } }
+			else {
+				$this->addCommand($cmds); }
 		}
 	}
 
 	public static function send( $data, $trusted = true, &$failure = null, $responseMode = rSCGITransport::RESPONSE_RAW )
 	{
 		global $rpcLogCalls;
-		if($rpcLogCalls)
-			FileUtil::toLog($data);
-		$result = rSCGITransport::sendConfigured($data, $trusted, array('responseMode' => $responseMode,
-			'temporaryDirectory' => FileUtil::getTempDirectory()), $failure);
+		if($rpcLogCalls) {
+			FileUtil::toLog($data); }
+		$result = rSCGITransport::sendConfigured($data, $trusted, ['responseMode' => $responseMode,
+			'temporaryDirectory' => FileUtil::getTempDirectory()], $failure);
 		if($result === null)
 		{
 			// A stopped daemon would add a line on every WebUI poll, which
 			// already answers "Could not reach rTorrent"; log the other failures.
-			if($failure !== 'connect-failed')
-				FileUtil::toLog('rXMLRPCRequest: '.rSCGITransport::describeFailure($failure));
+			if($failure !== 'connect-failed') {
+				FileUtil::toLog('rXMLRPCRequest: '.rSCGITransport::describeFailure($failure)); }
 			$result = false;
 		}
-		if($rpcLogCalls)
-			FileUtil::toLog($result);
+		if($rpcLogCalls) {
+			FileUtil::toLog($result); }
 		return($result);
 	}
 
@@ -185,17 +184,17 @@ class rXMLRPCRequest
 	 * quoting escapes the escaping and rtorrent is given a path the download
 	 * never had. This returns the value as the daemon reported it.
 	 */
-	static public function unescapeValue( $value )
+	public static function unescapeValue( $value )
 	{
-		if(!is_string($value) || (strpos($value,'\\')===false))
-			return($value);
+		if(!is_string($value) || (strpos($value,'\\')===false)) {
+			return($value); }
 		$out = '';
 		$len = strlen($value);
 		for($i = 0; $i<$len; $i++)
 		{
 			if(($value[$i]==='\\') && (($i+1)<$len) &&
-				(($value[$i+1]==='\\') || ($value[$i+1]==='"')))
-				$i++;
+				(($value[$i+1]==='\\') || ($value[$i+1]==='"'))) {
+				$i++; }
 			$out .= $value[$i];
 		}
 		return($out);
@@ -211,45 +210,6 @@ class rXMLRPCRequest
 		return(count($this->commands));
 	}
 
-	protected function makeNextCall()
-	{
-		$this->fault = false;
-		$this->content = "";
-		$cnt = count($this->commands) - $this->commandOffset;
-		if($cnt>0)
-		{
-			$this->content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
-			if($cnt==1)
-			{
-				$cmd = $this->commands[$this->commandOffset++];
-	        		$this->content .= "{$cmd->command}</methodName><params>\r\n";
-	        		foreach($cmd->params as &$prm)
-	        			$this->content .= "<param><value><{$prm->type}>{$prm->value}</{$prm->type}></value></param>\r\n";
-		        }
-			else
-			{
-				$maxContentSize = rTorrentSettings::get()->maxContentSize();
-				$this->content .= "system.multicall</methodName><params><param><value><array><data>";
-				for(; $this->commandOffset < count($this->commands); $this->commandOffset++)
-				{
-					$cmd = $this->commands[$this->commandOffset];
-					$cmdStr = "\r\n<value><struct><member><name>methodName</name><value><string>".
-						"{$cmd->command}</string></value></member><member><name>params</name><value><array><data>";
-					foreach($cmd->params as &$prm)
-						$cmdStr .= "\r\n<value><{$prm->type}>{$prm->value}</{$prm->type}></value>";
-					$cmdStr .= "\r\n</data></array></value></member></struct></value>";
-					if($this->commandOffset > count($this->commands) - $cnt and
-						strlen($this->content) + strlen($cmdStr) + 35 + 22 > $maxContentSize)
-						break;
-					$this->content .= $cmdStr;
-				}
-				$this->content .= "\r\n</data></array></value></param>";
-			}
-			$this->content .= "</params></methodCall>";
-		}
-		return($cnt>0);
-	}
-
 	public function addCommand( $cmd )
 	{
 		$this->commands[] = $cmd;
@@ -259,36 +219,36 @@ class rXMLRPCRequest
 	{
 	        $ret = false;
 		$this->transportFailure = null;
-		$this->i8s = array();
-		$this->strings = array();
-		$this->val = array();
+		$this->i8s = [];
+		$this->strings = [];
+		$this->val = [];
 		// Every name is checked before the first payload is built, so a batch
 		// holding one unusable name sends no part of itself.
-		foreach($this->commands as $cmd)
+		foreach($this->commands as $cmd) {
 			if(!rXMLRPCCommand::isValidCommandName($cmd->command))
 			{
 				$this->fault = true;
 				$this->faultString = 'Refused: not an rtorrent command name.';
-				$this->commands = array();
+				$this->commands = [];
 				return(false);
-			}
+			} }
 		// So is every number, for the same reason.
-		foreach($this->commands as $cmd)
-			foreach($cmd->params as $prm)
+		foreach($this->commands as $cmd) {
+			foreach($cmd->params as $prm) {
 				if((($prm->type=="i8") || ($prm->type=="i4")) && ($prm->value===null))
 				{
 					$this->fault = true;
 					$this->faultString = 'Refused: not a number an XMLRPC integer can hold.';
-					$this->commands = array();
+					$this->commands = [];
 					return(false);
-				}
+				} } }
 		rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
 		$this->commandOffset = 0;
 		while($this->makeNextCall())
 		{
 			$answer = self::send($this->content,$trusted,$failure);
-			if($answer === false)
-				$this->transportFailure = $failure;
+			if($answer === false) {
+				$this->transportFailure = $failure; }
 			if(($answer === false) && ($failure !== 'connect-failed'))
 			{
 				$this->fault = true;
@@ -306,7 +266,7 @@ class rXMLRPCRequest
 						foreach($strings[1] as $str)
 						{
 							$this->strings[] = html_entity_decode(
-								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
+								str_replace( ["\\","\""], ["\\\\","\\\""], $str ),
 	 							ENT_COMPAT,"UTF-8");
 						}
 						$this->i8s = $this->i8s[1];
@@ -321,7 +281,7 @@ class rXMLRPCRequest
 						foreach($response[2] as $str)
 						{
 							$this->val[] = html_entity_decode(
-								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
+								str_replace( ["\\","\""], ["\\\\","\\\""], $str ),
 	 							ENT_COMPAT,"UTF-8");
 						}
 						$ret = true;
@@ -341,33 +301,76 @@ class rXMLRPCRequest
 						}
 						break;
 					}
-				} else break;
+				} else { break; }
 			}
 			else
 			{
 				// Cut short, or nothing at all: whatever it holds, and
 				// whatever earlier calls of a split multicall returned, is
 				// not the answer to this request.
-				$this->i8s = array();
-				$this->strings = array();
-				$this->val = array();
+				$this->i8s = [];
+				$this->strings = [];
+				$this->val = [];
 				$ret = false;
 				break;
 			}
 		}
 		$this->content = "";
-		$this->commands = array();
+		$this->commands = [];
 		return($ret);
+	}
+	public function success($trusted = true)
+	{
+		return($this->run($trusted) && !$this->fault);
+	}
+
+	protected function makeNextCall()
+	{
+		$this->fault = false;
+		$this->content = "";
+		$cnt = count($this->commands) - $this->commandOffset;
+		if($cnt>0)
+		{
+			$this->content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
+			if($cnt==1)
+			{
+				$cmd = $this->commands[$this->commandOffset++];
+	        		$this->content .= "{$cmd->command}</methodName><params>\r\n";
+	        		foreach($cmd->params as &$prm) {
+	        			$this->content .= "<param><value><{$prm->type}>{$prm->value}</{$prm->type}></value></param>\r\n"; }
+		        }
+			else
+			{
+				$maxContentSize = rTorrentSettings::get()->maxContentSize();
+				$this->content .= "system.multicall</methodName><params><param><value><array><data>";
+				for(; $this->commandOffset < count($this->commands); $this->commandOffset++)
+				{
+					$cmd = $this->commands[$this->commandOffset];
+					$cmdStr = "\r\n<value><struct><member><name>methodName</name><value><string>".
+						"{$cmd->command}</string></value></member><member><name>params</name><value><array><data>";
+					foreach($cmd->params as &$prm) {
+						$cmdStr .= "\r\n<value><{$prm->type}>{$prm->value}</{$prm->type}></value>"; }
+					$cmdStr .= "\r\n</data></array></value></member></struct></value>";
+					if($this->commandOffset > count($this->commands) - $cnt and
+						strlen($this->content) + strlen($cmdStr) + 35 + 22 > $maxContentSize) {
+						break; }
+					$this->content .= $cmdStr;
+				}
+				$this->content .= "\r\n</data></array></value></param>";
+			}
+			$this->content .= "</params></methodCall>";
+		}
+		return($cnt>0);
 	}
 
 	// rtorrent ends every answer with </methodResponse>: built with xmlrpc-c
 	// (as 0.9.8 is) it adds a CRLF, built with tinyxml2 (as 0.16.25 is)
 	// nothing. Even a complete SCGI frame may contain unfinished XML. Values
 	// before the cut must not pass for a complete, shorter result.
-	static protected function isCompleteAnswer($answer)
+	protected static function isCompleteAnswer($answer)
 	{
-		if(!is_string($answer))
-			return(false);
+		if(!is_string($answer)) {
+			return(false); }
 		$end = strrpos($answer,'</methodResponse>');
 		return(($end!==false) &&
 			(trim(substr($answer,$end+strlen('</methodResponse>')))===''));
@@ -377,16 +380,12 @@ class rXMLRPCRequest
 	// fit, a path outside the permitted tree. Keep it so the caller can pass the
 	// reason on instead of reporting that something unspecified went wrong. Also
 	// matches a fault nested in a system.multicall array.
-	static protected function parseFaultString($answer)
+	protected static function parseFaultString($answer)
 	{
 		if(preg_match("/<name>faultString<\/name>\s*<value>\s*(?:<string>)?(.*?)(?:<\/string>)?\s*<\/value>/s",
-			$answer,$matches))
-			return(trim(html_entity_decode($matches[1],ENT_COMPAT,"UTF-8")));
+			$answer,$matches)) {
+			return(trim(html_entity_decode($matches[1],ENT_COMPAT,"UTF-8"))); }
 		return('');
-	}
-	public function success($trusted = true)
-	{
-		return($this->run($trusted) && !$this->fault);
 	}
 }
 

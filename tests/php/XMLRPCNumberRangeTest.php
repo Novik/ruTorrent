@@ -21,7 +21,7 @@ require_once(__DIR__ . '/FakeRtorrentDaemon.php');
  */
 class RecordingNumberRequest extends rXMLRPCRequest
 {
-	public $payloads = array();
+	public $payloads = [];
 
 	protected function makeNextCall()
 	{
@@ -35,7 +35,7 @@ class RecordingNumberRequest extends rXMLRPCRequest
 
 class XMLRPCNumberRangeTest extends TestCase
 {
-	const REFUSAL = 'Refused: not a number an XMLRPC integer can hold.';
+	public const REFUSAL = 'Refused: not a number an XMLRPC integer can hold.';
 
 	private $previousSettings;
 	private $base;
@@ -47,7 +47,7 @@ class XMLRPCNumberRangeTest extends TestCase
 		$settings = $reflection->newInstanceWithoutConstructor();
 		$settings->iVersion = 0x904;
 		$settings->apiVersion = 0;
-		$settings->aliases = array();
+		$settings->aliases = [];
 
 		$property = $reflection->getProperty('theSettings');
 		$property->setAccessible(true);
@@ -74,6 +74,115 @@ class XMLRPCNumberRangeTest extends TestCase
 		$property->setValue(null, $this->previousSettings);
 		$this->stopDaemon();
 		$this->removeTree($this->base);
+	}
+
+	// ---- what is refused ------------------------------------------------
+
+	public function testNonFiniteNumbersAreRefused()
+	{
+		foreach ([INF, -INF, NAN] as $value) {
+			$this->assertRefused($value, null, 'float ' . $this->readable($value));
+		}
+	}
+
+	/** The value httprpc's setsettings makes out of v=1e400. */
+	public function testTheSetsettingsCastOfAnOverlongExponentIsRefused()
+	{
+		$this->assertRefused(floatval('1e400'), null, "floatval('1e400')");
+		$this->assertRefused(floatval('-1e400'), null, "floatval('-1e400')");
+	}
+
+	public function testFloatsBeyondTheI8RangeAreRefused()
+	{
+		foreach ([9223372036854775808.0, 1e19, 1e300,
+			-9223372036854777856.0, -1e19, -1e300] as $value) {
+			$this->assertRefused($value, null, 'float ' . $this->readable($value));
+		}
+	}
+
+	public function testAnExplicitI4OutsideItsRangeIsRefused()
+	{
+		$this->assertRefused(2147483648, 'i4', 'i4 2147483648');
+		$this->assertRefused(-2147483649, 'i4', 'i4 -2147483649');
+	}
+
+	public function testAnExplicitIntegerTypeOnSomethingElseIsRefused()
+	{
+		foreach (['abc', '', '1e400', 'inf', null, []] as $value) {
+			$this->assertRefused($value, 'i8', 'i8 ' . json_encode($value));
+		}
+	}
+
+	/**
+	 * Two commands take the system.multicall branch. One bad number there
+	 * stops the batch whole: the good member is not applied on its own.
+	 */
+	public function testOneBadNumberStopsTheWholeBatch()
+	{
+		$good = new rXMLRPCCommand('throttle.max_uploads.set', ['', 50]);
+		$bad = new rXMLRPCCommand('throttle.max_peers.normal.set', ['', INF]);
+		$result = $this->runCommands([$good, $bad]);
+		$this->assertTrue($result['threw'] === null, 'the batch does not throw');
+		$this->assertTrue(count($result['payloads']) === 0,
+			'nothing of the batch is built, got ' . json_encode($result['payloads']));
+		$this->assertEquals(self::REFUSAL, $result['faultString'],
+			'the batch carries the refusal');
+	}
+
+	// ---- what still has to work -----------------------------------------
+
+	public function testOrdinaryNumbersAreSentAsBefore()
+	{
+		$cases = [
+			[100, null, '<i4>100</i4>'],
+			[-1, null, '<i4>-1</i4>'],
+			[0, null, '<i4>0</i4>'],
+			[2147483647, null, '<i4>2147483647</i4>'],
+			// An int beyond i4 has always been sent as a string; not this change.
+			[3000000000, null, '<string>3000000000</string>'],
+			[100.0, null, '<i8>100</i8>'],
+			[1024.0 * 1024 * 1024 * 1024, null, '<i8>1099511627776</i8>'],
+			[1.5, null, '<i8>2</i8>'],
+			[-2.5, null, '<i8>-3</i8>'],
+			[-0.0, null, '<i8>0</i8>'],
+			[floatval('100'), null, '<i8>100</i8>'],
+			[floatval(''), null, '<i8>0</i8>'],
+			['1024', 'i8', '<i8>1024</i8>'],
+			[7, 'i8', '<i8>7</i8>'],
+			[PHP_INT_MAX, 'i8', '<i8>' . PHP_INT_MAX . '</i8>'],
+			[PHP_INT_MIN, 'i8', '<i8>' . PHP_INT_MIN . '</i8>'],
+			[9223372036854774784.0, null, '<i8>9223372036854774784</i8>'],
+			[-9223372036854775808.0, null, '<i8>-9223372036854775808</i8>'],
+			['abc', null, '<string>abc</string>'],
+			['inf', null, '<string>inf</string>'],
+		];
+		foreach ($cases as $case) {
+			list($value, $type, $expected) = $case;
+			$this->assertEquals($expected, $this->sentAs($value, $type),
+				$this->readable($value) . ($type ? ' as ' . $type : '') . ' is sent as ' . $expected
+					. ', got ' . $this->sentAs($value, $type));
+		}
+	}
+
+	public function testHttprpcRefusesAnInfiniteSettingAndSaysSo()
+	{
+		$output = $this->postToHttprpc('mode=setsettings&s=nmax_peers&v=1e400');
+		$sets = $this->setCallBodies();
+		$this->assertEquals(0, count($sets),
+			'the daemon is sent no set_max_peers call, got ' . json_encode($sets));
+		$this->assertTrue(strpos($output, self::REFUSAL) !== false,
+			'the answer carries the refusal, got ' . json_encode($output));
+	}
+
+	public function testHttprpcStillSendsAnOrdinarySetting()
+	{
+		$output = $this->postToHttprpc('mode=setsettings&s=nmax_peers&v=100');
+		$sets = $this->setCallBodies();
+		$this->assertEquals(1, count($sets), 'one set_max_peers call reaches the daemon');
+		$this->assertTrue((count($sets) === 1) && (strpos($sets[0], '<i8>100</i8>') !== false),
+			'carrying <i8>100</i8>, got ' . json_encode($sets));
+		$this->assertTrue(strpos($output, self::REFUSAL) === false,
+			'and nothing is refused, got ' . json_encode($output));
 	}
 
 	private function stopDaemon()
@@ -113,11 +222,11 @@ class XMLRPCNumberRangeTest extends TestCase
 		try {
 			$ran = $request->run();
 		} catch (Throwable $e) {
-			return array('threw' => get_class($e), 'ran' => null, 'fault' => null,
-				'faultString' => null, 'payloads' => $request->payloads);
+			return ['threw' => get_class($e), 'ran' => null, 'fault' => null,
+				'faultString' => null, 'payloads' => $request->payloads];
 		}
-		return array('threw' => null, 'ran' => $ran, 'fault' => $request->fault,
-			'faultString' => $request->faultString, 'payloads' => $request->payloads);
+		return ['threw' => null, 'ran' => $ran, 'fault' => $request->fault,
+			'faultString' => $request->faultString, 'payloads' => $request->payloads];
 	}
 
 	/** A set command carrying $value, typed the way addParameter() types it. */
@@ -139,7 +248,7 @@ class XMLRPCNumberRangeTest extends TestCase
 			$this->assertTrue(false, $label . ': building the command threw ' . $command);
 			return;
 		}
-		$result = $this->runCommands(array($command));
+		$result = $this->runCommands([$command]);
 		$this->assertTrue($result['threw'] === null,
 			$label . ': the run does not throw' . ($result['threw'] ? ' (threw ' . $result['threw'] . ')' : ''));
 		$this->assertTrue(count($result['payloads']) === 0,
@@ -157,7 +266,7 @@ class XMLRPCNumberRangeTest extends TestCase
 		if (is_string($command)) {
 			return 'threw ' . $command;
 		}
-		$result = $this->runCommands(array($command));
+		$result = $this->runCommands([$command]);
 		if (($result['threw'] !== null) || (count($result['payloads']) !== 1)) {
 			return 'not sent';
 		}
@@ -165,94 +274,6 @@ class XMLRPCNumberRangeTest extends TestCase
 			return 'no params';
 		}
 		return end($params[1]);
-	}
-
-	// ---- what is refused ------------------------------------------------
-
-	public function testNonFiniteNumbersAreRefused()
-	{
-		foreach (array(INF, -INF, NAN) as $value) {
-			$this->assertRefused($value, null, 'float ' . $this->readable($value));
-		}
-	}
-
-	/** The value httprpc's setsettings makes out of v=1e400. */
-	public function testTheSetsettingsCastOfAnOverlongExponentIsRefused()
-	{
-		$this->assertRefused(floatval('1e400'), null, "floatval('1e400')");
-		$this->assertRefused(floatval('-1e400'), null, "floatval('-1e400')");
-	}
-
-	public function testFloatsBeyondTheI8RangeAreRefused()
-	{
-		foreach (array(9223372036854775808.0, 1e19, 1e300,
-			-9223372036854777856.0, -1e19, -1e300) as $value) {
-			$this->assertRefused($value, null, 'float ' . $this->readable($value));
-		}
-	}
-
-	public function testAnExplicitI4OutsideItsRangeIsRefused()
-	{
-		$this->assertRefused(2147483648, 'i4', 'i4 2147483648');
-		$this->assertRefused(-2147483649, 'i4', 'i4 -2147483649');
-	}
-
-	public function testAnExplicitIntegerTypeOnSomethingElseIsRefused()
-	{
-		foreach (array('abc', '', '1e400', 'inf', null, array()) as $value) {
-			$this->assertRefused($value, 'i8', 'i8 ' . json_encode($value));
-		}
-	}
-
-	/**
-	 * Two commands take the system.multicall branch. One bad number there
-	 * stops the batch whole: the good member is not applied on its own.
-	 */
-	public function testOneBadNumberStopsTheWholeBatch()
-	{
-		$good = new rXMLRPCCommand('throttle.max_uploads.set', array('', 50));
-		$bad = new rXMLRPCCommand('throttle.max_peers.normal.set', array('', INF));
-		$result = $this->runCommands(array($good, $bad));
-		$this->assertTrue($result['threw'] === null, 'the batch does not throw');
-		$this->assertTrue(count($result['payloads']) === 0,
-			'nothing of the batch is built, got ' . json_encode($result['payloads']));
-		$this->assertEquals(self::REFUSAL, $result['faultString'],
-			'the batch carries the refusal');
-	}
-
-	// ---- what still has to work -----------------------------------------
-
-	public function testOrdinaryNumbersAreSentAsBefore()
-	{
-		$cases = array(
-			array(100, null, '<i4>100</i4>'),
-			array(-1, null, '<i4>-1</i4>'),
-			array(0, null, '<i4>0</i4>'),
-			array(2147483647, null, '<i4>2147483647</i4>'),
-			// An int beyond i4 has always been sent as a string; not this change.
-			array(3000000000, null, '<string>3000000000</string>'),
-			array(100.0, null, '<i8>100</i8>'),
-			array(1024.0 * 1024 * 1024 * 1024, null, '<i8>1099511627776</i8>'),
-			array(1.5, null, '<i8>2</i8>'),
-			array(-2.5, null, '<i8>-3</i8>'),
-			array(-0.0, null, '<i8>0</i8>'),
-			array(floatval('100'), null, '<i8>100</i8>'),
-			array(floatval(''), null, '<i8>0</i8>'),
-			array('1024', 'i8', '<i8>1024</i8>'),
-			array(7, 'i8', '<i8>7</i8>'),
-			array(PHP_INT_MAX, 'i8', '<i8>' . PHP_INT_MAX . '</i8>'),
-			array(PHP_INT_MIN, 'i8', '<i8>' . PHP_INT_MIN . '</i8>'),
-			array(9223372036854774784.0, null, '<i8>9223372036854774784</i8>'),
-			array(-9223372036854775808.0, null, '<i8>-9223372036854775808</i8>'),
-			array('abc', null, '<string>abc</string>'),
-			array('inf', null, '<string>inf</string>'),
-		);
-		foreach ($cases as $case) {
-			list($value, $type, $expected) = $case;
-			$this->assertEquals($expected, $this->sentAs($value, $type),
-				$this->readable($value) . ($type ? ' as ' . $type : '') . ' is sent as ' . $expected
-					. ', got ' . $this->sentAs($value, $type));
-		}
 	}
 
 	// ---- through the plugin that makes the float ------------------------
@@ -265,9 +286,9 @@ class XMLRPCNumberRangeTest extends TestCase
 	{
 		$root = realpath(__DIR__ . '/../..');
 		$this->stopDaemon();
-		$this->daemon = new FakeRtorrentDaemon(array(
-			array(5), array(5), array(5), array(5),
-		), $this->base . '/calls.log');
+		$this->daemon = new FakeRtorrentDaemon([
+			[5], [5], [5], [5],
+		], $this->base . '/calls.log');
 		$driver = $this->base . '/drive-httprpc.php';
 		file_put_contents($driver, "<?php\n"
 			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
@@ -284,7 +305,7 @@ class XMLRPCNumberRangeTest extends TestCase
 			. '$HTTP_RAW_POST_DATA = ' . var_export($query, true) . ";\n"
 			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
 			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver) . ' 2>&1', $output);
 		$this->daemon->stop();
 		return implode("\n", $output);
@@ -297,26 +318,5 @@ class XMLRPCNumberRangeTest extends TestCase
 		return array_values(array_filter($daemon->bodies(), function ($body) {
 			return strpos($body, 'set_max_peers') !== false;
 		}));
-	}
-
-	public function testHttprpcRefusesAnInfiniteSettingAndSaysSo()
-	{
-		$output = $this->postToHttprpc('mode=setsettings&s=nmax_peers&v=1e400');
-		$sets = $this->setCallBodies();
-		$this->assertEquals(0, count($sets),
-			'the daemon is sent no set_max_peers call, got ' . json_encode($sets));
-		$this->assertTrue(strpos($output, self::REFUSAL) !== false,
-			'the answer carries the refusal, got ' . json_encode($output));
-	}
-
-	public function testHttprpcStillSendsAnOrdinarySetting()
-	{
-		$output = $this->postToHttprpc('mode=setsettings&s=nmax_peers&v=100');
-		$sets = $this->setCallBodies();
-		$this->assertEquals(1, count($sets), 'one set_max_peers call reaches the daemon');
-		$this->assertTrue((count($sets) === 1) && (strpos($sets[0], '<i8>100</i8>') !== false),
-			'carrying <i8>100</i8>, got ' . json_encode($sets));
-		$this->assertTrue(strpos($output, self::REFUSAL) === false,
-			'and nothing is refused, got ' . json_encode($output));
 	}
 }

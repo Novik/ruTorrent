@@ -2,17 +2,17 @@
 
 class AnimeBytesEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
 
-	public $categories = array
-	(
+	public $categories = 
+	[
 		'all'=>'',
 		'Anime'=>'&filter_cat[1]=1',
 		'Printed Media'=>'&filter_cat[2]=1',
 		'Games'=>'&filter_cat[3]=1',
 		'Live Action'=>'&filter_cat[4]=1',
-		'Packs'=>'&filter_cat[5]=1'
-	);
+		'Packs'=>'&filter_cat[5]=1',
+	];
 
 
 
@@ -21,14 +21,14 @@ class AnimeBytesEngine extends commonEngine
 		$added = 0;
 		$url = 'https://animebytes.tv';
 
-		if($useGlobalCats)
-			$categories = array( 'all'=>'', 'anime'=>'&filter_cat[1]=1', 'books'=>'&filter_cat[2]=1', 'games'=>'&filter_cat[3]=1', 'live action'=>'&filter_cat[4]=1', 'packs'=>'&filter_cat[5]=1' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'', 'anime'=>'&filter_cat[1]=1', 'books'=>'&filter_cat[2]=1', 'games'=>'&filter_cat[3]=1', 'live action'=>'&filter_cat[4]=1', 'packs'=>'&filter_cat[5]=1' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 
 		for($pg = 1; $pg<10; $pg++)
@@ -37,8 +37,8 @@ class AnimeBytesEngine extends commonEngine
                         $cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&tags_type=1&order_by=time_added&way=desc&page='.$pg.$cat );
 
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
-				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
-				break;
+				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false)) {
+				break; }
 
 			$res = preg_match_all('/series.php\?id=(?P<desc>\d+)".*>(?P<name>.*)<\/a>.*'.
 				'\[<a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
@@ -67,14 +67,14 @@ class AnimeBytesEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
 
-                        if(!$itemsFound)
-                             break;
+                        if(!$itemsFound) {
+                             break; }
                 }
         }
 }

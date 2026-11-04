@@ -3,7 +3,7 @@
 require_once( dirname(__FILE__).'/../_task/task.php' );
 eval( FileUtil::getPluginConf( 'spectrogram' ) );
 
-$ret = array();
+$ret = [];
 if(isset($_REQUEST['cmd']))
 {
 	switch($_REQUEST['cmd'])
@@ -13,23 +13,23 @@ if(isset($_REQUEST['cmd']))
 			if(isset($_REQUEST['hash']) &&
 				isset($_REQUEST['no']))
 			{
-				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
+				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]) );
 				if($req->success())
 				{
 					$filename = $req->val[0];
 					if($filename=='')
 					{
-						$req = new rXMLRPCRequest( array(
+						$req = new rXMLRPCRequest( [
 							new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
-							new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
-							new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
-						if($req->success())
-							$filename = $req->val[1];
+							new rXMLRPCCommand( "f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])] ),
+							new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ] );
+						if($req->success()) {
+							$filename = $req->val[1]; }
 					}
 					if($filename!=='')
 					{
 						$mediafile = basename($filename);
-						$commands = array();
+						$commands = [];
 						$name = '"${dir}"/frame.png';
 						$commands[] = Utility::getExternal("sox").
 								" ".escapeshellarg($filename)." ".
@@ -41,14 +41,14 @@ if(isset($_REQUEST['cmd']))
 						$commands[] = '}';
 						$commands[] = 'chmod a+r "${dir}"/frame.png';
 					}
-					$task = new rTask( array
-					(
+					$task = new rTask( 
+					[
 					        'arg' => FileUtil::getFileName($filename),
 						'requester'=>'spectrogram',
 						'name'=>'sox',
 						'hash'=>$_REQUEST['hash'],
-						'no'=>$_REQUEST['no']
-					) );
+						'no'=>$_REQUEST['no'],
+					] );
 					$ret = $task->start($commands, rTask::FLG_ONE_LOG | rTask::FLG_STRIP_LOGS);
 				}
 			}

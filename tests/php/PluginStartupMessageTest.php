@@ -5,10 +5,6 @@ require_once(__DIR__.'/TestCase.php');
 // The messages a plugin's init.php sends to the browser when the plugin cannot work
 class PluginStartupMessageTest extends TestCase
 {
-	private static function initFiles()
-	{
-		return glob(__DIR__.'/../../plugins/*/init.php');
-	}
 
 	/**
 	 * The premise of both cases below. Each reports only on what its pattern
@@ -50,5 +46,9 @@ class PluginStartupMessageTest extends TestCase
 			}
 		}
 		$this->assertTrue($checked > 0, 'found "cannot start" messages to check');
+	}
+	private static function initFiles()
+	{
+		return glob(__DIR__.'/../../plugins/*/init.php');
 	}
 }

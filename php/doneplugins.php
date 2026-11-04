@@ -11,12 +11,12 @@ $jResult = "";
 
 $cmd = isset($_REQUEST["cmd"]) ? $_REQUEST["cmd"] : "done";
 
-$userPermissions = array( "__hash__"=>"plugins.dat" );
+$userPermissions = [ "__hash__"=>"plugins.dat" ];
 $cache = new rCache();
 $cache->get($userPermissions);
 
-if(!isset($HTTP_RAW_POST_DATA))
-	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+if(!isset($HTTP_RAW_POST_DATA)) {
+	$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
@@ -42,8 +42,8 @@ if(isset($HTTP_RAW_POST_DATA))
 					if(!is_null($perms) && !($perms & FLAG_CANT_SHUTDOWN))
 					{
 						$php = "../plugins/".$parts[1]."/done.php";
-						if(is_file($php) && is_readable($php))
-							require_once($php);
+						if(is_file($php) && is_readable($php)) {
+							require_once($php); }
 						$theSettings->unregisterPlugin($parts[1]);
 						$jResult.="thePlugins.get('".$parts[1]."').remove();";
 					}
@@ -63,10 +63,10 @@ if(isset($HTTP_RAW_POST_DATA))
 		}
 	}
 
-	if($cmd=="done")
-		$theSettings->store();
-	else
-		$cache->set($userPermissions);
+	if($cmd=="done") {
+		$theSettings->store(); }
+	else {
+		$cache->set($userPermissions); }
 }
 
 CachedEcho::send($jResult,"application/javascript");

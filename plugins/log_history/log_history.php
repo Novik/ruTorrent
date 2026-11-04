@@ -21,12 +21,17 @@ class LogHandler
     public $log_count;
     protected $cache;
 
-    static public function cacheClasses()
+    public function __construct(rCache $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public static function cacheClasses()
     {
         return ['rCache'];
     }
 
-    static public function load()
+    public static function load()
     {
         global $LogTab_array;
 
@@ -45,11 +50,6 @@ class LogHandler
         return $handler;
     }
 
-    public function __construct(rCache $cache)
-    {
-        $this->cache = $cache;
-    }
-
     public function saveLog($message, $status, $timestamp = null)
     {
         if (empty($message)) {
@@ -59,7 +59,7 @@ class LogHandler
         $this->logs[] = [
             'message' => $message,
             'status' => $status,
-            'timestamp' => $timestamp ? intval($timestamp) : time()
+            'timestamp' => $timestamp ? intval($timestamp) : time(),
         ];
 
         if (count($this->logs) > $this->max_entries) {
@@ -76,11 +76,11 @@ class LogHandler
         $count = $count !== null ? max(1, $count) : $this->log_count;
         return array_values(array_filter(
             array_slice($this->logs, -$count),
-            fn($l) => is_array($l) && isset($l['message'], $l['status'])
+            fn($l) => is_array($l) && isset($l['message'], $l['status']),
         ));
     }
 
-    static public function handleRequest()
+    public static function handleRequest()
     {
         $handler = self::load();
 
@@ -100,7 +100,7 @@ class LogHandler
             global $LogTab_array;
             $resp = [
                 'logs' => $handler->getLatestLogs(),
-                'load_style' => $LogTab_array['load_style'] ?? 'noty'
+                'load_style' => $LogTab_array['load_style'] ?? 'noty',
             ];
         }
 

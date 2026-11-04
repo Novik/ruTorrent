@@ -3,6 +3,14 @@
 class TapochekNetAccount extends commonAccount
 {
 	public $url = "https://tapochek.net";
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/tapochek.net/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
+	public function test($url)
+	{
+		return(self::urlAddresses($url,["tapochek.net"]));
+	}
 
 	protected function isOK($client)
 	{
@@ -23,13 +31,5 @@ class TapochekNetAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	// Matched against the URL's host, not against the URL string: the pattern
-	// this replaced also accepted https://evil.test/path/tapochek.net/x, whose
-	// host is the attacker's, and loginmgr would then have sent this account's
-	// cookies there.
-	public function test($url)
-	{
-		return(self::urlAddresses($url,array("tapochek.net")));
 	}
 }

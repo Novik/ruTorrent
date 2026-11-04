@@ -4,16 +4,17 @@ class TestCase
 {
 	private $failures = 0;
 
+	public function setUp()
+	{
+	}
+
+	public function tearDown()
+	{
+	}
+
 	public function failureCount(): int
 	{
 		return $this->failures;
-	}
-
-	private function runnableMethods(): array
-	{
-		return array_values(array_filter(get_class_methods($this), function ($method) {
-			return substr($method, 0, 4) === 'test';
-		}));
 	}
 
 	public function runnableMethodCount(): int
@@ -21,7 +22,7 @@ class TestCase
 		return count($this->runnableMethods());
 	}
 
-	function run() {
+	public function run() {
 		$executed = 0;
 		foreach ($this->runnableMethods() as $method) {
 			echo ">>{$method}>>\n";
@@ -36,14 +37,6 @@ class TestCase
 			$executed++;
 		}
 		return $executed;
-	}
-
-	public function setUp()
-	{
-	}
-
-	public function tearDown()
-	{
 	}
 
 	public function assertEquals($a, $b, $message = null): void
@@ -61,14 +54,21 @@ class TestCase
 			echo "Failed: {$message}\n";
 		}
 	}
+
+	private function runnableMethods(): array
+	{
+		return array_values(array_filter(get_class_methods($this), function ($method) {
+			return substr($method, 0, 4) === 'test';
+		}));
+	}
 }
 
 // exit() skips auto_append_file. Fail an interrupted TestCase even when its
 // output buffer discards the diagnostic, while allowing later cleanup hooks.
 // PHP 7.4 disabled functions return NULL; warnings alone can be buffered away.
-foreach (array('function_exists', 'getenv', 'basename', 'ini_get', 'register_shutdown_function',
+foreach (['function_exists', 'getenv', 'basename', 'ini_get', 'register_shutdown_function',
 	'defined', 'get_declared_classes', 'is_subclass_of', 'array_values', 'array_filter',
-	'get_class_methods', 'substr', 'count', 'call_user_func', 'fwrite', 'strlen', 'is_int', 'getmypid') as $function) {
+	'get_class_methods', 'substr', 'count', 'call_user_func', 'fwrite', 'strlen', 'is_int', 'getmypid'] as $function) {
 	if (function_exists($function) !== true) {
 		throw new RuntimeException("Required test function unavailable: {$function}");
 	}
@@ -77,7 +77,7 @@ if (getenv('RUTORRENT_PHP_TEST_RUNNER') === '1'
 	&& basename((string) ini_get('auto_append_file')) === 'TestCaseRunner.php') {
 	// pcntl_fork() children inherit this hook; only the runner's process reports.
 	register_shutdown_function(function ($owner) {
-		if (defined('RUTORRENT_TESTCASE_RUNNER_FINISHED') || getmypid() !== $owner) return;
+		if (defined('RUTORRENT_TESTCASE_RUNNER_FINISHED') || getmypid() !== $owner) { return; }
 		foreach (get_declared_classes() as $cls) {
 			if (is_subclass_of($cls, 'TestCase') && (new ReflectionClass($cls))->isInstantiable()) {
 				// A later cleanup may exit(0) before our deferred failing exit.
@@ -89,7 +89,7 @@ if (getenv('RUTORRENT_PHP_TEST_RUNNER') === '1'
 						$remaining = substr($message, $written);
 						$count = @fwrite(STDERR, $remaining);
 						// Without a complete refusal, a later exit(0) could hide us.
-						if (!is_int($count) || $count <= 0 || $count > strlen($remaining)) exit(1);
+						if (!is_int($count) || $count <= 0 || $count > strlen($remaining)) { exit(1); }
 						$written += $count;
 					}
 				} catch (Throwable $error) {

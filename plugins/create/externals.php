@@ -6,8 +6,8 @@
 
 function createExternalEXE( $external )
 {
-	$programs = array(
+	$programs = [
 		'transmissioncreate' => 'transmission-create',
-	);
+	];
 	return( isset($programs[$external]) ? $programs[$external] : $external );
 }

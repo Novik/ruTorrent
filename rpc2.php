@@ -46,12 +46,12 @@ require_once(dirname(__FILE__).'/php/xmlrpc_proxy.php');
 require_once(dirname(__FILE__).'/php/scgitransport.php');
 
 $policyFile = dirname(__FILE__).'/conf/xmlrpc_proxy.php';
-if(is_file($policyFile) && is_readable($policyFile))
-	require_once($policyFile);
+if(is_file($policyFile) && is_readable($policyFile)) {
+	require_once($policyFile); }
 
 $mode = isset($XMLRPCProxy) ? $XMLRPCProxy : 'sanitize';
 $logging = isset($XMLRPCProxyLog) ? $XMLRPCProxyLog : true;
-$safeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : array();
+$safeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : [];
 $allowLocalPaths = isset($XMLRPCProxyAllowLocalPaths) ? $XMLRPCProxyAllowLocalPaths : false;
 $allowRootDirectory = isset($XMLRPCProxyAllowRootDirectory) ? $XMLRPCProxyAllowRootDirectory : false;
 
@@ -64,18 +64,18 @@ $allowRootDirectory = isset($XMLRPCProxyAllowRootDirectory) ? $XMLRPCProxyAllowR
 function rpc2_resolve_path($path)
 {
 	$real = @realpath($path);
-	if($real !== false)
-		return $real;
+	if($real !== false) {
+		return $real; }
 
 	$parts = explode('/', trim($path, '/'));
-	$tail = array();
+	$tail = [];
 	while(count($parts) > 0)
 	{
 		array_unshift($tail, array_pop($parts));
 		$base = '/'.implode('/', $parts);
 		$real = @realpath(($base === '') ? '/' : $base);
-		if($real !== false)
-			return rtrim($real, '/').'/'.implode('/', $tail);
+		if($real !== false) {
+			return rtrim($real, '/').'/'.implode('/', $tail); }
 	}
 	return '';
 }
@@ -86,11 +86,11 @@ function rpc2_resolve_path($path)
 function rpc2_log($message)
 {
 	global $logging, $log_file;
-	if(!$logging)
-		return;
-	$line = date('d.m.Y H:i:s').' rpc2: '.str_replace(array("\r", "\n"), ' ', $message)."\n";
-	if(!empty($log_file) && (@file_put_contents($log_file, $line, FILE_APPEND | LOCK_EX) !== false))
-		return;
+	if(!$logging) {
+		return; }
+	$line = date('d.m.Y H:i:s').' rpc2: '.str_replace(["\r", "\n"], ' ', $message)."\n";
+	if(!empty($log_file) && (@file_put_contents($log_file, $line, FILE_APPEND | LOCK_EX) !== false)) {
+		return; }
 	error_log('rpc2: '.$line);
 }
 
@@ -115,7 +115,7 @@ function rpc2_send($payload, $trusted)
 {
 	global $scgi_host;
 	$result = rSCGITransport::sendConfigured($payload, $trusted,
-		array('responseMode' => rSCGITransport::RESPONSE_BODY), $failure, $error);
+		['responseMode' => rSCGITransport::RESPONSE_BODY], $failure, $error);
 	if($result === null)
 	{
 		rpc2_log(($failure === 'connect-failed') ? 'cannot reach rtorrent at '.$scgi_host.': '.$error
@@ -163,17 +163,17 @@ if($raw === '')
 	rpc2_fault('400 Bad Request', 'Empty XMLRPC request.');
 }
 
-$decision = XMLRPCProxy::decide($raw, $mode, $safeParams, $allowLocalPaths, array(
-	'directory' => array(
+$decision = XMLRPCProxy::decide($raw, $mode, $safeParams, $allowLocalPaths, [
+	'directory' => [
 		'root'    => ($topDirectory === '') ? '/' : $topDirectory,
 		'resolve' => 'rpc2_resolve_path',
-	),
-));
-foreach($decision['log'] as $line)
-	rpc2_log($line);
+	],
+]);
+foreach($decision['log'] as $line) {
+	rpc2_log($line); }
 
-if($decision['action'] !== 'send')
-	rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null));
+if($decision['action'] !== 'send') {
+	rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null)); }
 
 $result = rpc2_send($decision['payload'], $decision['trusted']);
 

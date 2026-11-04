@@ -2,15 +2,15 @@
 
 class ABTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "auth"=>1 );
-	public $categories = array(
+	public $defaults = [ "public"=>false, "page_size"=>15, "auth"=>1 ];
+	public $categories = [
 		"all"=>"&c0=1", "Adventure"=>"&c10=1", "Biographies & Memoirs"=>"&c20=1", "Business"=>"&c30=1", "Childrens"=>"&c40=1",
 		"Comedy"=>"&c50=1", "Comics"=>"&c60=1", "Computers"=>"&c70=1", "Erotica"=>"&c80=1", "Fantasy-General"=>"&c90=1", "Fantasy-Youth"=>"&c100=1",
 		"Files"=>"&c110=1", "Foreign Language"=>"&c120=1", "General Fiction"=>"&c130=1", "Historical Fiction"=>"&c140=1", "History"=>"&c150=1",
 		"Horror"=>"&c160=1", "Literature"=>"&c170=1", "Mystery"=>"&c180=1", "Non-Fiction"=>"&c190=1", "Radio Drama"=>"&c200=1", "Romance"=>"&c210=1",
 		"Science"=>"&c220=1", "Science Fiction"=>"&c230=1", "Sci-Fi Apocalypse"=>"&c235=1", "Self Improvement"=>"&c240=1", "Thriller and Suspense"=>"&c245=1",
-		"Suspense"=>"&c250=1", "Talk Radio"=>"&c260=1", "Urban Fantasy"=>"&c270=1", "Western"=>"&c280=1"
-		);
+		"Suspense"=>"&c250=1", "Talk Radio"=>"&c260=1", "Urban Fantasy"=>"&c270=1", "Western"=>"&c280=1",
+		];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -24,22 +24,22 @@ class ABTorrentsEngine extends commonEngine
 			$this->unconfiguredOriginEntry('ABTorrents','abTorrentsOrigin',$ret);
 			return;
 		}
-		if($useGlobalCats)
-			$categories = array( 'all'=>'&c0=1' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'&c0=1' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 		$what = rawurlencode(rawurldecode($what));
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&page='.$pg.'&searchin=title&incldead=0&sort=7&type=desc'.$cat );
 
 			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false)
-				|| (strpos($cli->results, '>Password:<')!==false) )
-				break;
+				|| (strpos($cli->results, '>Password:<')!==false) ) {
+				break; }
 
 			if( (strpos($cli->results, 'action="pm_system.php"')!==false) )
 			{
@@ -69,8 +69,8 @@ class ABTorrentsEngine extends commonEngine
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/".self::removeTags($matches["desc"][$i]);
 						$name = str_replace("<br />"," ",$matches["name"][$i]);
-						if($matches["vip"][$i])
-							$name = $name." | VIP TORRENT";
+						if($matches["vip"][$i]) {
+							$name = $name." | VIP TORRENT"; }
 						$item["name"] = self::removeTags($name);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
@@ -78,13 +78,13 @@ class ABTorrentsEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

@@ -56,7 +56,7 @@ class FilesystemShellBytesTest extends TestCase
 		file_put_contents($this->directory."/raw 'name'", 'wrong sibling');
 		$statement = ShellCommandFixture::statement(__DIR__.'/../../php/utility/sendfile.php', "passthru('cat '");
 		ob_start();
-		try { ShellCommandFixture::evaluate($statement, array('filename'=>$path)); }
+		try { ShellCommandFixture::evaluate($statement, ['filename'=>$path]); }
 		finally { $actual = ob_get_clean(); }
 		$this->assertTrue($actual === "correct payload\0bytes", 'the 32-bit fallback command streams the exact named payload');
 	}

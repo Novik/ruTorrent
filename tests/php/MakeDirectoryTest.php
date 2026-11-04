@@ -29,25 +29,6 @@ class MakeDirectoryTest extends TestCase
 		$this->wipe();
 	}
 
-	private function wipe($dir = null)
-	{
-		$dir = is_null($dir) ? $this->root : $dir;
-		if (!is_dir($dir)) {
-			return;
-		}
-		foreach (array_diff(scandir($dir), array('.', '..')) as $entry) {
-			$path = $dir . '/' . $entry;
-			is_dir($path) ? $this->wipe($path) : unlink($path);
-		}
-		rmdir($dir);
-	}
-
-	private function mode($path)
-	{
-		clearstatcache(true, $path);
-		return fileperms($path) & 0777;
-	}
-
 	/** One path, given as a string. */
 	public function testASinglePathIsCreated()
 	{
@@ -60,11 +41,11 @@ class MakeDirectoryTest extends TestCase
 	/** Every path of a list, which is the branch that wraps a foreach. */
 	public function testEveryPathOfAListIsCreated()
 	{
-		$dirs = array(
+		$dirs = [
 			$this->root . '/list-a',
 			$this->root . '/list-b',
 			$this->root . '/list-c',
-		);
+		];
 		FileUtil::makeDirectory($dirs, 0755);
 		foreach ($dirs as $dir) {
 			$this->assertTrue(is_dir($dir), 'every directory of the list is created: ' . basename($dir));
@@ -107,7 +88,7 @@ class MakeDirectoryTest extends TestCase
 		mkdir($there, 0700, true);
 		file_put_contents($there . '/keep.txt', 'still here');
 
-		FileUtil::makeDirectory(array($there, $missing), 0755);
+		FileUtil::makeDirectory([$there, $missing], 0755);
 
 		$this->assertEquals('still here', file_get_contents($there . '/keep.txt'),
 			'the one that existed keeps its contents');
@@ -123,9 +104,28 @@ class MakeDirectoryTest extends TestCase
 		$scope = $this->root . '/empty-list';
 		mkdir($scope, 0777, true);
 
-		FileUtil::makeDirectory(array(), 0755);
+		FileUtil::makeDirectory([], 0755);
 
-		$this->assertEquals(array('.', '..'), scandir($scope),
+		$this->assertEquals(['.', '..'], scandir($scope),
 			'an empty list leaves the filesystem alone');
+	}
+
+	private function wipe($dir = null)
+	{
+		$dir = is_null($dir) ? $this->root : $dir;
+		if (!is_dir($dir)) {
+			return;
+		}
+		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
+			$path = $dir . '/' . $entry;
+			is_dir($path) ? $this->wipe($path) : unlink($path);
+		}
+		rmdir($dir);
+	}
+
+	private function mode($path)
+	{
+		clearstatcache(true, $path);
+		return fileperms($path) & 0777;
 	}
 }

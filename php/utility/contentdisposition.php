@@ -10,14 +10,14 @@ class ContentDisposition
 	public static function attachment( $name, $userAgent = null )
 	{
 		$name = (string)$name;
-		if(is_string($userAgent) && (strpos($userAgent,'MSIE')!==false))
-			$fallback = rawurlencode($name);
-		else
-			$fallback = str_replace(array('\\', '"'), array('\\\\', '\\"'),
-				preg_replace('/[^\x20-\x7E]/', '_', $name));
+		if(is_string($userAgent) && (strpos($userAgent,'MSIE')!==false)) {
+			$fallback = rawurlencode($name); }
+		else {
+			$fallback = str_replace(['\\', '"'], ['\\\\', '\\"'],
+				preg_replace('/[^\x20-\x7E]/', '_', $name)); }
 		$value = 'attachment; filename="'.$fallback.'"';
-		if(preg_match('//u', $name) === 1)
-			$value .= "; filename*=UTF-8''".rawurlencode($name);
+		if(preg_match('//u', $name) === 1) {
+			$value .= "; filename*=UTF-8''".rawurlencode($name); }
 		return($value);
 	}
 }

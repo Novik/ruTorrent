@@ -4,7 +4,7 @@ require_once( dirname(__FILE__).'/../_task/task.php' );
 require_once( 'ffmpeg.php' );
 eval( FileUtil::getPluginConf( 'screenshots' ) );
 
-$ret = array();
+$ret = [];
 if(isset($_REQUEST['cmd']))
 {
 	$st = ffmpegSettings::load();
@@ -15,22 +15,22 @@ if(isset($_REQUEST['cmd']))
 			if(isset($_REQUEST['hash']) &&
 				isset($_REQUEST['no']))
 			{
-				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
+				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]) );
 				if($req->success())
 				{
 					$filename = $req->val[0];
 					if($filename=='')
 					{
-						$req = new rXMLRPCRequest( array(
+						$req = new rXMLRPCRequest( [
 							new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
-							new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
-							new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
-						if($req->success())
-							$filename = $req->val[1];
+							new rXMLRPCCommand( "f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])] ),
+							new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ] );
+						if($req->success()) {
+							$filename = $req->val[1]; }
 					}
 					if($filename!=='')
 					{
-						$commands = array();
+						$commands = [];
 						$offs = $st->data['exfrmoffs'];
 						$useWidth = $st->data['exusewidth'];
 						for($i=0; $i<$st->data['exfrmcount']; $i++)
@@ -52,14 +52,14 @@ if(isset($_REQUEST['cmd']))
 						}
 						$commands[] = 'chmod a+r "${dir}"/frame*.*';
 					}
-					$task = new rTask( array
-					(
+					$task = new rTask( 
+					[
 						'arg' => FileUtil::getFileName($filename),
 						'requester'=>'screenshots',
 						'name'=>'ffmpeg',
 						'hash'=>$_REQUEST['hash'],
-						'no'=>$_REQUEST['no']
-					));
+						'no'=>$_REQUEST['no'],
+					]);
 					$ret = $task->start($commands, rTask::FLG_NO_ERR);
 				}
 			}

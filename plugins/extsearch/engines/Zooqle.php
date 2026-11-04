@@ -3,8 +3,8 @@
 
 class ZooqleEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>30 );
-	public $categories = array("all"=>"all",
+	public $defaults = [ "public"=>true, "page_size"=>30 ];
+	public $categories = ["all"=>"all",
                             "movies"=>"Movies",
                             "tv"=>"TV",
                             "music"=>"Music",
@@ -12,7 +12,68 @@ class ZooqleEngine extends commonEngine
                             "anime"=>"Anime",
                             "software"=>"Apps",
                             "books"=>"Books",
-                            "other"=>"Other");
+                            "other"=>"Other"];
+
+	public function tracker_list()
+	{
+	    $tr_url="https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt";
+        $cli = $this->fetch($tr_url);
+        if($cli!==false)
+        {
+            $list = $cli->results;
+            $list = urlencode(trim($list));
+            $list = "tr=".$list;
+            $list = str_replace("%0A%0A","&tr=",$list);
+            return $list;
+        }
+        else
+        {
+            return false;
+        }
+
+	}
+
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
+	{
+        	if($useGlobalCats) {
+			$categories = 
+			[
+				'all'=>'all',
+				'movies'=>'Movies',
+				'tv'=>'TV',
+				'music'=>'Music',
+				'games'=>'Games',
+				'software'=>'Apps',
+			 ]; }
+		else {
+			$categories = &$this->categories; }
+
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
+		$added = 0;
+		$url = 'https://zooqle.com/search?v=t&sd=d&fmt=rss&q='.$what.' category:'.$cat.'&pg=';
+		$cli = $this->fetch($url."1");
+
+		if($cli==false) {
+			return; }
+
+		$xmlDoc = new DOMDocument();
+		$this->parseTList($cli->results,$added,$ret,$limit);
+		if(($cli!==false) && $xmlDoc->loadXML($cli->results))
+		{
+	        //$total= $xmlDoc->getElementsByTagName('totalResults')->item(0)->childNodes->item(0)->nodeValue;
+			//$max = ceil($total/$defaults["page_size"]);
+			$max=10;
+			for($pg = 2; $pg<$max; $pg++)
+			{
+				$cli = $this->fetch($url.$pg);
+				if(($cli==false) || !$this->parseTList($cli->results,$added,$ret,$limit)) {
+					break; }
+			}
+		}
+	}
 
 	protected function parseTList($results,&$added,&$ret,$limit)
 	{
@@ -42,75 +103,14 @@ class ZooqleEngine extends commonEngine
 					$item["peers"] = $peers;
 					$ret[$magnet] = $item;
 					$added++;
-					if($added >= $limit)
-						return false ;
+					if($added >= $limit) {
+						return false ; }
             	}
             }
             return true;
 		}
 		else{
 			return false;
-		}
-	}
-
-	public function tracker_list()
-	{
-	    $tr_url="https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt";
-        $cli = $this->fetch($tr_url);
-        if($cli!==false)
-        {
-            $list = $cli->results;
-            $list = urlencode(trim($list));
-            $list = "tr=".$list;
-            $list = str_replace("%0A%0A","&tr=",$list);
-            return $list;
-        }
-        else
-        {
-            return false;
-        }
-
-	}
-
-	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
-	{
-        	if($useGlobalCats)
-			$categories = array
-			(
-				'all'=>'all',
-				'movies'=>'Movies',
-				'tv'=>'TV',
-				'music'=>'Music',
-				'games'=>'Games',
-				'software'=>'Apps',
-			 );
-		else
-			$categories = &$this->categories;
-
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
-		$added = 0;
-		$url = 'https://zooqle.com/search?v=t&sd=d&fmt=rss&q='.$what.' category:'.$cat.'&pg=';
-		$cli = $this->fetch($url."1");
-
-		if($cli==false)
-			return;
-
-		$xmlDoc = new DOMDocument();
-		$this->parseTList($cli->results,$added,$ret,$limit);
-		if(($cli!==false) && $xmlDoc->loadXML($cli->results))
-		{
-	        //$total= $xmlDoc->getElementsByTagName('totalResults')->item(0)->childNodes->item(0)->nodeValue;
-			//$max = ceil($total/$defaults["page_size"]);
-			$max=10;
-			for($pg = 2; $pg<$max; $pg++)
-			{
-				$cli = $this->fetch($url.$pg);
-				if(($cli==false) || !$this->parseTList($cli->results,$added,$ret,$limit))
-					break;
-			}
 		}
 	}
 }

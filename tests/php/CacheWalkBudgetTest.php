@@ -40,11 +40,11 @@ class BudgetListPayload
 {
 	public $hash = 'budget-list.dat';
 	public $modified = false;
-	public $lst = array();
+	public $lst = [];
 
-	static public function cacheClasses()
+	public static function cacheClasses()
 	{
-		return array('BudgetItemPayload');
+		return ['BudgetItemPayload'];
 	}
 }
 
@@ -80,70 +80,8 @@ class CacheWalkBudgetTest extends TestCase
 	public function tearDown()
 	{
 		$GLOBALS['log_file'] = '';
-		if (is_dir($this->profilePath))
-			$this->removeDir($this->profilePath);
-	}
-
-	private function removeDir($dir)
-	{
-		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
-			$path = $dir . '/' . $entry;
-			if (is_dir($path) && !is_link($path))
-				$this->removeDir($path);
-			else
-				unlink($path);
-		}
-		rmdir($dir);
-	}
-
-	private function plant($relative, $bytes)
-	{
-		$path = $this->settings . '/' . $relative;
-		FileUtil::makeDirectory(dirname($path));
-		file_put_contents($path, $bytes);
-		return $path;
-	}
-
-	/** Captures what get() logs while it loads $target. */
-	private function logOf($target)
-	{
-		@unlink($this->logFile);
-		$GLOBALS['log_file'] = $this->logFile;
-		$result = (new rCache())->get($target);
-		$GLOBALS['log_file'] = '';
-		$logged = is_file($this->logFile) ? file_get_contents($this->logFile) : '';
-		return array($result, $logged);
-	}
-
-	/**
-	 * An acyclic array nested $depth deep. Written as serialized text because
-	 * building it in PHP and serializing it is the same recursion the walk is
-	 * being tested for.
-	 */
-	private function nested($depth)
-	{
-		$bytes = 's:1:"x";';
-		for ($i = 0; $i < $depth; $i++)
-			$bytes = 'a:1:{i:0;' . $bytes . '}';
-		return $bytes;
-	}
-
-	/**
-	 * $depth levels, each holding the level below it twice: once written out,
-	 * once as an R: back-reference to what was just written. The text grows by
-	 * a line per level and the graph doubles, so this is the cheapest way to
-	 * ask for an unbounded walk from a file small enough to go unnoticed.
-	 *
-	 * The value ids unserialize() hands out run in order of appearance, so the
-	 * array at level k is id k and the level below it is id k+1; $before
-	 * shifts both by the number of values the file writes ahead of the graph.
-	 */
-	private function amplified($depth, $before = 0)
-	{
-		$bytes = 's:1:"x";';
-		for ($k = $depth; $k >= 1; $k--)
-			$bytes = 'a:2:{i:0;' . $bytes . 'i:1;R:' . ($k + 1 + $before) . ';}';
-		return $bytes;
+		if (is_dir($this->profilePath)) {
+			$this->removeDir($this->profilePath); }
 	}
 
 	// -- the walk ends -------------------------------------------------------
@@ -162,7 +100,7 @@ class CacheWalkBudgetTest extends TestCase
 		// The object's own class is one the caller allows, so unserialize()
 		// builds it and the walk goes inside -- where the loop is.
 		$bytes = 'O:17:"BudgetListPayload":1:{s:3:"lst";a:1:{i:0;R:2;}}';
-		$value = unserialize($bytes, array('allowed_classes' => array('BudgetListPayload')));
+		$value = unserialize($bytes, ['allowed_classes' => ['BudgetListPayload']]);
 		$this->assertTrue(($value instanceof BudgetListPayload) && ($value->lst[0] === $value->lst),
 			'the object holds an array that contains itself');
 		$this->assertTrue(CacheWalkProbe::walk($value) === true,
@@ -248,14 +186,14 @@ class CacheWalkBudgetTest extends TestCase
 		$item = new BudgetItemPayload();
 		$item->name = 'nested';
 		$stored = new BudgetListPayload();
-		$stored->lst = array($item, array('a', array('b', array('c'))));
+		$stored->lst = [$item, ['a', ['b', ['c']]]];
 		$this->assertTrue((new rCache())->set($stored) === true, 'the store succeeds');
 
 		$loaded = new BudgetListPayload();
 		$this->assertTrue((new rCache())->get($loaded) === true, 'the load succeeds');
 		$this->assertTrue($loaded->lst[0] instanceof BudgetItemPayload,
 			'the nested object comes back as its own class');
-		$this->assertTrue($loaded->lst[1] === array('a', array('b', array('c'))),
+		$this->assertTrue($loaded->lst[1] === ['a', ['b', ['c']]],
 			'and the nested arrays come back whole');
 	}
 
@@ -264,9 +202,9 @@ class CacheWalkBudgetTest extends TestCase
 		// A flat list far larger than anything the shipped code caches. Its
 		// nodes are written out, not back-referenced, so it costs what it
 		// looks like it costs.
-		$rows = array();
-		for ($i = 0; $i < 20000; $i++)
-			$rows[] = array('h' => str_repeat('a', 40), 'n' => 'row ' . $i, 'd' => $i);
+		$rows = [];
+		for ($i = 0; $i < 20000; $i++) {
+			$rows[] = ['h' => str_repeat('a', 40), 'n' => 'row ' . $i, 'd' => $i]; }
 		$this->assertTrue(CacheWalkProbe::walk($rows, strlen(serialize($rows))) === false,
 			'twenty thousand records are walked, not refused');
 	}
@@ -304,5 +242,67 @@ class CacheWalkBudgetTest extends TestCase
 		$this->assertTrue($result === false, 'a planted refused class is a miss too');
 		$this->assertTrue(strpos($logged, 'names the class Intruder, which it may not hold') !== false,
 			'and that one is logged as the class it named: ' . trim($logged));
+	}
+
+	private function removeDir($dir)
+	{
+		foreach (array_diff(scandir($dir), ['.', '..']) as $entry) {
+			$path = $dir . '/' . $entry;
+			if (is_dir($path) && !is_link($path)) {
+				$this->removeDir($path); }
+			else {
+				unlink($path); }
+		}
+		rmdir($dir);
+	}
+
+	private function plant($relative, $bytes)
+	{
+		$path = $this->settings . '/' . $relative;
+		FileUtil::makeDirectory(dirname($path));
+		file_put_contents($path, $bytes);
+		return $path;
+	}
+
+	/** Captures what get() logs while it loads $target. */
+	private function logOf($target)
+	{
+		@unlink($this->logFile);
+		$GLOBALS['log_file'] = $this->logFile;
+		$result = (new rCache())->get($target);
+		$GLOBALS['log_file'] = '';
+		$logged = is_file($this->logFile) ? file_get_contents($this->logFile) : '';
+		return [$result, $logged];
+	}
+
+	/**
+	 * An acyclic array nested $depth deep. Written as serialized text because
+	 * building it in PHP and serializing it is the same recursion the walk is
+	 * being tested for.
+	 */
+	private function nested($depth)
+	{
+		$bytes = 's:1:"x";';
+		for ($i = 0; $i < $depth; $i++) {
+			$bytes = 'a:1:{i:0;' . $bytes . '}'; }
+		return $bytes;
+	}
+
+	/**
+	 * $depth levels, each holding the level below it twice: once written out,
+	 * once as an R: back-reference to what was just written. The text grows by
+	 * a line per level and the graph doubles, so this is the cheapest way to
+	 * ask for an unbounded walk from a file small enough to go unnoticed.
+	 *
+	 * The value ids unserialize() hands out run in order of appearance, so the
+	 * array at level k is id k and the level below it is id k+1; $before
+	 * shifts both by the number of values the file writes ahead of the graph.
+	 */
+	private function amplified($depth, $before = 0)
+	{
+		$bytes = 's:1:"x";';
+		for ($k = $depth; $k >= 1; $k--) {
+			$bytes = 'a:2:{i:0;' . $bytes . 'i:1;R:' . ($k + 1 + $before) . ';}'; }
+		return $bytes;
 	}
 }

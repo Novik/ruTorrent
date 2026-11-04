@@ -19,16 +19,16 @@ function check_port_parse_yougetsignal($body)
 	$json = json_decode($body, true);
 
 	$parsed = $json['data']['networkToolRunPortCheck']['output']['parsed'] ?? null;
-	if (($parsed['kind'] ?? '') !== 'success')
-		return 0;
+	if (($parsed['kind'] ?? '') !== 'success') {
+		return 0; }
 
 	// nmap's own states. "filtered" means nothing answered, which for a port
 	// check is the same news as closed.
 	$state = $parsed['port']['state'] ?? '';
-	if ($state === 'closed' || $state === 'filtered')
-		return 1;
-	if ($state === 'open')
-		return 2;
+	if ($state === 'closed' || $state === 'filtered') {
+		return 1; }
+	if ($state === 'open') {
+		return 2; }
 
 	return 0;
 }
@@ -51,11 +51,11 @@ function check_port_parse_yougetsignal($body)
  */
 function check_port_parse_globalping($raw)
 {
-	if (!is_string($raw) || $raw === '')
-		return 0;
-	if (preg_match('/connection refused|tcp_conn=.*refused/i', $raw))
-		return 1;
-	if (preg_match('/^Reply from .*tcp_conn=\d+/mi', $raw))
-		return 2;
+	if (!is_string($raw) || $raw === '') {
+		return 0; }
+	if (preg_match('/connection refused|tcp_conn=.*refused/i', $raw)) {
+		return 1; }
+	if (preg_match('/^Reply from .*tcp_conn=\d+/mi', $raw)) {
+		return 2; }
 	return 0;
 }

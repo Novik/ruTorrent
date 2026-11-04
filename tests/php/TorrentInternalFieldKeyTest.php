@@ -41,17 +41,6 @@ class TorrentInternalFieldKeyTest extends TestCase
 {
 	use TorrentSequenceFixtures;
 
-	private function torrentWithKey($key, $value)
-	{
-		$pairs = array(
-			'announce' => $this->bstr('http://one.test/announce'),
-			'info'     => $this->singleFileInfo(),
-			$key       => $value,
-		);
-		ksort($pairs, SORT_STRING);
-		return $this->bdict($pairs);
-	}
-
 	/** A torrent carrying an 'errors' key parses, and is not an error. */
 	public function testATorrentCarryingAnErrorsKeyIsNotBroken()
 	{
@@ -65,8 +54,8 @@ class TorrentInternalFieldKeyTest extends TestCase
 	/** The same for the other six, and for 'built'. */
 	public function testATorrentCarryingAKeyNamedLikeAnyInternalFieldKeepsIt()
 	{
-		foreach (array('filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback',
-			'built') as $key) {
+		foreach (['filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback',
+			'built'] as $key) {
 			$fixture = $this->torrentWithKey($key, $this->bstr('kept'));
 			$torrent = new Torrent($fixture);
 			$this->assertTrue($torrent->errors() === false, "a torrent carrying {$key} parses");
@@ -84,5 +73,16 @@ class TorrentInternalFieldKeyTest extends TestCase
 		$refused = (bool)$torrent->errors();
 		$this->assertTrue($refused === false,
 			'if(!$torrent->errors()) lets the torrent through to rtorrent');
+	}
+
+	private function torrentWithKey($key, $value)
+	{
+		$pairs = [
+			'announce' => $this->bstr('http://one.test/announce'),
+			'info'     => $this->singleFileInfo(),
+			$key       => $value,
+		];
+		ksort($pairs, SORT_STRING);
+		return $this->bdict($pairs);
 	}
 }

@@ -21,8 +21,8 @@ class ZamundaFakeClient
 
 class commonEngine
 {
-    public $defaults = array('public' => true, 'page_size' => 100);
-    public $categories = array('All' => '');
+    public $defaults = ['public' => true, 'page_size' => 100];
+    public $categories = ['All' => ''];
 
     public function makeClient($url)
     {

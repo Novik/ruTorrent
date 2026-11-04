@@ -133,7 +133,7 @@ trait DumpActionFixture
 	{
 		$this->stopDaemon();
 		$this->daemon = new FakeRtorrentDaemon(
-			array_merge($replies, array(array('0'), array('0'))),
+			array_merge($replies, [['0'], ['0']]),
 			$this->caseDir . '/calls.log');
 		return $this->drive($this->daemon->port(), $this->hash());
 	}
@@ -143,7 +143,7 @@ trait DumpActionFixture
 	{
 		$this->stopDaemon();
 		$this->daemon = new FakeRtorrentDaemon(
-			array(array($this->sessionDir(), ''), array('0')), $this->caseDir . '/calls.log');
+			[[$this->sessionDir(), ''], ['0']], $this->caseDir . '/calls.log');
 		return $this->drive($this->daemon->port(), null);
 	}
 
@@ -183,7 +183,7 @@ trait DumpActionFixture
 			. $request
 			. 'chdir(' . var_export($root . '/plugins/dump', true) . ");\n"
 			. 'require(' . var_export($root . '/plugins/dump/action.php', true) . ");\n");
-		$output = array();
+		$output = [];
 		// Diagnostics on: whether the script reads a value it never set is
 		// one of the things being measured.
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=-1 -d display_errors=1 ' .
@@ -225,7 +225,7 @@ trait DumpActionFixture
 	{
 		$response = $this->response($run);
 		return (is_array($response) && isset($response['errors'][0]) &&
-			is_array($response['errors'][0])) ? $response['errors'][0] : array();
+			is_array($response['errors'][0])) ? $response['errors'][0] : [];
 	}
 
 	private function reason($run)
@@ -247,7 +247,7 @@ trait DumpActionFixture
 	 */
 	private function undefinedValueDiagnostics($run)
 	{
-		$found = array();
+		$found = [];
 		foreach (explode("\n", $run) as $line) {
 			// 7.4 says "Undefined variable: fname", 8.x "Undefined variable
 			// $fname", and 8.1 adds a deprecation for the null that reaches

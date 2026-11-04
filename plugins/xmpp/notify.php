@@ -1,9 +1,9 @@
 <?php
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
-if( count( $argv ) > 2 )
-	$_SERVER['REMOTE_USER'] = $argv[2];
+if( count( $argv ) > 2 ) {
+	$_SERVER['REMOTE_USER'] = $argv[2]; }
 
 require_once( dirname(__FILE__)."/../../php/settings.php");
 require_once( "./XMPPHP/XMPP.php" );
@@ -33,11 +33,11 @@ if ( $at->message !== '' && isset($at->jabberServer) && isset($at->jabberLogin) 
     if ($useEncryption)
     {
 	$conn->useEncryption(true);
-	$opts = array(
-	    'ssl' => array(
+	$opts = [
+	    'ssl' => [
 	    'verify_peer' => true,
-	    'allow_self_signed' => true
-	));
+	    'allow_self_signed' => true,
+	]];
 	if ($at->jabberHost != $at->jabberServer)
 	{
 	    $opts['ssl']['CN_match'] = $at->jabberServer;

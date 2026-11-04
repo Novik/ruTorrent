@@ -5,9 +5,9 @@ class rCookies
 {
 	public $hash = "cookies.dat";
 	public $modified = false;
-	public $list = array();
+	public $list = [];
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new rCookies();
@@ -21,12 +21,12 @@ class rCookies
 	}
 	public function set()
 	{
-		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		if(!isset($HTTP_RAW_POST_DATA)) {
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
-			$this->list = array();
+			$this->list = [];
 			foreach($vars as $var)
 			{
 				$parts = explode("=",$var);
@@ -38,7 +38,7 @@ class rCookies
 						$tmp = explode("|",$value);
 						if((count($tmp)>1) && (trim($tmp[1])!=''))
 						{
-							$cookies = array();
+							$cookies = [];
 							$tmp1 = explode(";",$tmp[1]);
 							foreach($tmp1 as $item)
 							{
@@ -47,12 +47,12 @@ class rCookies
 								{
 									$name = trim($tmp2[0]);
 									$val = trim($tmp2[1]);
-									if(($name!='') && ($val!=''))
-										$cookies[$name] = trim($val);
+									if(($name!='') && ($val!='')) {
+										$cookies[$name] = trim($val); }
 								}
 							}
-							if(!empty($cookies))
-								$this->list[strtolower($tmp[0])] = $cookies;
+							if(!empty($cookies)) {
+								$this->list[strtolower($tmp[0])] = $cookies; }
 						}
 					}
 				}
@@ -66,13 +66,13 @@ class rCookies
 		foreach( $this->list as $host=>$cookies )
 		{
 			$c = '';
-			foreach($cookies as $name=>$value)
-				$c.=($name."=".$value.";");
+			foreach($cookies as $name=>$value) {
+				$c.=($name."=".$value.";"); }
 			$ret.="{ host: ".Utility::quoteAndDeslashEachItem($host).", cookies: '".addslashes($c)."' },";
 		}
 		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
+		if($ret[$len-1]==',') {
+			$ret = substr($ret,0,$len-1); }
 		return($ret."];\n");
 	}
 
@@ -83,13 +83,13 @@ class rCookies
 	public function getCookiesForHost($host)
 	{
 		$host = strtolower($host);
-		if(array_key_exists($host,$this->list))
-			return($this->list[$host]);
-		return(array());
+		if(array_key_exists($host,$this->list)) {
+			return($this->list[$host]); }
+		return([]);
 	}
 	public function add( $host, $values )
 	{
-		$cookies = array();
+		$cookies = [];
 		$tmp = explode(";",$values);
 		foreach($tmp as $item)
 		{
@@ -98,14 +98,14 @@ class rCookies
 			{
 				$name = trim($tmp2[0]);
 				$val = trim($tmp2[1]);
-				if(($name!='') && ($val!=''))
-					$cookies[$name] = trim($val);
+				if(($name!='') && ($val!='')) {
+					$cookies[$name] = trim($val); }
 			}
 		}
-		if(!empty($cookies))
-			$this->list[$host] = $cookies;
-		else
-			unset($this->list[$host]);
+		if(!empty($cookies)) {
+			$this->list[$host] = $cookies; }
+		else {
+			unset($this->list[$host]); }
 		$this->store();
 	}
 }

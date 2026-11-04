@@ -19,42 +19,6 @@ require_once(__DIR__ . '/../../plugins/xmpp/xmpp.php');
 
 class EmittedScriptValueTest extends TestCase
 {
-	// Payloads that end the emitted statement and start another one, in each of
-	// the two quotings the tree emits, plus the one that ends the <script>.
-	private static function payloads()
-	{
-		return array(
-			"apostrophe" => "';alert(1);//",
-			"quote" => '";alert(1);//',
-			"script end" => '</script><script>alert(1)</script>',
-			"line break" => "a\nalert(1)//",
-			"backslash" => 'a\\',
-		);
-	}
-
-	// The right-hand side of "<lvalue> = <literal>;", decoded. Returns the
-	// marker object when the fragment is not that shape or the literal is not
-	// one JSON value, which is what a value escaping its quotes looks like.
-	private function assigned($fragment, $lvalue)
-	{
-		$fragment = trim($fragment);
-		$prefix = $lvalue . ' = ';
-		if (substr($fragment, 0, strlen($prefix)) !== $prefix || substr($fragment, -1) !== ';') {
-			return 'NOT-AN-ASSIGNMENT';
-		}
-		$literal = substr($fragment, strlen($prefix), -1);
-		$value = json_decode($literal, true);
-		if ($value === null && trim($literal) !== 'null') {
-			return 'NOT-ONE-LITERAL';
-		}
-		return $value;
-	}
-
-	private function assertRoundTrips($fragment, $lvalue, $expected, $what)
-	{
-		$this->assertTrue($this->assigned($fragment, $lvalue) === $expected,
-			$what . ' survives as data: ' . json_encode($fragment));
-	}
 
 	public function testJsValueNeverEmitsCharactersThatCanCloseItsContext()
 	{
@@ -83,7 +47,7 @@ class EmittedScriptValueTest extends TestCase
 	public function testThemeRefusesToStoreANameThatIsNotAThemeDirectory()
 	{
 		foreach (array_merge(array_values(self::payloads()),
-			array('../../../..', 'themes/../../conf', '.', '..', 'NoSuchTheme')) as $payload) {
+			['../../../..', 'themes/../../conf', '.', '..', 'NoSuchTheme']) as $payload) {
 			$theme = new rTheme();
 			$theme->current = 'Blue';
 			$_REQUEST['theme'] = $payload;
@@ -98,7 +62,7 @@ class EmittedScriptValueTest extends TestCase
 	{
 		$real = array_map('basename', glob(__DIR__ . '/../../plugins/theme/themes/*', GLOB_ONLYDIR));
 		$this->assertTrue(count($real) > 0, 'the tree ships at least one theme to test with');
-		foreach (array_merge($real, array('')) as $payload) {
+		foreach (array_merge($real, ['']) as $payload) {
 			$theme = new rTheme();
 			$theme->current = 'nonsense';
 			$_REQUEST['theme'] = $payload;
@@ -170,5 +134,41 @@ class EmittedScriptValueTest extends TestCase
 				$settings['AdvancedSettings'] === 0,
 				'xmpp numeric fields stay numbers for '.$name.': '.json_encode($settings));
 		}
+	}
+	// Payloads that end the emitted statement and start another one, in each of
+	// the two quotings the tree emits, plus the one that ends the <script>.
+	private static function payloads()
+	{
+		return [
+			"apostrophe" => "';alert(1);//",
+			"quote" => '";alert(1);//',
+			"script end" => '</script><script>alert(1)</script>',
+			"line break" => "a\nalert(1)//",
+			"backslash" => 'a\\',
+		];
+	}
+
+	// The right-hand side of "<lvalue> = <literal>;", decoded. Returns the
+	// marker object when the fragment is not that shape or the literal is not
+	// one JSON value, which is what a value escaping its quotes looks like.
+	private function assigned($fragment, $lvalue)
+	{
+		$fragment = trim($fragment);
+		$prefix = $lvalue . ' = ';
+		if (substr($fragment, 0, strlen($prefix)) !== $prefix || substr($fragment, -1) !== ';') {
+			return 'NOT-AN-ASSIGNMENT';
+		}
+		$literal = substr($fragment, strlen($prefix), -1);
+		$value = json_decode($literal, true);
+		if ($value === null && trim($literal) !== 'null') {
+			return 'NOT-ONE-LITERAL';
+		}
+		return $value;
+	}
+
+	private function assertRoundTrips($fragment, $lvalue, $expected, $what)
+	{
+		$this->assertTrue($this->assigned($fragment, $lvalue) === $expected,
+			$what . ' survives as data: ' . json_encode($fragment));
 	}
 }

@@ -4,11 +4,11 @@ require_once( 'rules.php' );
 
 class rssurlrewriteHooks
 {
-	static public function OnRSSFetched( $prm )
+	public static function OnRSSFetched( $prm )
 	{
 		$mngr = new rRSSManager();
 		$rules = rURLRewriteRulesList::load($mngr);
-		$newHrefs = array();
+		$newHrefs = [];
 		foreach( $prm["rss"]->items as $href=>&$item )
 		{
 			$oldHref = $href;
@@ -19,7 +19,7 @@ class rssurlrewriteHooks
 				unset($prm["rss"]->items[$oldHref]);
 			}
 		}
-		if(count($newHrefs))
-			$prm["rss"]->items = array_merge($prm["rss"]->items,$newHrefs);
+		if(count($newHrefs)) {
+			$prm["rss"]->items = array_merge($prm["rss"]->items,$newHrefs); }
 	}
 }

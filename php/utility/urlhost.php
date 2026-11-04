@@ -25,10 +25,10 @@ class UrlHost
 	 * A host name folded to the one spelling the tests below compare: lower
 	 * case, without trailing dots. Anything that is not a string folds to ''.
 	 */
-	static public function normalize($host)
+	public static function normalize($host)
 	{
-		if(!is_string($host))
-			return '';
+		if(!is_string($host)) {
+			return ''; }
 		return strtolower(rtrim($host, '.'));
 	}
 
@@ -40,11 +40,11 @@ class UrlHost
 	 * checks it itself. An IPv6 literal keeps its brackets, and an IDN is
 	 * compared as spelled, without Unicode/punycode conversion.
 	 */
-	static public function of($url)
+	public static function of($url)
 	{
 		$host = @parse_url((string) $url, PHP_URL_HOST);
-		if(!is_string($host) || $host === '')
-			return null;
+		if(!is_string($host) || $host === '') {
+			return null; }
 		$host = self::normalize($host);
 		return $host === '' ? null : $host;
 	}
@@ -54,24 +54,24 @@ class UrlHost
 	 * list that names every host it admits. Both sides are normalized; an
 	 * empty host matches nothing, so a URL without one admits nothing.
 	 */
-	static public function isExactlyOneOf($host, $hosts)
+	public static function isExactlyOneOf($host, $hosts)
 	{
 		$host = self::normalize($host);
-		return $host !== '' && in_array($host, array_map(array(__CLASS__, 'normalize'), (array) $hosts), true);
+		return $host !== '' && in_array($host, array_map([__CLASS__, 'normalize'], (array) $hosts), true);
 	}
 
 	/** True for a normalized host or one of its subdomains, at a label boundary. */
-	static public function isOneOf($host, $hosts)
+	public static function isOneOf($host, $hosts)
 	{
 		$host = self::normalize($host);
-		if($host === '')
-			return false;
+		if($host === '') {
+			return false; }
 		foreach((array) $hosts as $candidate)
 		{
 			$candidate = self::normalize($candidate);
 			if($candidate !== '' && ($host === $candidate
-				|| substr($host, -strlen($candidate) - 1) === '.' . $candidate))
-				return true;
+				|| substr($host, -strlen($candidate) - 1) === '.' . $candidate)) {
+				return true; }
 		}
 		return false;
 	}

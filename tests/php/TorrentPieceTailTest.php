@@ -30,7 +30,7 @@ class TorrentPieceTailTest extends TestCase
 	 * length it can express, which keeps the fixtures a few kilobytes
 	 * instead of the megabytes a real piece length would need.
 	 */
-	const PIECE_KB = 1;
+	public const PIECE_KB = 1;
 
 	private $base;
 
@@ -46,6 +46,92 @@ class TorrentPieceTailTest extends TestCase
 			@unlink($file);
 		}
 		@rmdir($this->base);
+	}
+
+	/**
+	 * The tail is one byte and that byte is '0'. fread() returns it as the
+	 * string "0", which is falsy, and a loop that reads while the read is
+	 * truthy ends on it as if the file had ended.
+	 */
+	public function testATailOfOneZeroByteIsHashed()
+	{
+		$this->assertFileIsHashedWhole('a zero byte after two whole pieces',
+			str_repeat('x', 2 * self::PIECE_KB * 1024) . '0');
+		$this->assertFileIsHashedWhole('a zero byte after one whole piece',
+			str_repeat('x', self::PIECE_KB * 1024) . '0');
+	}
+
+	/** The whole file is that byte, so the alternative is no hashes at all. */
+	public function testAFileOfOneZeroByteIsHashed()
+	{
+		$this->assertFileIsHashedWhole('a file of one zero byte', '0');
+	}
+
+	/** Tails that are not that byte, and a file with no tail at all. */
+	public function testOrdinaryTailsAreHashed()
+	{
+		$piece = self::PIECE_KB * 1024;
+		$this->assertFileIsHashedWhole('a one byte tail that is not zero', str_repeat('x', $piece) . '1');
+		$this->assertFileIsHashedWhole('a tail of several bytes', str_repeat('x', $piece) . '0123');
+		$this->assertFileIsHashedWhole('a file of one piece exactly', str_repeat('x', $piece));
+		$this->assertFileIsHashedWhole('a file of three pieces exactly', str_repeat('x', 3 * $piece));
+		$this->assertFileIsHashedWhole('a file of one byte that is not zero', '1');
+	}
+
+	public function testMultipleFileInputsKeepAZeroTail()
+	{
+		$piece = self::PIECE_KB * 1024;
+		foreach ([
+			'one file of one zero byte' => ['0'],
+			'a zero after a complete file' => [str_repeat('x', $piece), '0'],
+			'a piece crosses files before a zero tail' => [str_repeat('x', $piece - 1), 'x0'],
+			'two pieces cross three files before a zero tail' => [str_repeat('x', 2 * $piece - 1), 'x', '0'],
+			'a zero between empty files' => ['', '0', ''],
+		] as $what => $contents) {
+			$this->assertFilesAreHashedWhole($what, $contents);
+		}
+	}
+
+	public function testMultipleFileInputsKeepOrdinaryAndEmptyTails()
+	{
+		$piece = self::PIECE_KB * 1024;
+		foreach ([
+			'one file of one nonzero byte' => ['1'],
+			'a nonzero after a complete file' => [str_repeat('x', $piece), '1'],
+			'an exact piece crosses files' => [str_repeat('x', $piece - 1), 'x'],
+			'a longer tail follows a file boundary' => [str_repeat('x', $piece - 2), 'x0123'],
+			'an empty file follows an exact piece' => [str_repeat('x', $piece), ''],
+			'only empty files' => ['', ''],
+			'a complete piece of zero characters' => [str_repeat('0', $piece)],
+		] as $what => $contents) {
+			$this->assertFilesAreHashedWhole($what, $contents);
+		}
+	}
+
+	/** The bencode reader above refuses what it should, so its acceptance means something. */
+	public function testTheBencodeReaderIsStrict()
+	{
+		foreach ([
+			'd3:fooe' => 'a dictionary with a key and no value',
+			'i-0e' => 'a negative zero',
+			'i01e' => 'a leading zero',
+			'ie' => 'an empty integer',
+			'3:ab' => 'a string shorter than its length',
+			'l1:ae1:b' => 'bytes after the end of the value',
+			'd1:a1:b' => 'a dictionary without its terminator',
+			'' => 'no value at all',
+		] as $bytes => $what) {
+			$refused = false;
+			try {
+				$at = 0;
+				$this->bdecode($bytes, $at);
+				// Not an exception, but not the whole input either.
+				$refused = ($at !== strlen($bytes));
+			} catch (Exception $error) {
+				$refused = true;
+			}
+			$this->assertTrue($refused, 'the bencode reader refuses ' . $what);
+		}
 	}
 
 	private function fixture($name, $content)
@@ -82,7 +168,7 @@ class TorrentPieceTailTest extends TestCase
 		}
 		if (($type === 'l') || ($type === 'd')) {
 			$at++;
-			$value = array();
+			$value = [];
 			while (isset($data[$at]) && ($data[$at] !== 'e')) {
 				if ($type === 'l') {
 					$value[] = $this->bdecode($data, $at);
@@ -135,7 +221,7 @@ class TorrentPieceTailTest extends TestCase
 	private function assertFileIsHashedWhole($what, $content)
 	{
 		$path = $this->fixture(str_replace(' ', '-', $what) . '.data', $content);
-		$torrent = new Torrent($path, array(), self::PIECE_KB);
+		$torrent = new Torrent($path, [], self::PIECE_KB);
 		$this->assertTrue($torrent->errors() === false,
 			$what . ': the torrent is built without errors');
 		$info = $this->metainfo((string)$torrent, $what);
@@ -176,7 +262,7 @@ class TorrentPieceTailTest extends TestCase
 	{
 		$directory = $this->base . '/files';
 		mkdir($directory, 0700);
-		$paths = array();
+		$paths = [];
 		try {
 			foreach ($contents as $index => $content) {
 				$path = $directory . '/part-' . sprintf('%03d', $index) . '.data';
@@ -184,9 +270,9 @@ class TorrentPieceTailTest extends TestCase
 					$what . ': file ' . $index . ' is written whole');
 				$paths[] = $path;
 			}
-			foreach (array('file list' => array_reverse($paths), 'folder' => $directory) as $mode => $input) {
+			foreach (['file list' => array_reverse($paths), 'folder' => $directory] as $mode => $input) {
 				$label = $what . ' (' . $mode . ')';
-				$torrent = new Torrent($input, array(), self::PIECE_KB);
+				$torrent = new Torrent($input, [], self::PIECE_KB);
 				$this->assertTrue($torrent->errors() === false, $label . ': the torrent is built without errors');
 				$info = $this->metainfo((string)$torrent, $label);
 				$this->assertTrue(isset($info['files'], $info['name'], $info['piece length'], $info['pieces'])
@@ -195,7 +281,7 @@ class TorrentPieceTailTest extends TestCase
 				$this->assertTrue(count($info['files']) === count($contents), $label . ': every file is listed');
 				$bytes = '';
 				foreach ($info['files'] as $index => $file) {
-					$this->assertTrue($file['path'] === array(basename($paths[$index])),
+					$this->assertTrue($file['path'] === [basename($paths[$index])],
 						$label . ': file ' . $index . ' has the expected relative path and order');
 					$this->assertTrue($file['length'] === strlen($contents[$index]),
 						$label . ': file ' . $index . ' has its complete length');
@@ -206,94 +292,8 @@ class TorrentPieceTailTest extends TestCase
 				$this->assertPiecesMatch($label, $info, $bytes);
 			}
 		} finally {
-			foreach ($paths as $path) unlink($path);
+			foreach ($paths as $path) { unlink($path); }
 			rmdir($directory);
-		}
-	}
-
-	/**
-	 * The tail is one byte and that byte is '0'. fread() returns it as the
-	 * string "0", which is falsy, and a loop that reads while the read is
-	 * truthy ends on it as if the file had ended.
-	 */
-	public function testATailOfOneZeroByteIsHashed()
-	{
-		$this->assertFileIsHashedWhole('a zero byte after two whole pieces',
-			str_repeat('x', 2 * self::PIECE_KB * 1024) . '0');
-		$this->assertFileIsHashedWhole('a zero byte after one whole piece',
-			str_repeat('x', self::PIECE_KB * 1024) . '0');
-	}
-
-	/** The whole file is that byte, so the alternative is no hashes at all. */
-	public function testAFileOfOneZeroByteIsHashed()
-	{
-		$this->assertFileIsHashedWhole('a file of one zero byte', '0');
-	}
-
-	/** Tails that are not that byte, and a file with no tail at all. */
-	public function testOrdinaryTailsAreHashed()
-	{
-		$piece = self::PIECE_KB * 1024;
-		$this->assertFileIsHashedWhole('a one byte tail that is not zero', str_repeat('x', $piece) . '1');
-		$this->assertFileIsHashedWhole('a tail of several bytes', str_repeat('x', $piece) . '0123');
-		$this->assertFileIsHashedWhole('a file of one piece exactly', str_repeat('x', $piece));
-		$this->assertFileIsHashedWhole('a file of three pieces exactly', str_repeat('x', 3 * $piece));
-		$this->assertFileIsHashedWhole('a file of one byte that is not zero', '1');
-	}
-
-	public function testMultipleFileInputsKeepAZeroTail()
-	{
-		$piece = self::PIECE_KB * 1024;
-		foreach (array(
-			'one file of one zero byte' => array('0'),
-			'a zero after a complete file' => array(str_repeat('x', $piece), '0'),
-			'a piece crosses files before a zero tail' => array(str_repeat('x', $piece - 1), 'x0'),
-			'two pieces cross three files before a zero tail' => array(str_repeat('x', 2 * $piece - 1), 'x', '0'),
-			'a zero between empty files' => array('', '0', ''),
-		) as $what => $contents) {
-			$this->assertFilesAreHashedWhole($what, $contents);
-		}
-	}
-
-	public function testMultipleFileInputsKeepOrdinaryAndEmptyTails()
-	{
-		$piece = self::PIECE_KB * 1024;
-		foreach (array(
-			'one file of one nonzero byte' => array('1'),
-			'a nonzero after a complete file' => array(str_repeat('x', $piece), '1'),
-			'an exact piece crosses files' => array(str_repeat('x', $piece - 1), 'x'),
-			'a longer tail follows a file boundary' => array(str_repeat('x', $piece - 2), 'x0123'),
-			'an empty file follows an exact piece' => array(str_repeat('x', $piece), ''),
-			'only empty files' => array('', ''),
-			'a complete piece of zero characters' => array(str_repeat('0', $piece)),
-		) as $what => $contents) {
-			$this->assertFilesAreHashedWhole($what, $contents);
-		}
-	}
-
-	/** The bencode reader above refuses what it should, so its acceptance means something. */
-	public function testTheBencodeReaderIsStrict()
-	{
-		foreach (array(
-			'd3:fooe' => 'a dictionary with a key and no value',
-			'i-0e' => 'a negative zero',
-			'i01e' => 'a leading zero',
-			'ie' => 'an empty integer',
-			'3:ab' => 'a string shorter than its length',
-			'l1:ae1:b' => 'bytes after the end of the value',
-			'd1:a1:b' => 'a dictionary without its terminator',
-			'' => 'no value at all',
-		) as $bytes => $what) {
-			$refused = false;
-			try {
-				$at = 0;
-				$this->bdecode($bytes, $at);
-				// Not an exception, but not the whole input either.
-				$refused = ($at !== strlen($bytes));
-			} catch (Exception $error) {
-				$refused = true;
-			}
-			$this->assertTrue($refused, 'the bencode reader refuses ' . $what);
 		}
 	}
 }

@@ -23,10 +23,10 @@ else
 		// note it takes the interval in minutes rather than seconds.
 		$req = new rXMLRPCRequest( $theSettings->getScheduleCommand('rutracker_check',$updateInterval,
 			getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' &}' ));
-		if($req->success())
-			$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
-		else
-			$jResult .= "plugin.disable(); noty('rutracker_check: '+theUILang.pluginCantStart, 'error');";
+		if($req->success()) {
+			$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]); }
+		else {
+			$jResult .= "plugin.disable(); noty('rutracker_check: '+theUILang.pluginCantStart, 'error');"; }
 	}
 	else
 	{

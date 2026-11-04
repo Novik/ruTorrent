@@ -40,8 +40,8 @@ function check_port_portchecker($ip, $port, $timeout) {
 
 	// Parse the JSON response to determine port status
 	if ($client->status == 200) {
-		if (stripos($client->results, 'is <span class="red">closed</span>') !== false) return 1; // Port is closed
-		if (stripos($client->results, 'is <span class="green">open</span>') !== false) return 2; // Port is open
+		if (stripos($client->results, 'is <span class="red">closed</span>') !== false) { return 1; } // Port is closed
+		if (stripos($client->results, 'is <span class="green">open</span>') !== false) { return 2; } // Port is open
 		error_log("check_port: portchecker response indicators not found for IP {$ip}. Response: " . substr($client->results, 0, 500));
 	} else {
 		error_log("check_port: Failed fetch from portchecker endpoint for IP {$ip}. Status: {$client->status}, Error: {$client->error}");
