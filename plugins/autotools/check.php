@@ -41,7 +41,7 @@ if ($at->enable_move && (@preg_match($at->automove_filter . 'u', $label) == 1)) 
                     $rel_path = '';
                 }
                 $dest_path = rtAddTailSlash($path_to_finished . $rel_path);
-                if ($at->addLabel && ($label != '')) {
+                if ($at->addLabel && ($label != '') && ($label != trim($rel_path, '/'))) {
                     $dest_path .= FileUtil::addslash($label);
                 }
                 if ($at->addName && ($name != '')) {
