@@ -29,139 +29,163 @@ require_once(__DIR__ . '/TestCase.php');
  */
 class FileMoveDestinationTest extends TestCase
 {
-	private $tree;
+    private $tree;
 
-	public function setUp()
-	{
-		$this->tree = sys_get_temp_dir() . '/rutorrent-filemove-' . getmypid();
-		$this->wipe();
-	}
+    public function setUp()
+    {
+        $this->tree = sys_get_temp_dir() . '/rutorrent-filemove-' . getmypid();
+        $this->wipe();
+    }
 
-	public function tearDown()
-	{
-		$this->wipe();
-	}
+    public function tearDown()
+    {
+        $this->wipe();
+    }
 
-	/**
-	 * A scan that finds nothing, or finds one of the two that ship, is a false
-	 * green and not a pass.
-	 */
-	public function testTheScanFindsTheCopiesThatShip()
-	{
-		$sources = $this->sources();
-		$this->assertTrue(count($sources) >= 2,
-			'the tree ships more than one rtOpFiles(); found: ' . implode(', ', $sources));
-		foreach (['plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php'] as $known) {
-			$this->assertTrue(in_array($known, $sources, true),
-				$known . ' is among them; found: ' . implode(', ', $sources)); }
-	}
+    /**
+     * A scan that finds nothing, or finds one of the two that ship, is a false
+     * green and not a pass.
+     */
+    public function testTheScanFindsTheCopiesThatShip()
+    {
+        $sources = $this->sources();
+        $this->assertTrue(
+            count($sources) >= 2,
+            'the tree ships more than one rtOpFiles(); found: ' . implode(', ', $sources),
+        );
+        foreach (['plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php'] as $known) {
+            $this->assertTrue(
+                in_array($known, $sources, true),
+                $known . ' is among them; found: ' . implode(', ', $sources),
+            );
+        }
+    }
 
-	public function testEveryCopyStillMovesADownload()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			$this->assertTrue($r['control'][0] === true, $source . ': an ordinary move succeeds');
-			$this->assertEquals('AAA', $r['control'][1], $source . ': the file arrives with its content');
-			$this->assertEquals('BBB', $r['control'][2], $source . ': and the one in a subdirectory too');
-			$this->assertTrue($r['control'][3] === false, $source . ': and it leaves the source');
-		}
-	}
+    public function testEveryCopyStillMovesADownload()
+    {
+        foreach ($this->sources() as $source) {
+            $r = $this->drive($source);
+            $this->assertTrue($r['control'][0] === true, $source . ': an ordinary move succeeds');
+            $this->assertEquals('AAA', $r['control'][1], $source . ': the file arrives with its content');
+            $this->assertEquals('BBB', $r['control'][2], $source . ': and the one in a subdirectory too');
+            $this->assertTrue($r['control'][3] === false, $source . ': and it leaves the source');
+        }
+    }
 
-	public function testNoCopyWritesOverAFileAlreadyAtTheDestination()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op)
-			{
-				$this->assertTrue($r[$op][0] === false,
-					$source . ': ' . $op . ' into a taken name is refused');
-				$this->assertEquals('already there', $r[$op][1],
-					$source . ': the file that was already there survives ' . $op);
-				$this->assertTrue($r[$op][2] === true,
-					$source . ': and the download has not left the source after ' . $op);
-			}
-		}
-	}
+    public function testNoCopyWritesOverAFileAlreadyAtTheDestination()
+    {
+        foreach ($this->sources() as $source) {
+            $r = $this->drive($source);
+            foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op) {
+                $this->assertTrue(
+                    $r[$op][0] === false,
+                    $source . ': ' . $op . ' into a taken name is refused',
+                );
+                $this->assertEquals(
+                    'already there',
+                    $r[$op][1],
+                    $source . ': the file that was already there survives ' . $op,
+                );
+                $this->assertTrue(
+                    $r[$op][2] === true,
+                    $source . ': and the download has not left the source after ' . $op,
+                );
+            }
+        }
+    }
 
-	public function testNoCopyWritesOverADirectoryOrASymlink()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			$this->assertTrue($r['directory'][0] === false,
-				$source . ': a directory in the way refuses the move');
-			$this->assertEquals('kept', $r['directory'][1],
-				$source . ': and what is inside it is still there');
-			$this->assertTrue($r['symlink'][0] === false,
-				$source . ': a symlink in the way refuses the move');
-			$this->assertEquals('already there', $r['symlink'][1],
-				$source . ': and what it pointed at is untouched');
-		}
-	}
+    public function testNoCopyWritesOverADirectoryOrASymlink()
+    {
+        foreach ($this->sources() as $source) {
+            $r = $this->drive($source);
+            $this->assertTrue(
+                $r['directory'][0] === false,
+                $source . ': a directory in the way refuses the move',
+            );
+            $this->assertEquals(
+                'kept',
+                $r['directory'][1],
+                $source . ': and what is inside it is still there',
+            );
+            $this->assertTrue(
+                $r['symlink'][0] === false,
+                $source . ': a symlink in the way refuses the move',
+            );
+            $this->assertEquals(
+                'already there',
+                $r['symlink'][1],
+                $source . ': and what it pointed at is untouched',
+            );
+        }
+    }
 
-	private function wipe()
-	{
-		if (!is_dir($this->tree)) {
-			return; }
-		$items = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
-			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item) {
-			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
-		@rmdir($this->tree);
-	}
+    private function wipe()
+    {
+        if (!is_dir($this->tree)) {
+            return;
+        }
+        $items = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($items as $item) {
+            $item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+        }
+        @rmdir($this->tree);
+    }
 
-	private function repoRoot()
-	{
-		return dirname(dirname(__DIR__));
-	}
+    private function repoRoot()
+    {
+        return dirname(dirname(__DIR__));
+    }
 
-	/** Every file in the tree that defines rtOpFiles(), relative to the root. */
-	private function sources()
-	{
-		$found = [];
-		foreach (['php', 'plugins'] as $dir)
-		{
-			$path = $this->repoRoot() . '/' . $dir;
-			if (!is_dir($path)) {
-				continue; }
-			$items = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS));
-			foreach ($items as $item)
-			{
-				if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php') {
-					continue; }
-				$body = file_get_contents($item->getPathname());
-				if (preg_match('/function\s+rtOpFiles\s*\(/i', $body)) {
-					$found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1); }
-			}
-		}
-		sort($found);
-		return $found;
-	}
+    /** Every file in the tree that defines rtOpFiles(), relative to the root. */
+    private function sources()
+    {
+        $found = [];
+        foreach (['php', 'plugins'] as $dir) {
+            $path = $this->repoRoot() . '/' . $dir;
+            if (!is_dir($path)) {
+                continue;
+            }
+            $items = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+            );
+            foreach ($items as $item) {
+                if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php') {
+                    continue;
+                }
+                $body = file_get_contents($item->getPathname());
+                if (preg_match('/function\s+rtOpFiles\s*\(/i', $body)) {
+                    $found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1);
+                }
+            }
+        }
+        sort($found);
+        return $found;
+    }
 
-	/**
-	 * Runs one copy in its own process and returns what it reported, keyed by
-	 * case name: array(returned, destination content, source still there).
-	 */
-	private function drive($source)
-	{
-		$this->wipe();
-		$holder = $this->tree . '/' . dirname($source);
-		@mkdir($holder, 0777, true);
-		@mkdir($this->tree . '/php', 0777, true);
+    /**
+     * Runs one copy in its own process and returns what it reported, keyed by
+     * case name: array(returned, destination content, source still there).
+     */
+    private function drive($source)
+    {
+        $this->wipe();
+        $holder = $this->tree . '/' . dirname($source);
+        @mkdir($holder, 0777, true);
+        @mkdir($this->tree . '/php', 0777, true);
 
-		$from = $this->repoRoot() . '/' . $source;
-		$to = $holder . '/' . basename($source);
-		copy($from, $to);
-		if (hash_file('sha256', $from) !== hash_file('sha256', $to)) {
-			throw new Exception('could not copy ' . $source); }
+        $from = $this->repoRoot() . '/' . $source;
+        $to = $holder . '/' . basename($source);
+        copy($from, $to);
+        if (hash_file('sha256', $from) !== hash_file('sha256', $to)) {
+            throw new Exception('could not copy ' . $source);
+        }
 
-		// Everything below the copy's own boundary: the log sink and the
-		// large file helpers it asks about the filesystem through.
-		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
+        // Everything below the copy's own boundary: the log sink and the
+        // large file helpers it asks about the filesystem through.
+        file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
 			class FileUtil
 			{
 				public static $log = array();
@@ -173,11 +197,11 @@ class FileMoveDestinationTest extends TestCase
 				public static function stat($p) { return(@stat($p)); }
 			}
 		');
-		file_put_contents($this->tree . '/php/Torrent.php', '<?php');
-		file_put_contents($this->tree . '/php/rtorrent.php', '<?php');
+        file_put_contents($this->tree . '/php/Torrent.php', '<?php');
+        file_put_contents($this->tree . '/php/rtorrent.php', '<?php');
 
-		$probe = $this->tree . '/probe.php';
-		file_put_contents($probe, '<?php
+        $probe = $this->tree . '/probe.php';
+        file_put_contents($probe, '<?php
 			chdir(' . var_export($holder, true) . ');
 			require_once(' . var_export($to, true) . ');
 			$root = ' . var_export($this->tree . "/work", true) . ';
@@ -228,13 +252,14 @@ class FileMoveDestinationTest extends TestCase
 			echo json_encode($out);
 		');
 
-		$output = [];
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
-			escapeshellarg($probe) . ' 2>&1', $output);
-		$printed = implode("\n", $output);
-		$result = json_decode($printed, true);
-		if (!is_array($result)) {
-			throw new Exception('the probe for ' . $source . ' printed: ' . $printed); }
-		return $result;
-	}
+        $output = [];
+        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+            . escapeshellarg($probe) . ' 2>&1', $output);
+        $printed = implode("\n", $output);
+        $result = json_decode($printed, true);
+        if (!is_array($result)) {
+            throw new Exception('the probe for ' . $source . ' printed: ' . $printed);
+        }
+        return $result;
+    }
 }

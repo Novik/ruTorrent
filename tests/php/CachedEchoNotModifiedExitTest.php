@@ -22,25 +22,37 @@ PHP;
     $pipes = [];
     $process = null;
     try {
-        $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini',
-            '-d', 'zlib.output_compression=0', '-r', $worker,
-            $root . '/php/utility/cachedecho.php', $exit ? '1' : '0'],
+        $process = proc_open(
+            [PHP_BINARY, '-c', $root . '/tests/php-test.ini',
+                '-d', 'zlib.output_compression=0', '-r', $worker,
+                $root . '/php/utility/cachedecho.php', $exit ? '1' : '0'],
             [0 => ['file', '/dev/null', 'r'],
-                1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
-        if (!is_resource($process)) { throw new RuntimeException('Could not start the response child'); }
+                1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+        );
+        if (!is_resource($process)) {
+            throw new RuntimeException('Could not start the response child');
+        }
         $output = stream_get_contents($pipes[1]);
         $errors = stream_get_contents($pipes[2]);
-        foreach ($pipes as $pipe) { fclose($pipe); }
+        foreach ($pipes as $pipe) {
+            fclose($pipe);
+        }
         $pipes = [];
         $status = proc_close($process);
         $process = null;
         if ($status !== 0 || $errors !== '') {
-            throw new RuntimeException('Response child exited ' . $status . ': ' . $errors); }
+            throw new RuntimeException('Response child exited ' . $status . ': ' . $errors);
+        }
         return $output;
     } finally {
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+            foreach ($pipes as $pipe) {
+                if (is_resource($pipe)) {
+                    fclose($pipe);
+                }
+            }
             proc_close($process);
         }
     }
@@ -55,12 +67,15 @@ foreach ($cases as $name => $exit) {
     try {
         $output = cachedEchoNotModified($exit);
         if (strpos($output, str_repeat('A', 64)) !== false) {
-            throw new RuntimeException('The 304 answer carried the content as a body'); }
+            throw new RuntimeException('The 304 answer carried the content as a body');
+        }
         $continued = $output === 'CONTINUED';
         if ($continued === $exit) {
-            throw new RuntimeException('Unexpected caller continuation: ' . ($continued ? 'yes' : 'no')); }
+            throw new RuntimeException('Unexpected caller continuation: ' . ($continued ? 'yes' : 'no'));
+        }
         if (!$continued && $output !== '') {
-            throw new RuntimeException('Unexpected output: ' . var_export($output, true)); }
+            throw new RuntimeException('Unexpected output: ' . var_export($output, true));
+        }
         echo 'ok - ', $name, "\n";
     } catch (Throwable $error) {
         $failures++;

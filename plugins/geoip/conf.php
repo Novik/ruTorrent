@@ -1,4 +1,5 @@
 <?php
+
 // GeoIP2 Plugin Configuration
 //
 // This plugin requires MaxMind GeoLite2 or GeoIP2 database files (.mmdb).

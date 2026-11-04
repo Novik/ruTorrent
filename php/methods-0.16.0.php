@@ -13,24 +13,24 @@
 
 $this->aliases = array_merge($this->aliases, [
 
-	// Scheduling
-	"schedule"        => [ "name"=>"schedule",        "prm"=>1 ],
-	"schedule_remove" => [ "name"=>"schedule.remove", "prm"=>1 ],
+    // Scheduling
+    "schedule" => [ "name" => "schedule",        "prm" => 1 ],
+    "schedule_remove" => [ "name" => "schedule.remove", "prm" => 1 ],
 
-	// Command execution
-	"execute"         => [ "name"=>"execute",         "prm"=>1 ],
+    // Command execution
+    "execute" => [ "name" => "execute",         "prm" => 1 ],
 
-	// HTTP connection cap (was network.http.max_open in 0.9.x)
-	"get_max_open_http" => [ "name"=>"network.http.max_total_connections",     "prm"=>0 ],
-	"set_max_open_http" => [ "name"=>"network.http.max_total_connections.set", "prm"=>1 ],
+    // HTTP connection cap (was network.http.max_open in 0.9.x)
+    "get_max_open_http" => [ "name" => "network.http.max_total_connections",     "prm" => 0 ],
+    "set_max_open_http" => [ "name" => "network.http.max_total_connections.set", "prm" => 1 ],
 
-	// Per-group ratio commands — bare seeding group remap (0.10.2 map sent
-	// group2.seeding.* which is gone in 0.16). Use group.seeding.* now.
-	"ratio.min"         => [ "name"=>"group.seeding.ratio.min",         "prm"=>0 ],
-	"ratio.max"         => [ "name"=>"group.seeding.ratio.max",         "prm"=>0 ],
-	"ratio.upload"      => [ "name"=>"group.seeding.ratio.upload",      "prm"=>0 ],
-	"ratio.min.set"     => [ "name"=>"group.seeding.ratio.min.set",     "prm"=>1 ],
-	"ratio.max.set"     => [ "name"=>"group.seeding.ratio.max.set",     "prm"=>1 ],
-	"ratio.upload.set"  => [ "name"=>"group.seeding.ratio.upload.set",  "prm"=>1 ],
+    // Per-group ratio commands — bare seeding group remap (0.10.2 map sent
+    // group2.seeding.* which is gone in 0.16). Use group.seeding.* now.
+    "ratio.min" => [ "name" => "group.seeding.ratio.min",         "prm" => 0 ],
+    "ratio.max" => [ "name" => "group.seeding.ratio.max",         "prm" => 0 ],
+    "ratio.upload" => [ "name" => "group.seeding.ratio.upload",      "prm" => 0 ],
+    "ratio.min.set" => [ "name" => "group.seeding.ratio.min.set",     "prm" => 1 ],
+    "ratio.max.set" => [ "name" => "group.seeding.ratio.max.set",     "prm" => 1 ],
+    "ratio.upload.set" => [ "name" => "group.seeding.ratio.upload.set",  "prm" => 1 ],
 
 ]);

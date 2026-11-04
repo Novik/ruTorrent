@@ -5,7 +5,7 @@
 // $hideTrackers = array (
 // "tracker.net", "tracker.org"
 // );
-$hideTrackers =  [
+$hideTrackers = [
 ];
 
 // Label aliases is used:

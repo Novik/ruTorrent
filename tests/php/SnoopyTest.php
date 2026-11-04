@@ -218,7 +218,9 @@ class SnoopyGzipServer
         foreach ($bodies as $name => $body) {
             $this->write($name . '.gz', $body);
         }
-        $router = $this->write('router.php', <<<'PHP'
+        $router = $this->write(
+            'router.php',
+            <<<'PHP'
 <?php
 $file = dirname(__FILE__) . '/' . basename($_SERVER['REQUEST_URI']) . '.gz';
 if (!is_file($file)) {
@@ -228,7 +230,7 @@ if (!is_file($file)) {
 header('Content-Type: application/octet-stream');
 header('Content-Encoding: gzip');
 readfile($file);
-PHP
+PHP,
         );
         $this->log = $this->write('server.log', '');
         try {
@@ -267,7 +269,9 @@ PHP
     // everything it printed.
     public function fetchInChild($path, $memoryLimit, $maxlength = '')
     {
-        $script = $this->write('fetch.php', <<<'PHP'
+        $script = $this->write(
+            'fetch.php',
+            <<<'PHP'
 <?php
 require_once($argv[1]);
 $client = new Snoopy();
@@ -285,7 +289,7 @@ echo json_encode(array(
     'sha1' => is_string($client->results) ? sha1($client->results) : null,
     'peak' => memory_get_peak_usage(true),
 ));
-PHP
+PHP,
         );
         $process = proc_open(
             [PHP_BINARY, '-c', self::SUITE_INI, '-d', 'memory_limit=' . $memoryLimit, $script,
@@ -1156,7 +1160,9 @@ $tests = [
         $handle = fopen($huge, 'w');
         ftruncate($handle, 64 * 1048576);
         fclose($handle);
-        file_put_contents($child, <<<'PHP'
+        file_put_contents(
+            $child,
+            <<<'PHP'
 <?php
 require_once($argv[1]);
 $pathToExternals['curl'] = $argv[2];
@@ -1170,7 +1176,7 @@ echo json_encode(array(
     'error' => $client->error,
     'length' => is_string($client->results) ? strlen($client->results) : null,
 ));
-PHP
+PHP,
         );
         putenv('SNOOPY_TEST_BODY=' . $huge);
         try {

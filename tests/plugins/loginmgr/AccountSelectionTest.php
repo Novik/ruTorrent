@@ -26,8 +26,14 @@ $redactedOrigin = 'https://redacted.example';
 class ProbeHttpSiteAccount extends commonAccount
 {
     public $url = 'http://http-only.example';
-    protected function isOK($client) { return true; }
-    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f) { return false; }
+    protected function isOK($client)
+    {
+        return true;
+    }
+    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f)
+    {
+        return false;
+    }
 }
 
 function selAssertSame($expected, $actual, $message)
@@ -93,8 +99,11 @@ $tests = [
         ] as $case) {
             list($class, $url) = $case;
             $account = new $class();
-            selAssertSame(false, (bool) $account->test($url),
-                $class . ' must not claim the http form of an https site');
+            selAssertSame(
+                false,
+                (bool) $account->test($url),
+                $class . ' must not claim the http form of an https site',
+            );
         }
     },
 
@@ -134,8 +143,11 @@ $tests = [
                 'https://' . $host . '.evil.test/forum/dl.php?t=1',
             ];
             foreach ($elsewhere as $url) {
-                selAssertSame(false, (bool) $account->test($url),
-                    $class . ' must not claim ' . var_export($url, true));
+                selAssertSame(
+                    false,
+                    (bool) $account->test($url),
+                    $class . ' must not claim ' . var_export($url, true),
+                );
             }
         }
         // The accounts are loaded by the glob at the top of this file, and the
@@ -153,8 +165,11 @@ $tests = [
             $asked++;
             $account = new $class();
             foreach (['', 'not a url', '/relative/path', 'javascript:alert(1)'] as $url) {
-                selAssertSame(false, (bool) $account->test($url),
-                    $class . ' must not claim ' . var_export($url, true));
+                selAssertSame(
+                    false,
+                    (bool) $account->test($url),
+                    $class . ' must not claim ' . var_export($url, true),
+                );
             }
         }
         selAssertSame(true, $asked > 0, 'accounts were found to ask');

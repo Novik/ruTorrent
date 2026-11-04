@@ -15,8 +15,14 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 class ProbeExposureAccount extends commonAccount
 {
     public $url = 'https://tracker.example';
-    protected function isOK($client) { return true; }
-    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f) { return false; }
+    protected function isOK($client)
+    {
+        return true;
+    }
+    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f)
+    {
+        return false;
+    }
 }
 
 function expAssertTrue($condition, $message)

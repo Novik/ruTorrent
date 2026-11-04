@@ -39,7 +39,11 @@ function scheduleCommandAt($name, $intervalMinutes, $now)
 {
     $startAt = 0;
     $command = rTorrentSettings::get()->getScheduleCommand(
-        $name, $intervalMinutes, 'print=noop', $startAt, $now,
+        $name,
+        $intervalMinutes,
+        'print=noop',
+        $startAt,
+        $now,
     );
     return [
         'now' => $now,

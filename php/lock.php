@@ -1,46 +1,46 @@
 <?php
-require_once( 'util.php' );
+
+require_once('util.php');
 
 class rLock
 {
+    public const MAX_LOCK_TIME = 1800;
+    protected $file;
+    protected $lockTime;
+    protected $locked = false;
 
-	public const MAX_LOCK_TIME = 1800;
-	protected $file;
-	protected $lockTime;
-	protected $locked = false;
+    protected function __construct($name, $maxLockTime)
+    {
+        $this->lockTime = $maxLockTime;
+        $this->file = FileUtil::getSettingsPath() . '/' . $name . ".lock";
+    }
 
-	protected function __construct( $name, $maxLockTime )
-	{
-		$this->lockTime = $maxLockTime;
-		$this->file = FileUtil::getSettingsPath().'/'.$name.".lock";
-	}
+    public function __destruct()
+    {
+        $this->release();
+    }
 
-	public function __destruct()
-	{
-		$this->release();
-	}
+    public function lock()
+    {
+        clearstatcache();
+        $this->locked = (!file_exists($this->file) || (time() - filemtime($this->file) > $this->lockTime)) && touch($this->file);
+        return($this->locked);
+    }
 
-	public function lock()
-	{
-		clearstatcache();
-		$this->locked = (!file_exists($this->file) || (time()-filemtime($this->file)>$this->lockTime)) && touch($this->file);
-		return($this->locked);
-	}
+    public function release()
+    {
+        if ($this->locked) {
+            $this->locked = false;
+            unlink($this->file);
+        }
+    }
 
-	public function release()
-	{
-		if($this->locked)
-		{
-			$this->locked = false;
-			unlink($this->file);
-		}
-	}
-
-	public static function obtain( $name = '', $maxLockTime = self::MAX_LOCK_TIME )
-	{
-		$lck = new rLock($name,$maxLockTime);
-		if(!$lck->lock()) {
-			$lck = false; }
-		return($lck);
-	}
+    public static function obtain($name = '', $maxLockTime = self::MAX_LOCK_TIME)
+    {
+        $lck = new rLock($name, $maxLockTime);
+        if (!$lck->lock()) {
+            $lck = false;
+        }
+        return($lck);
+    }
 }

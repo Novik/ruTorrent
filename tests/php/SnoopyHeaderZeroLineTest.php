@@ -46,15 +46,21 @@ PHP;
         [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
         $pipes,
     );
-    if (!is_resource($process)) { throw new RuntimeException('Could not start the HTTP peer'); }
+    if (!is_resource($process)) {
+        throw new RuntimeException('Could not start the HTTP peer');
+    }
     $socket = false;
     try {
         fclose($pipes[0]);
         stream_set_timeout($pipes[1], 5);
         $address = fgets($pipes[1]);
-        if ($address === false) { throw new RuntimeException('The HTTP peer did not announce its address'); }
+        if ($address === false) {
+            throw new RuntimeException('The HTTP peer did not announce its address');
+        }
         $socket = stream_socket_client('tcp://' . trim($address), $errno, $error, 5);
-        if ($socket === false) { throw new RuntimeException('Could not connect to the HTTP peer: ' . $error); }
+        if ($socket === false) {
+            throw new RuntimeException('Could not connect to the HTTP peer: ' . $error);
+        }
         $client = new Snoopy();
         $client->read_timeout = 2;
         $client->host = '127.0.0.1';
@@ -67,14 +73,21 @@ PHP;
         $exit = proc_close($process);
         $process = null;
         if ($exit !== 0 || $stderr !== '') {
-            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr); }
+            throw new RuntimeException('HTTP peer exited ' . $exit . ': ' . $stderr);
+        }
         return ['fetched' => $fetched, 'status' => $client->status,
             'headers' => $client->headers, 'body' => $client->results];
     } finally {
-        if (is_resource($socket)) { fclose($socket); }
+        if (is_resource($socket)) {
+            fclose($socket);
+        }
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+            foreach ($pipes as $pipe) {
+                if (is_resource($pipe)) {
+                    fclose($pipe);
+                }
+            }
             proc_close($process);
         }
     }
@@ -103,10 +116,12 @@ foreach ($cases as $name => $case) {
             // explode() drops the terminator fgets() keeps, except on the last
             // line of a block that has none.
             if (($line + 1) < count($expected['headers']) || isset($block[1])) {
-                $expected['headers'][$line] = $text . "\r\n"; }
+                $expected['headers'][$line] = $text . "\r\n";
+            }
         }
         if ($seen !== $expected) {
-            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen)); }
+            throw new RuntimeException('expected ' . json_encode($expected) . ', got ' . json_encode($seen));
+        }
         echo 'ok - ', $name, "\n";
     } catch (Throwable $error) {
         $failures++;

@@ -4,7 +4,9 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function binaryBodyAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // A peer that reads whatever arrives rather than exactly as many bytes as the
@@ -45,14 +47,19 @@ fclose($socket);
 fclose($server);
 echo json_encode(array('declared' => $length, 'body' => base64_encode($body)));
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer],
-        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     binaryBodyAssert(is_resource($process), 'The loopback peer starts');
     try {
         stream_set_timeout($pipes[1], 20);
-        $address = trim((string)fgets($pipes[1]));
-        binaryBodyAssert(preg_match('/^127\.0\.0\.1:[0-9]+$/D', $address) === 1,
-            'The peer announces its listener');
+        $address = trim((string) fgets($pipes[1]));
+        binaryBodyAssert(
+            preg_match('/^127\.0\.0\.1:[0-9]+$/D', $address) === 1,
+            'The peer announces its listener',
+        );
         $client = new Snoopy();
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
@@ -81,12 +88,18 @@ PHP;
         proc_close($process);
         $process = null;
         $request = json_decode($capture, true);
-        binaryBodyAssert(is_array($request) && isset($request['declared'], $request['body']),
-            'The peer reports what it received');
+        binaryBodyAssert(
+            is_array($request) && isset($request['declared'], $request['body']),
+            'The peer reports what it received',
+        );
         return ['declared' => $request['declared'], 'received' => base64_decode($request['body']),
             'status' => $client->status, 'error' => $client->error];
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         if (is_resource($process)) {
             proc_terminate($process);
             proc_close($process);
@@ -102,7 +115,9 @@ function binaryBodyLocales()
     $found = [];
     foreach (['C', 'C.UTF-8', 'C.utf8', 'POSIX', 'en_US.UTF-8', 'en_US.utf8'] as $name) {
         $previous = setlocale(LC_CTYPE, '0');
-        if (setlocale(LC_CTYPE, $name) !== false) { $found[$name] = true; }
+        if (setlocale(LC_CTYPE, $name) !== false) {
+            $found[$name] = true;
+        }
         setlocale(LC_CTYPE, $previous);
     }
     return array_keys($found);
@@ -132,20 +147,28 @@ $tests = [
                     foreach ([false => 'socket', true => 'curl'] as $curl => $transport) {
                         $result = binaryBodyRequest($curl, $body);
                         $where = $transport . ' under ' . $locale . ' for ' . $label;
-                        binaryBodyAssert($result['declared'] === strlen($body),
+                        binaryBodyAssert(
+                            $result['declared'] === strlen($body),
                             'The request must declare ' . strlen($body) . ' bytes: ' . $where
-                            . ' declared ' . $result['declared']);
-                        binaryBodyAssert(strlen($result['received']) === strlen($body),
+                            . ' declared ' . $result['declared'],
+                        );
+                        binaryBodyAssert(
+                            strlen($result['received']) === strlen($body),
                             'The peer must receive as many bytes as the request declared: ' . $where
                             . ' sent ' . strlen($result['received']) . ' of ' . strlen($body)
-                            . ' (status ' . $result['status'] . ' ' . $result['error'] . ')');
-                        binaryBodyAssert($result['received'] === $body,
+                            . ' (status ' . $result['status'] . ' ' . $result['error'] . ')',
+                        );
+                        binaryBodyAssert(
+                            $result['received'] === $body,
                             'The peer must receive the body unchanged: ' . $where . ' received '
-                            . bin2hex($result['received']) . ' for ' . bin2hex($body));
+                            . bin2hex($result['received']) . ' for ' . bin2hex($body),
+                        );
                         $sent[$transport] = $result['received'];
                     }
-                    binaryBodyAssert($sent['socket'] === $sent['curl'],
-                        'The transports must agree on the bytes of ' . $label . ' under ' . $locale);
+                    binaryBodyAssert(
+                        $sent['socket'] === $sent['curl'],
+                        'The transports must agree on the bytes of ' . $label . ' under ' . $locale,
+                    );
                 }
             }
         } finally {
@@ -158,11 +181,15 @@ $tests = [
         $directory = FileUtil::getTempDirectory();
         $before = glob($directory . 'rutorrent-*');
         $result = binaryBodyRequest(true, "secret=\xc3\xa9\x80\xfe\xff&password=s3cret");
-        binaryBodyAssert(strlen($result['received']) === $result['declared'],
-            'The request completes with the body it declared');
+        binaryBodyAssert(
+            strlen($result['received']) === $result['declared'],
+            'The request completes with the body it declared',
+        );
         $after = array_diff(glob($directory . 'rutorrent-*'), $before === false ? [] : $before);
-        binaryBodyAssert($after === [],
-            'No temporary file outlives the request: ' . implode(', ', $after));
+        binaryBodyAssert(
+            $after === [],
+            'No temporary file outlives the request: ' . implode(', ', $after),
+        );
     },
     // What the body is handed over as, observed from the other side: a
     // wrapper records the arguments curl is called with and the mode of any
@@ -183,8 +210,11 @@ done
 exec curl "$@"
 
 SH;
-        $script = str_replace(['{ARGV}', '{MODES}'],
-            [escapeshellarg($record . '.argv'), escapeshellarg($record)], $template);
+        $script = str_replace(
+            ['{ARGV}', '{MODES}'],
+            [escapeshellarg($record . '.argv'), escapeshellarg($record)],
+            $template,
+        );
         binaryBodyAssert(file_put_contents($wrapper, $script) === strlen($script), 'The wrapper is written');
         binaryBodyAssert(chmod($wrapper, 0700), 'The wrapper is executable');
         $previous = isset($GLOBALS['pathToExternals']['curl']) ? $GLOBALS['pathToExternals']['curl'] : null;
@@ -197,16 +227,27 @@ SH;
                 ? explode("\n", rtrim(file_get_contents($record . '.argv'), "\n")) : [];
             binaryBodyAssert(count($arguments) > 0, 'The wrapper recorded what curl was called with');
             foreach ($arguments as $argument) {
-                binaryBodyAssert(strpos($argument, 'password=s3cret') === false,
-                    'No argument carries the body: ' . $argument); }
+                binaryBodyAssert(
+                    strpos($argument, 'password=s3cret') === false,
+                    'No argument carries the body: ' . $argument,
+                );
+            }
             $modes = file_exists($record) ? explode("\n", trim(file_get_contents($record))) : [];
-            binaryBodyAssert($modes === ['600'],
-                'The body file is readable by its owner only: ' . implode(', ', $modes));
+            binaryBodyAssert(
+                $modes === ['600'],
+                'The body file is readable by its owner only: ' . implode(', ', $modes),
+            );
         } finally {
-            if ($previous === null) { unset($GLOBALS['pathToExternals']['curl']); }
-            else { $GLOBALS['pathToExternals']['curl'] = $previous; }
+            if ($previous === null) {
+                unset($GLOBALS['pathToExternals']['curl']);
+            } else {
+                $GLOBALS['pathToExternals']['curl'] = $previous;
+            }
             foreach ([$wrapper, $record, $record . '.argv'] as $path) {
-                if (file_exists($path)) { unlink($path); } }
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
         }
     },
 ];

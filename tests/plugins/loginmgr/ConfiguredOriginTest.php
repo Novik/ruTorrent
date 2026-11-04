@@ -141,8 +141,10 @@ function coListen($temp)
                 . ' and it exited ' . $code,
             );
         }
-        file_put_contents($pem,
-            file_get_contents($temp . '/key.pem') . file_get_contents($temp . '/cert.pem'));
+        file_put_contents(
+            $pem,
+            file_get_contents($temp . '/key.pem') . file_get_contents($temp . '/cert.pem'),
+        );
     }
 
     $peer = <<<'PHP'
@@ -189,7 +191,8 @@ PHP;
     $process = proc_open(
         [PHP_BINARY, '-d', 'error_reporting=0', '-r', $peer, $pem, $record, '2'],
         [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-        $pipes);
+        $pipes,
+    );
     if (!is_resource($process)) {
         throw new RuntimeException('the recording listener did not start');
     }
@@ -284,14 +287,20 @@ $tests = [
     'the shipped configuration names no origin for any of the four' => function () {
         global $coAccounts;
         foreach ($coAccounts as $name => $nfo) {
-            coSame(true, array_key_exists($nfo[0], $GLOBALS),
-                'plugins/loginmgr/conf.php must declare $' . $nfo[0] . ' in the global scope');
+            coSame(
+                true,
+                array_key_exists($nfo[0], $GLOBALS),
+                'plugins/loginmgr/conf.php must declare $' . $nfo[0] . ' in the global scope',
+            );
         }
         // Read from the file, since the cases above assign to the globals.
         $conf = file_get_contents(__DIR__ . '/../../../plugins/loginmgr/conf.php');
         foreach ($coAccounts as $name => $nfo) {
-            coSame(1, preg_match('/^\$' . preg_quote($nfo[0], '/') . " = '';$/m", $conf),
-                'plugins/loginmgr/conf.php leaves $' . $nfo[0] . ' to the user');
+            coSame(
+                1,
+                preg_match('/^\$' . preg_quote($nfo[0], '/') . " = '';$/m", $conf),
+                'plugins/loginmgr/conf.php leaves $' . $nfo[0] . ' to the user',
+            );
         }
     },
 
@@ -306,18 +315,27 @@ $tests = [
                 $account = coRefresh($name, $client);
                 coSame('', $account->url, $name . ' claims no site');
                 coSame([], $client->attempts, $name . ' asks for no request');
-                coSame(0, $account->data->stored + $account->data->removed,
-                    $name . ' leaves the session cache alone');
+                coSame(
+                    0,
+                    $account->data->stored + $account->data->removed,
+                    $name . ' leaves the session cache alone',
+                );
                 $log = coLog();
                 coSame(1, substr_count($log, "\n"), 'one log line for ' . $name . ': ' . $log);
                 foreach (['loginmgr: ' . $name . ' is not used', '$' . $nfo[0] . ' is not set',
                     'plugins/loginmgr/conf.local.php'] as $part) {
-                    coSame(true, strpos($log, $part) !== false,
-                        'the log line names ' . $part . ': ' . $log);
+                    coSame(
+                        true,
+                        strpos($log, $part) !== false,
+                        'the log line names ' . $part . ': ' . $log,
+                    );
                 }
             }
-            coSame([], coArrived($listener, 0),
-                'and nothing reached a listening peer: not a connection, not a byte');
+            coSame(
+                [],
+                coArrived($listener, 0),
+                'and nothing reached a listening peer: not a connection, not a byte',
+            );
         } finally {
             coStop($listener);
         }
@@ -346,15 +364,27 @@ $tests = [
             coResetLog();
             $account = coRefresh($name, new CoCountingSnoopy());
             coResetLog();
-            coSame(false, $account->test('https://tracker.example/login.php'),
-                $name . ' claims nothing');
-            coSame(false, $account->test('https://tracker.example/forum/dl.php?t=1'),
-                $name . ' claims nothing at all');
+            coSame(
+                false,
+                $account->test('https://tracker.example/login.php'),
+                $name . ' claims nothing',
+            );
+            coSame(
+                false,
+                $account->test('https://tracker.example/forum/dl.php?t=1'),
+                $name . ' claims nothing at all',
+            );
             $log = coLog();
-            coSame(1, substr_count($log, "\n"),
-                'one log line for ' . $name . ', not one per URL: ' . $log);
-            coSame(true, strpos($log, '$' . $nfo[0] . ' is not set') !== false,
-                'and it names the setting: ' . $log);
+            coSame(
+                1,
+                substr_count($log, "\n"),
+                'one log line for ' . $name . ', not one per URL: ' . $log,
+            );
+            coSame(
+                true,
+                strpos($log, '$' . $nfo[0] . ' is not set') !== false,
+                'and it names the setting: ' . $log,
+            );
         }
     },
 
@@ -416,21 +446,33 @@ $tests = [
                     $client = new CoCountingSnoopy();
                     $account = coRefresh($name, $client);
                     coSame('', $account->url, $name . ' with ' . var_export($configured, true));
-                    coSame([], $client->attempts,
-                        $name . ' asks for nothing with ' . var_export($configured, true));
+                    coSame(
+                        [],
+                        $client->attempts,
+                        $name . ' asks for nothing with ' . var_export($configured, true),
+                    );
                 }
                 coConfigure($nfo[0], 'https://tracker.example?secret=1');
                 coResetLog();
                 coRefresh($name, new CoCountingSnoopy());
-                coSame(true, strpos(coLog(), '$' . $nfo[0] . ' is not an https origin') !== false,
-                    $name . ': the reason is classified: ' . coLog());
-                coSame(false, strpos(coLog(), 'secret'),
-                    $name . ': the value is not quoted, since it may carry a password');
+                coSame(
+                    true,
+                    strpos(coLog(), '$' . $nfo[0] . ' is not an https origin') !== false,
+                    $name . ': the reason is classified: ' . coLog(),
+                );
+                coSame(
+                    false,
+                    strpos(coLog(), 'secret'),
+                    $name . ': the value is not quoted, since it may carry a password',
+                );
                 coConfigure($nfo[0], ['https://tracker.example']);
                 coResetLog();
                 coRefresh($name, new CoCountingSnoopy());
-                coSame(true, strpos(coLog(), '$' . $nfo[0] . ' is not a string') !== false,
-                    $name . ': a value of another type has its own reason');
+                coSame(
+                    true,
+                    strpos(coLog(), '$' . $nfo[0] . ' is not a string') !== false,
+                    $name . ': a value of another type has its own reason',
+                );
             }
             coSame([], coArrived($listener, 0), 'and none of it reached a listening peer');
         } finally {
@@ -451,8 +493,11 @@ $tests = [
                     $named[] = $token[1];
                 }
             }
-            coSame([], $named,
-                $name . ' builds every URL on the configured origin, and names no host');
+            coSame(
+                [],
+                $named,
+                $name . ' builds every URL on the configured origin, and names no host',
+            );
         }
     },
 
@@ -476,8 +521,11 @@ $tests = [
                 coSame('', $url, $name . ' takes its site from configuration, and none is set');
                 continue;
             }
-            coSame(true, $url !== '' && parse_url($url, PHP_URL_HOST) !== null,
-                $name . ' still names its own site');
+            coSame(
+                true,
+                $url !== '' && parse_url($url, PHP_URL_HOST) !== null,
+                $name . ' still names its own site',
+            );
             $untouched++;
         }
         coSame(20, $untouched, 'the accounts outside this change are untouched');

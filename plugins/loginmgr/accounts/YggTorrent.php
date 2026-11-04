@@ -22,9 +22,9 @@ class YggTorrentAccount extends commonAccount
     public function test($url)
     {
         $parts = @parse_url((string) $url);
-        if (!is_array($parts) ||
-            strcasecmp(isset($parts["path"]) ? $parts["path"] : '', '/engine/download_torrent') !== 0 ||
-            preg_match('/(^|&)id=/', isset($parts["query"]) ? $parts["query"] : '') !== 1) {
+        if (!is_array($parts)
+            || strcasecmp(isset($parts["path"]) ? $parts["path"] : '', '/engine/download_torrent') !== 0
+            || preg_match('/(^|&)id=/', isset($parts["query"]) ? $parts["query"] : '') !== 1) {
             return false;
         }
         // A download link of the tracker's shape with no origin to compare it
@@ -52,13 +52,13 @@ class YggTorrentAccount extends commonAccount
             return false;
         }
         $parts = @parse_url((string) $url);
-        if (!is_array($parts) || empty($parts["host"]) ||
-            strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '') !== 'https') {
+        if (!is_array($parts) || empty($parts["host"])
+            || strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '') !== 'https') {
             return false;
         }
         $site = parse_url($this->url);
-        return rtrim(strtolower($parts["host"]), '.') === $site["host"] &&
-            (isset($parts["port"]) ? (int) $parts["port"] : 443) === (isset($site["port"]) ? (int) $site["port"] : 443);
+        return rtrim(strtolower($parts["host"]), '.') === $site["host"]
+            && (isset($parts["port"]) ? (int) $parts["port"] : 443) === (isset($site["port"]) ? (int) $site["port"] : 443);
     }
 
     protected function isOK($client)
@@ -78,14 +78,18 @@ class YggTorrentAccount extends commonAccount
         // configured origin, never to the host of the URL, and only once that
         // origin has answered the landing request with 2xx: an error status
         // is not sent the password.
-        if (!$this->onOrigin($url) || !$client->fetch($url) ||
-            (int) $client->status < 200 || (int) $client->status >= 300) {
+        if (!$this->onOrigin($url) || !$client->fetch($url)
+            || (int) $client->status < 200 || (int) $client->status >= 300) {
             return false;
         }
         $client->setcookies();
         $client->referer = $url;
-        if ($client->fetch($this->url . "/user/login", "POST", "application/x-www-form-urlencoded",
-            "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password) . '&submit=')) {
+        if ($client->fetch(
+            $this->url . "/user/login",
+            "POST",
+            "application/x-www-form-urlencoded",
+            "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password) . '&submit=',
+        )) {
             $client->setcookies();
             return true;
         }

@@ -87,8 +87,11 @@ function extsearchDuplicateArrayKeys($file)
 function extsearchNextSignificant($tokens, $k)
 {
     for ($total = count($tokens); $k < $total; $k++) {
-        if (!is_array($tokens[$k]) || !in_array($tokens[$k][0],
-            [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
+        if (!is_array($tokens[$k]) || !in_array(
+            $tokens[$k][0],
+            [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT],
+            true,
+        )) {
             return $k;
         }
     }
@@ -167,19 +170,27 @@ $suite->test('every ImmortalSeed movie sub-category is reachable', function () {
         'Movies-SD' => '&selectedcats2=33',
     ];
     foreach ($expected as $parent => $query) {
-        strictAssertTrue(array_key_exists($parent, $categories),
-            'the parent category ' . $parent . ' is gone');
-        strictAssertSame(1, count(array_keys($categories, $query, true)),
+        strictAssertTrue(
+            array_key_exists($parent, $categories),
+            'the parent category ' . $parent . ' is gone',
+        );
+        strictAssertSame(
+            1,
+            count(array_keys($categories, $query, true)),
             'exactly one label must search ' . $query . ', saw '
-            . var_export(array_keys($categories, $query, true), true));
+            . var_export(array_keys($categories, $query, true), true),
+        );
     }
 });
 
 $suite->test('no two ImmortalSeed labels search the same categories', function () {
     $categories = (new ImmortalSeedEngine())->categories;
     foreach ($categories as $label => $query) {
-        strictAssertSame(1, count(array_keys($categories, $query, true)),
-            'more than one label searches ' . var_export($query, true));
+        strictAssertSame(
+            1,
+            count(array_keys($categories, $query, true)),
+            'more than one label searches ' . var_export($query, true),
+        );
     }
 });
 
@@ -198,9 +209,12 @@ $suite->test('the ImmortalSeed map keeps every entry its source declares', funct
             $repeated[] = $label;
         }
     }
-    strictAssertSame(count($declared), count((new ImmortalSeedEngine())->categories),
+    strictAssertSame(
+        count($declared),
+        count((new ImmortalSeedEngine())->categories),
         'the parsed map is smaller than the list the file declares'
-        . (count($repeated) ? '; repeated label(s): ' . implode(', ', $repeated) : ''));
+        . (count($repeated) ? '; repeated label(s): ' . implode(', ', $repeated) : ''),
+    );
 });
 
 $suite->test('no search engine hides a category behind a repeated label', function () {
@@ -210,9 +224,12 @@ $suite->test('no search engine hides a category behind a repeated label', functi
     strictAssertTrue(count($engines) > 0, 'no engine files found');
     foreach ($engines as $engine) {
         $duplicates = extsearchDuplicateArrayKeys($engine);
-        strictAssertSame([], $duplicates,
+        strictAssertSame(
+            [],
+            $duplicates,
             basename($engine) . ' repeats array key(s) ' . implode(', ', $duplicates)
-            . ' -- every entry but the last is dropped');
+            . ' -- every entry but the last is dropped',
+        );
     }
 });
 

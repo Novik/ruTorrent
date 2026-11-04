@@ -21,16 +21,22 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 
 function retireAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 function retireRemoveTree($path)
 {
     if (!is_dir($path) || is_link($path)) {
-        if (file_exists($path) || is_link($path)) { unlink($path); }
+        if (file_exists($path) || is_link($path)) {
+            unlink($path);
+        }
         return;
     }
-    foreach (array_diff(scandir($path), ['.', '..']) as $name) { retireRemoveTree($path . '/' . $name); }
+    foreach (array_diff(scandir($path), ['.', '..']) as $name) {
+        retireRemoveTree($path . '/' . $name);
+    }
     rmdir($path);
 }
 
@@ -48,7 +54,10 @@ class RetireManager extends accountManager
 {
     public $handlerCalls = 0;
 
-    public function setHandlers() { ++$this->handlerCalls; }
+    public function setHandlers()
+    {
+        ++$this->handlerCalls;
+    }
 }
 
 function retireManager($class = 'RetireManager')
@@ -76,8 +85,10 @@ function retireSeed()
         $session = new privateData($name);
         $session->cookies = ['sid' => 'session-' . $name];
         retireAssert((new rCache('/accounts'))->set($session) === true, 'The session is saved for ' . $name);
-        retireAssert(is_file($directory . '/accounts/' . $name . '.dat.lock'),
-            'The session cache keeps its lock sidecar for ' . $name);
+        retireAssert(
+            is_file($directory . '/accounts/' . $name . '.dat.lock'),
+            'The session cache keeps its lock sidecar for ' . $name,
+        );
     }
     return $manager;
 }
@@ -123,15 +134,21 @@ function retireAction($check)
     fclose($listener);
     $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
         $directory . '/router.php'], [0 => ['file', '/dev/null', 'r'],
-        1 => ['file', $directory . '/server.log', 'a'],
-        2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
+            1 => ['file', $directory . '/server.log', 'a'],
+            2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
     retireAssert(is_resource($process), 'The HTTP fixture starts without a shell');
     try {
         $ready = false;
         for ($attempt = 0; $attempt < 100; ++$attempt) {
             $peer = @stream_socket_client('tcp://' . $address, $errno, $error, 0.05);
-            if ($peer !== false) { fclose($peer); $ready = true; break; }
-            if (!proc_get_status($process)['running']) { break; }
+            if ($peer !== false) {
+                fclose($peer);
+                $ready = true;
+                break;
+            }
+            if (!proc_get_status($process)['running']) {
+                break;
+            }
             usleep(10000);
         }
         retireAssert($ready, 'The HTTP fixture is ready: ' . file_get_contents($directory . '/server.log'));
@@ -171,14 +188,22 @@ $tests = [
             $saved = $manager->set($notRetired);
             retireAssert($saved === true, 'The credential write commits');
             $stored = new RetireManager();
-            retireAssert((new rCache())->get($stored) && $stored->accounts['Alpha']['login'] === 'new-user',
-                'The durable credentials are the new ones');
-            retireAssert(retireSessionOf('Alpha') === ['sid' => 'session-Alpha'],
-                'A client is still handed the session made with the replaced credentials');
-            retireAssert($notRetired === ['Alpha', 'Beta'],
-                'Every session that survived the write is named');
-            retireAssert(strpos(file_get_contents($retireBase . '/application.log'), 'Alpha, Beta') !== false,
-                'The surviving sessions are named in the log');
+            retireAssert(
+                (new rCache())->get($stored) && $stored->accounts['Alpha']['login'] === 'new-user',
+                'The durable credentials are the new ones',
+            );
+            retireAssert(
+                retireSessionOf('Alpha') === ['sid' => 'session-Alpha'],
+                'A client is still handed the session made with the replaced credentials',
+            );
+            retireAssert(
+                $notRetired === ['Alpha', 'Beta'],
+                'Every session that survived the write is named',
+            );
+            retireAssert(
+                strpos(file_get_contents($retireBase . '/application.log'), 'Alpha, Beta') !== false,
+                'The surviving sessions are named in the log',
+            );
             retireAssert($manager->handlerCalls === 1, 'The schedule still matches the saved credentials');
         } finally {
             chmod($directory . '/accounts', 0700);
@@ -190,8 +215,10 @@ $tests = [
         $notRetired = [];
         retireAssert($manager->set($notRetired) === true, 'The save succeeds');
         retireAssert($notRetired === [], 'Nothing is named when every session was discarded');
-        retireAssert(retireSessionOf('Alpha') === null && retireSessionOf('Beta') === null,
-            'No session is handed to a client afterwards');
+        retireAssert(
+            retireSessionOf('Alpha') === null && retireSessionOf('Beta') === null,
+            'No session is handed to a client afterwards',
+        );
     },
     'privateData::remove answers with what the cache did' => function () {
         retireSeed();
@@ -200,8 +227,10 @@ $tests = [
         chmod($directory . '/accounts', 0500);
         try {
             retireAssert((new privateData('Beta'))->remove() === false, 'A removal the cache refused is false');
-            retireAssert(retireSessionOf('Beta') === ['sid' => 'session-Beta'],
-                'The refused removal left the session where it was');
+            retireAssert(
+                retireSessionOf('Beta') === ['sid' => 'session-Beta'],
+                'The refused removal left the session where it was',
+            );
         } finally {
             chmod($directory . '/accounts', 0700);
         }
@@ -209,13 +238,19 @@ $tests = [
     'the action reports a session it could not discard' => function () {
         retireAction(function ($head, $body, $settings) {
             retireAssert(strpos($head, ' 500 ') !== false, 'The action reports HTTP 500');
-            retireAssert(preg_match('/^Content-Type: text\/plain; charset=UTF-8\r?$/mi', $head) === 1,
-                'The report is plain text');
-            retireAssert($body === 'Account settings were saved, but a previous session could not be discarded.',
-                'The report says the session survived rather than assigning the settings');
+            retireAssert(
+                preg_match('/^Content-Type: text\/plain; charset=UTF-8\r?$/mi', $head) === 1,
+                'The report is plain text',
+            );
+            retireAssert(
+                $body === 'Account settings were saved, but a previous session could not be discarded.',
+                'The report says the session survived rather than assigning the settings',
+            );
             $stored = unserialize(file_get_contents($settings . '/loginmgr.dat'));
-            retireAssert($stored->accounts['Alpha']['login'] === 'new-user',
-                'The saved credentials stand, so the next login can replace the session');
+            retireAssert(
+                $stored->accounts['Alpha']['login'] === 'new-user',
+                'The saved credentials stand, so the next login can replace the session',
+            );
             retireAssert(is_file($settings . '/accounts/Alpha.dat'), 'The session the report names is still there');
         });
     },

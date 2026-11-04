@@ -119,21 +119,30 @@ function kinozalUnauthorizedAnswer()
 $suite = new StrictTestSuite();
 
 $suite->test('today\'s login form is recognised as a dead session', function () {
-    strictAssertSame(false, kinozalIsOK(kinozalLoginPage()),
-        'the unquoted type= / reordered attribute form must not read as logged in');
+    strictAssertSame(
+        false,
+        kinozalIsOK(kinozalLoginPage()),
+        'the unquoted type= / reordered attribute form must not read as logged in',
+    );
 });
 
 $suite->test('the older quoted login form is still recognised', function () {
-    strictAssertSame(false, kinozalIsOK(kinozalLegacyLoginPage()),
-        'the markup the original detector targeted must keep failing the check');
+    strictAssertSame(
+        false,
+        kinozalIsOK(kinozalLegacyLoginPage()),
+        'the markup the original detector targeted must keep failing the check',
+    );
 });
 
 $suite->test('the not-authorized answer of get_srv_details is a dead session', function () {
     // This one never renders a login form, so the password-field marker alone
     // cannot see it -- yet it is the answer the checker actually receives, and
     // loginmgr must re-login on it rather than pass the text upstream.
-    strictAssertSame(false, kinozalIsOK(kinozalUnauthorizedAnswer()),
-        'the guest answer of get_srv_details.php must not read as logged in');
+    strictAssertSame(
+        false,
+        kinozalIsOK(kinozalUnauthorizedAnswer()),
+        'the guest answer of get_srv_details.php must not read as logged in',
+    );
 });
 
 $suite->test('a logged-in page reads as a live session', function () {
@@ -150,15 +159,21 @@ $suite->test('authorized tracker answers read as a live session', function () {
         kinozalIsOK('<ul><li>Инфо хеш: ' . str_repeat('A', 40) . '</li><li>Размер части торрента: 2 МБ</li></ul>'),
         'the details answer must not be mistaken for a login wall',
     );
-    strictAssertSame(true, kinozalIsOK('Торрент файл не найден.'),
-        'a removed topic is an answer from the tracker, not a dead session');
+    strictAssertSame(
+        true,
+        kinozalIsOK('Торрент файл не найден.'),
+        'a removed topic is an answer from the tracker, not a dead session',
+    );
 });
 
 $suite->test('torrent bytes read as a live session', function () {
     $raw = 'd8:announce31:http://tr2.torrent4me.com/ann?uk=X4:infod6:lengthi1e'
         . '4:name9:movie.mkv12:piece lengthi16384e6:pieces20:' . str_repeat("\0", 20) . 'ee';
-    strictAssertSame(true, kinozalIsOK($raw),
-        'a downloaded torrent must never be mistaken for a login wall');
+    strictAssertSame(
+        true,
+        kinozalIsOK($raw),
+        'a downloaded torrent must never be mistaken for a login wall',
+    );
 });
 
 $suite->test('a torrent whose comment names the signup page is still a torrent', function () {
@@ -167,8 +182,11 @@ $suite->test('a torrent whose comment names the signup page is still a torrent',
     // cost a re-login, and the cached session, on every download of it.
     $torrent = 'd8:announce31:http://tr.kinozal.guru/ann?uk=X7:comment28:see /signup.php to register'
         . '4:infod6:lengthi1e4:name9:movie.mkv12:piece lengthi16384eee';
-    strictAssertSame(true, kinozalIsOK($torrent),
-        'a torrent must not be read as a login wall because of its comment');
+    strictAssertSame(
+        true,
+        kinozalIsOK($torrent),
+        'a torrent must not be read as a login wall because of its comment',
+    );
 });
 
 $suite->test('login reports whether the exchange happened, not whether it was accepted', function () {
@@ -182,10 +200,16 @@ $suite->test('login reports whether the exchange happened, not whether it was ac
         'https://kinozal.guru' => ['status' => 200, 'results' => '<html>main page</html>'],
         'https://kinozal.guru/takelogin.php' => ['status' => 200, 'results' => kinozalLoginPage()],
     ];
-    strictAssertSame(true, kinozalLogin($client, 'baduser', 'badpass'),
-        'both requests went through, which is all login() is asked');
-    strictAssertSame(false, kinozalIsOK($client->results),
-        'and the guest form it came back with is what the caller then refuses');
+    strictAssertSame(
+        true,
+        kinozalLogin($client, 'baduser', 'badpass'),
+        'both requests went through, which is all login() is asked',
+    );
+    strictAssertSame(
+        false,
+        kinozalIsOK($client->results),
+        'and the guest form it came back with is what the caller then refuses',
+    );
     strictAssertSame(true, isset($client->cookies['uid']), 'cookies are captured either way');
 });
 
@@ -193,8 +217,11 @@ $suite->test('login fails when the tracker cannot be reached at all', function (
     $client = new KinozalFakeClient();
     $client->responses = ['https://kinozal.guru' => ['status' => 200, 'results' => '']];
     $client->unreachable = 'https://kinozal.guru/takelogin.php';
-    strictAssertSame(false, kinozalLogin($client, 'user', 'pass'),
-        'a request that did not go through is a failed login');
+    strictAssertSame(
+        false,
+        kinozalLogin($client, 'user', 'pass'),
+        'a request that did not go through is a failed login',
+    );
 });
 
 exit($suite->run());

@@ -8,13 +8,13 @@ require_once(__DIR__ . '/../../php/publicsuffix.php');
 
 class PublicSuffixTest extends TestCase
 {
-
     public function testIcannPrivateWildcardExceptionAndUnknownSuffixes()
     {
         foreach (['com' => true, 'example.com' => false, 'co.uk' => true, 'example.co.uk' => false,
             'github.io' => true, 'user.github.io' => false, 'a.ck' => true, 'b.a.ck' => false,
             'www.ck' => false, 'b.www.ck' => false, 'unknown-tld-for-this-test' => true] as $domain => $expected) {
-            $this->same($expected, PublicSuffix::isPublicSuffix($domain), $domain); }
+            $this->same($expected, PublicSuffix::isPublicSuffix($domain), $domain);
+        }
     }
 
     public function testUnsafeDomainsAreRejectedVisibly()
@@ -23,8 +23,11 @@ class PublicSuffixTest extends TestCase
             'bad/example', '127.0.0.1', '127.000.0.1', '0x7f.0.0.1', '127.0.0.0x1',
             '0177.0.0.1', '2130706433', '0x7f000001', 'täst.example', 'xn--tst-qla.example'] as $domain) {
             $threw = false;
-            try { PublicSuffix::isPublicSuffix($domain); }
-            catch (InvalidArgumentException $error) { $threw = true; }
+            try {
+                PublicSuffix::isPublicSuffix($domain);
+            } catch (InvalidArgumentException $error) {
+                $threw = true;
+            }
             $this->assertTrue($threw, 'Unsafe domain must be rejected: ' . $domain);
         }
     }
@@ -32,13 +35,15 @@ class PublicSuffixTest extends TestCase
     public function testMissingUnreadableInvalidPartialNullAndThrowingListReads()
     {
         foreach (['missing', 'unreadable', 'invalid', 'partial', 'null', 'throw', 'repair'] as $mode) {
-            $this->failureCase($mode); }
+            $this->failureCase($mode);
+        }
     }
 
     public function testDisabledFileReadAndDigestKeepHostOnlyAndManualRequestsUsable()
     {
         foreach (['file_get_contents', 'hash', 'filter_var'] as $disabled) {
-            $this->failureCase('valid', $disabled); }
+            $this->failureCase('valid', $disabled);
+        }
     }
 
     public function testDisabledExpiryParserRefusesCalendarCookiesButHonorsMaxAge()
@@ -83,9 +88,13 @@ if ($client->results !== 'manual=yes; host=kept') throw new RuntimeException('A 
 echo "advisory-failure-isolated\n";
 LOGCHILD;
             foreach (['fopen', 'fputs', 'touch', 'chmod', 'date_create', 'wrapper-throw', 'wrapper-error', 'wrapper-false', 'wrapper-short'] as $fault) {
-                if (is_file($root . '/application.log')) { unlink($root . '/application.log'); }
+                if (is_file($root . '/application.log')) {
+                    unlink($root . '/application.log');
+                }
                 $args = PhpProcess::sameIni();
-                if (strpos($fault, 'wrapper-') !== 0) { array_push($args, '-d', 'disable_functions=' . $fault); }
+                if (strpos($fault, 'wrapper-') !== 0) {
+                    array_push($args, '-d', 'disable_functions=' . $fault);
+                }
                 array_push($args, '-r', $program, $root, realpath(__DIR__ . '/../..'), 'http://127.0.0.1:' . $server->port() . '/', $fault);
                 $result = PhpProcess::run($args);
                 $this->same(0, $result['code'], $fault . ' child exits cleanly: ' . $result['out'] . $result['err']);
@@ -94,7 +103,9 @@ LOGCHILD;
                 $this->same('', $result['err'], $fault . ' emits no uncaught logging warning or failure');
             }
         } finally {
-            if ($server !== null) { $server->close(); }
+            if ($server !== null) {
+                $server->close();
+            }
             TestTree::remove($root);
         }
     }
@@ -127,7 +138,9 @@ SETUPCHILD;
                 $this->same(0, $result['code'], $fault[0] . '/' . $fault[1] . ' setup releases its tree: ' . $result['out'] . $result['err']);
                 $this->same("setup-failure-cleaned\n", $result['out'], 'Setup failure remains visible and leaves no owned entries');
                 $this->same('', $result['err'], 'The expected setup failure is caught by the fixture caller');
-            } finally { TestTree::remove($root); }
+            } finally {
+                TestTree::remove($root);
+            }
         }
     }
 
@@ -135,8 +148,11 @@ SETUPCHILD;
     {
         $domain = implode('.', array_fill(0, 4, str_repeat('a', 63)));
         $threw = false;
-        try { PublicSuffix::isPublicSuffix($domain); }
-        catch (InvalidArgumentException $error) { $threw = true; }
+        try {
+            PublicSuffix::isPublicSuffix($domain);
+        } catch (InvalidArgumentException $error) {
+            $threw = true;
+        }
         $this->same(true, $threw, 'A 255-byte ASCII domain is refused');
     }
 
@@ -155,7 +171,8 @@ SETUPCHILD;
             $source = file_get_contents(__DIR__ . '/../../php/Snoopy.class.inc');
             foreach (['MAX_RESPONSE_COOKIES' => 300, 'MAX_DOMAIN_COOKIES' => 50, 'MAX_COOKIE_BYTES' => 4096,
                 'MAX_COOKIE_HEADERS' => 100, 'MAX_COOKIE_HEADER_BYTES' => 8192] as $name => $default) {
-                $source = $this->replaceOne('const ' . $name . ' = ' . $default . ';', 'const ' . $name . ' = PHP_INT_MAX;', $source); }
+                $source = $this->replaceOne('const ' . $name . ' = ' . $default . ';', 'const ' . $name . ' = PHP_INT_MAX;', $source);
+            }
             file_put_contents($root . '/Snoopy.class.inc', $source);
             copy(__DIR__ . '/../../php/publicsuffix.php', $root . '/publicsuffix.php');
             copy(__DIR__ . '/../../php/public_suffix_list.dat', $root . '/public_suffix_list.dat');
@@ -177,20 +194,26 @@ OPERATOR;
             $this->same("raised-limits-151-cookies\n", $result['out'], 'All 150 short cookies and the 12000-byte value reach the real peer');
             $this->same('', $result['err'], 'PHP_INT_MAX parser and jar limits remain usable');
         } finally {
-            if ($server !== null) { $server->close(); }
+            if ($server !== null) {
+                $server->close();
+            }
             TestTree::remove($root);
         }
     }
     private function same($expected, $actual, $message)
     {
-        if ($expected !== $actual) { throw new RuntimeException($message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)); }
+        if ($expected !== $actual) {
+            throw new RuntimeException($message . '; expected ' . var_export($expected, true)
+                . ', got ' . var_export($actual, true));
+        }
     }
 
     private function replaceOne($search, $replacement, $subject)
     {
         $result = str_replace($search, $replacement, $subject, $count);
-        if ($count !== 1) { throw new RuntimeException('Cookie fault fixture did not replace exactly one expression'); }
+        if ($count !== 1) {
+            throw new RuntimeException('Cookie fault fixture did not replace exactly one expression');
+        }
         return $result;
     }
 
@@ -203,18 +226,29 @@ OPERATOR;
         try {
             mkdir($root . '/profile/settings', 0700, true);
             mkdir($root . '/utility', 0700);
-            if (!@copy(__DIR__ . '/../../php/Snoopy.class.inc', $root . '/Snoopy.class.inc')) { throw new RuntimeException('Could not copy cookie fixture source'); }
+            if (!@copy(__DIR__ . '/../../php/Snoopy.class.inc', $root . '/Snoopy.class.inc')) {
+                throw new RuntimeException('Could not copy cookie fixture source');
+            }
             symlink(realpath(__DIR__ . '/../../php/utility/urlhost.php'), $root . '/utility/urlhost.php');
             $helper = file_get_contents(__DIR__ . '/../../php/publicsuffix.php');
             // The upstream harness substitutes directory constants even inside strings.
             $readExpression = "@file_get_contents(" . '__' . "DIR__ . '/public_suffix_list.dat')";
-            if ($mode === 'null') { $helper = $this->replaceOne($readExpression, 'null', $helper); }
-            if ($mode === 'throw') { $helper = $this->replaceOne($readExpression, "(function () { throw new Error('read failed'); })()", $helper); }
-            if (@file_put_contents($root . '/publicsuffix.php', $helper) !== strlen($helper)) { throw new RuntimeException('Could not write PSL fixture'); }
-            if ($mode === 'valid') { copy(__DIR__ . '/../../php/public_suffix_list.dat', $root . '/public_suffix_list.dat'); }
-            elseif ($mode === 'unreadable') { mkdir($root . '/public_suffix_list.dat', 0700); }
-            elseif ($mode === 'invalid') { file_put_contents($root . '/public_suffix_list.dat', 'invalid'); }
-            elseif ($mode === 'partial') {
+            if ($mode === 'null') {
+                $helper = $this->replaceOne($readExpression, 'null', $helper);
+            }
+            if ($mode === 'throw') {
+                $helper = $this->replaceOne($readExpression, "(function () { throw new Error('read failed'); })()", $helper);
+            }
+            if (@file_put_contents($root . '/publicsuffix.php', $helper) !== strlen($helper)) {
+                throw new RuntimeException('Could not write PSL fixture');
+            }
+            if ($mode === 'valid') {
+                copy(__DIR__ . '/../../php/public_suffix_list.dat', $root . '/public_suffix_list.dat');
+            } elseif ($mode === 'unreadable') {
+                mkdir($root . '/public_suffix_list.dat', 0700);
+            } elseif ($mode === 'invalid') {
+                file_put_contents($root . '/public_suffix_list.dat', 'invalid');
+            } elseif ($mode === 'partial') {
                 $data = file_get_contents(__DIR__ . '/../../php/public_suffix_list.dat');
                 file_put_contents($root . '/public_suffix_list.dat', str_replace("github.io\n", '', $data));
             }
@@ -243,16 +277,22 @@ OPERATOR;
                 $program = $this->replaceOne('echo "cookie-failure-closed\\n";', 'copy($argv[2], $argv[1] . "/public_suffix_list.dat"); if (!PublicSuffix::isPublicSuffix("github.io") || !PublicSuffix::isPublicSuffix("a.ck") || PublicSuffix::isPublicSuffix("www.ck")) throw new RuntimeException("Repair did not restore PSL rules"); $capture->invoke($client, "https://tracker.example/"); if ($header->invoke($client, "https://tracker.example/") !== "Cookie: manual=yes; host=kept; parent=refused") throw new RuntimeException("Repair did not recover Domain cookies"); $client->headers = array("Set-Cookie: private=bad; Domain=github.io; Path=/"); $capture->invoke($client, "https://a.github.io/"); if ($header->invoke($client, "https://b.github.io/") !== "Cookie: manual=yes") throw new RuntimeException("Repair did not restore PRIVATE cookie refusal"); echo "cookie-failure-closed\\n";', $program);
             }
             $args = ['-c', __DIR__ . '/../php-test.ini'];
-            if ($disabled !== '') { array_push($args, '-d', 'disable_functions=' . $disabled); }
+            if ($disabled !== '') {
+                array_push($args, '-d', 'disable_functions=' . $disabled);
+            }
             array_push($args, '-r', $program, $root, realpath(__DIR__ . '/../../php/public_suffix_list.dat'));
             $result = PhpProcess::run($args, ['cwd' => __DIR__ . '/../../php']);
             $this->same(0, $result['code'], $mode . ' child exits cleanly: ' . $result['out'] . $result['err']);
             $this->same(false, $result['timedOut'], 'PSL failure never stalls');
             $this->same("cookie-failure-closed\n", $result['out'], 'PSL failure remains isolated to Domain cookies');
             $this->same('', $result['err'], 'No uncaught disabled function or read error');
-            $this->assertTrue(strpos(file_get_contents($root . '/refusal.log'), ($mode === 'expiry' ? 'response-cookie-expiry-unavailable' : 'response-cookie-domain-validation-unavailable')) !== false,
-                'The refusal is visible without logging cookie values');
-        } finally { TestTree::remove($root); }
+            $this->assertTrue(
+                strpos(file_get_contents($root . '/refusal.log'), ($mode === 'expiry' ? 'response-cookie-expiry-unavailable' : 'response-cookie-domain-validation-unavailable')) !== false,
+                'The refusal is visible without logging cookie values',
+            );
+        } finally {
+            TestTree::remove($root);
+        }
     }
 
 }

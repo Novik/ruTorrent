@@ -10,7 +10,9 @@ mkdir($finalRoot, 0700);
 $previousCurl = $pathToExternals['curl'] ?? null;
 $previousFixture = getenv('SNOOPY_FINAL_ROOT');
 putenv('SNOOPY_FINAL_ROOT=' . $finalRoot);
-file_put_contents($finalRoot . '/curl.php', <<<'PHP'
+file_put_contents(
+    $finalRoot . '/curl.php',
+    <<<'PHP'
 <?php
 $root = getenv('SNOOPY_FINAL_ROOT');
 $request = array('url' => end($argv), 'method' => 'GET', 'cookie' => '');
@@ -30,7 +32,7 @@ if (!is_array($reply)) exit(1);
 file_put_contents($header, $reply[0]);
 file_put_contents($body, $reply[1]);
 exit($reply[2] ?? 0);
-PHP
+PHP,
 );
 file_put_contents($finalRoot . '/curl', "#!/bin/sh\nexec " . escapeshellarg(PHP_BINARY)
     . ' -c ' . escapeshellarg(__DIR__ . '/../php-test.ini') . ' ' . escapeshellarg($finalRoot . '/curl.php') . ' "$@"' . "\n");
@@ -39,8 +41,10 @@ $pathToExternals['curl'] = $finalRoot . '/curl';
 
 function finalSame($expected, $actual, $message)
 {
-    if ($expected !== $actual) { throw new RuntimeException($message . '; expected ' . var_export($expected, true)
-        . ', got ' . var_export($actual, true)); }
+    if ($expected !== $actual) {
+        throw new RuntimeException($message . '; expected ' . var_export($expected, true)
+            . ', got ' . var_export($actual, true));
+    }
 }
 
 class FinalResponseSocket extends Snoopy
@@ -55,11 +59,17 @@ class FinalResponseSocket extends Snoopy
     {
         $this->status = 0;
         $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
-        if ($pair === false) { throw new RuntimeException('Could not create the private HTTP peer'); }
+        if ($pair === false) {
+            throw new RuntimeException('Could not create the private HTTP peer');
+        }
         $reply = array_shift($this->replies);
-        if (!is_array($reply)) { throw new RuntimeException('Unexpected offline socket request'); }
+        if (!is_array($reply)) {
+            throw new RuntimeException('Unexpected offline socket request');
+        }
         fwrite($pair[1], $reply[0] . $reply[1]);
-        if (!$this->keepOpen) { stream_socket_shutdown($pair[1], STREAM_SHUT_WR); }
+        if (!$this->keepOpen) {
+            stream_socket_shutdown($pair[1], STREAM_SHUT_WR);
+        }
         $this->peers[] = $pair[1];
         return $pair[0];
     }
@@ -217,15 +227,25 @@ try {
             $failures++;
             echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
         } finally {
-            foreach ($finalClients as $client) { $client->closeSockets(); }
+            foreach ($finalClients as $client) {
+                $client->closeSockets();
+            }
         }
     }
 } finally {
-    if ($previousCurl === null) { unset($pathToExternals['curl']); }
-    else { $pathToExternals['curl'] = $previousCurl; }
-    if ($previousFixture === false) { putenv('SNOOPY_FINAL_ROOT'); }
-    else { putenv('SNOOPY_FINAL_ROOT=' . $previousFixture); }
-    foreach (glob($finalRoot . '/*') as $path) { unlink($path); }
+    if ($previousCurl === null) {
+        unset($pathToExternals['curl']);
+    } else {
+        $pathToExternals['curl'] = $previousCurl;
+    }
+    if ($previousFixture === false) {
+        putenv('SNOOPY_FINAL_ROOT');
+    } else {
+        putenv('SNOOPY_FINAL_ROOT=' . $previousFixture);
+    }
+    foreach (glob($finalRoot . '/*') as $path) {
+        unlink($path);
+    }
     rmdir($finalRoot);
 }
 echo count($tests), ' tests, ', $failures, " failures\n";

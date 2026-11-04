@@ -131,9 +131,11 @@ $tests = [
         extYggSearch($engine);
         extYggSame(3, count($engine->requests), 'one request per page');
         foreach ($engine->requests as $url) {
-            extYggSame('https://yggtorrent.example/engine/search/?name=some%20film&',
+            extYggSame(
+                'https://yggtorrent.example/engine/search/?name=some%20film&',
                 substr($url, 0, strlen('https://yggtorrent.example/engine/search/?name=some%20film&')),
-                'the search is made on the configured origin');
+                'the search is made on the configured origin',
+            );
         }
     },
 
@@ -147,11 +149,17 @@ $tests = [
             'https://yggtorrent.example/engine/download_torrent?id=102',
         ], array_keys($ret), 'the links are built on the configured origin');
         foreach (array_keys($ret) as $link) {
-            extYggSame(true, (new YggTorrentAccount())->test($link),
-                'loginmgr claims the link, so the download is made logged in: ' . $link);
+            extYggSame(
+                true,
+                (new YggTorrentAccount())->test($link),
+                'loginmgr claims the link, so the download is made logged in: ' . $link,
+            );
         }
-        extYggSame('https://ygg-mirror.example/torrent/filmvidéo/film/101-name-101', $ret['https://yggtorrent.example/engine/download_torrent?id=101']['desc'],
-            'the description link is the one the page gave');
+        extYggSame(
+            'https://ygg-mirror.example/torrent/filmvidéo/film/101-name-101',
+            $ret['https://yggtorrent.example/engine/download_torrent?id=101']['desc'],
+            'the description link is the one the page gave',
+        );
     },
 
     'a page that links on the configured origin gives the same entries' => function () {
@@ -181,8 +189,11 @@ $tests = [
             $ret = extYggSearch($engine);
             $link = 'https://yggtorrent.example/engine/download_torrent?id=101';
             extYggSame([$link], array_keys($ret), 'one entry for a description on ' . $what);
-            extYggSame($host . '/torrent/filmvidéo/film/101-name-101', $ret[$link]['desc'],
-                'the description link is the one the page gave, on ' . $what);
+            extYggSame(
+                $host . '/torrent/filmvidéo/film/101-name-101',
+                $ret[$link]['desc'],
+                'the description link is the one the page gave, on ' . $what,
+            );
             extYggSame('Film/Vidéos > Film', $ret[$link]['cat'], 'the category is read for ' . $what);
         }
     },
@@ -192,12 +203,21 @@ $tests = [
         $engine = new ExtYggProbeEngine();
         $engine->page = extYggPage('https://ygg-mirror.example', 2, [101]);
         $ret = extYggSearch($engine);
-        extYggSame(0, strpos($engine->requests[0], 'https://yggtorrent.example:8443/engine/search/?'),
-            'the search is made on the normalised origin: ' . $engine->requests[0]);
-        extYggSame(['https://yggtorrent.example:8443/engine/download_torrent?id=101'], array_keys($ret),
-            'the link is built on the normalised origin');
-        extYggSame(true, (new YggTorrentAccount())->test('https://yggtorrent.example:8443/engine/download_torrent?id=101'),
-            'and loginmgr claims it');
+        extYggSame(
+            0,
+            strpos($engine->requests[0], 'https://yggtorrent.example:8443/engine/search/?'),
+            'the search is made on the normalised origin: ' . $engine->requests[0],
+        );
+        extYggSame(
+            ['https://yggtorrent.example:8443/engine/download_torrent?id=101'],
+            array_keys($ret),
+            'the link is built on the normalised origin',
+        );
+        extYggSame(
+            true,
+            (new YggTorrentAccount())->test('https://yggtorrent.example:8443/engine/download_torrent?id=101'),
+            'and loginmgr claims it',
+        );
     },
 
     'without a usable origin the engine sends nothing and says what to set' => function () {
@@ -214,8 +234,11 @@ $tests = [
             extYggSame([], $engine->requests, 'no request is made with $yggTorrentOrigin = ' . var_export($origin, true));
             extYggSame([''], array_keys($ret), 'one entry and no link with $yggTorrentOrigin = ' . var_export($origin, true));
             foreach (['$yggTorrentOrigin', 'https origin'] as $part) {
-                extYggSame(true, strpos($ret['']['name'], $part) !== false,
-                    'the entry names the setting and what it takes (' . $part . '): ' . $ret['']['name']);
+                extYggSame(
+                    true,
+                    strpos($ret['']['name'], $part) !== false,
+                    'the entry names the setting and what it takes (' . $part . '): ' . $ret['']['name'],
+                );
             }
         }
     },

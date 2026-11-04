@@ -18,8 +18,14 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 class ProbeLiteralAccount extends commonAccount
 {
     public $url = 'https://tracker.example';
-    protected function isOK($client) { return true; }
-    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f) { return false; }
+    protected function isOK($client)
+    {
+        return true;
+    }
+    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f)
+    {
+        return false;
+    }
 }
 
 // set() stores, drops the cached session and re-registers the scheduled job.
@@ -29,9 +35,17 @@ class ProbeLiteralManager extends accountManager
 {
     public $stored = 0;
     public $forgotten = [];
-    public function store() { $this->stored++; return true; }
+    public function store()
+    {
+        $this->stored++;
+        return true;
+    }
     public function setHandlers() {}
-    protected function forgetSession($name) { $this->forgotten[] = $name; return true; }
+    protected function forgetSession($name)
+    {
+        $this->forgotten[] = $name;
+        return true;
+    }
 }
 
 function litAssertTrue($condition, $message)
@@ -127,8 +141,8 @@ $tests = [];
 
 foreach ($FIELDS as $field) {
     foreach ($PAYLOADS as $shape => $payload) {
-        $tests["a {$field} that {$shape} does not become script"] =
-            function () use ($field, $payload) {
+        $tests["a {$field} that {$shape} does not become script"]
+            = function () use ($field, $payload) {
                 $manager = litManager();
                 $_REQUEST = ['tracker.example_' . $field => $payload];
                 $manager->set();
@@ -167,8 +181,11 @@ $tests['an unchecked box clears the flag'] = function () {
     $_REQUEST = ['tracker.example_enabled' => '0'];
     $manager->set();
     litAssertSame(0, $manager->accounts['tracker.example']['enabled'], 'enabled is cleared');
-    litAssertSame(0, litAssignedValue($manager->get())['tracker.example']['enabled'],
-        'and the page is told so');
+    litAssertSame(
+        0,
+        litAssignedValue($manager->get())['tracker.example']['enabled'],
+        'and the page is told so',
+    );
     $_REQUEST = [];
 };
 
@@ -181,8 +198,11 @@ $tests['the flag carries the truth value the old code acted on'] = function () {
         $manager = litManager();
         $_REQUEST = ['tracker.example_enabled' => $sent];
         $manager->set();
-        litAssertSame($expected, $manager->accounts['tracker.example']['enabled'],
-            'A sent ' . var_export($sent, true) . ' is stored as a flag');
+        litAssertSame(
+            $expected,
+            $manager->accounts['tracker.example']['enabled'],
+            'A sent ' . var_export($sent, true) . ' is stored as a flag',
+        );
         $_REQUEST = [];
     }
 };
@@ -218,8 +238,11 @@ $tests['a store poisoned earlier is still emitted as data'] = function () {
     // number: the text around them is gone rather than emitted.
     litAssertSame(1, $accounts['tracker.example']['enabled'], 'The flag reads as a flag');
     litAssertSame(0, $accounts['tracker.example']['auto'], 'The number reads as a number');
-    litAssertSame(1, $accounts['tracker.example']['password_set'],
-        'password_set stays derived from whether a password is stored');
+    litAssertSame(
+        1,
+        $accounts['tracker.example']['password_set'],
+        'password_set stays derived from whether a password is stored',
+    );
 };
 
 // The same file is read by getInfo(), which action.php serves as json.
@@ -240,8 +263,11 @@ $tests['a login full of punctuation survives the round trip'] = function () {
     $_REQUEST = ['tracker.example_login' => $login];
     $manager->set();
     $accounts = litAssignedValue($manager->get());
-    litAssertSame($login, $accounts['tracker.example']['login'],
-        'The stored login is handed back exactly');
+    litAssertSame(
+        $login,
+        $accounts['tracker.example']['login'],
+        'The stored login is handed back exactly',
+    );
     $_REQUEST = [];
 };
 
@@ -257,8 +283,11 @@ $tests['an account name is a key, not syntax'] = function () {
 $tests['no account at all is still an object'] = function () {
     $manager = new ProbeLiteralManager();
     $manager->accounts = [];
-    litAssertSame('theWebUI.theAccounts = {};' . "\n", $manager->get(),
-        'An empty set is an empty object, which is what init.js iterates');
+    litAssertSame(
+        'theWebUI.theAccounts = {};' . "\n",
+        $manager->get(),
+        'An empty set is an empty object, which is what init.js iterates',
+    );
 };
 
 $failures = 0;

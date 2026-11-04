@@ -13,7 +13,9 @@
 function testFindRepoRoot()
 {
     $path = realpath(__DIR__ . '/../../..');
-    if ($path !== false && is_file($path . '/plugins/rutracker_check/trackers/rutracker.php')) { return $path; }
+    if ($path !== false && is_file($path . '/plugins/rutracker_check/trackers/rutracker.php')) {
+        return $path;
+    }
     throw new RuntimeException('Unable to locate the ruTorrent repository root');
 }
 
@@ -81,8 +83,10 @@ function strictAssertSame($expected, $actual, $message)
 function strictAssertEnglish($text, $message)
 {
     strictAssertTrue(is_string($text) && $text !== '', $message . '; not a non-empty string');
-    strictAssertTrue(preg_match('/^[\x09\x20-\x7E]+$/', $text) === 1,
-        $message . '; log line is not plain-ASCII English: ' . $text);
+    strictAssertTrue(
+        preg_match('/^[\x09\x20-\x7E]+$/', $text) === 1,
+        $message . '; log line is not plain-ASCII English: ' . $text,
+    );
 }
 
 // The recorded log lines containing $needle. Log assertions name the line they
@@ -166,9 +170,10 @@ class rXMLRPCRequest
     public function __construct($commands = null)
     {
         if (is_array($commands)) {
-            $this->commands = $commands; }
-        elseif ($commands !== null) {
-            $this->commands[] = $commands; }
+            $this->commands = $commands;
+        } elseif ($commands !== null) {
+            $this->commands[] = $commands;
+        }
     }
 
     public function addCommand($command)
@@ -193,7 +198,9 @@ class rXMLRPCRequest
         $matched = [];
         foreach (self::$requests as $request) {
             if ($request['key'] === $key) {
-                $matched[] = $request; } }
+                $matched[] = $request;
+            }
+        }
         return $matched;
     }
 
@@ -209,7 +216,9 @@ class rXMLRPCRequest
 
     private function execute()
     {
-        $key = implode('|', array_map(function ($command) { return $command->command; }, $this->commands));
+        $key = implode('|', array_map(function ($command) {
+            return $command->command;
+        }, $this->commands));
         self::$requests[] = ['key' => $key, 'important' => $this->important, 'commands' => $this->commands];
         $response = (isset(self::$responses[$key]) && count(self::$responses[$key]))
             ? array_shift(self::$responses[$key])
@@ -228,7 +237,8 @@ class rTorrentSettings
     public static function get()
     {
         if (!self::$instance) {
-            self::$instance = new self(); }
+            self::$instance = new self();
+        }
         return self::$instance;
     }
 }
@@ -346,9 +356,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             return $this->respond('fetchComplex', $url);
         }
 
-        public function setcookies()
-        {
-        }
+        public function setcookies() {}
 
         private function respond($method, $url)
         {

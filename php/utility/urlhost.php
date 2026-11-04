@@ -21,59 +21,62 @@
  */
 class UrlHost
 {
-	/**
-	 * A host name folded to the one spelling the tests below compare: lower
-	 * case, without trailing dots. Anything that is not a string folds to ''.
-	 */
-	public static function normalize($host)
-	{
-		if(!is_string($host)) {
-			return ''; }
-		return strtolower(rtrim($host, '.'));
-	}
+    /**
+     * A host name folded to the one spelling the tests below compare: lower
+     * case, without trailing dots. Anything that is not a string folds to ''.
+     */
+    public static function normalize($host)
+    {
+        if (!is_string($host)) {
+            return '';
+        }
+        return strtolower(rtrim($host, '.'));
+    }
 
-	/**
-	 * The host of a URL, normalized, or null when the URL has none that
-	 * parse_url() can find -- which is the answer for a URL that only
-	 * mentions a host somewhere in its path or query. A scheme-relative
-	 * reference (//host/path) has a host; a caller that needs a scheme
-	 * checks it itself. An IPv6 literal keeps its brackets, and an IDN is
-	 * compared as spelled, without Unicode/punycode conversion.
-	 */
-	public static function of($url)
-	{
-		$host = @parse_url((string) $url, PHP_URL_HOST);
-		if(!is_string($host) || $host === '') {
-			return null; }
-		$host = self::normalize($host);
-		return $host === '' ? null : $host;
-	}
+    /**
+     * The host of a URL, normalized, or null when the URL has none that
+     * parse_url() can find -- which is the answer for a URL that only
+     * mentions a host somewhere in its path or query. A scheme-relative
+     * reference (//host/path) has a host; a caller that needs a scheme
+     * checks it itself. An IPv6 literal keeps its brackets, and an IDN is
+     * compared as spelled, without Unicode/punycode conversion.
+     */
+    public static function of($url)
+    {
+        $host = @parse_url((string) $url, PHP_URL_HOST);
+        if (!is_string($host) || $host === '') {
+            return null;
+        }
+        $host = self::normalize($host);
+        return $host === '' ? null : $host;
+    }
 
-	/**
-	 * True when $host is exactly one of $hosts, subdomains excluded: for a
-	 * list that names every host it admits. Both sides are normalized; an
-	 * empty host matches nothing, so a URL without one admits nothing.
-	 */
-	public static function isExactlyOneOf($host, $hosts)
-	{
-		$host = self::normalize($host);
-		return $host !== '' && in_array($host, array_map([__CLASS__, 'normalize'], (array) $hosts), true);
-	}
+    /**
+     * True when $host is exactly one of $hosts, subdomains excluded: for a
+     * list that names every host it admits. Both sides are normalized; an
+     * empty host matches nothing, so a URL without one admits nothing.
+     */
+    public static function isExactlyOneOf($host, $hosts)
+    {
+        $host = self::normalize($host);
+        return $host !== '' && in_array($host, array_map([__CLASS__, 'normalize'], (array) $hosts), true);
+    }
 
-	/** True for a normalized host or one of its subdomains, at a label boundary. */
-	public static function isOneOf($host, $hosts)
-	{
-		$host = self::normalize($host);
-		if($host === '') {
-			return false; }
-		foreach((array) $hosts as $candidate)
-		{
-			$candidate = self::normalize($candidate);
-			if($candidate !== '' && ($host === $candidate
-				|| substr($host, -strlen($candidate) - 1) === '.' . $candidate)) {
-				return true; }
-		}
-		return false;
-	}
+    /** True for a normalized host or one of its subdomains, at a label boundary. */
+    public static function isOneOf($host, $hosts)
+    {
+        $host = self::normalize($host);
+        if ($host === '') {
+            return false;
+        }
+        foreach ((array) $hosts as $candidate) {
+            $candidate = self::normalize($candidate);
+            if ($candidate !== '' && ($host === $candidate
+                || substr($host, -strlen($candidate) - 1) === '.' . $candidate)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

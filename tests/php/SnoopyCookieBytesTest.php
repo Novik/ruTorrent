@@ -14,7 +14,9 @@ class CookieBytesClient extends Snoopy
 
 function bytesAssert($condition, $message)
 {
-    if (!$condition) { throw new RuntimeException($message); }
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
 }
 
 // What the bytes of a request say about its structure, independent of which
@@ -78,15 +80,20 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))],
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $process = proc_open(
+        [PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $worker,
+            base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes,
+    );
     bytesAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
         $address = fgets($pipes[1]);
-        bytesAssert(is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
-            'The peer announces its local port');
+        bytesAssert(
+            is_string($address) && preg_match('/^127\.0\.0\.1:([0-9]+)\s*$/D', $address, $match) === 1,
+            'The peer announces its local port',
+        );
         $client = new CookieBytesClient();
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
@@ -97,12 +104,18 @@ PHP;
         $check = $body($client, (int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
+        while (($line = fgets($pipes[1])) !== false) {
+            $json .= $line;
+        }
         $requests = json_decode(trim($json), true);
         bytesAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
+        foreach ($pipes as $pipe) {
+            if (is_resource($pipe)) {
+                fclose($pipe);
+            }
+        }
         proc_close($process);
     }
 }
@@ -110,7 +123,7 @@ PHP;
 function redirectTo($setCookie, $eol = "\r\n")
 {
     return ['wire' => base64_encode('HTTP/1.0 302 Found' . $eol . $setCookie . $eol
-        . 'Location: http://first.test:{PORT}/next' . $eol . $eol)];
+            . 'Location: http://first.test:{PORT}/next' . $eol . $eol)];
 }
 
 $ok = ['wire' => base64_encode("HTTP/1.0 200 OK\r\nContent-Length: 2\r\n\r\nok")];
@@ -122,21 +135,33 @@ $tests = [
     'a cookie from an attributeless Set-Cookie keeps the request intact' => function () use ($ok) {
         bytesPeer([redirectTo('Set-Cookie: stale=yes'), $ok], function ($client, $port) {
             $client->rawheaders['X-Caller'] = 'present';
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) use ($client) {
                 bytesAssert(count($requests) === 2, 'The chain is two requests long');
                 $shape = requestShape($requests[1]);
-                bytesAssert(!$shape['strayCR'] && !$shape['strayLF'],
-                    'Every CR and LF of the request is part of a CRLF pair');
-                bytesAssert($shape['blankLines'] === 1 && $shape['endsAtBlankLine'],
-                    'The request ends its header block once, at its end');
-                bytesAssert(in_array('Cookie: stale=yes', fieldLines($requests[1]), true),
-                    'The cookie is one field line of the header block');
-                bytesAssert(in_array('X-Caller: present', fieldLines($requests[1]), true),
-                    'A header behind the cookie stays inside the header block');
-                bytesAssert($client->cookies === ['stale' => 'yes'],
-                    'The jar holds the value and not the line it arrived on');
+                bytesAssert(
+                    !$shape['strayCR'] && !$shape['strayLF'],
+                    'Every CR and LF of the request is part of a CRLF pair',
+                );
+                bytesAssert(
+                    $shape['blankLines'] === 1 && $shape['endsAtBlankLine'],
+                    'The request ends its header block once, at its end',
+                );
+                bytesAssert(
+                    in_array('Cookie: stale=yes', fieldLines($requests[1]), true),
+                    'The cookie is one field line of the header block',
+                );
+                bytesAssert(
+                    in_array('X-Caller: present', fieldLines($requests[1]), true),
+                    'A header behind the cookie stays inside the header block',
+                );
+                bytesAssert(
+                    $client->cookies === ['stale' => 'yes'],
+                    'The jar holds the value and not the line it arrived on',
+                );
             };
         });
     },
@@ -147,18 +172,27 @@ $tests = [
         $two = ['wire' => base64_encode("HTTP/1.0 302 Found\r\nSet-Cookie: a=x\r\nSet-Cookie: b=y\r\n"
             . "Location: http://first.test:{PORT}/next\r\n\r\n")];
         bytesPeer([$two, $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) use ($client) {
                 $shape = requestShape($requests[1]);
-                bytesAssert(!$shape['strayCR'] && !$shape['strayLF'] && $shape['blankLines'] === 1,
-                    'The request is one header block with no stray CR or LF');
-                bytesAssert(in_array('Cookie: a=x; b=y', fieldLines($requests[1]), true),
-                    'Both crumbs ride one Cookie line');
+                bytesAssert(
+                    !$shape['strayCR'] && !$shape['strayLF'] && $shape['blankLines'] === 1,
+                    'The request is one header block with no stray CR or LF',
+                );
+                bytesAssert(
+                    in_array('Cookie: a=x; b=y', fieldLines($requests[1]), true),
+                    'Both crumbs ride one Cookie line',
+                );
                 foreach (fieldLines($requests[1]) as $line) {
-                    bytesAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator'); }
-                bytesAssert($client->cookies === ['a' => 'x', 'b' => 'y'],
-                    'Both values are stored clean');
+                    bytesAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator');
+                }
+                bytesAssert(
+                    $client->cookies === ['a' => 'x', 'b' => 'y'],
+                    'Both values are stored clean',
+                );
             };
         });
     },
@@ -166,14 +200,20 @@ $tests = [
     // carry either, whatever a given server does with it.
     'a control character inside the value never reaches the wire' => function () use ($ok) {
         bytesPeer([redirectTo("Set-Cookie: a=x\rX-Injected: 1"), $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) {
                 $shape = requestShape($requests[1]);
-                bytesAssert(!$shape['strayCR'] && !$shape['strayLF'],
-                    'Every CR and LF of the request is part of a CRLF pair');
-                bytesAssert(strpos($requests[1], 'X-Injected') === false,
-                    'Nothing the value carried after its control character reaches the wire');
+                bytesAssert(
+                    !$shape['strayCR'] && !$shape['strayLF'],
+                    'Every CR and LF of the request is part of a CRLF pair',
+                );
+                bytesAssert(
+                    strpos($requests[1], 'X-Injected') === false,
+                    'Nothing the value carried after its control character reaches the wire',
+                );
             };
         });
     },
@@ -181,33 +221,44 @@ $tests = [
     // whatever precedes the first "=" of the line.
     'a control character inside the name never reaches the wire' => function () use ($ok) {
         bytesPeer([redirectTo("Set-Cookie: a\rX-Injected: 1=v"), $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) {
                 $shape = requestShape($requests[1]);
-                bytesAssert(!$shape['strayCR'] && !$shape['strayLF'],
-                    'Every CR and LF of the request is part of a CRLF pair');
-                bytesAssert(strpos($requests[1], 'X-Injected') === false,
-                    'Nothing the name carried after its control character reaches the wire');
+                bytesAssert(
+                    !$shape['strayCR'] && !$shape['strayLF'],
+                    'Every CR and LF of the request is part of a CRLF pair',
+                );
+                bytesAssert(
+                    strpos($requests[1], 'X-Injected') === false,
+                    'Nothing the name carried after its control character reaches the wire',
+                );
             };
         });
     },
     // A Set-Cookie with no "=" before its first ";" names no cookie.
     'a Set-Cookie with no name before its first attribute sets nothing' => function () use ($ok) {
         bytesPeer([redirectTo('Set-Cookie: a; X-Injected: 1=v'), $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) use ($client) {
                 foreach (fieldLines($requests[1]) as $line) {
-                    bytesAssert(strpos($line, 'Cookie:') !== 0, 'The request carries no cookie'); }
+                    bytesAssert(strpos($line, 'Cookie:') !== 0, 'The request carries no cookie');
+                }
                 bytesAssert($client->cookies === [], 'The jar stays empty');
             };
         });
     },
     'a NUL inside the value never reaches the wire' => function () use ($ok) {
         bytesPeer([redirectTo("Set-Cookie: a=x\x00y"), $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) {
                 bytesAssert(!requestShape($requests[1])['nul'], 'No NUL byte reaches the wire');
             };
@@ -217,14 +268,20 @@ $tests = [
     // way: the terminator is not part of the value.
     'LF-only line endings leave the value and the request clean' => function () use ($ok) {
         bytesPeer([redirectTo('Set-Cookie: a=x', "\n"), $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The redirect is followed to its answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer',
+            );
             return function ($requests) use ($client) {
                 $shape = requestShape($requests[1]);
-                bytesAssert(!$shape['strayCR'] && !$shape['strayLF'] && $shape['blankLines'] === 1,
-                    'The request is one header block with no stray CR or LF');
-                bytesAssert($client->cookies === ['a' => 'x'],
-                    'The jar holds the value without its terminator');
+                bytesAssert(
+                    !$shape['strayCR'] && !$shape['strayLF'] && $shape['blankLines'] === 1,
+                    'The request is one header block with no stray CR or LF',
+                );
+                bytesAssert(
+                    $client->cookies === ['a' => 'x'],
+                    'The jar holds the value without its terminator',
+                );
             };
         });
     },
@@ -237,12 +294,15 @@ $tests = [
         $clear = ['wire' => base64_encode("HTTP/1.0 302 Found\r\nSet-Cookie: a=deleted\r\n"
             . "Location: http://first.test:{PORT}/last\r\n\r\n")];
         bytesPeer([$set, $clear, $ok], function ($client, $port) {
-            bytesAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
-                'The two redirects are followed to the answer');
+            bytesAssert(
+                $client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The two redirects are followed to the answer',
+            );
             return function ($requests) use ($client) {
                 bytesAssert(count($requests) === 3, 'The chain is three requests long');
                 foreach (fieldLines($requests[2]) as $line) {
-                    bytesAssert(strpos($line, 'Cookie:') !== 0, 'The deleted cookie reaches no later request'); }
+                    bytesAssert(strpos($line, 'Cookie:') !== 0, 'The deleted cookie reaches no later request');
+                }
                 bytesAssert($client->cookies === [], 'The deleted cookie leaves the jar');
             };
         });
@@ -250,8 +310,13 @@ $tests = [
 ];
 $failures = 0;
 foreach ($tests as $name => $test) {
-    try { $test(); echo 'ok - ', $name, "\n"; }
-    catch (Throwable $error) { ++$failures; echo 'not ok - ', $name, ': ', $error->getMessage(), "\n"; }
+    try {
+        $test();
+        echo 'ok - ', $name, "\n";
+    } catch (Throwable $error) {
+        ++$failures;
+        echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
+    }
 }
 echo count($tests), ' tests, ', $failures, " failures\n";
 exit($failures ? 1 : 0);

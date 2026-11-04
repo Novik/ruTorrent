@@ -39,50 +39,54 @@ require_once(__DIR__ . '/TorrentSequenceFixtures.php');
  */
 class TorrentInternalFieldKeyTest extends TestCase
 {
-	use TorrentSequenceFixtures;
+    use TorrentSequenceFixtures;
 
-	/** A torrent carrying an 'errors' key parses, and is not an error. */
-	public function testATorrentCarryingAnErrorsKeyIsNotBroken()
-	{
-		$fixture = $this->torrentWithKey('errors', $this->bstr('a tracker message'));
-		$torrent = new Torrent($fixture);
-		$this->assertTrue($torrent->errors() === false,
-			'a torrent key called errors is not the object error list');
-		$this->assertTrue((string)$torrent === $fixture, 'and it is written back out');
-	}
+    /** A torrent carrying an 'errors' key parses, and is not an error. */
+    public function testATorrentCarryingAnErrorsKeyIsNotBroken()
+    {
+        $fixture = $this->torrentWithKey('errors', $this->bstr('a tracker message'));
+        $torrent = new Torrent($fixture);
+        $this->assertTrue(
+            $torrent->errors() === false,
+            'a torrent key called errors is not the object error list',
+        );
+        $this->assertTrue((string) $torrent === $fixture, 'and it is written back out');
+    }
 
-	/** The same for the other six, and for 'built'. */
-	public function testATorrentCarryingAKeyNamedLikeAnyInternalFieldKeepsIt()
-	{
-		foreach (['filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback',
-			'built'] as $key) {
-			$fixture = $this->torrentWithKey($key, $this->bstr('kept'));
-			$torrent = new Torrent($fixture);
-			$this->assertTrue($torrent->errors() === false, "a torrent carrying {$key} parses");
-			$this->assertTrue((string)$torrent === $fixture, "and the {$key} key is written back out");
-		}
-	}
+    /** The same for the other six, and for 'built'. */
+    public function testATorrentCarryingAKeyNamedLikeAnyInternalFieldKeepsIt()
+    {
+        foreach (['filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback',
+            'built'] as $key) {
+            $fixture = $this->torrentWithKey($key, $this->bstr('kept'));
+            $torrent = new Torrent($fixture);
+            $this->assertTrue($torrent->errors() === false, "a torrent carrying {$key} parses");
+            $this->assertTrue((string) $torrent === $fixture, "and the {$key} key is written back out");
+        }
+    }
 
-	/**
-	 * The consequence, as the callers meet it: the add path refuses a torrent
-	 * whose only fault is the name of one of its keys.
-	 */
-	public function testTheAddPathDoesNotRefuseATorrentOverTheNameOfAKey()
-	{
-		$torrent = new Torrent($this->torrentWithKey('errors', $this->bstr('a tracker message')));
-		$refused = (bool)$torrent->errors();
-		$this->assertTrue($refused === false,
-			'if(!$torrent->errors()) lets the torrent through to rtorrent');
-	}
+    /**
+     * The consequence, as the callers meet it: the add path refuses a torrent
+     * whose only fault is the name of one of its keys.
+     */
+    public function testTheAddPathDoesNotRefuseATorrentOverTheNameOfAKey()
+    {
+        $torrent = new Torrent($this->torrentWithKey('errors', $this->bstr('a tracker message')));
+        $refused = (bool) $torrent->errors();
+        $this->assertTrue(
+            $refused === false,
+            'if(!$torrent->errors()) lets the torrent through to rtorrent',
+        );
+    }
 
-	private function torrentWithKey($key, $value)
-	{
-		$pairs = [
-			'announce' => $this->bstr('http://one.test/announce'),
-			'info'     => $this->singleFileInfo(),
-			$key       => $value,
-		];
-		ksort($pairs, SORT_STRING);
-		return $this->bdict($pairs);
-	}
+    private function torrentWithKey($key, $value)
+    {
+        $pairs = [
+            'announce' => $this->bstr('http://one.test/announce'),
+            'info' => $this->singleFileInfo(),
+            $key => $value,
+        ];
+        ksort($pairs, SORT_STRING);
+        return $this->bdict($pairs);
+    }
 }
