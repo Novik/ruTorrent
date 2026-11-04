@@ -99,7 +99,7 @@ class rLoadGraph {
     const startSeconds = this.seconds - this.maxSeconds;
     this.load.data.splice(
       0,
-      this.load.data.findIndex(([_, sec]) => sec >= startSeconds)
+      this.load.data.findIndex(([sec]) => sec >= startSeconds)
     );
     this.draw();
   }
