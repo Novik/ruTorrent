@@ -418,6 +418,24 @@ done
 unset HARNESS_DIAGNOSTIC
 rm "$test_file"
 
+# The owner's bits of the caller's umask are cleared and the rest is kept.
+cat > "$test_file" <<'PHP'
+<?php
+require_once(__DIR__ . '/../php/TestCase.php');
+class UmaskTest extends TestCase {
+    public function testUmask() { $this->assertTrue(sprintf('%04o', umask()) === getenv('HARNESS_UMASK'), 'tests run under umask ' . getenv('HARNESS_UMASK')); }
+}
+PHP
+caller_umask="$(umask)"
+for masks in 0177:0077 0122:0022; do
+	umask "${masks%:*}"
+	export HARNESS_UMASK="${masks#*:}"
+	check_run "caller umask ${masks%:*} runs tests under $HARNESS_UMASK" pass "Passed: tests run under umask $HARNESS_UMASK"
+done
+umask "$caller_umask"
+unset HARNESS_UMASK
+rm "$test_file"
+
 # Pin both aggregate status and continuing to the next file after a failure.
 cat > "$test_file" <<'PHP'
 <?php
