@@ -173,6 +173,33 @@ class AutoMoveDestinationTest extends TestCase
         $this->assertSkipFilter('Film.rar', '', false);
     }
 
+    /**
+     * With "add label" on, move.php adds the label's directory to the
+     * destination, but not when the label is the directory the download was
+     * saved in below the download directory: autowatch saves a torrent from
+     * watch/My Movies in My Movies, and autolabel's {DIR} labels it
+     * "My Movies". check.php must name the directory move.php writes to.
+     */
+    public function testALabelThatIsTheDownloadsDirectoryIsAddedOnce()
+    {
+        $this->assertLabelled(['1.bin', '2.bin'], 'My Movies', 'My Movies', true, 'fin/My Movies/mytorrent');
+        $this->assertLabelled('Film.mkv', 'My Movies', 'My Movies', true, 'fin/My Movies');
+        // {DIR} is the whole path below the download directory
+        $this->assertLabelled(['1.bin', '2.bin'], 'TV/Shows', 'TV/Shows', true, 'fin/TV/Shows/mytorrent');
+        // rtorrent keeps a d.directory typed with // after the default directory
+        $this->assertLabelled(['1.bin', '2.bin'], '/Movies', 'Movies', true, 'fin//Movies/mytorrent');
+        $this->assertLabelled('Film.mkv', '/Movies', 'Movies', true, 'fin//Movies');
+    }
+
+    public function testAnyOtherLabelIsAddedOnlyWhenAddLabelIsOn()
+    {
+        $this->assertLabelled(['1.bin', '2.bin'], '', 'Movies', true, 'fin/Movies/mytorrent');
+        $this->assertLabelled(['1.bin', '2.bin'], 'Movies', 'HD', true, 'fin/Movies/HD/mytorrent');
+        $this->assertLabelled('Film.mkv', 'Movies', 'HD', true, 'fin/Movies/HD');
+        $this->assertLabelled(['1.bin', '2.bin'], 'TV/Shows', 'Shows', true, 'fin/TV/Shows/Shows/mytorrent');
+        $this->assertLabelled(['1.bin', '2.bin'], '', 'Movies', false, 'fin/mytorrent');
+    }
+
     public function testUnchangedBasenameStillWorksForEveryOperation()
     {
         foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op) {
@@ -364,16 +391,27 @@ class AutoMoveDestinationTest extends TestCase
      * directory when the download finishes. $root is the download's name.
      * $files are its files, or, as a string, the name of a single-file
      * download, as torrentBytes() takes them. $skip is the skip filter.
+     * $dir is the directory below the download directory the download was
+     * saved in, $label its label and $addLabel the "add label" setting;
+     * $occupy is placed as if $dir and $label were ''.
      */
-    private function runTheFinishedHook($occupy, $root = 'mytorrent', $files = ['1.bin', '2.bin'], $skip = '')
-    {
+    private function runTheFinishedHook(
+        $occupy,
+        $root = 'mytorrent',
+        $files = ['1.bin', '2.bin'],
+        $skip = '',
+        $dir = '',
+        $label = '',
+        $addLabel = false
+    ) {
         $this->removeTree($this->base);
         $multi = is_array($files);
         $names = $multi ? $files : [$files];
         if (!$multi) {
             $root = $files;
-        }   // a single file is the download, in the download directory itself
-        $source = $this->base . '/dl' . ($multi ? '/' . $root : '');
+        }   // a single file is the download, in the directory it was saved in
+        $saved = $this->base . '/dl' . ($dir !== '' ? '/' . $dir : '');
+        $source = $saved . ($multi ? '/' . $root : '');
         $destination = $this->base . '/fin' . ($multi ? '/' . $root : '');
         $this->makeDir($this->base . '/profile/settings');
         $this->makeDir($this->base . '/session');
@@ -391,18 +429,18 @@ class AutoMoveDestinationTest extends TestCase
             $this->base . '/session/' . self::HASH . '.torrent',
             $this->torrentBytes($files, $root),
         );
-        $this->seed('Move', $skip);
+        $this->seed('Move', $skip, $addLabel);
 
-        $basePath = $this->base . '/dl/' . $root;   // d.get_base_path
+        $basePath = $saved . '/' . $root;   // d.get_base_path
         // d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
         $check = $this->runScript(
             'check',
-            [$basePath, $root, $multi ? '1' : '0', '', $root, self::USER],
+            [$basePath, $root, $multi ? '1' : '0', rawurlencode($label), $root, self::USER],
         );
         // and then, with the hash in front, the same five
         $move = $this->runScript(
             'move',
-            [self::HASH, $basePath, $root, $multi ? '1' : '0', '', $root, self::USER],
+            [self::HASH, $basePath, $root, $multi ? '1' : '0', rawurlencode($label), $root, self::USER],
         );
 
         $named = rtrim($check['printed'], '/');
@@ -485,6 +523,31 @@ class AutoMoveDestinationTest extends TestCase
         $this->assertTrue(
             strpos($r['check']['errors'], 'preg_match') === false,
             $what . 'and check.php raises no preg_match diagnostic: ' . $r['check']['errors'],
+        );
+    }
+
+    /**
+     * Finishes a download of $files, as runTheFinishedHook() takes them, saved
+     * in $dir below the download directory, labelled $label and with "add
+     * label" $addLabel. check.php names $expected, below the test's base
+     * directory, and the files are there once move.php has run.
+     */
+    private function assertLabelled($files, $dir, $label, $addLabel, $expected)
+    {
+        $r = $this->runTheFinishedHook([], 'mytorrent', $files, '', $dir, $label, $addLabel);
+        $what = json_encode(
+            ['dir' => $dir, 'label' => $label, 'add label' => $addLabel, 'files' => $files],
+            JSON_UNESCAPED_SLASHES,
+        ) . ': ';
+        $this->assertEquals(
+            $this->base . '/' . $expected,
+            $r['named'],
+            $what . 'check.php names the directory move.php writes to; it named ' . $r['named'],
+        );
+        $this->assertEquals(
+            array_fill(0, count($r['at_named']), true),
+            $r['at_named'],
+            $what . 'and the files are there once move.php has run',
         );
     }
 
