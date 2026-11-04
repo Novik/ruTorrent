@@ -61,6 +61,10 @@ Keep the diff scoped to the change. Whitespace churn, unrelated reformatting and
 rewritten vendored files make a patch unreviewable, and a patch nobody can
 review does not get merged.
 
+PHP follows [PER Coding Style 3.0](https://www.php-fig.org/per/coding-style/).
+CI checks it with [PHP-CS-Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer);
+run `php-cs-fixer fix` before opening a pull request.
+
 ## Requirements
 
 * **PHP 7.4 or newer**, with the `json` and `pcre` extensions. The `simplexml`,
