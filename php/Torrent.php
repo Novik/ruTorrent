@@ -699,9 +699,14 @@ class Torrent
         $value = intval($integer);
         if (strval($value) === $integer) {
             return($value);
-        }
-        $this->notify_err('Cannot write back this integer unchanged: ' . $integer);
-        return(floatval($integer));
+	}
+	// on 32-bit systems intval() gives us only 2GB, and we do a second check with floatval(), before throwing error
+	$value = (floatval($integer));
+	if(strval($value) === $integer)
+		return($value);
+
+	$this->notify_err('Cannot write back this integer unchanged: '.$integer);
+	return $value;
     }
 
     private function isOfType($type)
