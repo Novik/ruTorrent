@@ -32,30 +32,30 @@ $GLOBALS['httpVerifyCertificates'] = false;
 function coIncludeFromMethodScope()
 {
     require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
-    foreach (array('ABTorrents', 'RevolutionTT', 'Tfile', 'Redacted') as $name) {
+    foreach (['ABTorrents', 'RevolutionTT', 'Tfile', 'Redacted'] as $name) {
         require_once(__DIR__ . '/../../../plugins/loginmgr/accounts/' . $name . '.php');
     }
 }
 coIncludeFromMethodScope();
 
 // name => array(setting, the request the login makes, the body it posts)
-$coAccounts = array(
-    'ABTorrents' => array('abTorrentsOrigin', '/login.php', '/takelogin.php',
-        'username=fake-user&password=fake-pass&submitme=X'),
-    'RevolutionTT' => array('revolutionTTOrigin', '', '/takelogin.php',
-        'username=fake-user&password=fake-pass'),
-    'Tfile' => array('tfileOrigin', '/forum/login.php', '/forum/login.php',
-        'username=fake-user&password=fake-pass&login=%C2%F5%EE%E4'),
-    'Redacted' => array('redactedOrigin', '/login.php', '/login.php',
-        'username=fake-user&password=fake-pass&keeplogged=1&login=Login'),
-);
+$coAccounts = [
+    'ABTorrents' => ['abTorrentsOrigin', '/login.php', '/takelogin.php',
+        'username=fake-user&password=fake-pass&submitme=X'],
+    'RevolutionTT' => ['revolutionTTOrigin', '', '/takelogin.php',
+        'username=fake-user&password=fake-pass'],
+    'Tfile' => ['tfileOrigin', '/forum/login.php', '/forum/login.php',
+        'username=fake-user&password=fake-pass&login=%C2%F5%EE%E4'],
+    'Redacted' => ['redactedOrigin', '/login.php', '/login.php',
+        'username=fake-user&password=fake-pass&keeplogged=1&login=Login'],
+];
 
 function coSame($expected, $actual, $message)
 {
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -81,7 +81,7 @@ function coResetLog()
         if (PHP_VERSION_ID < 80100) {
             $latch->setAccessible(true);
         }
-        $latch->setValue(null, array());
+        $latch->setValue(null, []);
     }
     if (is_file($log_file)) {
         unlink($log_file);
@@ -113,11 +113,11 @@ class CoProbeData
 // request that failed to leave is told from one that was never made.
 class CoCountingSnoopy extends Snoopy
 {
-    public $attempts = array();
+    public $attempts = [];
 
     public function fetch($URI, $method = "GET", $content_type = "", $body = "")
     {
-        $this->attempts[] = array($URI, $method, $body);
+        $this->attempts[] = [$URI, $method, $body];
         return parent::fetch($URI, $method, $content_type, $body);
     }
 }
@@ -138,7 +138,7 @@ function coListen($temp)
         if ($code !== 0 || !is_file($temp . '/cert.pem')) {
             throw new RuntimeException(
                 'this test needs the openssl command to make a certificate for its own listener,'
-                . ' and it exited ' . $code
+                . ' and it exited ' . $code,
             );
         }
         file_put_contents($pem,
@@ -187,8 +187,8 @@ PHP;
     $record = $temp . '/recorded.json';
     file_put_contents($record, '[]');
     $process = proc_open(
-        array(PHP_BINARY, '-d', 'error_reporting=0', '-r', $peer, $pem, $record, '2'),
-        array(0 => array('file', '/dev/null', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
+        [PHP_BINARY, '-d', 'error_reporting=0', '-r', $peer, $pem, $record, '2'],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
         $pipes);
     if (!is_resource($process)) {
         throw new RuntimeException('the recording listener did not start');
@@ -198,7 +198,7 @@ PHP;
         throw new RuntimeException('the recording listener named no port: ' . var_export($port, true)
             . ' / ' . stream_get_contents($pipes[2]));
     }
-    return array($process, $pipes, (int) $port, $record);
+    return [$process, $pipes, (int) $port, $record];
 }
 
 // Everything that arrived, as array(array(method, path, body), ...).
@@ -216,10 +216,10 @@ function coArrived($listener, $expected)
         usleep(100000);
     }
     $seen = json_decode((string) file_get_contents($record), true);
-    $arrived = array();
-    foreach (is_array($seen) ? $seen : array() as $connection) {
+    $arrived = [];
+    foreach (is_array($seen) ? $seen : [] as $connection) {
         preg_match('@^([A-Z]+) ([^ ]+)@', $connection['headers'], $match);
-        $arrived[] = array($match[1], $match[2], $connection['body']);
+        $arrived[] = [$match[1], $match[2], $connection['body']];
     }
     return $arrived;
 }
@@ -280,7 +280,7 @@ function coRefresh($name, $client)
     return $account;
 }
 
-$tests = array(
+$tests = [
     'the shipped configuration names no origin for any of the four' => function () {
         global $coAccounts;
         foreach ($coAccounts as $name => $nfo) {
@@ -305,18 +305,18 @@ $tests = array(
                 $client = new CoCountingSnoopy();
                 $account = coRefresh($name, $client);
                 coSame('', $account->url, $name . ' claims no site');
-                coSame(array(), $client->attempts, $name . ' asks for no request');
+                coSame([], $client->attempts, $name . ' asks for no request');
                 coSame(0, $account->data->stored + $account->data->removed,
                     $name . ' leaves the session cache alone');
                 $log = coLog();
                 coSame(1, substr_count($log, "\n"), 'one log line for ' . $name . ': ' . $log);
-                foreach (array('loginmgr: ' . $name . ' is not used', '$' . $nfo[0] . ' is not set',
-                    'plugins/loginmgr/conf.local.php') as $part) {
+                foreach (['loginmgr: ' . $name . ' is not used', '$' . $nfo[0] . ' is not set',
+                    'plugins/loginmgr/conf.local.php'] as $part) {
                     coSame(true, strpos($log, $part) !== false,
                         'the log line names ' . $part . ': ' . $log);
                 }
             }
-            coSame(array(), coArrived($listener, 0),
+            coSame([], coArrived($listener, 0),
                 'and nothing reached a listening peer: not a connection, not a byte');
         } finally {
             coStop($listener);
@@ -329,8 +329,8 @@ $tests = array(
             coConfigure($nfo[0], '');
             coResetLog();
             $account = coRefresh($name, new CoCountingSnoopy());
-            foreach (array('https://tracker.example/login.php', 'https://tracker.example/forum/dl.php?t=1',
-                'https://tracker.example/', 'https://tracker.example/takelogin.php') as $url) {
+            foreach (['https://tracker.example/login.php', 'https://tracker.example/forum/dl.php?t=1',
+                'https://tracker.example/', 'https://tracker.example/takelogin.php'] as $url) {
                 coSame(false, $account->test($url), $name . ' claims nothing with no origin: ' . $url);
             }
         }
@@ -369,10 +369,10 @@ $tests = array(
                 $client = new CoCountingSnoopy();
                 $account = coRefresh($name, $client);
                 coSame($origin, $account->url, $name . ' takes its site from $' . $setting);
-                coSame(array(
-                    array('GET', $landing === '' ? '/' : $landing, ''),
-                    array('POST', $post, $body),
-                ), coArrived($listener, 2), $name . ': the landing page then the credential POST arrive');
+                coSame([
+                    ['GET', $landing === '' ? '/' : $landing, ''],
+                    ['POST', $post, $body],
+                ], coArrived($listener, 2), $name . ': the landing page then the credential POST arrive');
                 coSame(1, $account->data->stored, $name . ': the renewed session is cached');
             } finally {
                 coStop($listener);
@@ -382,13 +382,13 @@ $tests = array(
 
     'a configured origin claims its own host and nothing that merely looks like it' => function () {
         global $coAccounts;
-        $paths = array('ABTorrents' => '/login.php', 'RevolutionTT' => '/login.php',
-            'Tfile' => '/forum/dl.php?t=1', 'Redacted' => '/login.php');
+        $paths = ['ABTorrents' => '/login.php', 'RevolutionTT' => '/login.php',
+            'Tfile' => '/forum/dl.php?t=1', 'Redacted' => '/login.php'];
         foreach ($coAccounts as $name => $nfo) {
             coConfigure($nfo[0], 'https://tracker.example');
             $account = coRefresh($name, new CoCountingSnoopy());
             $path = $paths[$name];
-            foreach (array(
+            foreach ([
                 'https://tracker.example' . $path => true,
                 'https://TRACKER.EXAMPLE' . $path => true,
                 'https://tracker.example@evil.test' . $path => false,
@@ -396,7 +396,7 @@ $tests = array(
                 'https://evil.test/x/tracker.example' . $path => false,
                 'https://other.example' . $path => false,
                 '' => false,
-            ) as $url => $expected) {
+            ] as $url => $expected) {
                 coSame($expected, $account->test($url), $name . ' test(' . var_export($url, true) . ')');
             }
         }
@@ -407,16 +407,16 @@ $tests = array(
         $listener = coListen($coTemp);
         try {
             foreach ($coAccounts as $name => $nfo) {
-                foreach (array('http://tracker.example', 'tracker.example', 'https://user:pass@tracker.example',
+                foreach (['http://tracker.example', 'tracker.example', 'https://user:pass@tracker.example',
                     'https://tracker.example/login.php', 'https://tracker.example?secret=1',
                     'https://tracker.example#x', 'https://tra cker.example', 'https://tracker..example',
-                    'https://tracker.example:0', ' https://tracker.example', array('https://tracker.example'),
-                    null, 0) as $configured) {
+                    'https://tracker.example:0', ' https://tracker.example', ['https://tracker.example'],
+                    null, 0] as $configured) {
                     coConfigure($nfo[0], $configured);
                     $client = new CoCountingSnoopy();
                     $account = coRefresh($name, $client);
                     coSame('', $account->url, $name . ' with ' . var_export($configured, true));
-                    coSame(array(), $client->attempts,
+                    coSame([], $client->attempts,
                         $name . ' asks for nothing with ' . var_export($configured, true));
                 }
                 coConfigure($nfo[0], 'https://tracker.example?secret=1');
@@ -426,13 +426,13 @@ $tests = array(
                     $name . ': the reason is classified: ' . coLog());
                 coSame(false, strpos(coLog(), 'secret'),
                     $name . ': the value is not quoted, since it may carry a password');
-                coConfigure($nfo[0], array('https://tracker.example'));
+                coConfigure($nfo[0], ['https://tracker.example']);
                 coResetLog();
                 coRefresh($name, new CoCountingSnoopy());
                 coSame(true, strpos(coLog(), '$' . $nfo[0] . ' is not a string') !== false,
                     $name . ': a value of another type has its own reason');
             }
-            coSame(array(), coArrived($listener, 0), 'and none of it reached a listening peer');
+            coSame([], coArrived($listener, 0), 'and none of it reached a listening peer');
         } finally {
             coStop($listener);
         }
@@ -444,14 +444,14 @@ $tests = array(
             $source = file_get_contents(__DIR__ . '/../../../plugins/loginmgr/accounts/' . $name . '.php');
             // The string literals only: a comment may well name a host as an
             // example, and an example is not what gets fetched.
-            $named = array();
+            $named = [];
             foreach (token_get_all($source) as $token) {
                 if (is_array($token) && $token[0] === T_CONSTANT_ENCAPSED_STRING
                     && preg_match('@https?://@i', $token[1])) {
                     $named[] = $token[1];
                 }
             }
-            coSame(array(), $named,
+            coSame([], $named,
                 $name . ' builds every URL on the configured origin, and names no host');
         }
     },
@@ -482,7 +482,7 @@ $tests = array(
         }
         coSame(20, $untouched, 'the accounts outside this change are untouched');
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

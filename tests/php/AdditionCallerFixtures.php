@@ -22,22 +22,14 @@
 trait AdditionCallerFixtures
 {
 	/** php/settings.php, read once. */
-	static private $settingsSource = null;
+	private static $settingsSource = null;
 
 	/** iVersion => the version string it stands for, one per distinct table. */
-	static private $tableVersions = null;
+	private static $tableVersions = null;
 
 	public function repoRoot()
 	{
 		return realpath(__DIR__ . '/../..');
-	}
-
-	private function settingsSource()
-	{
-		if (self::$settingsSource === null) {
-			self::$settingsSource = file_get_contents($this->repoRoot() . '/php/settings.php');
-		}
-		return self::$settingsSource;
 	}
 
 	/**
@@ -49,9 +41,9 @@ trait AdditionCallerFixtures
 		preg_match_all('/if\s*\(\s*\$this->iVersion\s*(>=|>|<=|<|==)\s*(0x[0-9a-fA-F]+)\s*\)\s*\{\s*'
 			. 'require_once\s*\(\s*\'(methods-[^\']+)\'\s*\)\s*;/s',
 			$this->settingsSource(), $matches, PREG_SET_ORDER);
-		$gates = array();
+		$gates = [];
 		foreach ($matches as $m) {
-			$gates[] = array('op' => $m[1], 'version' => hexdec($m[2]), 'file' => $m[3]);
+			$gates[] = ['op' => $m[1], 'version' => hexdec($m[2]), 'file' => $m[3]];
 		}
 		return $gates;
 	}
@@ -69,29 +61,17 @@ trait AdditionCallerFixtures
 		}
 		preg_match_all('/"([^"]+)"\s*=>\s*array\(\s*"name"\s*=>\s*"([^"]+)"\s*,\s*'
 			. '"prm"\s*=>\s*(\d+)\s*\)/', $m[3], $entries, PREG_SET_ORDER);
-		$aliases = array();
+		$aliases = [];
 		foreach ($entries as $e) {
-			$aliases[$e[1]] = array('name' => $e[2], 'prm' => (int)$e[3]);
+			$aliases[$e[1]] = ['name' => $e[2], 'prm' => (int)$e[3]];
 		}
-		return array('op' => $m[1], 'version' => hexdec($m[2]), 'aliases' => $aliases);
-	}
-
-	private function gatePasses($op, $iVersion, $constant)
-	{
-		switch ($op) {
-			case '>=': return $iVersion >= $constant;
-			case '>':  return $iVersion > $constant;
-			case '<=': return $iVersion <= $constant;
-			case '<':  return $iVersion < $constant;
-			case '==': return $iVersion == $constant;
-		}
-		return false;
+		return ['op' => $m[1], 'version' => hexdec($m[2]), 'aliases' => $aliases];
 	}
 
 	/** The method files php/settings.php loads for $iVersion, in its order. */
 	public function methodFilesFor($iVersion)
 	{
-		$files = array();
+		$files = [];
 		foreach ($this->methodFileGates() as $gate) {
 			if ($this->gatePasses($gate['op'], $iVersion, $gate['version'])) {
 				$files[] = $gate['file'];
@@ -105,10 +85,10 @@ trait AdditionCallerFixtures
 	{
 		$base = $this->baseAliasGate();
 		if ($base === null) {
-			return array();
+			return [];
 		}
 		return $this->gatePasses($base['op'], $iVersion, $base['version'])
-			? $base['aliases'] : array();
+			? $base['aliases'] : [];
 	}
 
 	/** The alias table $iVersion produces, without installing it. */
@@ -131,31 +111,6 @@ trait AdditionCallerFixtures
 	}
 
 	/**
-	 * Every iVersion the gates distinguish: one either side of each of them,
-	 * which is where a table can change, plus one below the lowest.
-	 */
-	private function probeVersions()
-	{
-		$constants = array();
-		$base = $this->baseAliasGate();
-		if ($base !== null) {
-			$constants[] = $base['version'];
-		}
-		foreach ($this->methodFileGates() as $gate) {
-			$constants[] = $gate['version'];
-		}
-		$probes = array();
-		foreach ($constants as $c) {
-			$probes[] = $c - 1;
-			$probes[] = $c;
-			$probes[] = $c + 1;
-		}
-		$probes = array_unique($probes);
-		sort($probes);
-		return $probes;
-	}
-
-	/**
 	 * iVersion => version string, one entry per distinct alias table php/ can
 	 * produce. The representative is the lowest iVersion that produces it.
 	 */
@@ -164,8 +119,8 @@ trait AdditionCallerFixtures
 		if (self::$tableVersions !== null) {
 			return self::$tableVersions;
 		}
-		$seen = array();
-		$versions = array();
+		$seen = [];
+		$versions = [];
 		foreach ($this->probeVersions() as $iVersion) {
 			$table = $this->aliasTableFor($iVersion);
 			ksort($table);
@@ -214,13 +169,13 @@ trait AdditionCallerFixtures
 	/** Every php/methods-*.php is loaded by at least one supported version. */
 	public function versionsCoverEveryMethodFile()
 	{
-		$loaded = array();
+		$loaded = [];
 		foreach (array_keys($this->supportedVersions()) as $iVersion) {
 			foreach ($this->methodFilesFor($iVersion) as $file) {
 				$loaded[$file] = true;
 			}
 		}
-		$missing = array();
+		$missing = [];
 		foreach (glob($this->repoRoot() . '/php/methods-*.php') as $path) {
 			if (!isset($loaded[basename($path)])) {
 				$missing[] = basename($path);
@@ -241,10 +196,55 @@ trait AdditionCallerFixtures
 		$method->setAccessible(true);
 		return $method->invoke(null, $addition);
 	}
+
+	private function settingsSource()
+	{
+		if (self::$settingsSource === null) {
+			self::$settingsSource = file_get_contents($this->repoRoot() . '/php/settings.php');
+		}
+		return self::$settingsSource;
+	}
+
+	private function gatePasses($op, $iVersion, $constant)
+	{
+		switch ($op) {
+			case '>=': return $iVersion >= $constant;
+			case '>':  return $iVersion > $constant;
+			case '<=': return $iVersion <= $constant;
+			case '<':  return $iVersion < $constant;
+			case '==': return $iVersion == $constant;
+		}
+		return false;
+	}
+
+	/**
+	 * Every iVersion the gates distinguish: one either side of each of them,
+	 * which is where a table can change, plus one below the lowest.
+	 */
+	private function probeVersions()
+	{
+		$constants = [];
+		$base = $this->baseAliasGate();
+		if ($base !== null) {
+			$constants[] = $base['version'];
+		}
+		foreach ($this->methodFileGates() as $gate) {
+			$constants[] = $gate['version'];
+		}
+		$probes = [];
+		foreach ($constants as $c) {
+			$probes[] = $c - 1;
+			$probes[] = $c;
+			$probes[] = $c + 1;
+		}
+		$probes = array_unique($probes);
+		sort($probes);
+		return $probes;
+	}
 }
 
 /** The scope a method file's "$this->aliases = array_merge(...)" runs in. */
 class AliasTableHolder
 {
-	public $aliases = array();
+	public $aliases = [];
 }

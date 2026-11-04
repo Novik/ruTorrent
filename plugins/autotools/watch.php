@@ -1,10 +1,10 @@
 <?php
 
-if( !chdir( dirname( __FILE__ ) ) )
-	exit();
+if( !chdir( dirname( __FILE__ ) ) ) {
+	exit(); }
 
-if( count( $argv ) > 1 )
-	$_SERVER['REMOTE_USER'] = $argv[1];
+if( count( $argv ) > 1 ) {
+	$_SERVER['REMOTE_USER'] = $argv[1]; }
 
 require_once( "../../php/rtorrent.php" );
 require_once( "./util_rt.php" );
@@ -14,7 +14,7 @@ eval( FileUtil::getPluginConf( 'autotools' ) );
 function Debug( $str )
 {
 	global $autodebug_enabled;
-	if( $autodebug_enabled ) rtDbg( "AutoWatch", $str );
+	if( $autodebug_enabled ) { rtDbg( "AutoWatch", $str ); }
 }
 
 Debug( "" );
@@ -36,10 +36,10 @@ if( $is_ok )
 		// The scan, the touch and the load follow links, so the directory has
 		// to stay inside the top directory once they are followed.
 		if( $path_to_watch == '' || $path_to_watch == '/' ||
-			!rTorrent::isInsideTopDirectory( $path_to_watch ) )
-			$is_ok = false;
+			!rTorrent::isInsideTopDirectory( $path_to_watch ) ) {
+			$is_ok = false; }
 	}
-	else $is_ok = false;
+	else { $is_ok = false; }
 }
 
 // Ask info from rTorrent
@@ -47,8 +47,8 @@ if( $is_ok )
 {
 	$directory = rtAddTailSlash( rTorrentSettings::get()->directory );
 	Debug( "get_directory    : ".$directory );
-	if( $directory == '' || $directory == '/' )
-		$is_ok = false;
+	if( $directory == '' || $directory == '/' ) {
+		$is_ok = false; }
 }
 
 // Scan for *.torrent files at $path_to_watch
@@ -101,7 +101,7 @@ if( $is_ok )
 				$dest_path,			// directory for torrent's data
 				null,				// label is emply
 				false,				// don't saveUploadedTorrents
-				false				// don't fast_resume
+				false,				// don't fast_resume
 			);
 			if( $hash === false )
 			{
@@ -113,8 +113,8 @@ if( $is_ok )
 			}
 		}
 
-		if( !$is_ok )
-			rename( $torrent_file, $torrent_file.".fail" );
+		if( !$is_ok ) {
+			rename( $torrent_file, $torrent_file.".fail" ); }
 	}
 }
 

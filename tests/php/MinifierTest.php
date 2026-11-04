@@ -17,10 +17,6 @@ require_once(__DIR__ . '/../../php/utility/minifier.php');
 // outside a class. These tests lock that behaviour in.
 class MinifierTest extends TestCase
 {
-	private function minify($js)
-	{
-		return \JShrink\Minifier::minify($js);
-	}
 
 	public function testClassInternalSlashIsNotTheRegexTerminator()
 	{
@@ -65,5 +61,9 @@ class MinifierTest extends TestCase
 		$min = $this->minify("var q = (a + b) / c / d;\nvar W = 5;");
 		$this->assertTrue(strpos($min, 'W') !== false,
 			'division operators must not be parsed as a regex literal');
+	}
+	private function minify($js)
+	{
+		return \JShrink\Minifier::minify($js);
 	}
 }

@@ -47,7 +47,7 @@ class RtorrentCommandParser
 	public static function commands($parameter)
 	{
 		$p = new self($parameter);
-		$out = array();
+		$out = [];
 		while ($p->i < $p->n) {
 			$command = $p->parseCommand();
 			if ($command === null) {
@@ -65,13 +65,13 @@ class RtorrentCommandParser
 	 */
 	public static function substitutedArguments($args)
 	{
-		$hits = array();
+		$hits = [];
 		foreach ($args as $a) {
 			if (is_string($a)) {
 				if (isset($a[0]) && ($a[0] === '$')) {
 					$hits[] = $a;
 				}
-			} else if (isset($a['call'])) {
+			} elseif (isset($a['call'])) {
 				$hits[] = '(' . $a['call'] . ')';
 			} else {
 				$hits[] = '{block}';
@@ -142,13 +142,13 @@ class RtorrentCommandParser
 	{
 		if (($this->i < $this->n) && ($this->s[$this->i] === '{')) {
 			$this->i++;
-			$block = $this->parseList(array($this, 'isDelimBlock'));
+			$block = $this->parseList([$this, 'isDelimBlock']);
 			$this->skipSpace();
 			if (($this->i >= $this->n) || ($this->s[$this->i] !== '}')) {
 				throw new RtorrentInputError("Could not find closing '}'.");
 			}
 			$this->i++;
-			return array('block' => $block);
+			return ['block' => $block];
 		}
 		if (($this->i < $this->n) && ($this->s[$this->i] === '(')) {
 			$depth = 1;
@@ -160,15 +160,15 @@ class RtorrentCommandParser
 				throw new RtorrentInputError('Max 3 parentheses per object allowed.');
 			}
 			$this->i++;
-			$key = $this->parseString(array($this, 'isDelimFunc'));
+			$key = $this->parseString([$this, 'isDelimFunc']);
 			$this->skipSpace();
 			if (($this->i >= $this->n) || !$this->isDelimFunc($this->s[$this->i])) {
 				throw new RtorrentInputError("Could not find closing ')'.");
 			}
-			$args = array();
+			$args = [];
 			if ($this->s[$this->i] === ',') {
 				$this->i++;
-				$args = $this->parseList(array($this, 'isDelimFunc'));
+				$args = $this->parseList([$this, 'isDelimFunc']);
 				$this->skipSpace();
 			}
 			while (($depth !== 0) && ($this->i < $this->n) && ($this->s[$this->i] === ')')) {
@@ -178,7 +178,7 @@ class RtorrentCommandParser
 			if ($depth !== 0) {
 				throw new RtorrentInputError('Parentheses mismatch.');
 			}
-			return array('call' => $key, 'args' => $args);
+			return ['call' => $key, 'args' => $args];
 		}
 		return $this->parseString($delim);
 	}
@@ -186,7 +186,7 @@ class RtorrentCommandParser
 	// parse.cc: parse_list
 	private function parseList($delim)
 	{
-		$out = array();
+		$out = [];
 		while (true) {
 			$this->skipSpace();
 			$out[] = $this->parseObject($delim);
@@ -207,9 +207,9 @@ class RtorrentCommandParser
 		$this->skipSpace();
 		if (($this->i < $this->n) && ($this->s[$this->i] === ',')) {
 			$this->i++;
-			return array_merge(array($first), $this->parseList($delim));
+			return array_merge([$first], $this->parseList($delim));
 		}
-		return array($first);
+		return [$first];
 	}
 
 	// parse_commands.cc: parse_command
@@ -239,7 +239,7 @@ class RtorrentCommandParser
 			throw new RtorrentInputError("Could not find '=' in command '" . $name . "'.");
 		}
 		$this->i++;
-		$args = $this->parseWholeList(array($this, 'isDelimCommand'));
+		$args = $this->parseWholeList([$this, 'isDelimCommand']);
 		while (($this->i < $this->n) && $this->isSpace($this->s[$this->i])) {
 			$this->i++;
 		}
@@ -249,6 +249,6 @@ class RtorrentCommandParser
 			}
 			$this->i++;
 		}
-		return array('name' => $name, 'args' => $args);
+		return ['name' => $name, 'args' => $args];
 	}
 }

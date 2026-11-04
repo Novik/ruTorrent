@@ -1,7 +1,7 @@
 <?php
 
-if(count($argv)>2)
-	$_SERVER['REMOTE_USER'] = $argv[2];
+if(count($argv)>2) {
+	$_SERVER['REMOTE_USER'] = $argv[2]; }
 
 require_once( 'retrackers.php' );
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
@@ -13,11 +13,11 @@ function clearTracker($addition,$tracker)
 	{
 		foreach( $group as $kt=>$trk )
 		{
-			if($trk==$tracker)
-				unset($addition[$kg][$kt]);
+			if($trk==$tracker) {
+				unset($addition[$kg][$kt]); }
 		}
-		if(!count($addition[$kg]))
-			unset($addition[$kg]);
+		if(!count($addition[$kg])) {
+			unset($addition[$kg]); }
 	}
 	return($addition);
 }
@@ -34,8 +34,8 @@ function deleteTrackers(&$lst,$todelete)
 				if(stristr($trk,$kd))
 				{
 					unset($lst[$kg][$kt]);
-					if(!count($lst[$kg]))
-					unset($lst[$kg]);
+					if(!count($lst[$kg])) {
+					unset($lst[$kg]); }
 					$ret = true;
 				}
 			}
@@ -49,7 +49,7 @@ $trks = rRetrackers::load();
 if(count($argv)>1)
 {
 	$hash = $argv[1];
-	$req = new rXMLRPCRequest( array(
+	$req = new rXMLRPCRequest( [
 		new rXMLRPCCommand("get_session"),
 		new rXMLRPCCommand("d.get_custom4",$hash),
 		new rXMLRPCCommand("d.get_tied_to_file",$hash),
@@ -57,7 +57,7 @@ if(count($argv)>1)
 		new rXMLRPCCommand("d.get_directory_base",$hash),
 		new rXMLRPCCommand("d.is_private",$hash),
 		new rXMLRPCCommand("d.get_name",$hash),
-		) );
+		] );
 	if($req->success())
 	{
 		$isStart = ($req->val[1]!=0);
@@ -67,10 +67,10 @@ if(count($argv)>1)
 			$fname = $req->val[0].$hash.".torrent";
 			if(empty($req->val[0]) || !is_readable($fname))
 			{
-				if(strlen($req->val[2]) && is_readable($req->val[2]))
-					$fname = $req->val[2];
-				else
-					$fname = null;
+				if(strlen($req->val[2]) && is_readable($req->val[2])) {
+					$fname = $req->val[2]; }
+				else {
+					$fname = null; }
 			}
 			if($fname)
 			{
@@ -83,9 +83,9 @@ if(count($argv)>1)
 					{
 						if(count($trks->list))
 						{
-							if($torrent->announce())
-								$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) :
-									array_merge(array(array($torrent->announce())),$trks->list));
+							if($torrent->announce()) {
+								$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, [[$torrent->announce()]]) :
+									array_merge([[$torrent->announce()]],$trks->list)); }
 							else
 							{
 								$torrent->announce($trks->list[0][0]);
@@ -100,9 +100,9 @@ if(count($argv)>1)
 					else
 					{
 						$addition = $trks->list;
-						foreach( $lst as $group )
-							foreach( $group as $tracker )
-								$addition = clearTracker($addition,$tracker);
+						foreach( $lst as $group ) {
+							foreach( $group as $tracker ) {
+								$addition = clearTracker($addition,$tracker); } }
 						if(count($addition))
 						{
 							$torrent->announce_list($trks->addToBegin ? array_merge($addition,$lst) : array_merge($lst,$addition));
@@ -123,12 +123,12 @@ if(count($argv)>1)
 
 					if($wasAddition || $wasDeletion)
 					{
-						if(isset($torrent->{'rtorrent'}))
-							unset($torrent->{'rtorrent'});
+						if(isset($torrent->{'rtorrent'})) {
+							unset($torrent->{'rtorrent'}); }
 						// Asked before the erase, not after: sendTorrent()
 						// refuses an addition list whole, and by then the
 						// download it would have reloaded is gone.
-						$reloadAddition = array(getCmd("d.set_custom3")."=1");
+						$reloadAddition = [getCmd("d.set_custom3")."=1"];
 						$eReq = rTorrent::areValidAdditions($reloadAddition)
 							? new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) ) : null;
 						if($eReq && $eReq->success())

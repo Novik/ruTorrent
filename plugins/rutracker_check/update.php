@@ -1,22 +1,22 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
-if( count( $argv ) > 1 )
-	$_SERVER['REMOTE_USER'] = $argv[1];
+if( count( $argv ) > 1 ) {
+	$_SERVER['REMOTE_USER'] = $argv[1]; }
 
 require_once( "check.php" );
 
 $req =  new rXMLRPCRequest(
-		new rXMLRPCCommand("d.multicall",array("seeding",
+		new rXMLRPCCommand("d.multicall",["seeding",
 			getCmd("d.get_hash="),
 			getCmd("d.get_custom=")."chk-state",
 			getCmd("d.get_custom=")."chk-time",
 			getCmd("d.get_custom=")."chk-stime",
 			getCmd("d.get_custom1="),
-			getCmd("cat").'="$'.getCmd("t.multicall=").getCmd("d.get_hash=").",".getCmd("t.get_url")."=,".getCmd("cat=#").'"'
-		))
+			getCmd("cat").'="$'.getCmd("t.multicall=").getCmd("d.get_hash=").",".getCmd("t.get_url")."=,".getCmd("cat=#").'"',
+		]),
 	);
 if($req->success())
 {

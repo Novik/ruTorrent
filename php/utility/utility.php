@@ -11,8 +11,8 @@ class Utility
 		for($offset = 0; isset($value[$offset]); $offset++)
 		{
 			$byte = $value[$offset];
-			if($byte === "\0")
-				throw new InvalidArgumentException('A shell argument cannot contain a NUL byte.');
+			if($byte === "\0") {
+				throw new InvalidArgumentException('A shell argument cannot contain a NUL byte.'); }
 			$quoted .= ($byte === "'") ? "'\\''" : $byte;
 		}
 		return($quoted."'");

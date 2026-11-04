@@ -18,7 +18,7 @@ require_once(__DIR__ . '/../../../plugins/cpuload/cpu.php');
 
 class CpuLoadStub extends rCPU
 {
-    public $stubLoadavg = array(0, 0, 0);
+    public $stubLoadavg = [0, 0, 0];
 
     protected function loadavg()
     {
@@ -31,28 +31,28 @@ function cpuAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
 
-$tests = array(
+$tests = [
     'the load is reported as a percentage of the cores' => function () {
         $cpu = new CpuLoadStub();
         $cpu->count = 4;
-        $cpu->stubLoadavg = array('2.00', '1.00', '0.50');
+        $cpu->stubLoadavg = ['2.00', '1.00', '0.50'];
         cpuAssertSame(50.0, $cpu->get(), 'two busy cores out of four is 50%');
-        $cpu->stubLoadavg = array('1.234', '1.00', '0.50');
+        $cpu->stubLoadavg = ['1.234', '1.00', '0.50'];
         cpuAssertSame(31.0, $cpu->get(), 'the percentage is rounded');
         $cpu->count = 1;
-        $cpu->stubLoadavg = array('0.00', '0.00', '0.00');
+        $cpu->stubLoadavg = ['0.00', '0.00', '0.00'];
         cpuAssertSame(0.0, $cpu->get(), 'an idle box reads zero');
     },
 
     'an overloaded box is clamped to 100' => function () {
         $cpu = new CpuLoadStub();
         $cpu->count = 2;
-        $cpu->stubLoadavg = array('9.90', '4.00', '2.00');
+        $cpu->stubLoadavg = ['9.90', '4.00', '2.00'];
         cpuAssertSame(100.0, $cpu->get(), 'the meter never goes past full');
     },
 
@@ -76,7 +76,7 @@ $tests = array(
             throw new RuntimeException('the percentage is out of range: ' . var_export($percentage, true));
         }
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

@@ -2,10 +2,10 @@
 
 class HDTsEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"hdts.ru|pass=XXX;uid=XXX;" );
+       	public $defaults = [ "public"=>false, "page_size"=>15, "cookies"=>"hdts.ru|pass=XXX;uid=XXX;" ];
 
-	public $categories = array
-	(
+	public $categories = 
+	[
 		'all'=>'',
 		'Movie(all)'=>'&category[]=1&category[]=2&category[]=5&category[]=3&category[]=63',
 		'Movie(all-3D only)'=>'&category[]=1&category[]=2&category[]=5&category[]=3&category[]=63&3d=1',
@@ -39,32 +39,32 @@ class HDTsEngine extends commonEngine
 		'XXX(3D only)'=>'&category[]=58&category[]=48&category[]=47&3d=1',
 		'XXX/Blu-ray'=>'&category[]=58',
 		'XXX/1080p/i'=>'category[]=48',
-		'XXX/720p'=>'&category[]=47'
-	);
+		'XXX/720p'=>'&category[]=47',
+	];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://hdts.ru';
-		if($useGlobalCats)
-			$categories = array( 'all'=>'&category[]=0' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'&category[]=0' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 0; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?active=1'.$cat.'&search='.$what.'&options=0&order=seeds&by=DESC&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, ">No torrents here...</td>")!==false) ||
-				(strpos($cli->results, ">Password:<")!==false))
-				break;
+				(strpos($cli->results, ">Password:<")!==false)) {
+				break; }
 			$result = $cli->results;
 			$first = strpos($result, "<!-- Column Headers  -->");
-			if($first!==false)
-				$result = substr($result,$first);
+			if($first!==false) {
+				$result = substr($result,$first); }
 
 			$res = preg_match_all('`<a href=torrents\.php\?category=\d+><img src=images/categories/.*alt="(?P<cat>.*)"/><\/td>.*'.
 				'<A HREF="details.php\?id=(?P<id>.*)".*'.
@@ -95,13 +95,13 @@ class HDTsEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

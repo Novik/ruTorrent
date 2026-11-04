@@ -35,8 +35,8 @@ function check_port_yougetsignal($ip, $port, $timeout) {
 
 	if ($client->status == 200) {
 		$status = check_port_parse_yougetsignal($client->results);
-		if ($status)
-			return $status;
+		if ($status) {
+			return $status; }
 		error_log("check_port: yougetsignal unexpected response for IP {$ip}. Response: " . substr($client->results, 0, 500));
 	} else {
 		error_log("check_port: Failed fetch from yougetsignal for IP {$ip}. Status: {$client->status}, Error: {$client->error}");

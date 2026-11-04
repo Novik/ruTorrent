@@ -16,14 +16,6 @@ require_once(__DIR__ . '/../../php/pluginflags.php');
  */
 class PluginFlagsTest extends TestCase
 {
-	private function parse($ini)
-	{
-		$file = tempnam(sys_get_temp_dir(), 'plgini');
-		file_put_contents($file, $ini);
-		$parsed = parse_ini_file($file, true);
-		unlink($file);
-		return $parsed;
-	}
 
 	/**
 	 * The compatibility rule: a plugins.ini written before a flag existed must
@@ -43,7 +35,7 @@ class PluginFlagsTest extends TestCase
 
 	public function testTheFalseSpellingsAllDisable()
 	{
-		foreach (array('no', 'off', 'false', '0') as $written) {
+		foreach (['no', 'off', 'false', '0'] as $written) {
 			$p = $this->parse("[ratio]\nenabledByDefault = $written\n");
 			$this->assertEquals(false, (bool)getFlag($p, 'ratio', 'enabledByDefault'),
 				'"'.$written.'" disables the plugin for a user who has not chosen');
@@ -52,7 +44,7 @@ class PluginFlagsTest extends TestCase
 
 	public function testTheTrueSpellingsAllEnable()
 	{
-		foreach (array('yes', 'on', 'true', '1') as $written) {
+		foreach (['yes', 'on', 'true', '1'] as $written) {
 			$p = $this->parse("[ratio]\nenabledByDefault = $written\n");
 			$this->assertEquals(true, (bool)getFlag($p, 'ratio', 'enabledByDefault'),
 				'"'.$written.'" leaves the plugin enabled');
@@ -68,5 +60,13 @@ class PluginFlagsTest extends TestCase
 			'so does a plugin with no section at all');
 		$this->assertEquals(true, (bool)getFlag($p, 'ratio', 'enabledByDefault'),
 			'and a plugin that does have an opinion overrides [default]');
+	}
+	private function parse($ini)
+	{
+		$file = tempnam(sys_get_temp_dir(), 'plgini');
+		file_put_contents($file, $ini);
+		$parsed = parse_ini_file($file, true);
+		unlink($file);
+		return $parsed;
 	}
 }

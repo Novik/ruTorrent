@@ -13,7 +13,7 @@ class SettingsColdCacheSilentDaemon
 {
 	public function __invoke($body)
 	{
-		return array();
+		return [];
 	}
 }
 
@@ -50,63 +50,6 @@ class SettingsColdCacheTest extends TestCase
 	{
 		$this->stopDaemon();
 		$this->removeTree($this->base);
-	}
-
-	private function stopDaemon()
-	{
-		if ($this->daemon !== null) {
-			$this->daemon->stop();
-			$this->daemon = null;
-		}
-	}
-
-	private function removeTree($path)
-	{
-		if (!is_dir($path)) {
-			return;
-		}
-		foreach (glob($path . '/*') as $entry) {
-			is_dir($entry) ? $this->removeTree($entry) : @unlink($entry);
-		}
-		@rmdir($path);
-	}
-
-	private function repoRoot()
-	{
-		return realpath(__DIR__ . '/../..');
-	}
-
-	/**
-	 * Runs $code in a process of its own, with a fresh profile and a daemon
-	 * answering as rtorrent 0.16.20. Returns the process output; what the
-	 * daemon was asked is in $this->daemon.
-	 */
-	private function drive($code, $profile)
-	{
-		$this->stopDaemon();
-		$root = $this->repoRoot();
-		@mkdir($profile . '/settings', 0700, true);
-		$this->daemon = new FakeRtorrentDaemon(RtorrentProbeFixture::responder(),
-			$this->base . '/calls.log', false, RtorrentProbeFixture::replyClassFiles());
-
-		$driver = $this->base . '/drive.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($profile, true) . ";\n"
-			. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
-			. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$this->daemon->port(), true) . ";\n"
-			. 'require_once(' . var_export($root . '/php/xmlrpc.php', true) . ");\n"
-			. $code . "\n");
-
-		$output = array();
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
-			escapeshellarg($driver) . ' 2>&1', $output);
-		return implode("\n", $output);
-	}
-
-	/** How many times the daemon was asked for its version. */
-	private function probes()
-	{
-		return count(array_keys($this->daemon->calls(), 'system.client_version', true));
 	}
 
 	public function testAColdCacheIsProbedRatherThanBelieved()
@@ -213,7 +156,7 @@ class SettingsColdCacheTest extends TestCase
 		$profile = $this->base . '/silent';
 		@mkdir($profile . '/settings', 0700, true);
 		$this->daemon = new FakeRtorrentDaemon(new SettingsColdCacheSilentDaemon(),
-			$this->base . '/calls.log', false, array(__DIR__ . '/SettingsColdCacheTest.php'));
+			$this->base . '/calls.log', false, [__DIR__ . '/SettingsColdCacheTest.php']);
 
 		$driver = $this->base . '/drive-silent.php';
 		file_put_contents($driver, "<?php\n"
@@ -224,7 +167,7 @@ class SettingsColdCacheTest extends TestCase
 			. 'for($i = 0; $i<20; $i++) new rXMLRPCCommand("d.multicall", "main");' . "\n"
 			. 'echo (int)is_null(rTorrentSettings::get()->iVersion);' . "\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($driver) . ' 2>&1', $output);
 
@@ -262,7 +205,7 @@ class SettingsColdCacheTest extends TestCase
 			. '$cmd = new rXMLRPCCommand("d.multicall", "main");' . "\n"
 			. 'echo (int)is_null(rTorrentSettings::get()->iVersion), " ", count($cmd->params);' . "\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($driver) . ' 2>&1', $output);
 
@@ -271,5 +214,62 @@ class SettingsColdCacheTest extends TestCase
 				. json_encode(implode("\n", $output)));
 		$this->assertTrue(!is_file($profile . '/settings/rtorrent.dat'),
 			'a probe that learned nothing is not cached');
+	}
+
+	private function stopDaemon()
+	{
+		if ($this->daemon !== null) {
+			$this->daemon->stop();
+			$this->daemon = null;
+		}
+	}
+
+	private function removeTree($path)
+	{
+		if (!is_dir($path)) {
+			return;
+		}
+		foreach (glob($path . '/*') as $entry) {
+			is_dir($entry) ? $this->removeTree($entry) : @unlink($entry);
+		}
+		@rmdir($path);
+	}
+
+	private function repoRoot()
+	{
+		return realpath(__DIR__ . '/../..');
+	}
+
+	/**
+	 * Runs $code in a process of its own, with a fresh profile and a daemon
+	 * answering as rtorrent 0.16.20. Returns the process output; what the
+	 * daemon was asked is in $this->daemon.
+	 */
+	private function drive($code, $profile)
+	{
+		$this->stopDaemon();
+		$root = $this->repoRoot();
+		@mkdir($profile . '/settings', 0700, true);
+		$this->daemon = new FakeRtorrentDaemon(RtorrentProbeFixture::responder(),
+			$this->base . '/calls.log', false, RtorrentProbeFixture::replyClassFiles());
+
+		$driver = $this->base . '/drive.php';
+		file_put_contents($driver, "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($profile, true) . ";\n"
+			. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
+			. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$this->daemon->port(), true) . ";\n"
+			. 'require_once(' . var_export($root . '/php/xmlrpc.php', true) . ");\n"
+			. $code . "\n");
+
+		$output = [];
+		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
+			escapeshellarg($driver) . ' 2>&1', $output);
+		return implode("\n", $output);
+	}
+
+	/** How many times the daemon was asked for its version. */
+	private function probes()
+	{
+		return count(array_keys($this->daemon->calls(), 'system.client_version', true));
 	}
 }

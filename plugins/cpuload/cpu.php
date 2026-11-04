@@ -9,18 +9,18 @@ class rCPU
 	public $modified = false;
 	public $count = 1;
 
-	static public function load()
+	public static function load()
 	{
 		global $processorsCount;
 		$cpu = new rCPU();
                 if(is_null($processorsCount))
 		{
 			$cache = new rCache();
-			if(!$cache->get($cpu))
-				$cpu->obtain();
+			if(!$cache->get($cpu)) {
+				$cpu->obtain(); }
 		}
-		else
-			$cpu->count = $processorsCount;
+		else {
+			$cpu->count = $processorsCount; }
 		return($cpu);
 	}
 
@@ -47,11 +47,11 @@ class rCPU
 	// stand in for it.
 	protected function loadavg()
 	{
-		if(function_exists('sys_getloadavg'))
-			return(sys_getloadavg());
+		if(function_exists('sys_getloadavg')) {
+			return(sys_getloadavg()); }
 		$loadavg_file = '/proc/loadavg';
-		if(file_exists($loadavg_file))
-			return(explode(chr(32),file_get_contents($loadavg_file)));
+		if(file_exists($loadavg_file)) {
+			return(explode(chr(32),file_get_contents($loadavg_file))); }
 		return(array_map("trim",explode(",",substr(strrchr(shell_exec("uptime"),":"),1))));
 	}
 }

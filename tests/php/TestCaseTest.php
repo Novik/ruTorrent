@@ -10,7 +10,7 @@ class TestCaseTest extends TestCase
 		// prove that TestCase itself does not depend on that runner setting.
 		$script = 'require ' . var_export(__DIR__ . '/TestCase.php', true)
 			. '; (new TestCase())->assertTrue(false, "deliberately false");';
-		$lines = array();
+		$lines = [];
 		$exitCode = 0;
 		exec(escapeshellarg(PHP_BINARY) . ' -d zend.assertions=-1 -r '
 			. escapeshellarg($script), $lines, $exitCode);
@@ -24,20 +24,20 @@ class TestCaseTest extends TestCase
 
 	public function testRunnerUsesStrictDiagnosticSettings(): void
 	{
-		$actual = array(
+		$actual = [
 			'zend.assertions' => (int) ini_get('zend.assertions'),
 			'error_reporting' => error_reporting(),
 			'display_errors' => (int) ini_get('display_errors'),
-		);
-		$expected = array(
+		];
+		$expected = [
 			'zend.assertions' => 1,
 			'error_reporting' => -1,
 			'display_errors' => 1,
-		);
+		];
 
 		if ($actual !== $expected) {
 			throw new RuntimeException(
-				'Test runner diagnostics differ: ' . json_encode($actual)
+				'Test runner diagnostics differ: ' . json_encode($actual),
 			);
 		}
 		echo "Passed: the runner enables strict diagnostics\n";

@@ -2,9 +2,9 @@
 
 class TorrentDayEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.torrentday.com|pass=XXX;uid=XXX;" );
+	public $defaults = [ "public"=>false, "page_size"=>35, "cookies"=>"www.torrentday.com|pass=XXX;uid=XXX;" ];
 
-	public $categories = array( 'all'=>'',
+	public $categories = [ 'all'=>'',
         #misc
         '|--Misc' => '&c29=1&c28=1&c42=1&c20=1&c30=1&c47=1&c43=1',
         '|--|--Anime' => '&c29=1',
@@ -58,8 +58,8 @@ class TorrentDayEngine extends commonEngine
         #pr0n
         '|--XXX' => '&c6=1&c15=1',
         '|--|--XXX/Movies' => '&c6=1',
-        '|--|--XXX/Packs' => '&c15=1'
-    );
+        '|--|--XXX/Packs' => '&c15=1',
+    ];
 
     public function getPattern() {
         return '/<tr class="browse">.*href="browse.php\?cat=(?P<cat>\d+).*"><img border="0".*'.
@@ -78,7 +78,7 @@ class TorrentDayEngine extends commonEngine
 		$url = 'https://www.torrentday.com';
 		if($useGlobalCats) {
 		    error_log("torrentday: use global cats: " . $cat);
-            $categories = array(
+            $categories = [
                 'all' => '',
                 'movies' =>
                     '&c25=1' .
@@ -118,7 +118,7 @@ class TorrentDayEngine extends commonEngine
                 'software' => '&c28=1' . '&c47=1' . '&c43=1',
                 'books' => '&c42=1' . '&c20=1' . '&c30=1',
 
-            );
+            ];
         } else {
 		    error_log("torrentday uses local category " . $cat);
 			$categories = &$this->categories;
@@ -134,8 +134,8 @@ class TorrentDayEngine extends commonEngine
             $finalUrl = $url . '/browse.php?search=' . $what . '&sort=6&type=desc&page=' . $pg . $cat;
             $cli = $this->fetch($finalUrl);
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
-				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
-				break;
+				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false)) {
+				break; }
 
 			$data = $cli->results;
 
@@ -163,26 +163,26 @@ class TorrentDayEngine extends commonEngine
 						if($item["seeds"] > 0 || $item["peers"] > 0) {
                             $ret[$link] = $item;
                             $added++;
-                            if($added>=$limit)
-                                return;
+                            if($added>=$limit) {
+                                return; }
                         }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 
-	function clearDate($inputDate) {
+	public function clearDate($inputDate) {
         $result = $inputDate;
         // removes potential content before the date starts (at the moment, this is mainly 720p, 1080p, etc.)
         do {
             $pipePosition = strpos($result, '|');
-            if($pipePosition !== FALSE) {
+            if($pipePosition !== false) {
                 $result = trim(substr($result, $pipePosition+1));
             }
-        } while($pipePosition !== FALSE);
+        } while($pipePosition !== false);
         return $result;
     }
 }

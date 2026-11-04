@@ -56,10 +56,6 @@ class MinifierCleanupProbe extends \JShrink\Minifier
 // so a single character of drift there rewrites every plugin in the UI.
 class MinifierCleanupTest extends TestCase
 {
-	private function minify($js)
-	{
-		return \JShrink\Minifier::minify($js);
-	}
 
 	public function testLookAheadBufferIsConsumedExactlyOnce()
 	{
@@ -167,5 +163,9 @@ class MinifierCleanupTest extends TestCase
 			'minifying the same source twice must give the same result');
 		$this->assertEquals($first, $this->minify($js),
 			'and a third time');
+	}
+	private function minify($js)
+	{
+		return \JShrink\Minifier::minify($js);
 	}
 }

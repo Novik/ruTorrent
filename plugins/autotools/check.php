@@ -1,10 +1,10 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
-if( count( $argv ) > 6 )
-	$_SERVER['REMOTE_USER'] = $argv[6];
+if( count( $argv ) > 6 ) {
+	$_SERVER['REMOTE_USER'] = $argv[6]; }
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
@@ -39,21 +39,21 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 			//------------------------------------------------------------------------------
 			if( $rel_path != '' )
 			{
-				if( $rel_path == './' ) $rel_path = '';
+				if( $rel_path == './' ) { $rel_path = ''; }
 				$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
-				if($at->addLabel && ($label!=''))
-	        			$dest_path.=FileUtil::addslash($label);
-		        	if($at->addName && ($name!=''))
-					$dest_path.=FileUtil::addslash($name);
+				if($at->addLabel && ($label!='')) {
+	        			$dest_path.=FileUtil::addslash($label); }
+		        	if($at->addName && ($name!='')) {
+					$dest_path.=FileUtil::addslash($name); }
 			}
 		}
 	}
 }
 
-if( $is_multy )
-	$sub_dir = rtAddTailSlash( $base_name );	// $base_file - is a directory
-else
-	$sub_dir = '';					// $base_file - is really a file
+if( $is_multy ) {
+	$sub_dir = rtAddTailSlash( $base_name ); }	// $base_file - is a directory
+else {
+	$sub_dir = ''; }					// $base_file - is really a file
 $dest_path.=$sub_dir;
 
 // rtorrent applies this script's answer as d.set_directory_base and only then
@@ -69,12 +69,12 @@ $dest_path.=$sub_dir;
 $source_path = $base_path.$sub_dir;
 if( $dest_path != $source_path )
 {
-	$files = $is_multy ? rtScanFiles( $source_path, '/.*/' ) : array( $base_name );
+	$files = $is_multy ? rtScanFiles( $source_path, '/.*/' ) : [ $base_name ];
 	// The move follows links, so the destination has to stay inside the top
 	// directory once they are followed, not only as the settings wrote it.
 	if( !rTorrent::isInsideTopDirectory( $dest_path ) ||
-		$at->skipsMove( $files ) || rtTakenDestination( $files, $dest_path ) != '' )
-		$dest_path = $source_path;
+		$at->skipsMove( $files ) || rtTakenDestination( $files, $dest_path ) != '' ) {
+		$dest_path = $source_path; }
 }
 
 echo $dest_path;

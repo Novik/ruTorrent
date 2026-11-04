@@ -14,11 +14,11 @@ $currentUseWebsiteIPv6 = isset($useWebsiteIPv6) ? $useWebsiteIPv6 : "portchecker
 
 $currentFailoverProvidersIPv4 = isset($failoverProvidersIPv4)
 	? $failoverProvidersIPv4
-	: array("portchecker", "globalping");
+	: ["portchecker", "globalping"];
 
 $currentFailoverProvidersIPv6 = isset($failoverProvidersIPv6)
 	? $failoverProvidersIPv6
-	: array("globalping");
+	: ["globalping"];
 
 /**
  * Gets the public IP address (IPv4 or IPv6) from ipify.org
@@ -107,20 +107,20 @@ function get_and_check_ip($ip_version, $use_website, $rtorrent_ip, $rtorrent_por
 				$checkPortProviders[$provider]["function"],
 				$ip_to_check,
 				$rtorrent_port,
-				$providerTimeout
+				$providerTimeout,
 			);
 
 			if ($status === 1 || $status === 2) {
 				return [
 					"ip" => $ip_to_check,
-					"status" => $status
+					"status" => $status,
 				];
 			}
 		}
 
 		return [
 			"ip" => $ip_to_check,
-			"status" => 0
+			"status" => 0,
 		];
 	}
 
@@ -134,9 +134,9 @@ $ip_glob = rTorrentSettings::get()->ip;
 if (isset($_REQUEST['setport'])) {
 	$newport = (int)$_REQUEST['setport'];
 	if ($newport >= 1 && $newport <= 65535) {
-		$sreq = new rXMLRPCRequest(new rXMLRPCCommand("network.listen.port.set", array("", $newport)));
-		if ($sreq->success())
-			$port = $newport;
+		$sreq = new rXMLRPCRequest(new rXMLRPCCommand("network.listen.port.set", ["", $newport]));
+		if ($sreq->success()) {
+			$port = $newport; }
 	}
 }
 

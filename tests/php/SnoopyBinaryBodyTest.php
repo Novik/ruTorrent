@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
 function binaryBodyAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 // A peer that reads whatever arrives rather than exactly as many bytes as the
@@ -45,8 +45,8 @@ fclose($socket);
 fclose($server);
 echo json_encode(array('declared' => $length, 'body' => base64_encode($body)));
 PHP;
-    $process = proc_open(array(PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer),
-        array(0 => array('file', '/dev/null', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-r', $peer],
+        [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     binaryBodyAssert(is_resource($process), 'The loopback peer starts');
     try {
         stream_set_timeout($pipes[1], 20);
@@ -83,10 +83,10 @@ PHP;
         $request = json_decode($capture, true);
         binaryBodyAssert(is_array($request) && isset($request['declared'], $request['body']),
             'The peer reports what it received');
-        return array('declared' => $request['declared'], 'received' => base64_decode($request['body']),
-            'status' => $client->status, 'error' => $client->error);
+        return ['declared' => $request['declared'], 'received' => base64_decode($request['body']),
+            'status' => $client->status, 'error' => $client->error];
     } finally {
-        foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
         if (is_resource($process)) {
             proc_terminate($process);
             proc_close($process);
@@ -99,27 +99,27 @@ PHP;
 // does not have is reported rather than skipped silently.
 function binaryBodyLocales()
 {
-    $found = array();
-    foreach (array('C', 'C.UTF-8', 'C.utf8', 'POSIX', 'en_US.UTF-8', 'en_US.utf8') as $name) {
+    $found = [];
+    foreach (['C', 'C.UTF-8', 'C.utf8', 'POSIX', 'en_US.UTF-8', 'en_US.utf8'] as $name) {
         $previous = setlocale(LC_CTYPE, '0');
-        if (setlocale(LC_CTYPE, $name) !== false) $found[$name] = true;
+        if (setlocale(LC_CTYPE, $name) !== false) { $found[$name] = true; }
         setlocale(LC_CTYPE, $previous);
     }
     return array_keys($found);
 }
 
-$tests = array(
+$tests = [
     // A request body is bytes. The socket transport writes them to the socket
     // itself; the curl transport passes them to another program, and what a
     // byte means on the way there depends on LC_CTYPE. The peer's count is
     // the end condition: both transports must deliver as many bytes as the
     // request declared, and the same ones.
     'both transports deliver a binary body whole in every installed locale' => function () {
-        $bodies = array(
+        $bodies = [
             'a sequence that is no character in any locale' => "name=\xc3\xa9\x80\xfe\xff",
             'every byte from 0x80 up' => 'name=' . implode('', array_map('chr', range(0x80, 0xff))),
             'plain ascii' => 'plain=body&value=0',
-        );
+        ];
         $locales = binaryBodyLocales();
         binaryBodyAssert(count($locales) > 0, 'At least one locale is installed');
         echo '# locales exercised: ', implode(', ', $locales), "\n";
@@ -128,8 +128,8 @@ $tests = array(
             foreach ($locales as $locale) {
                 binaryBodyAssert(setlocale(LC_CTYPE, $locale) !== false, 'LC_CTYPE is set to ' . $locale);
                 foreach ($bodies as $label => $body) {
-                    $sent = array();
-                    foreach (array(false => 'socket', true => 'curl') as $curl => $transport) {
+                    $sent = [];
+                    foreach ([false => 'socket', true => 'curl'] as $curl => $transport) {
                         $result = binaryBodyRequest($curl, $body);
                         $where = $transport . ' under ' . $locale . ' for ' . $label;
                         binaryBodyAssert($result['declared'] === strlen($body),
@@ -160,8 +160,8 @@ $tests = array(
         $result = binaryBodyRequest(true, "secret=\xc3\xa9\x80\xfe\xff&password=s3cret");
         binaryBodyAssert(strlen($result['received']) === $result['declared'],
             'The request completes with the body it declared');
-        $after = array_diff(glob($directory . 'rutorrent-*'), $before === false ? array() : $before);
-        binaryBodyAssert($after === array(),
+        $after = array_diff(glob($directory . 'rutorrent-*'), $before === false ? [] : $before);
+        binaryBodyAssert($after === [],
             'No temporary file outlives the request: ' . implode(', ', $after));
     },
     // What the body is handed over as, observed from the other side: a
@@ -183,8 +183,8 @@ done
 exec curl "$@"
 
 SH;
-        $script = str_replace(array('{ARGV}', '{MODES}'),
-            array(escapeshellarg($record . '.argv'), escapeshellarg($record)), $template);
+        $script = str_replace(['{ARGV}', '{MODES}'],
+            [escapeshellarg($record . '.argv'), escapeshellarg($record)], $template);
         binaryBodyAssert(file_put_contents($wrapper, $script) === strlen($script), 'The wrapper is written');
         binaryBodyAssert(chmod($wrapper, 0700), 'The wrapper is executable');
         $previous = isset($GLOBALS['pathToExternals']['curl']) ? $GLOBALS['pathToExternals']['curl'] : null;
@@ -194,22 +194,22 @@ SH;
             $result = binaryBodyRequest(true, $body);
             binaryBodyAssert($result['received'] === $body, 'The body reaches the peer whole');
             $arguments = file_exists($record . '.argv')
-                ? explode("\n", rtrim(file_get_contents($record . '.argv'), "\n")) : array();
+                ? explode("\n", rtrim(file_get_contents($record . '.argv'), "\n")) : [];
             binaryBodyAssert(count($arguments) > 0, 'The wrapper recorded what curl was called with');
-            foreach ($arguments as $argument)
+            foreach ($arguments as $argument) {
                 binaryBodyAssert(strpos($argument, 'password=s3cret') === false,
-                    'No argument carries the body: ' . $argument);
-            $modes = file_exists($record) ? explode("\n", trim(file_get_contents($record))) : array();
-            binaryBodyAssert($modes === array('600'),
+                    'No argument carries the body: ' . $argument); }
+            $modes = file_exists($record) ? explode("\n", trim(file_get_contents($record))) : [];
+            binaryBodyAssert($modes === ['600'],
                 'The body file is readable by its owner only: ' . implode(', ', $modes));
         } finally {
-            if ($previous === null) unset($GLOBALS['pathToExternals']['curl']);
-            else $GLOBALS['pathToExternals']['curl'] = $previous;
-            foreach (array($wrapper, $record, $record . '.argv') as $path)
-                if (file_exists($path)) unlink($path);
+            if ($previous === null) { unset($GLOBALS['pathToExternals']['curl']); }
+            else { $GLOBALS['pathToExternals']['curl'] = $previous; }
+            foreach ([$wrapper, $record, $record . '.argv'] as $path) {
+                if (file_exists($path)) { unlink($path); } }
         }
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

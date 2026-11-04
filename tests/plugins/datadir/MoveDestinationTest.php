@@ -31,8 +31,8 @@ class MoveDestinationTest extends TestCase
 		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/datadir/util_rt.php';
 		$target = $this->tree . '/plugins/datadir/util_rt.php';
 		copy($source, $target);
-		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
-			throw new Exception('could not copy util_rt.php');
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target)) {
+			throw new Exception('could not copy util_rt.php'); }
 
 		// Everything below this file's own boundary: the log sink, and the
 		// large-file helpers it asks about the filesystem through.
@@ -60,34 +60,10 @@ class MoveDestinationTest extends TestCase
 
 	public function tearDown()
 	{
-		if ($this->cwd !== false)
-			chdir($this->cwd);
+		if ($this->cwd !== false) {
+			chdir($this->cwd); }
 		$this->wipe();
 	}
-
-	private function wipe()
-	{
-		if (!is_dir($this->tree))
-			return;
-		$items = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
-			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item)
-			$item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
-		@rmdir($this->tree);
-	}
-
-	// -- helpers ------------------------------------------------------------
-
-	private function file($path, $content)
-	{
-		@mkdir(dirname($path), 0777, true);
-		file_put_contents($path, $content);
-		return $path;
-	}
-
-	private function src() { return $this->tree . '/src'; }
-	private function dst() { return $this->tree . '/dst'; }
 
 	// -- what must keep working ---------------------------------------------
 
@@ -97,7 +73,7 @@ class MoveDestinationTest extends TestCase
 		$this->file($this->src() . '/sub/b.bin', 'BBB');
 		@mkdir($this->dst(), 0777, true);
 
-		$ok = rtOpFiles(array('a.bin', 'sub/b.bin'), $this->src(), $this->dst(), 'Move');
+		$ok = rtOpFiles(['a.bin', 'sub/b.bin'], $this->src(), $this->dst(), 'Move');
 
 		$this->assertTrue($ok === true, 'the move succeeds');
 		$this->assertEquals('AAA', @file_get_contents($this->dst() . '/a.bin'),
@@ -125,7 +101,7 @@ class MoveDestinationTest extends TestCase
 		$locale = setlocale(LC_CTYPE, '0');
 		setlocale(LC_CTYPE, 'C');
 		try {
-			$ok = rtOpFiles(array('a.bin', 'sub/b.bin'), $src, $destination . '/', 'Move');
+			$ok = rtOpFiles(['a.bin', 'sub/b.bin'], $src, $destination . '/', 'Move');
 		} finally {
 			setlocale(LC_CTYPE, $locale);
 		}
@@ -144,7 +120,7 @@ class MoveDestinationTest extends TestCase
 		$this->file($this->src() . '/readme.txt', 'the download being moved');
 		$bystander = $this->file($this->dst() . '/readme.txt', 'someone else\'s file');
 
-		$ok = rtOpFiles(array('readme.txt'), $this->src(), $this->dst(), 'Move');
+		$ok = rtOpFiles(['readme.txt'], $this->src(), $this->dst(), 'Move');
 
 		$this->assertTrue($ok === false, 'the move is refused');
 		$this->assertEquals('someone else\'s file', file_get_contents($bystander),
@@ -160,7 +136,7 @@ class MoveDestinationTest extends TestCase
 		@mkdir($this->dst() . '/thing', 0777, true);
 		$inside = $this->file($this->dst() . '/thing/kept.txt', 'kept');
 
-		$ok = rtOpFiles(array('thing'), $this->src(), $this->dst(), 'Move');
+		$ok = rtOpFiles(['thing'], $this->src(), $this->dst(), 'Move');
 
 		$this->assertTrue($ok === false, 'a directory in the way refuses the move');
 		$this->assertTrue(is_file($inside), 'and what is inside it is still there');
@@ -173,7 +149,7 @@ class MoveDestinationTest extends TestCase
 		@mkdir($this->dst(), 0777, true);
 		@symlink($target, $this->dst() . '/link');
 
-		$ok = rtOpFiles(array('link'), $this->src(), $this->dst(), 'Move');
+		$ok = rtOpFiles(['link'], $this->src(), $this->dst(), 'Move');
 
 		$this->assertTrue($ok === false, 'a symlink in the way refuses the move');
 		$this->assertEquals('must survive', file_get_contents($target),
@@ -189,9 +165,9 @@ class MoveDestinationTest extends TestCase
 		$this->file($this->src() . '/x', 'new');
 		$bystander = $this->file($this->dst() . '/x', 'old');
 
-		foreach(array('Copy', 'HardLink', 'SoftLink', 'Move') as $op)
+		foreach(['Copy', 'HardLink', 'SoftLink', 'Move'] as $op)
 		{
-			$ok = rtOpFiles(array('x'), $this->src(), $this->dst(), $op);
+			$ok = rtOpFiles(['x'], $this->src(), $this->dst(), $op);
 			$this->assertTrue($ok === false, $op.' is refused');
 			$this->assertEquals('old', file_get_contents($bystander),
 				'the file already there survives '.$op);
@@ -207,10 +183,34 @@ class MoveDestinationTest extends TestCase
 		$this->file($this->src() . '/2.bin', 'two');
 		$this->file($this->dst() . '/1.bin', 'in the way');
 
-		$ok = rtOpFiles(array('1.bin', '2.bin'), $this->src(), $this->dst(), 'Move');
+		$ok = rtOpFiles(['1.bin', '2.bin'], $this->src(), $this->dst(), 'Move');
 
 		$this->assertTrue($ok === false, 'the move is refused');
 		$this->assertTrue(!is_file($this->dst() . '/2.bin'),
 			'the file after the refusal is not moved');
 	}
+
+	private function wipe()
+	{
+		if (!is_dir($this->tree)) {
+			return; }
+		$items = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
+			RecursiveIteratorIterator::CHILD_FIRST);
+		foreach ($items as $item) {
+			$item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
+		@rmdir($this->tree);
+	}
+
+	// -- helpers ------------------------------------------------------------
+
+	private function file($path, $content)
+	{
+		@mkdir(dirname($path), 0777, true);
+		file_put_contents($path, $content);
+		return $path;
+	}
+
+	private function src() { return $this->tree . '/src'; }
+	private function dst() { return $this->tree . '/dst'; }
 }

@@ -15,7 +15,7 @@ class TaskIdTest extends TestCase
 
 	public function testEncodesEverythingElse()
 	{
-		foreach (array('../../etc', '/etc/passwd', '.', '..', 'a/b', "a\0b") as $value) {
+		foreach (['../../etc', '/etc/passwd', '.', '..', 'a/b', "a\0b"] as $value) {
 			$formatted = rTask::formatId($value);
 			$this->assertEquals(false, strpos($formatted, '/') !== false,
 				'No separator survives in '.json_encode($formatted));
@@ -27,7 +27,7 @@ class TaskIdTest extends TestCase
 	public function testPathOfAnyIdStaysUnderTheTasksDirectory()
 	{
 		$tasks = FileUtil::getSettingsPath().'/tasks/';
-		foreach (array(uniqid(time(), true), '../../etc', '/etc/passwd', '..') as $value) {
+		foreach ([uniqid(time(), true), '../../etc', '/etc/passwd', '..'] as $value) {
 			$path = rTask::formatPath($value);
 			$this->assertEquals($tasks, substr($path, 0, strlen($tasks)));
 			$this->assertEquals(false, strpos(substr($path, strlen($tasks)), '/') !== false,

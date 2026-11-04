@@ -22,8 +22,8 @@ class RevolutionTTAccount extends commonAccount
 
 	protected function unconfigured()
 	{
-		if($this->url!=='')
-			return('');
+		if($this->url!=='') {
+			return(''); }
 		return(self::unconfiguredOrigin('revolutionTTOrigin',$this->originError));
 	}
 

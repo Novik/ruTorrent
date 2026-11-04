@@ -1,8 +1,8 @@
 <?php
 class xBiTEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>100 );
-	public $categories = array( 'all'=>'' );
+	public $defaults = [ "public"=>true, "page_size"=>100 ];
+	public $categories = [ 'all'=>'' ];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -21,8 +21,8 @@ class xBiTEngine extends commonEngine
 					$item["time"] = strtotime($torrent->DISCOVERED." +0200");
 					$ret[$torrent->MAGNET] = $item;
 					$added++;
-					if($added >= $limit)
-						return;
+					if($added >= $limit) {
+						return; }
             			}
         		}
 		}

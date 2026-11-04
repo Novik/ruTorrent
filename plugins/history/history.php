@@ -10,22 +10,22 @@ class rHistoryData
 {
 	public $hash = 'history_data.dat';
 	public $modified = false;
-	public $data = array();
+	public $data = [];
 
 	// What this process itself changed since it loaded the file. Kept apart
 	// from $data so that merge() can replay exactly these changes on top of a
 	// file another process has moved on in the meantime. Deliberately left out
 	// of __sleep(): the stored format stays byte for byte what it always was.
-	protected $ownAdditions = array();
-	protected $ownRemovals = array();
+	protected $ownAdditions = [];
+	protected $ownRemovals = [];
 	protected $limit = 0;
 
 	public function __sleep()
 	{
-		return(array('hash', 'modified', 'data'));
+		return(['hash', 'modified', 'data']);
 	}
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$ar = new rHistoryData();
@@ -46,27 +46,6 @@ class rHistoryData
 		}
 		$this->store();
 	}
-	static protected function sortByActionTime( $a, $b )
-	{
-		return($b["action_time"]-$a["action_time"]);
-	}
-	// Newest first, then capped: unchanged from what add() always did, lifted
-	// out so merge() orders a reconciled set exactly the same way.
-	static protected function ordered( $data, $limit )
-	{
-		uasort($data, array(__CLASS__,"sortByActionTime"));
-		$count = count($data);
-		if($limit<3)
-			$limit = 500;
-		if($count>$limit)
-		{
-			$keys = array_keys($data);
-			$values = array_values($data);
-			$offset = $limit / 2;
-			$data = array_combine(array_splice($keys,0,$offset),array_splice($values,0,$offset));
-		}
-		return($data);
-	}
 
 	// Reconciles this process's own changes with a file that another one has
 	// written since load(). Every history event is recorded by its own
@@ -85,11 +64,11 @@ class rHistoryData
 	// back from the dead.
 	public function merge( $instance, $arg )
 	{
-		$data = (is_object($instance) && is_array($instance->data)) ? $instance->data : array();
-		foreach($this->ownAdditions as $key => $record)
-			$data[$key] = $record;
-		foreach($this->ownRemovals as $key => $ignored)
-			unset($data[$key]);
+		$data = (is_object($instance) && is_array($instance->data)) ? $instance->data : [];
+		foreach($this->ownAdditions as $key => $record) {
+			$data[$key] = $record; }
+		foreach($this->ownRemovals as $key => $ignored) {
+			unset($data[$key]); }
 		// Only a recorded event knows the configured cap; a delete carries no
 		// limit and must not fall back to the default one, which would trim a
 		// longer history the user deliberately asked for.
@@ -109,7 +88,7 @@ class rHistoryData
 	// The name is the whole test on purpose. An entry whose name merely ends
 	// in .meta, or a hash-named file with any other extension, is a real
 	// download and stays in the log.
-	static public function isMagnetPlaceholder( $name )
+	public static function isMagnetPlaceholder( $name )
 	{
 		return(preg_match('/^[0-9A-Fa-f]{40}\.meta$/', (string) $name) === 1);
 	}
@@ -127,13 +106,34 @@ class rHistoryData
 	}
 	public function get( $mark )
 	{
-		$ret = array();
-		foreach( $this->data as $hash=>$e )
-			if( $e["action_time"]>$mark )
-				$ret[] = $e;
-			else
-				break;
-		return(array( "items"=>$ret, "mode"=>($mark==0) ));
+		$ret = [];
+		foreach( $this->data as $hash=>$e ) {
+			if( $e["action_time"]>$mark ) {
+				$ret[] = $e; }
+			else {
+				break; } }
+		return([ "items"=>$ret, "mode"=>($mark==0) ]);
+	}
+	protected static function sortByActionTime( $a, $b )
+	{
+		return($b["action_time"]-$a["action_time"]);
+	}
+	// Newest first, then capped: unchanged from what add() always did, lifted
+	// out so merge() orders a reconciled set exactly the same way.
+	protected static function ordered( $data, $limit )
+	{
+		uasort($data, [__CLASS__,"sortByActionTime"]);
+		$count = count($data);
+		if($limit<3) {
+			$limit = 500; }
+		if($count>$limit)
+		{
+			$keys = array_keys($data);
+			$values = array_values($data);
+			$offset = $limit / 2;
+			$data = array_combine(array_splice($keys,0,$offset),array_splice($values,0,$offset));
+		}
+		return($data);
 	}
 }
 
@@ -141,8 +141,8 @@ class rHistory
 {
 	public $hash = "history.dat";
 	public $modified = false;
-	public $log = array
-	(
+	public $log = 
+	[
 		"addition"=>1,
 		"finish"=>1,
 		"deletion"=>1,
@@ -154,9 +154,9 @@ class rHistory
 		"pushbullet_finish"=>0,
 		"pushbullet_deletion"=>0,
 		"pushbullet_key"=>'',
-	);
+	];
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$ar = new rHistory();
@@ -185,8 +185,8 @@ class rHistory
 	}
         public function set()
 	{
-		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		if(!isset($HTTP_RAW_POST_DATA)) {
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
@@ -216,42 +216,91 @@ class rHistory
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
 				User::getUser().'}';
 		}
-		else
-			$addCmd = getCmd('cat=');
-		if($this->log["finish"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_finish"]))
+		else {
+			$addCmd = getCmd('cat='); }
+		if($this->log["finish"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_finish"])) {
 			$finCmd = getCmd('execute.nothrow').'={sh,-c,\"$0\" \"$@\" </dev/null >/dev/null 2>&1 &,'.Utility::getPHP().','.$rootPath.'/plugins/history/update.php'.',2,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
-				User::getUser().'}';
-		else
-			$finCmd = getCmd('cat=');
-		if($this->log["deletion"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_deletion"]))
+				User::getUser().'}'; }
+		else {
+			$finCmd = getCmd('cat='); }
+		if($this->log["deletion"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_deletion"])) {
 			$delCmd = getCmd('execute.nothrow').'={sh,-c,\"$0\" \"$@\" </dev/null >/dev/null 2>&1 &,'.Utility::getPHP().','.$rootPath.'/plugins/history/update.php'.',3,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
-				User::getUser().'}';
-		else
-			$delCmd = getCmd('cat=');
-		$req = new rXMLRPCRequest( array(
-			rTorrentSettings::get()->getOnInsertCommand( array('thistory'.User::getUser(), $addCmd ) ),
-			rTorrentSettings::get()->getOnFinishedCommand( array('thistory'.User::getUser(), $finCmd ) ),
-			rTorrentSettings::get()->getOnEraseCommand( array('thistory'.User::getUser(), $delCmd ) ),
-			));
+				User::getUser().'}'; }
+		else {
+			$delCmd = getCmd('cat='); }
+		$req = new rXMLRPCRequest( [
+			rTorrentSettings::get()->getOnInsertCommand( ['thistory'.User::getUser(), $addCmd ] ),
+			rTorrentSettings::get()->getOnFinishedCommand( ['thistory'.User::getUser(), $finCmd ] ),
+			rTorrentSettings::get()->getOnEraseCommand( ['thistory'.User::getUser(), $delCmd ] ),
+			]);
 		return($req->success());
 	}
 
-	static protected function bytes( $bt )
+	public function pushBulletNotify( $data )
 	{
-		$a = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
+		global $pushBulletNotifications, $pushBulletEndpoint;
+		$actions = 
+		[
+			1 => 'addition',
+			2 => 'finish',
+			3 => 'deletion',
+		];
+		$section = $pushBulletNotifications[$actions[$data['action']]];
+		$fields = 
+		[
+			'{name}', '{label}', '{size}', '{downloaded}', '{uploaded}', '{ratio}',
+			'{creation}', '{added}', '{finished}', '{tracker}',
+		];
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			$tz = date_default_timezone_get();
+			date_default_timezone_set(rTorrentSettings::get()->tz);
+		}
+		$values = 
+		[
+			$data['name'],
+			$data['label'],
+			self::bytes($data['size']),
+			self::bytes($data['downloaded']),
+			self::bytes($data['uploaded']),
+			$data['ratio'],
+			TimeFormat::strftime('%c',$data['creation']),
+			TimeFormat::strftime('%c',$data['added']),
+			TimeFormat::strftime('%c',$data['finished']),
+			$data['tracker'],
+		];
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			date_default_timezone_set($tz);
+		}
+		$title = str_replace( $fields, $values, $section['title'] );
+		$body = str_replace( $fields, $values, $section['body'] );
+		$client = new Snoopy();
+		$client->user = $this->log["pushbullet_key"];
+		$client->fetch($pushBulletEndpoint,"POST","application/json", JSON::safeEncode(
+		[
+			'type'=>'note',
+			'title'=>$title,
+			'body'=>$body,
+		]));
+	}
+
+	protected static function bytes( $bt )
+	{
+		$a = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
 		$ndx = 0;
-		if($bt == 0)
-			$ndx = 1;
+		if($bt == 0) {
+			$ndx = 1; }
 		else
 		{
 			if($bt < 1024)
@@ -269,54 +318,5 @@ class rHistory
 			}
 		}
 		return((floor($bt*10)/10)." ".$a[$ndx]);
-	}
-
-	public function pushBulletNotify( $data )
-	{
-		global $pushBulletNotifications, $pushBulletEndpoint;
-		$actions = array
-		(
-			1 => 'addition',
-			2 => 'finish',
-			3 => 'deletion',
-		);
-		$section = $pushBulletNotifications[$actions[$data['action']]];
-		$fields = array
-		(
-			'{name}', '{label}', '{size}', '{downloaded}', '{uploaded}', '{ratio}',
-			'{creation}', '{added}', '{finished}', '{tracker}',
-		);
-		if( !is_null(rTorrentSettings::get()->tz) )
-		{
-			$tz = date_default_timezone_get();
-			date_default_timezone_set(rTorrentSettings::get()->tz);
-		}
-		$values = array
-		(
-			$data['name'],
-			$data['label'],
-			self::bytes($data['size']),
-			self::bytes($data['downloaded']),
-			self::bytes($data['uploaded']),
-			$data['ratio'],
-			TimeFormat::strftime('%c',$data['creation']),
-			TimeFormat::strftime('%c',$data['added']),
-			TimeFormat::strftime('%c',$data['finished']),
-			$data['tracker'],
-		);
-		if( !is_null(rTorrentSettings::get()->tz) )
-		{
-			date_default_timezone_set($tz);
-		}
-		$title = str_replace( $fields, $values, $section['title'] );
-		$body = str_replace( $fields, $values, $section['body'] );
-		$client = new Snoopy();
-		$client->user = $this->log["pushbullet_key"];
-		$client->fetch($pushBulletEndpoint,"POST","application/json", JSON::safeEncode(array
-		(
-			'type'=>'note',
-			'title'=>$title,
-			'body'=>$body,
-		)));
 	}
 }

@@ -10,10 +10,10 @@ $recaptcha_solving_enabled = false;
 //For using recaptcha solver plugin with cloudscaper. Needed fields in https://github.com/VeNoMouS/cloudscraper
 //Need python library: python_anticaptcha
 
-$cloudscraper_recaptcha = array
-(
+$cloudscraper_recaptcha = 
+[
 	"provider" => "",
 	"api_key" => "",
 	"username" => "",
-	"password" => ""
-);
+	"password" => "",
+];

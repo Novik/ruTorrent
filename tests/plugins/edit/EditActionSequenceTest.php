@@ -12,6 +12,283 @@ class EditActionSequenceTest extends TestCase
 {
 	use TorrentSequenceFixtures;
 
+	// ---- trackers --------------------------------------------------------
+
+	/**
+	 * More than one tracker: announce holds the first and announce-list holds
+	 * the groups. The list the torrent came with is cleared first, so what is
+	 * written is the new list and nothing of the old one.
+	 */
+	public function testSettingSeveralTrackersReplacesBothKeys()
+	{
+		$torrent = new Torrent($this->announceListTorrent());
+		$this->replay($torrent, ['announce_list' => [
+			['http://new.test/announce'],
+			['udp://new.test/announce'],
+		]]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://new.test/announce'),
+			'announce-list' => $this->bannounceList([
+				['http://new.test/announce'],
+				['udp://new.test/announce'],
+			]),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'info'          => $this->singleFileInfo(),
+		]);
+		$this->assertTrue($written === $expected, 'both tracker keys are replaced wholesale');
+
+		$reread = new Torrent($written);
+		$this->assertTrue($reread->announce() === 'http://new.test/announce', 'announce reads back');
+		$this->assertTrue($reread->announce_list() === [
+				['http://new.test/announce'], ['udp://new.test/announce']],
+			'announce-list reads back');
+	}
+
+	/**
+	 * A single tracker: the script sets announce and deliberately does not set
+	 * announce-list, so a torrent that had one comes back without it.
+	 */
+	public function testASingleTrackerLeavesTheTorrentWithNoAnnounceList()
+	{
+		$torrent = new Torrent($this->announceListTorrent());
+		$this->replay($torrent, ['announce_list' => [['http://only.test/announce']]]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://only.test/announce'),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'info'          => $this->singleFileInfo(),
+		]);
+		$this->assertTrue($written === $expected, 'the announce-list key is gone from the written torrent');
+
+		$reread = new Torrent($written);
+		$this->assertTrue($reread->announce_list() === null, 'and it reads back as unset');
+	}
+
+	/**
+	 * An empty tracker box clears both keys and puts neither back. A torrent
+	 * with no announce at all is what rtorrent is then handed.
+	 */
+	public function testAnEmptyTrackerListClearsBothKeys()
+	{
+		$torrent = new Torrent($this->announceListTorrent());
+		$this->replay($torrent, ['announce_list' => []]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'info'          => $this->singleFileInfo(),
+		]);
+		$this->assertTrue($written === $expected, 'neither tracker key is written');
+	}
+
+	// ---- the private flag ------------------------------------------------
+
+	/** Marking a public torrent private adds info/private, which changes its hash. */
+	public function testMarkingATorrentPrivateWritesTheFlagIntoInfo()
+	{
+		$torrent = new Torrent($this->announceOnlyTorrent());
+		$was = $torrent->hash_info();
+		$this->assertTrue($torrent->is_private() === false, 'the fixture is public');
+
+		$this->replay($torrent, ['private' => true]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://one.test/announce'),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'info'          => $this->singleFileInfo(true),
+		]);
+		$this->assertTrue($written === $expected, 'info/private is written as 1');
+		$this->assertTrue($torrent->is_private() === true, 'and the getter agrees');
+		$this->assertTrue($torrent->hash_info() !== $was, 'the info hash moved, as it must');
+		$this->assertTrue($torrent->hash_info() === strtoupper(sha1($this->singleFileInfo(true))),
+			'and it is the hash of the info dictionary that was written');
+	}
+
+	/**
+	 * Clearing the flag writes info/private as 0 rather than dropping the key:
+	 * the setter is `$private ? 1 : 0`, and the difference is a different info
+	 * hash, so it has to stay exactly as it is.
+	 */
+	public function testUnmarkingATorrentWritesPrivateAsZeroRatherThanDroppingIt()
+	{
+		$torrent = new Torrent($this->privateMultiFileTorrent());
+		$this->assertTrue($torrent->is_private() === true, 'the fixture is private');
+
+		$this->replay($torrent, ['private' => false]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://one.test/announce'),
+			'comment'       => $this->bstr('from the tracker'),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'encoding'      => $this->bstr('UTF-8'),
+			'info'          => $this->multiFileInfo(false),
+		]);
+		$this->assertTrue($written === $expected, 'info/private is written as 0 and the files are untouched');
+		$this->assertTrue($torrent->is_private() === false, 'the getter reads it as public');
+	}
+
+	// ---- the comment -----------------------------------------------------
+
+	public function testSettingACommentReplacesTheOne()
+	{
+		$torrent = new Torrent($this->privateMultiFileTorrent());
+		$this->replay($torrent, ['comment' => "  edited by the owner \n"]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://one.test/announce'),
+			'comment'       => $this->bstr('edited by the owner'),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'encoding'      => $this->bstr('UTF-8'),
+			'info'          => $this->multiFileInfo(true),
+		]);
+		$this->assertTrue($written === $expected, 'the comment is trimmed and written');
+	}
+
+	/** A comment box left blank drops the key. */
+	public function testAnEmptyCommentDropsTheKey()
+	{
+		$torrent = new Torrent($this->privateMultiFileTorrent());
+		$this->replay($torrent, ['comment' => "   "]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'      => $this->bstr('http://one.test/announce'),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
+			'encoding'      => $this->bstr('UTF-8'),
+			'info'          => $this->multiFileInfo(true),
+		]);
+		$this->assertTrue($written === $expected, 'the comment key is not written');
+
+		$reread = new Torrent($written);
+		$this->assertTrue($reread->comment() === null, 'and it reads back as unset');
+	}
+
+	// ---- what rtorrent added ---------------------------------------------
+
+	/**
+	 * Every edit ends by dropping the 'rtorrent' key, so that rtorrent takes
+	 * the reloaded torrent as a new one. The resume data is left alone: the
+	 * script passes $isNew = false to sendTorrent(), which is what stops it
+	 * being dropped as well.
+	 */
+	public function testAnEditOfASessionTorrentDropsRtorrentAndKeepsResumeData()
+	{
+		$torrent = new Torrent($this->sessionTorrent());
+		$this->assertTrue(isset($torrent->rtorrent), 'the fixture carries the key rtorrent added');
+
+		$this->replay($torrent, ['comment' => 'edited']);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'          => $this->bstr('http://one.test/announce'),
+			'announce-list'     => $this->bannounceList([
+				['http://one.test/announce'],
+				['udp://two.test/announce'],
+			]),
+			'comment'           => $this->bstr('edited'),
+			'created by'        => $this->bstr($this->sourceCreator()),
+			'creation date'     => $this->bint($this->sourceDate()),
+			'info'              => $this->singleFileInfo(),
+			'libtorrent_resume' => $this->resumeDictionary(),
+		]);
+		$this->assertTrue($written === $expected, 'rtorrent is dropped, libtorrent_resume is kept');
+	}
+
+	/**
+	 * All three edits at once, on the torrent rtorrent saved -- the sequence
+	 * as the plugin actually runs it when every box on the form is ticked.
+	 */
+	public function testAllThreeEditsAtOnce()
+	{
+		$torrent = new Torrent($this->sessionTorrent());
+		$this->replay($torrent, [
+			'private'       => true,
+			'announce_list' => [['http://new.test/announce', 'http://new.test/announce2']],
+			'comment'       => 'all three',
+		]);
+
+		$written = (string)$torrent;
+		$expected = $this->bdict([
+			'announce'          => $this->bstr('http://new.test/announce'),
+			'announce-list'     => $this->bannounceList([
+				['http://new.test/announce', 'http://new.test/announce2'],
+			]),
+			'comment'           => $this->bstr('all three'),
+			'created by'        => $this->bstr($this->sourceCreator()),
+			'creation date'     => $this->bint($this->sourceDate()),
+			'info'              => $this->singleFileInfo(true),
+			'libtorrent_resume' => $this->resumeDictionary(),
+		]);
+		$this->assertTrue($written === $expected, 'the three edits land together and nothing else moves');
+
+		$reread = new Torrent($written);
+		$this->assertTrue($reread->is_private() === true, 'private reads back');
+		$this->assertTrue($reread->comment() === 'all three', 'the comment reads back');
+		$this->assertTrue($reread->announce() === 'http://new.test/announce', 'announce reads back');
+		$this->assertTrue(!isset($reread->rtorrent), 'and rtorrent is gone');
+	}
+
+	// ---- the file's own author and date ----------------------------------
+
+	/**
+	 * An edit changes trackers, a comment or the private flag. It does not
+	 * make ruTorrent the author of the file, and it does not move the day the
+	 * release was created -- both of which travel out to the "Created On"
+	 * column and to the history plugin as fact.
+	 *
+	 * Torrent setters preserve both keys while the actual edit block changes
+	 * the requested fields. These assertions identify lost authorship directly.
+	 */
+	public function testAnEditKeepsTheTorrentsOwnAuthorAndCreationDate()
+	{
+		$torrent = new Torrent($this->announceListTorrent());
+		$this->replay($torrent, [
+			'private'       => true,
+			'announce_list' => [['http://new.test/announce']],
+			'comment'       => 'edited',
+		]);
+
+		$this->assertTrue($torrent->meta('created by') === $this->sourceCreator(),
+			'the author the file came with is still the author');
+		$this->assertTrue($torrent->meta('creation date') == $this->sourceDate(),
+			'and the date it came with is still the date');
+	}
+
+	/**
+	 * A torrent that carried neither authorship key must not acquire one
+	 * from this host's clock or this class's name during an edit.
+	 */
+	public function testAnEditInventsNeitherKeyForATorrentThatCarriedNone()
+	{
+		$torrent = new Torrent($this->bdict([
+			'announce' => $this->bstr('http://one.test/announce'),
+			'info'     => $this->singleFileInfo(),
+		]));
+		$this->assertTrue($torrent->errors() === false, 'the fixture parses');
+
+		$this->replay($torrent, ['comment' => 'edited']);
+
+		$expected = $this->bdict([
+			'announce' => $this->bstr('http://one.test/announce'),
+			'comment'  => $this->bstr('edited'),
+			'info'     => $this->singleFileInfo(),
+		]);
+		$this->assertTrue((string)$torrent === $expected, 'neither key is invented');
+	}
+
 	/** Extract all edits, refusing a missing anchor or a truncated sequence. */
 	private static function editSequenceSource()
 	{
@@ -55,13 +332,13 @@ class EditActionSequenceTest extends TestCase
 				"plugins/edit/action.php uses \$torrent after {$endAnchor} and before"
 				. " rTorrent::sendTorrent(); the extracted sequence is no longer the whole edit");
 		}
-		foreach (array('$req', 'rXMLRPC', 'sendTorrent', '$errors') as $beyond) {
+		foreach (['$req', 'rXMLRPC', 'sendTorrent', '$errors'] as $beyond) {
 			if (strpos($cut, $beyond) !== false) {
 				throw new RuntimeException(
 					"the extracted edit sequence ran past its end anchor: it mentions {$beyond}");
 			}
 		}
-		foreach (array('$setPrivate', '$setTrackers', '$setComment') as $flag) {
+		foreach (['$setPrivate', '$setTrackers', '$setComment'] as $flag) {
 			if (strpos($cut, $flag) === false) {
 				throw new RuntimeException(
 					"the extracted edit sequence is incomplete: it never gates on {$flag}");
@@ -84,7 +361,7 @@ class EditActionSequenceTest extends TestCase
 		$setPrivate    = isset($options['private']);
 		$private       = $setPrivate ? $options['private'] : null;
 		$setTrackers   = isset($options['announce_list']);
-		$announce_list = $setTrackers ? $options['announce_list'] : array();
+		$announce_list = $setTrackers ? $options['announce_list'] : [];
 		$trackersCount = 0;
 		foreach ($announce_list as $group) {
 			$trackersCount += count($group);
@@ -93,282 +370,5 @@ class EditActionSequenceTest extends TestCase
 		$comment       = $setComment ? $options['comment'] : null;
 
 		eval(self::editSequenceSource());
-	}
-
-	// ---- trackers --------------------------------------------------------
-
-	/**
-	 * More than one tracker: announce holds the first and announce-list holds
-	 * the groups. The list the torrent came with is cleared first, so what is
-	 * written is the new list and nothing of the old one.
-	 */
-	public function testSettingSeveralTrackersReplacesBothKeys()
-	{
-		$torrent = new Torrent($this->announceListTorrent());
-		$this->replay($torrent, array('announce_list' => array(
-			array('http://new.test/announce'),
-			array('udp://new.test/announce'),
-		)));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://new.test/announce'),
-			'announce-list' => $this->bannounceList(array(
-				array('http://new.test/announce'),
-				array('udp://new.test/announce'),
-			)),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'info'          => $this->singleFileInfo(),
-		));
-		$this->assertTrue($written === $expected, 'both tracker keys are replaced wholesale');
-
-		$reread = new Torrent($written);
-		$this->assertTrue($reread->announce() === 'http://new.test/announce', 'announce reads back');
-		$this->assertTrue($reread->announce_list() === array(
-				array('http://new.test/announce'), array('udp://new.test/announce')),
-			'announce-list reads back');
-	}
-
-	/**
-	 * A single tracker: the script sets announce and deliberately does not set
-	 * announce-list, so a torrent that had one comes back without it.
-	 */
-	public function testASingleTrackerLeavesTheTorrentWithNoAnnounceList()
-	{
-		$torrent = new Torrent($this->announceListTorrent());
-		$this->replay($torrent, array('announce_list' => array(array('http://only.test/announce'))));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://only.test/announce'),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'info'          => $this->singleFileInfo(),
-		));
-		$this->assertTrue($written === $expected, 'the announce-list key is gone from the written torrent');
-
-		$reread = new Torrent($written);
-		$this->assertTrue($reread->announce_list() === null, 'and it reads back as unset');
-	}
-
-	/**
-	 * An empty tracker box clears both keys and puts neither back. A torrent
-	 * with no announce at all is what rtorrent is then handed.
-	 */
-	public function testAnEmptyTrackerListClearsBothKeys()
-	{
-		$torrent = new Torrent($this->announceListTorrent());
-		$this->replay($torrent, array('announce_list' => array()));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'info'          => $this->singleFileInfo(),
-		));
-		$this->assertTrue($written === $expected, 'neither tracker key is written');
-	}
-
-	// ---- the private flag ------------------------------------------------
-
-	/** Marking a public torrent private adds info/private, which changes its hash. */
-	public function testMarkingATorrentPrivateWritesTheFlagIntoInfo()
-	{
-		$torrent = new Torrent($this->announceOnlyTorrent());
-		$was = $torrent->hash_info();
-		$this->assertTrue($torrent->is_private() === false, 'the fixture is public');
-
-		$this->replay($torrent, array('private' => true));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://one.test/announce'),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'info'          => $this->singleFileInfo(true),
-		));
-		$this->assertTrue($written === $expected, 'info/private is written as 1');
-		$this->assertTrue($torrent->is_private() === true, 'and the getter agrees');
-		$this->assertTrue($torrent->hash_info() !== $was, 'the info hash moved, as it must');
-		$this->assertTrue($torrent->hash_info() === strtoupper(sha1($this->singleFileInfo(true))),
-			'and it is the hash of the info dictionary that was written');
-	}
-
-	/**
-	 * Clearing the flag writes info/private as 0 rather than dropping the key:
-	 * the setter is `$private ? 1 : 0`, and the difference is a different info
-	 * hash, so it has to stay exactly as it is.
-	 */
-	public function testUnmarkingATorrentWritesPrivateAsZeroRatherThanDroppingIt()
-	{
-		$torrent = new Torrent($this->privateMultiFileTorrent());
-		$this->assertTrue($torrent->is_private() === true, 'the fixture is private');
-
-		$this->replay($torrent, array('private' => false));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://one.test/announce'),
-			'comment'       => $this->bstr('from the tracker'),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'encoding'      => $this->bstr('UTF-8'),
-			'info'          => $this->multiFileInfo(false),
-		));
-		$this->assertTrue($written === $expected, 'info/private is written as 0 and the files are untouched');
-		$this->assertTrue($torrent->is_private() === false, 'the getter reads it as public');
-	}
-
-	// ---- the comment -----------------------------------------------------
-
-	public function testSettingACommentReplacesTheOne()
-	{
-		$torrent = new Torrent($this->privateMultiFileTorrent());
-		$this->replay($torrent, array('comment' => "  edited by the owner \n"));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://one.test/announce'),
-			'comment'       => $this->bstr('edited by the owner'),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'encoding'      => $this->bstr('UTF-8'),
-			'info'          => $this->multiFileInfo(true),
-		));
-		$this->assertTrue($written === $expected, 'the comment is trimmed and written');
-	}
-
-	/** A comment box left blank drops the key. */
-	public function testAnEmptyCommentDropsTheKey()
-	{
-		$torrent = new Torrent($this->privateMultiFileTorrent());
-		$this->replay($torrent, array('comment' => "   "));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'      => $this->bstr('http://one.test/announce'),
-			'created by'    => $this->bstr($this->sourceCreator()),
-			'creation date' => $this->bint($this->sourceDate()),
-			'encoding'      => $this->bstr('UTF-8'),
-			'info'          => $this->multiFileInfo(true),
-		));
-		$this->assertTrue($written === $expected, 'the comment key is not written');
-
-		$reread = new Torrent($written);
-		$this->assertTrue($reread->comment() === null, 'and it reads back as unset');
-	}
-
-	// ---- what rtorrent added ---------------------------------------------
-
-	/**
-	 * Every edit ends by dropping the 'rtorrent' key, so that rtorrent takes
-	 * the reloaded torrent as a new one. The resume data is left alone: the
-	 * script passes $isNew = false to sendTorrent(), which is what stops it
-	 * being dropped as well.
-	 */
-	public function testAnEditOfASessionTorrentDropsRtorrentAndKeepsResumeData()
-	{
-		$torrent = new Torrent($this->sessionTorrent());
-		$this->assertTrue(isset($torrent->rtorrent), 'the fixture carries the key rtorrent added');
-
-		$this->replay($torrent, array('comment' => 'edited'));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'          => $this->bstr('http://one.test/announce'),
-			'announce-list'     => $this->bannounceList(array(
-				array('http://one.test/announce'),
-				array('udp://two.test/announce'),
-			)),
-			'comment'           => $this->bstr('edited'),
-			'created by'        => $this->bstr($this->sourceCreator()),
-			'creation date'     => $this->bint($this->sourceDate()),
-			'info'              => $this->singleFileInfo(),
-			'libtorrent_resume' => $this->resumeDictionary(),
-		));
-		$this->assertTrue($written === $expected, 'rtorrent is dropped, libtorrent_resume is kept');
-	}
-
-	/**
-	 * All three edits at once, on the torrent rtorrent saved -- the sequence
-	 * as the plugin actually runs it when every box on the form is ticked.
-	 */
-	public function testAllThreeEditsAtOnce()
-	{
-		$torrent = new Torrent($this->sessionTorrent());
-		$this->replay($torrent, array(
-			'private'       => true,
-			'announce_list' => array(array('http://new.test/announce', 'http://new.test/announce2')),
-			'comment'       => 'all three',
-		));
-
-		$written = (string)$torrent;
-		$expected = $this->bdict(array(
-			'announce'          => $this->bstr('http://new.test/announce'),
-			'announce-list'     => $this->bannounceList(array(
-				array('http://new.test/announce', 'http://new.test/announce2'),
-			)),
-			'comment'           => $this->bstr('all three'),
-			'created by'        => $this->bstr($this->sourceCreator()),
-			'creation date'     => $this->bint($this->sourceDate()),
-			'info'              => $this->singleFileInfo(true),
-			'libtorrent_resume' => $this->resumeDictionary(),
-		));
-		$this->assertTrue($written === $expected, 'the three edits land together and nothing else moves');
-
-		$reread = new Torrent($written);
-		$this->assertTrue($reread->is_private() === true, 'private reads back');
-		$this->assertTrue($reread->comment() === 'all three', 'the comment reads back');
-		$this->assertTrue($reread->announce() === 'http://new.test/announce', 'announce reads back');
-		$this->assertTrue(!isset($reread->rtorrent), 'and rtorrent is gone');
-	}
-
-	// ---- the file's own author and date ----------------------------------
-
-	/**
-	 * An edit changes trackers, a comment or the private flag. It does not
-	 * make ruTorrent the author of the file, and it does not move the day the
-	 * release was created -- both of which travel out to the "Created On"
-	 * column and to the history plugin as fact.
-	 *
-	 * Torrent setters preserve both keys while the actual edit block changes
-	 * the requested fields. These assertions identify lost authorship directly.
-	 */
-	public function testAnEditKeepsTheTorrentsOwnAuthorAndCreationDate()
-	{
-		$torrent = new Torrent($this->announceListTorrent());
-		$this->replay($torrent, array(
-			'private'       => true,
-			'announce_list' => array(array('http://new.test/announce')),
-			'comment'       => 'edited',
-		));
-
-		$this->assertTrue($torrent->meta('created by') === $this->sourceCreator(),
-			'the author the file came with is still the author');
-		$this->assertTrue($torrent->meta('creation date') == $this->sourceDate(),
-			'and the date it came with is still the date');
-	}
-
-	/**
-	 * A torrent that carried neither authorship key must not acquire one
-	 * from this host's clock or this class's name during an edit.
-	 */
-	public function testAnEditInventsNeitherKeyForATorrentThatCarriedNone()
-	{
-		$torrent = new Torrent($this->bdict(array(
-			'announce' => $this->bstr('http://one.test/announce'),
-			'info'     => $this->singleFileInfo(),
-		)));
-		$this->assertTrue($torrent->errors() === false, 'the fixture parses');
-
-		$this->replay($torrent, array('comment' => 'edited'));
-
-		$expected = $this->bdict(array(
-			'announce' => $this->bstr('http://one.test/announce'),
-			'comment'  => $this->bstr('edited'),
-			'info'     => $this->singleFileInfo(),
-		));
-		$this->assertTrue((string)$torrent === $expected, 'neither key is invented');
 	}
 }

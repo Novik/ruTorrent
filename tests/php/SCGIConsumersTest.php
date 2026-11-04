@@ -25,18 +25,10 @@ class SCGIConsumersTest extends TestCase
 
 	public function tearDown()
 	{
-		foreach(glob($this->base . '/*') as $file)
-			@unlink($file);
+		foreach(glob($this->base . '/*') as $file) {
+			@unlink($file); }
 		@rmdir($this->base);
 		$this->previousGlobals->restore();
-	}
-
-	private function usePeer($peer, $connectTimeout, $transferTimeout)
-	{
-		$GLOBALS['scgi_host'] = $peer->host();
-		$GLOBALS['scgi_port'] = $peer->port();
-		$GLOBALS['rpcTimeOut'] = $connectTimeout;
-		$GLOBALS['rpcTransferTimeOut'] = $transferTimeout;
 	}
 
 	public function testCoreCollectsALargeResponseWhereRuTorrentKeepsTemporaryFiles()
@@ -57,8 +49,8 @@ class SCGIConsumersTest extends TestCase
 				. '$tempDirectory = null; $tempDirectory_init_done = false; $log_file = $argv[3];'
 				. '$failure = null; $result = rXMLRPCRequest::send("<request/>", true, $failure, rSCGITransport::RESPONSE_BODY);'
 				. 'echo is_string($result) ? strlen($result) : $failure;';
-			$run = PhpProcess::run(array('-d', 'upload_tmp_dir=' . $spill, '-r', $code,
-				$peer->host(), (string)$peer->port(), $this->base . '/child.log'));
+			$run = PhpProcess::run(['-d', 'upload_tmp_dir=' . $spill, '-r', $code,
+				$peer->host(), (string)$peer->port(), $this->base . '/child.log']);
 			clearstatcache();
 			$this->assertTrue($run['out'] === (string)$length, 'the large response completes: ' . json_encode($run));
 			$this->assertTrue((filemtime($spill) > time() - 3600) && (count(scandir($spill)) === 2),
@@ -73,7 +65,7 @@ class SCGIConsumersTest extends TestCase
 
 	public function testCoreForwardsTheCallersTrustToTheScgiHeader()
 	{
-		foreach(array(true, false) as $trusted)
+		foreach([true, false] as $trusted)
 		{
 			$peer = SCGITransportFixture::start("Content-Length: 2\r\n\r\nok");
 			try
@@ -108,7 +100,7 @@ class SCGIConsumersTest extends TestCase
 
 	public function testCoreForwardsItsTransferBudgetAndFailureReason()
 	{
-		$peer = SCGITransportFixture::startChunks(array(array(1.5, "Content-Length: 2\r\n\r\nok")));
+		$peer = SCGITransportFixture::startChunks([[1.5, "Content-Length: 2\r\n\r\nok"]]);
 		try
 		{
 			$this->usePeer($peer, 3, 0.3);
@@ -131,7 +123,7 @@ class SCGIConsumersTest extends TestCase
 	public function testCoreDefaultBudgetPreservesALongerConnectionTimeout()
 	{
 		$previous = ini_get('default_socket_timeout');
-		$peer = SCGITransportFixture::startChunks(array(array(1.3, "Content-Length: 2\r\n\r\nok")));
+		$peer = SCGITransportFixture::startChunks([[1.3, "Content-Length: 2\r\n\r\nok"]]);
 		try
 		{
 			ini_set('default_socket_timeout', '1');
@@ -144,5 +136,13 @@ class SCGIConsumersTest extends TestCase
 			ini_set('default_socket_timeout', $previous);
 			$peer->close();
 		}
+	}
+
+	private function usePeer($peer, $connectTimeout, $transferTimeout)
+	{
+		$GLOBALS['scgi_host'] = $peer->host();
+		$GLOBALS['scgi_port'] = $peer->port();
+		$GLOBALS['rpcTimeOut'] = $connectTimeout;
+		$GLOBALS['rpcTransferTimeOut'] = $transferTimeout;
 	}
 }

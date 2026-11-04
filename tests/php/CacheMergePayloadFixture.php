@@ -9,15 +9,15 @@ class CacheMergePayload
 {
 	public $hash = 'merge-cache-test.dat';
 	public $modified = false;
-	public $rows = array();
+	public $rows = [];
 
 	// Deliberately left out of __sleep(), exactly like rHistoryData's own
 	// bookkeeping: the stored format stays what it always was.
-	protected $ownAdditions = array();
+	protected $ownAdditions = [];
 
 	public function __sleep()
 	{
-		return(array('hash', 'modified', 'rows'));
+		return(['hash', 'modified', 'rows']);
 	}
 
 	public function addRow($key)
@@ -29,9 +29,9 @@ class CacheMergePayload
 
 	public function merge($instance, $arg)
 	{
-		$rows = (is_object($instance) && is_array($instance->rows)) ? $instance->rows : array();
-		foreach($this->ownAdditions as $key => $value)
-			$rows[$key] = $value;
+		$rows = (is_object($instance) && is_array($instance->rows)) ? $instance->rows : [];
+		foreach($this->ownAdditions as $key => $value) {
+			$rows[$key] = $value; }
 		$this->rows = $rows;
 		return(true);
 	}

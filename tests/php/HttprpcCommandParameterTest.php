@@ -18,12 +18,6 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
  */
 class HttprpcCommandParameterTest extends TestCase
 {
-	// What the substring check answered, kept here as the control: every one
-	// of these was admitted, and every one is now refused.
-	private function oldFilterWouldAdmit($command)
-	{
-		return strpos($command, "execute") === false;
-	}
 
 	public function testTheSubstringCheckAdmittedTheRefusedFamilies()
 	{
@@ -32,7 +26,7 @@ class HttprpcCommandParameterTest extends TestCase
 		// check caught, it caught by accident -- a command carrying the word
 		// "execute" in an argument was dropped too. What it could not catch is
 		// everything that never spells that word.
-		foreach(array(
+		foreach([
 			'import=/etc/passwd',
 			'try_import=/etc/passwd',
 			'system.shutdown',
@@ -45,14 +39,14 @@ class HttprpcCommandParameterTest extends TestCase
 			'session.path.set=/tmp',
 			'directory.default.set=/',
 			'system.env=PATH',
-		) as $command)
+		] as $command) {
 			$this->assertTrue($this->oldFilterWouldAdmit($command),
-				'the substring check admitted '.$command);
+				'the substring check admitted '.$command); }
 	}
 
 	public function testTheRefusedFamiliesAreRefused()
 	{
-		foreach(array(
+		foreach([
 			'execute=/bin/id',
 			'execute2=/bin/id',
 			'execute.capture=/bin/id',
@@ -73,9 +67,9 @@ class HttprpcCommandParameterTest extends TestCase
 			'system.env=PATH',
 			'system.shutdown',
 			'system.shutdown.quick',
-		) as $command)
+		] as $command) {
 			$this->assertTrue(XMLRPCProxy::refusedCommandName($command) !== null,
-				$command.' is refused');
+				$command.' is refused'); }
 	}
 
 	public function testARefusalNamesTheCommandItRefused()
@@ -88,16 +82,16 @@ class HttprpcCommandParameterTest extends TestCase
 
 	public function testNestedAndDollarIntroducedNamesAreReached()
 	{
-		foreach(array(
+		foreach([
 			'$execute=/bin/id',
 			'cat=$execute=/bin/id',
 			'd.multicall=main,execute=/bin/id',
 			'cat="$d.multicall=main,import=/etc/passwd"',
 			'branch=1,"execute=/bin/id","d.name="',
 			'cat={$system.shutdown}',
-		) as $command)
+		] as $command) {
 			$this->assertTrue(XMLRPCProxy::refusedCommandName($command) !== null,
-				$command.' is refused wherever the name stands');
+				$command.' is refused wherever the name stands'); }
 	}
 
 	public function testWhatRuTorrentItselfSendsIsNotRefused()
@@ -105,7 +99,7 @@ class HttprpcCommandParameterTest extends TestCase
 		// Every literal ruTorrent registers through theRequestManager.addRequest,
 		// in both the spellings theRequestManager.map() produces. A door that
 		// refused one of these would cost a column and look like a plugin fault.
-		foreach(array(
+		foreach([
 			'f.prioritize_first=',
 			'f.prioritize_last=',
 			'd.get_custom=sch_ignore',
@@ -127,23 +121,23 @@ class HttprpcCommandParameterTest extends TestCase
 			'd.is_multi_file=',
 			't.get_url=',
 			'p.get_address=',
-		) as $command)
+		] as $command) {
 			$this->assertTrue(XMLRPCProxy::refusedCommandName($command) === null,
-				$command.' is not refused');
+				$command.' is not refused'); }
 	}
 
 	public function testAnArgumentIsNotMistakenForACommand()
 	{
 		// A value that begins with a refused word stands where an argument
 		// stands, not where a command stands.
-		foreach(array(
+		foreach([
 			'd.get_custom=scheduled',
 			'd.get_custom=imported',
 			'd.get_custom=logs',
 			'd.get_custom=execution',
-		) as $command)
+		] as $command) {
 			$this->assertTrue(XMLRPCProxy::refusedCommandName($command) === null,
-				$command.' is read as an argument, not as a command');
+				$command.' is read as an argument, not as a command'); }
 	}
 
 	public function testTheTwoChecksOnACommandNameAreIndependent()
@@ -160,5 +154,11 @@ class HttprpcCommandParameterTest extends TestCase
 			'a command string is not a well-formed command name');
 		$this->assertTrue(XMLRPCProxy::refusedCommandName('d.multicall=main,execute=x') !== null,
 			'and the policy refuses what it carries');
+	}
+	// What the substring check answered, kept here as the control: every one
+	// of these was admitted, and every one is now refused.
+	private function oldFilterWouldAdmit($command)
+	{
+		return strpos($command, "execute") === false;
 	}
 }

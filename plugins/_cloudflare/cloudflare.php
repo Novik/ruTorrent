@@ -13,17 +13,6 @@ class rCloudflare
 		$this->url = $url;
 	}
 
-	protected function is_cloudflare_challenge()
-	{
-		return( ($this->client->status == 503 || $this->client->status == 429) &&
-			(stripos( $this->client->get_header("Server"), "cloudflare" ) === 0) &&
-			$this->client->results
-//			&&
-//			(stripos( $this->client->results, "jschl_vc" ) !== false) &&
-//			(stripos( $this->client->results, "jschl_answer" ) !== false)
-			);
-	}
-
 	public static function is_module_present()
 	{
 		exec( escapeshellarg(Utility::getExternal('python'))." -c \"import cloudscraper\" > /dev/null 2>&1", $output, $error_code);
@@ -68,5 +57,16 @@ class rCloudflare
 			}
 		}
 		return($ret);
+	}
+
+	protected function is_cloudflare_challenge()
+	{
+		return( ($this->client->status == 503 || $this->client->status == 429) &&
+			(stripos( $this->client->get_header("Server"), "cloudflare" ) === 0) &&
+			$this->client->results
+//			&&
+//			(stripos( $this->client->results, "jschl_vc" ) !== false) &&
+//			(stripos( $this->client->results, "jschl_answer" ) !== false)
+			);
 	}
 }

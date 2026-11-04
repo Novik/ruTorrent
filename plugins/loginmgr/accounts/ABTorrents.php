@@ -18,8 +18,8 @@ class ABTorrentsAccount extends commonAccount
 
 	protected function unconfigured()
 	{
-		if($this->url!=='')
-			return('');
+		if($this->url!=='') {
+			return(''); }
 		return(self::unconfiguredOrigin('abTorrentsOrigin',$this->originError));
 	}
 

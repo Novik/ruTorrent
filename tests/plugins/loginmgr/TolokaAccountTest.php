@@ -34,18 +34,18 @@ class TolokaFakeClient
     public $results = '';
     public $status = 200;
     public $referer = null;
-    public $cookies = array();
-    public $requests = array();
+    public $cookies = [];
+    public $requests = [];
     public $cookiesStored = 0;
 
     public function fetch($url, $method = 'GET', $content_type = '', $body = '')
     {
-        $this->requests[] = array(
+        $this->requests[] = [
             'url' => $url,
             'method' => $method,
             'content_type' => $content_type,
             'body' => $body,
-        );
+        ];
         return true;
     }
 
@@ -81,7 +81,7 @@ function tolokaLogin($login, $password, $requested = 'https://toloka.to/download
     $content_type = '';
     $body = '';
     $is_result_fetched = true;
-    $arguments = array($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched);
+    $arguments = [$client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched];
     $reflection = new ReflectionMethod('tolokaAccount', 'login');
     if (PHP_VERSION_ID < 80100) {
         $reflection->setAccessible(true);
@@ -89,7 +89,7 @@ function tolokaLogin($login, $password, $requested = 'https://toloka.to/download
     $returned = tolokaStrict(function () use ($reflection, $account, $arguments) {
         return $reflection->invokeArgs($account, $arguments);
     });
-    return array(
+    return [
         'returned' => $returned,
         'client' => $client,
         'url' => $url,
@@ -97,12 +97,12 @@ function tolokaLogin($login, $password, $requested = 'https://toloka.to/download
         'content_type' => $content_type,
         'body' => $body,
         'is_result_fetched' => $is_result_fetched,
-    );
+    ];
 }
 
 function tolokaPostedFields($body)
 {
-    $fields = array();
+    $fields = [];
     parse_str($body, $fields);
     return $fields;
 }
@@ -133,9 +133,9 @@ $suite->test('the login post carries only fields the form has', function () {
     strictAssertSame(false, array_key_exists('redirect', $fields),
         'the form must not carry a field the account cannot fill: ' . $request['body']);
     strictAssertSame(
-        array('username', 'password', 'login', 'autologin', 'ssl'),
+        ['username', 'password', 'login', 'autologin', 'ssl'],
         array_keys($fields),
-        'unexpected form fields: ' . $request['body']
+        'unexpected form fields: ' . $request['body'],
     );
 });
 

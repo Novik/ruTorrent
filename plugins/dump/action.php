@@ -7,8 +7,8 @@ eval( FileUtil::getPluginConf( 'dump' ) );
 // renders the pair. The strings are in plugins/dump/lang/.
 function dumpError( $reason, $file = '', $user = '' )
 {
-	return( array( "status"=>255, "errors"=>array(
-		array( "reason"=>$reason, "file"=>$file, "user"=>$user ) ) ) );
+	return( [ "status"=>255, "errors"=>[
+		[ "reason"=>$reason, "file"=>$file, "user"=>$user ] ] ] );
 }
 
 // The account a reader of the torrent file would have to be. The numeric id
@@ -22,10 +22,10 @@ function dumpWebUser()
 	{
 		$euid = posix_geteuid();
 		$info = function_exists('posix_getpwuid') ? posix_getpwuid($euid) : false;
-		if( is_array($info) && isset($info['name']) && strlen($info['name']) )
-			return( $info['name'] );
-		if( $euid !== false )
-			return( (string)$euid );
+		if( is_array($info) && isset($info['name']) && strlen($info['name']) ) {
+			return( $info['name'] ); }
+		if( $euid !== false ) {
+			return( (string)$euid ); }
 	}
 	$name = (string)getenv('USER');
 	return( strlen($name) ? $name : (string)get_current_user() );
@@ -46,20 +46,20 @@ if(($hash!=='') && ($cmd!==''))
 			// request that fails must leave a name here that fails it --
 			// an unset variable passes it and dumps nothing.
 			$fname = '';
-			$req = new rXMLRPCRequest( array(
+			$req = new rXMLRPCRequest( [
 				new rXMLRPCCommand("get_session"),
-				new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
-			if(!$req->run() || $req->fault)
-				$ret = dumpError("dumpErrorNoAnswer");
+				new rXMLRPCCommand("d.get_tied_to_file",$hash)] );
+			if(!$req->run() || $req->fault) {
+				$ret = dumpError("dumpErrorNoAnswer"); }
 			else
 			{
 				// The session copy, then the file the download is tied to:
 				// the two places the torrent can be, preferred in that order.
-				$candidates = array();
-				if(!empty($req->val[0]))
-					$candidates[] = $req->val[0].$hash.".torrent";
-				if(strlen($req->val[1]))
-					$candidates[] = $req->val[1];
+				$candidates = [];
+				if(!empty($req->val[0])) {
+					$candidates[] = $req->val[0].$hash.".torrent"; }
+				if(strlen($req->val[1])) {
+					$candidates[] = $req->val[1]; }
 				$reason = count($candidates) ? "dumpErrorNoFile" : "dumpErrorNoSessionDirectory";
 				$file = count($candidates) ? $candidates[0] : '';
 				foreach($candidates as $candidate)
@@ -82,16 +82,16 @@ if(($hash!=='') && ($cmd!==''))
 				if($fname==='')
 				{
 					$user = ($reason==="dumpErrorUnreadable") ? dumpWebUser() : '';
-					if(($reason==="dumpErrorUnreadable") && ($user===''))
-						$reason = "dumpErrorUnreadableUnknownUser";
+					if(($reason==="dumpErrorUnreadable") && ($user==='')) {
+						$reason = "dumpErrorUnreadableUnknownUser"; }
 					$ret = dumpError($reason, $file, $user);
 				}
 			}
 
 			if($fname!=='')
 			{
-				$commands = array();
-				$task = new rTask(array('requester'=>'dump', 'name'=>'dump'));
+				$commands = [];
+				$task = new rTask(['requester'=>'dump', 'name'=>'dump']);
 				$commands[] = Utility::getExternal("dumptorrent")." ".$arguments." ".escapeshellarg($fname);
 				$ret = $task->start($commands, rTask::FLG_WAIT | rTask::FLG_DO_NOT_TRIM);
 			}

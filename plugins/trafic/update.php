@@ -2,36 +2,36 @@
 	$path = dirname(realpath($argv[0]));
 	if(chdir($path))
 	{
-		if( count( $argv ) > 1 )
-			$_SERVER['REMOTE_USER'] = $argv[1];
+		if( count( $argv ) > 1 ) {
+			$_SERVER['REMOTE_USER'] = $argv[1]; }
 		require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
 		require_once( 'stat.php' );
 		eval(FileUtil::getPluginConf('trafic'));
 
-		$req = new rXMLRPCRequest( array(
+		$req = new rXMLRPCRequest( [
 			new rXMLRPCCommand("get_up_total"),
 			new rXMLRPCCommand("get_down_total"),
-			new rXMLRPCCommand("d.multicall", array("main",getCmd("d.get_hash="),getCmd("d.get_up_total="),getCmd("d.get_down_total=")))));
+			new rXMLRPCCommand("d.multicall", ["main",getCmd("d.get_hash="),getCmd("d.get_up_total="),getCmd("d.get_down_total=")])]);
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
 		{
 		        $dir = FileUtil::getSettingsPath().'/trafic/';
-			$was = array(0,0,0);
-			$wasTorrents = array();
+			$was = [0,0,0];
+			$wasTorrents = [];
 			if($file=@fopen($dir.'last.csv',"r"))
 			{
 				$was = fgetcsv($file, 100, ",", "\"", "");
-				while(($data = fgetcsv($file, 1000, ",", "\"", "")) !== false)
-					$wasTorrents[$data[0]] = array_slice($data,1);
+				while(($data = fgetcsv($file, 1000, ",", "\"", "")) !== false) {
+					$wasTorrents[$data[0]] = array_slice($data,1); }
 				fclose($file);
 			}
 			$tm = time();
 			$needUpdate = ($was[2]+3600>=$tm);
 			$now = array_slice($req->i8s,0,2);
 			$now[2] = $tm;
-			$nowTorrents = array();
-			for($i = 0; $i<count($req->strings); $i++)
-				$nowTorrents[$req->strings[$i]] = array_slice($req->i8s,($i+1)*2,2);
+			$nowTorrents = [];
+			for($i = 0; $i<count($req->strings); $i++) {
+				$nowTorrents[$req->strings[$i]] = array_slice($req->i8s,($i+1)*2,2); }
 			ksort($nowTorrents);
 
 			$randName = FileUtil::getTempFilename('trafic');
@@ -43,8 +43,8 @@
 					{
 						$tmp = $data;
 						array_unshift($tmp, $key);
-						if( ($ok = fputcsv($file, $tmp, ",", "\"", ""))===false )
-							break;
+						if( ($ok = fputcsv($file, $tmp, ",", "\"", ""))===false ) {
+							break; }
 					}
 				}
 				if($ok !== false)
@@ -54,15 +54,15 @@
 						rename($randName,$dir.'last.csv');
 						@chmod($dir.'last.csv',$profileMask & 0666);
 					}
-					else
-						unlink($randName);
+					else {
+						unlink($randName); }
 				}
-				else
-					unlink($randName);
+				else {
+					unlink($randName); }
 			}
 			if($needUpdate)
 			{
-				$needTorrents = array();
+				$needTorrents = [];
                                 foreach($nowTorrents as $key=>$data)
 				{
 					if(array_key_exists($key,$wasTorrents))
@@ -76,7 +76,7 @@
 						}
 						if($delta_down!=0 || $delta_up!=0)
 						{
-							$needTorrents[$key] = array($delta_up,$delta_down);
+							$needTorrents[$key] = [$delta_up,$delta_down];
 							if($collectStatForTorrents)
 							{
 								$st = new rStat("torrents/".$key.".csv");
@@ -85,24 +85,24 @@
 							}
 						}
 					}
-					else
-						$needTorrents[$key] = $data;
+					else {
+						$needTorrents[$key] = $data; }
 				}
-				$trackers = array();
+				$trackers = [];
 				foreach($needTorrents as $key=>$data)
 				{
-				        $req = new rXMLRPCRequest( array(
+				        $req = new rXMLRPCRequest( [
 						new rXMLRPCCommand("t.multicall",
-							array($key,"",getCmd("t.is_enabled="),getCmd("t.get_type="),getCmd("t.get_group="),getCmd("t.get_url=")))));
+							[$key,"",getCmd("t.is_enabled="),getCmd("t.get_type="),getCmd("t.get_group="),getCmd("t.get_url=")])]);
 					$req->setParseByTypes();
 					if($req->run() && !$req->fault)
 					{
-						$checkedDomains = array();
+						$checkedDomains = [];
 						$lastGroup = 65535;
 						for($i = 0; $i<count($req->strings); $i++)
 						{
-							if($req->i8s[$i*3+2]>$lastGroup)
-								break;
+							if($req->i8s[$i*3+2]>$lastGroup) {
+								break; }
 							if(($req->i8s[$i*3]!=0) && ($req->i8s[$i*3+1]<3))
 							{
 								$lastGroup = $req->i8s[$i*3+2];
@@ -113,8 +113,8 @@
 									if($pos!==false)
 									{
 										$tmp = substr($domain,$pos+1);
-										if(strpos($tmp,'.')!==false)
-											$domain = $tmp;
+										if(strpos($tmp,'.')!==false) {
+											$domain = $tmp; }
 									}
 								}
 								if(!array_key_exists($domain,$checkedDomains))
@@ -124,8 +124,8 @@
 										$trackers[$domain][0]+=$needTorrents[$key][0];
 										$trackers[$domain][1]+=$needTorrents[$key][1];
 									}
-									else
-										$trackers[$domain] = $needTorrents[$key];
+									else {
+										$trackers[$domain] = $needTorrents[$key]; }
 									$checkedDomains[$domain] = true;
 								}
 							}
@@ -151,8 +151,8 @@
 						if(is_file($dir."trackers/".$file))
 						{
 							$file = basename($file, ".csv");
-							if(!array_key_exists($file,$trackers))
-								$trackers[$file] = array(0,0);
+							if(!array_key_exists($file,$trackers)) {
+								$trackers[$file] = [0,0]; }
 						}
 					}
 					closedir($dh);
@@ -170,7 +170,7 @@
 
 				if($collectStatForTorrents)
 				{
-					$existingStats = array();
+					$existingStats = [];
 					$dh = @opendir($dir."torrents");
 					if($dh)
 					{
@@ -187,8 +187,8 @@
 					$deletedTorrents = array_diff_key( $existingStats, $nowTorrents );
 					foreach($deletedTorrents as $hash=>$time)
 					{
-						if($tm - $time > $storeDeletedTorrentsStatsDuring)
-							@unlink($dir."torrents/".$hash.".csv");
+						if($tm - $time > $storeDeletedTorrentsStatsDuring) {
+							@unlink($dir."torrents/".$hash.".csv"); }
 					}
 				}
 			}

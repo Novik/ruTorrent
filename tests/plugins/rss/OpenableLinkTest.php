@@ -31,20 +31,12 @@ require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/PhpProcess.php');
 
 $minInterval = 2;
-$feedsWithIncorrectTimes = array();
+$feedsWithIncorrectTimes = [];
 $rss_debug_enabled = false;
 require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
 final class OpenableLinkTest extends TestCase
 {
-	private function addresses(): array
-	{
-		$path = __DIR__ . '/../../fixtures/openable-addresses.json';
-		$rows = json_decode(file_get_contents($path), true);
-		$this->assertTrue(is_array($rows) && count($rows) > 0,
-			'read ' . count(is_array($rows) ? $rows : array()) . ' addresses from the shared table');
-		return($rows);
-	}
 
 	// The whole table, one row at a time. A row that stops matching is a
 	// change to what a feed may carry, and has to be argued for in the table.
@@ -72,7 +64,7 @@ final class OpenableLinkTest extends TestCase
 	// them has to survive the parser as well as the check in isolation.
 	public function testTheFeedKeepsEveryItemTheTableSaysItShould(): void
 	{
-		$kept = array();
+		$kept = [];
 		$xml = '<?xml version="1.0"?><rss version="2.0"><channel>' .
 			'<title>C</title><link>https://example.org/</link>';
 		foreach ($this->addresses() as $row) {
@@ -91,7 +83,7 @@ final class OpenableLinkTest extends TestCase
 	public function testAnUnavailableDecoderRefusesOnlyHostsThatNeedIt(): void
 	{
 		$rows = $this->addresses();
-		$expected = array(
+		$expected = [
 			// Only the host is decoded: a percent sign elsewhere needs nothing.
 			'https://example.org/a%20b?q=%41' => true,
 			'https://us%40er@example.org/x' => true,
@@ -99,13 +91,13 @@ final class OpenableLinkTest extends TestCase
 			'//%41.example.org/dl/x.torrent' => false,
 			// An opaque FTPS host is never decoded.
 			'ftps://host%20.org/x' => true,
-		);
+		];
 		$urls = array_merge(array_column($rows, 'url'), array_keys($expected));
-		$run = PhpProcess::run(array_merge(PhpProcess::sameIni(), array(
+		$run = PhpProcess::run(array_merge(PhpProcess::sameIni(), [
 			'-d', 'disable_functions=rawurldecode', '-d', 'display_errors=stderr', '-r',
 			'require ' . var_export(__DIR__ . '/../../../php/utility/externalurl.php', true) . ';'
 			. 'echo json_encode(array_map(array("ExternalURL", "isOpenable"), json_decode($argv[1], true)));',
-			'--', json_encode($urls))));
+			'--', json_encode($urls)]));
 		$this->assertTrue(!$run['timedOut'] && $run['code'] === 0, 'the child finishes: ' . $run['err']);
 		// Startup diagnostics ("in Unknown on line 0") belong to the PHP build.
 		$errors = implode("\n", preg_grep('/ in Unknown on line 0\s*$/', explode("\n", $run['err']), PREG_GREP_INVERT));
@@ -140,19 +132,27 @@ final class OpenableLinkTest extends TestCase
 			(string)$fn, $m) === 1, 'found the scheme list in isExternalURL()');
 		preg_match_all('~"([a-z0-9+.-]+):"~i', $m[1], $found);
 		$schemes = $found[1];
-		$this->assertEquals(array('http', 'https', 'ftp', 'ftps', 'magnet'), $schemes,
+		$this->assertEquals(['http', 'https', 'ftp', 'ftps', 'magnet'], $schemes,
 			'the scheme list js/common.js holds');
 		foreach ($schemes as $scheme) {
 			$this->assertTrue(ExternalURL::isOpenable($scheme . '://host.example.org/x'),
 				'the scheme js/common.js opens is one this keeps: ' . $scheme);
 		}
 		// And nothing outside it, however the address is spelled.
-		foreach (array('javascript', 'data', 'file', 'mailto', 'vbscript', 'ws', 'blob') as $scheme) {
+		foreach (['javascript', 'data', 'file', 'mailto', 'vbscript', 'ws', 'blob'] as $scheme) {
 			$this->assertTrue(!ExternalURL::isOpenable($scheme . '://host.example.org/x'),
 				'the scheme js/common.js refuses is one this drops: ' . $scheme);
 			$this->assertTrue(!ExternalURL::isOpenable($scheme . ':body'),
 				'and drops it with an opaque body too: ' . $scheme);
 		}
+	}
+	private function addresses(): array
+	{
+		$path = __DIR__ . '/../../fixtures/openable-addresses.json';
+		$rows = json_decode(file_get_contents($path), true);
+		$this->assertTrue(is_array($rows) && count($rows) > 0,
+			'read ' . count(is_array($rows) ? $rows : []) . ' addresses from the shared table');
+		return($rows);
 	}
 
 	private function feedItems(string $xml): array
@@ -170,5 +170,7 @@ final class OpenableLinkTest extends TestCase
 
 class OpenableLinkSnoopyMock
 {
-	public $status = 200, $results = NULL, $headers = array();
+	public $status = 200;
+	public $results = null;
+	public $headers = [];
 }

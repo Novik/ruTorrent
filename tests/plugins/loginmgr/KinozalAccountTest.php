@@ -29,8 +29,8 @@ class KinozalFakeClient
     public $status = 200;
     public $results = '';
     public $referer = '';
-    public $cookies = array();
-    public $responses = array();
+    public $cookies = [];
+    public $responses = [];
     public $unreachable = null;
 
     public function __construct($results = '', $status = 200)
@@ -85,7 +85,7 @@ function kinozalLogin($client, $user = 'user', $pass = 'pass')
     $contentType = '';
     $body = '';
     $isFetched = false;
-    return $method->invokeArgs($account, array($client, $user, $pass, &$url, &$httpMethod, &$contentType, &$body, &$isFetched));
+    return $method->invokeArgs($account, [$client, $user, $pass, &$url, &$httpMethod, &$contentType, &$body, &$isFetched]);
 }
 
 // Captured from https://kinozal.guru/login.php on 2026-08-07: type= carries no
@@ -148,7 +148,7 @@ $suite->test('authorized tracker answers read as a live session', function () {
     strictAssertSame(
         true,
         kinozalIsOK('<ul><li>Инфо хеш: ' . str_repeat('A', 40) . '</li><li>Размер части торрента: 2 МБ</li></ul>'),
-        'the details answer must not be mistaken for a login wall'
+        'the details answer must not be mistaken for a login wall',
     );
     strictAssertSame(true, kinozalIsOK('Торрент файл не найден.'),
         'a removed topic is an answer from the tracker, not a dead session');
@@ -178,10 +178,10 @@ $suite->test('login reports whether the exchange happened, not whether it was ac
     // for itself would make "false" mean both "the tracker did not answer" and
     // "the credentials were refused", which the caller cannot tell apart.
     $client = new KinozalFakeClient();
-    $client->responses = array(
-        'https://kinozal.guru' => array('status' => 200, 'results' => '<html>main page</html>'),
-        'https://kinozal.guru/takelogin.php' => array('status' => 200, 'results' => kinozalLoginPage()),
-    );
+    $client->responses = [
+        'https://kinozal.guru' => ['status' => 200, 'results' => '<html>main page</html>'],
+        'https://kinozal.guru/takelogin.php' => ['status' => 200, 'results' => kinozalLoginPage()],
+    ];
     strictAssertSame(true, kinozalLogin($client, 'baduser', 'badpass'),
         'both requests went through, which is all login() is asked');
     strictAssertSame(false, kinozalIsOK($client->results),
@@ -191,7 +191,7 @@ $suite->test('login reports whether the exchange happened, not whether it was ac
 
 $suite->test('login fails when the tracker cannot be reached at all', function () {
     $client = new KinozalFakeClient();
-    $client->responses = array('https://kinozal.guru' => array('status' => 200, 'results' => ''));
+    $client->responses = ['https://kinozal.guru' => ['status' => 200, 'results' => '']];
     $client->unreachable = 'https://kinozal.guru/takelogin.php';
     strictAssertSame(false, kinozalLogin($client, 'user', 'pass'),
         'a request that did not go through is a failed login');

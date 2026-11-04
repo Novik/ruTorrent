@@ -31,7 +31,7 @@ function expAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -39,42 +39,42 @@ function expAssertSame($expected, $actual, $message)
 function expManager($password)
 {
     $manager = new accountManager();
-    $manager->accounts = array(
-        'tracker.example' => array(
+    $manager->accounts = [
+        'tracker.example' => [
             'login' => 'someuser',
             'password' => $password,
             'enabled' => 1,
             'auto' => 0,
             'path' => __DIR__ . '/../../../plugins/loginmgr/accounts.php',
             'object' => 'ProbeExposureAccount',
-        ),
-    );
+        ],
+    ];
     return $manager;
 }
 
 $secret = 'correct-horse-battery-staple';
 
-$tests = array(
+$tests = [
     'the javascript on every page load carries no password' => function () use ($secret) {
         $javascript = expManager($secret)->get();
         expAssertTrue(
             strpos($javascript, $secret) === false,
-            'The stored password was written into the page javascript: ' . $javascript
+            'The stored password was written into the page javascript: ' . $javascript,
         );
         expAssertTrue(
             strpos($javascript, '"password_set":1') !== false,
-            'The page must still be told that a password is set: ' . $javascript
+            'The page must still be told that a password is set: ' . $javascript,
         );
         expAssertTrue(
             strpos($javascript, '"login":"someuser"') !== false,
-            'The login is still shown in the settings page: ' . $javascript
+            'The login is still shown in the settings page: ' . $javascript,
         );
     },
     'an account with no password says so' => function () {
         $javascript = expManager('')->get();
         expAssertTrue(
             strpos($javascript, '"password_set":0') !== false,
-            'An empty password must read as unset: ' . $javascript
+            'An empty password must read as unset: ' . $javascript,
         );
     },
     'the info answer carries no password' => function () use ($secret) {
@@ -83,7 +83,7 @@ $tests = array(
         expAssertSame(1, count($info), 'One account was configured');
         expAssertTrue(
             strpos($json, $secret) === false,
-            'The stored password was served as json: ' . $json
+            'The stored password was served as json: ' . $json,
         );
         expAssertTrue(!array_key_exists('password', $info[0]), 'No password field is served at all');
         expAssertSame(1, $info[0]['password_set'], 'The answer still says a password is set');
@@ -99,10 +99,10 @@ $tests = array(
         expAssertSame(
             $secret,
             $manager->accounts['tracker.example']['password'],
-            'The password Snoopy logs in with must still be there'
+            'The password Snoopy logs in with must still be there',
         );
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

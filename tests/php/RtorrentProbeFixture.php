@@ -17,21 +17,21 @@ require_once(__DIR__ . '/TestTree.php');
  */
 class RtorrentProbeFixture
 {
-	const VERSION = '0.16.20';
-	const INVALID_TARGET = 'invalid parameters: invalid target';
+	public const VERSION = '0.16.20';
+	public const INVALID_TARGET = 'invalid parameters: invalid target';
 
 	/** The method names one request asks for, in order. */
 	public static function methodNames($body)
 	{
 		if (preg_match('|<methodName>(.*)</methodName>|Us', $body, $outer) &&
 			($outer[1] !== 'system.multicall')) {
-			return array($outer[1]);
+			return [$outer[1]];
 		}
 		if (preg_match_all(
 			'|<name>methodName</name><value><string>(.*)</string></value>|Us', $body, $inner)) {
 			return $inner[1];
 		}
-		return array();
+		return [];
 	}
 
 	/** The first parameter of a single-command request, or null. */
@@ -47,7 +47,7 @@ class RtorrentProbeFixture
 	/** One d.multicall row: the hash, then a value per remaining command. */
 	public static function row($hash, $columns)
 	{
-		$row = array($hash);
+		$row = [$hash];
 		for ($i = 1; $i < $columns; $i++) {
 			$row[] = '0';
 		}
@@ -78,6 +78,20 @@ class RtorrentProbeFixture
 		return file_put_contents($profilePath . '/settings/rtorrent.dat', $cache) !== false;
 	}
 
+	/**
+	 * The files a daemon worker has to load before it unserializes a reply
+	 * plan built from responder().
+	 */
+	public static function replyClassFiles()
+	{
+		return [__FILE__];
+	}
+
+	public static function responder($hash = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+	{
+		return new RtorrentProbeResponder($hash);
+	}
+
 	private static function probeForCache()
 	{
 		$base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
@@ -97,7 +111,7 @@ class RtorrentProbeFixture
 			if (file_put_contents($driver, $source) !== strlen($source)) {
 				return false;
 			}
-			$ignored = array();
+			$ignored = [];
 			exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 				escapeshellarg($driver) . ' 2>&1', $ignored);
 			return @file_get_contents($base . '/settings/rtorrent.dat');
@@ -107,20 +121,6 @@ class RtorrentProbeFixture
 			}
 			TestTree::remove($base);
 		}
-	}
-
-	/**
-	 * The files a daemon worker has to load before it unserializes a reply
-	 * plan built from responder().
-	 */
-	public static function replyClassFiles()
-	{
-		return array(__FILE__);
-	}
-
-	public static function responder($hash = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-	{
-		return new RtorrentProbeResponder($hash);
 	}
 }
 
@@ -153,16 +153,16 @@ class RtorrentProbeResponder
 		}
 		switch ($single) {
 			case 'system.client_version':
-				return array(RtorrentProbeFixture::VERSION);
+				return [RtorrentProbeFixture::VERSION];
 			case 'system.api_version':
-				return array('11');
+				return ['11'];
 			case 'convert.kb':
-				return array('1');
+				return ['1'];
 			case 'network.listen.port':
-				return array('6890');
+				return ['6890'];
 			case 'execute.capture':
 				// uid, group list, home -- the three lines obtain() reads.
-				return array("1000\n1000 1001\n/home/rtorrent\n");
+				return ["1000\n1000 1001\n/home/rtorrent\n"];
 		}
 		// The settings batch: directory, session, library version, name,
 		// port range, bind address, local address. Every one of these but
@@ -170,8 +170,8 @@ class RtorrentProbeResponder
 		// unprobed, so that warmSettingsCache() changes what a script knows
 		// about the daemon's commands and nothing else.
 		if (count($names) === 7) {
-			return array('/tmp', '', RtorrentProbeFixture::VERSION, '',
-				'6890-6999', '0.0.0.0', '0.0.0.0');
+			return ['/tmp', '', RtorrentProbeFixture::VERSION, '',
+				'6890-6999', '0.0.0.0', '0.0.0.0'];
 		}
 		return array_fill(0, max(1, count($names)), '0');
 	}

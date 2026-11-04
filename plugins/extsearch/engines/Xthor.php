@@ -1,8 +1,8 @@
 <?php
 class XthorEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>30, "auth"=>1 );
-	public $categories = array(
+	public $defaults = [ "public"=>false, "page_size"=>30, "auth"=>1 ];
+	public $categories = [
 		"Tout"=>"c0=1",
 		"|--Films"=>"c118=1&c119=1&c107=1&c1=1&c2=1&c100=1&c4=1&c5=1&c7=1&c3=1&c6=1&c8=1&c122=1&c94=1&c95=1&c12=1&c31=1&c33=1&c125=1&c20=1&c9=1",
 		"|--F--2160p/Bluray"=>"c118=1",
@@ -60,46 +60,41 @@ class XthorEngine extends commonEngine
 		"|--L--ROM"=>"c117=1",
 		"|--L--Applis PC"=>"c21=1",
 		"|--L--Applis Mac"=>"c22=1",
-		"|--L--Smartphone"=>"c23=1"
-	);
-	protected static $seconds = array(
+		"|--L--Smartphone"=>"c23=1",
+	];
+	protected static $seconds = [
 		"minute"=>60,
 		"hour"	=>3600,
 		"day"	=>86400,
-		"week"	=>604800
-	);
-	protected static function getTime($now,$ago,$unit)
-	{
-		$delta = (array_key_exists($unit, self::$seconds) ? self::$seconds[$unit] : 0);
-		return ($now - ($ago * $delta));
-	}
+		"week"	=>604800,
+	];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$url = 'https://xthor.tk';
 		$now = time();
-		if ($useGlobalCats)
-			$categories = array( 'all' => 'c0=1',
+		if ($useGlobalCats) {
+			$categories = [ 'all' => 'c0=1',
 				'movies' => 'c118=1&c119=1&c107=1&c1=1&c2=1&c100=1&c4=1&c5=1&c7=1&c3=1&c6=1&c8=1&c122=1&c94=1&c95=1&c12=1&c31=1&c33=1&c125=1&c20=1&c9=1',
 				'tv' => 'c104=1&c13=1&c15=1&c14=1&c98=1&c17=1&c16=1&c123=1&c109=1&c34=1&c30=1',
 				'games' => 'c25=1&c27=1&c111=1&c26=1&c112=1&c28=1&c29=1&c117=1&c23=1',
 				'anime' => 'c101=1&c32=1&c110=1',
 				'software' => 'c21=1&c22=1&c23=1',
-				'books' => 'c24=1&c124=1&c96=1&c99=1&c116=1&c102=1&c103=1'
-			);
-		else
-			$categories = &$this->categories;
-		if (!array_key_exists($cat, $categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+				'books' => 'c24=1&c124=1&c96=1&c99=1&c116=1&c102=1&c103=1',
+			]; }
+		else {
+			$categories = &$this->categories; }
+		if (!array_key_exists($cat, $categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 		$added = 0;
 		$what = rawurlencode(rawurldecode($what));
 		for ($pg = 0; $pg < 10; $pg++) {
 			$cli = $this->fetch( $url . '/browse.php?' . $cat . '&searchin=title&incldead=1&sch=' . $what . '&sort=7&type=desc&page=' . $pg );
 			if ( ($cli == false) || (strpos($cli->results, "Aucun résultat.") !== false)
-				|| (strpos($cli->results, 'name="password') !== false) )
-				break;
+				|| (strpos($cli->results, 'name="password') !== false) ) {
+				break; }
 			$res = preg_match_all('`<td class=\'tdtor.*<img.*alt=\'(?P<cat>.*)\'.*<a href=\'details\.php\?id=(?P<id>\d+)\' onmouseover.*'.
 				'<br \/><br \/><b>&nbsp;&nbsp;((?P<date>\d+ [a-zA-Z]{3} \d+)|.*(?P<ago_1>\d+) (?P<ago_2>minute|hour|day|week)s? ago)<\/b>.*onmouseout.*'.
 				'<b>(?P<name>.*)<\/b>.*<a href="download.*>(?P<size>.*)<\/a>.*'.
@@ -117,21 +112,26 @@ class XthorEngine extends commonEngine
 						$item["desc"] = $url . '/details.php?id=' . $matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
-						if($matches["ago_1"][$i])
-							$item["time"] = self::getTime($now,$matches["ago_1"][$i],$matches["ago_2"][$i]);
-						else
-							$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
+						if($matches["ago_1"][$i]) {
+							$item["time"] = self::getTime($now,$matches["ago_1"][$i],$matches["ago_2"][$i]); }
+						else {
+							$item["time"] = strtotime(self::removeTags($matches["date"][$i])); }
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
+	}
+	protected static function getTime($now,$ago,$unit)
+	{
+		$delta = (array_key_exists($unit, self::$seconds) ? self::$seconds[$unit] : 0);
+		return ($now - ($ago * $delta));
 	}
 }

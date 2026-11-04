@@ -41,12 +41,12 @@ class XMLRPCProxy
 	//
 	// The legacy spellings are the ones php/methods-0.9.4.php maps, so a
 	// client written against them reaches the same rebuilding.
-	private static $sanitizeMethods = array(
+	private static $sanitizeMethods = [
 		'load.normal', 'load.start', 'load.verbose', 'load.start_verbose',
 		'load.raw', 'load.raw_start', 'load.raw_verbose', 'load.raw_start_verbose',
 		'load', 'load_start', 'load_verbose', 'load_start_verbose',
 		'load_raw', 'load_raw_start', 'load_raw_verbose', 'load_raw_start_verbose',
-	);
+	];
 
 	// Of those, the ones whose parameter 1 is a URI rather than the torrent
 	// itself. rtorrent treats anything that is not a network or magnet URI as a
@@ -58,9 +58,9 @@ class XMLRPCProxy
 	// the URI one parameter earlier, so testing parameter 1 would read a
 	// command string as the URI and refuse a valid call. A load that does not
 	// happen ties nothing, so there is nothing to protect there.
-	private static $uriLoadMethods = array(
+	private static $uriLoadMethods = [
 		'load.start', 'load.normal', 'load.start_verbose', 'load.verbose',
-	);
+	];
 
 	// Exactly the URIs rtorrent does not treat as a local path:
 	// is_network_uri() and is_magnet_uri() in core/download_factory.cc, which
@@ -73,7 +73,7 @@ class XMLRPCProxy
 	// <string> and <base64>, which extractParamValue() reads first. rtorrent
 	// takes an integer argument as an integer object, so a caller writing one
 	// the ordinary way is writing a value this side has to read.
-	private static $scalarTypes = array('i8', 'int', 'i4', 'boolean', 'double');
+	private static $scalarTypes = ['i8', 'int', 'i4', 'boolean', 'double'];
 
 	// Multicalls carry commands in the same trailing position, and the same
 	// rebuilding applies — but for these the commands ARE the request, and
@@ -91,7 +91,7 @@ class XMLRPCProxy
 	// rtorrent only refuses them from 0.16.9, where UNTRUSTED_CONNECTION is
 	// honoured; below that the header is read and ignored, so "forward it
 	// untrusted" is a plain forward and this list is the only refusal there is.
-	private static $denyPrefixes = array(
+	private static $denyPrefixes = [
 		'execute',                // and execute2, execute.capture, execute.raw.bg, ...
 		'method.',                // insert / set / set_key / erase / redirect
 		'import', 'try_import',   // read a file of commands
@@ -105,7 +105,7 @@ class XMLRPCProxy
 		'system.shutdown',        // and .normal / .quick -- answered by the xmlrpc-c
 		                          // registry, not rtorrent's command map, so rtorrent's
 		                          // own untrusted gate never sees it
-	);
+	];
 
 	// One canonical name per command, for the other spellings a daemon
 	// registers it under. php/methods-*.php and the table php/settings.php
@@ -122,7 +122,7 @@ class XMLRPCProxy
 	// session.path.set, while set_session_lock and set_session_on_completion
 	// are different settings nothing here refuses, and a prefix would take
 	// them too.
-	private static $canonicalNames = array(
+	private static $canonicalNames = [
 		'system.method.erase'     => 'method.erase',
 		'system.method.get'       => 'method.get',
 		'system.method.has_key'   => 'method.has_key',
@@ -136,7 +136,7 @@ class XMLRPCProxy
 		'set_scgi_dont_route'     => 'network.scgi.dont_route.set',
 		'd.set_directory'         => 'd.directory.set',
 		'd.set_directory_base'    => 'd.directory_base.set',
-	);
+	];
 
 	// Methods that take command strings as ordinary arguments and run them, so
 	// that a call naming one of these carries commands the way a multicall's
@@ -156,9 +156,9 @@ class XMLRPCProxy
 	//
 	// Matched whole. A prefix would take cat with it, and php/methods-0.16.18.php
 	// routes network.port_open to cat on purpose.
-	private static $evaluatorMethods = array(
+	private static $evaluatorMethods = [
 		'branch', 'and', 'or', 'try', 'less', 'greater', 'equal', 'match', 'compare',
-	);
+	];
 
 	// Methods rtorrent refuses to an untrusted caller that a remote client
 	// still needs, with the shape each argument has to have. A call that
@@ -170,20 +170,20 @@ class XMLRPCProxy
 	// stores rather than parses, is within what the owner of this instance may
 	// do". Measured, not assumed: a $-prefixed value arriving as an XMLRPC
 	// parameter of these methods is stored verbatim and never executed.
-	private static $elevate = array(
-		'd.open'                        => array('hash'),
-		'd.start'                       => array('hash'),
-		'd.stop'                        => array('hash'),
-		'd.custom1.set'                 => array('hash', 'text'),
-		'd.custom2.set'                 => array('hash', 'text'),
-		'd.custom3.set'                 => array('hash', 'text'),
-		'd.custom4.set'                 => array('hash', 'text'),
-		'd.custom5.set'                 => array('hash', 'text'),
-		'd.custom.set'                  => array('hash', 'text', 'text'),
-		'd.priority.set'                => array('hash', 'int'),
-		'd.delete_tied'                 => array('hash'),
-		'network.xmlrpc.size_limit.set' => array('empty', 'size'),
-	);
+	private static $elevate = [
+		'd.open'                        => ['hash'],
+		'd.start'                       => ['hash'],
+		'd.stop'                        => ['hash'],
+		'd.custom1.set'                 => ['hash', 'text'],
+		'd.custom2.set'                 => ['hash', 'text'],
+		'd.custom3.set'                 => ['hash', 'text'],
+		'd.custom4.set'                 => ['hash', 'text'],
+		'd.custom5.set'                 => ['hash', 'text'],
+		'd.custom.set'                  => ['hash', 'text', 'text'],
+		'd.priority.set'                => ['hash', 'int'],
+		'd.delete_tied'                 => ['hash'],
+		'network.xmlrpc.size_limit.set' => ['empty', 'size'],
+	];
 
 	// Ceiling for network.xmlrpc.size_limit.set. A client raises it to add a
 	// large torrent by file; without a bound it is also how a caller makes
@@ -204,52 +204,16 @@ class XMLRPCProxy
 	// Canonical names. A name is resolved through $canonicalNames before it is
 	// compared with these, so d.set_directory is the same command as
 	// d.directory.set and is confined as one.
-	private static $directoryCommands = array(
+	private static $directoryCommands = [
 		'd.directory.set', 'd.directory_base.set',
-	);
+	];
 
-	private static $multicallMethods = array(
+	private static $multicallMethods = [
 		'd.multicall', 'd.multicall2', 'd.multicall.filtered',
 		't.multicall', 'f.multicall', 'p.multicall',
-	);
+	];
 
 	private static $log = true;
-
-	private static function log($msg)
-	{
-		if(self::$log)
-			FileUtil::toLog("xmlrpc-proxy: ".$msg);
-	}
-
-	/**
-	 * Make a client-supplied value safe to put in a log line: one line, and
-	 * short enough that it cannot push the rest of the entry out of view.
-	 */
-	private static function logValue($value)
-	{
-		$value = str_replace(array("\r", "\n", "\t"), ' ', (string)$value);
-		if(strlen($value) > 120)
-			$value = substr($value, 0, 120).'...';
-		return $value;
-	}
-
-	/**
-	 * Parse untrusted XMLRPC XML with entity loading disabled.
-	 *
-	 * PHP 8+ libxml2 defaults external-entity loading off; PHP 7.x does
-	 * not, and ruTorrent still supports PHP 7. We disable it explicitly to
-	 * prevent XXE on client-supplied XML.
-	 */
-	private static function parseXml($rawData)
-	{
-		$prev = null;
-		if(PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader'))
-			$prev = libxml_disable_entity_loader(true);
-		$xml = @simplexml_load_string($rawData, 'SimpleXMLElement', LIBXML_NONET);
-		if($prev !== null)
-			libxml_disable_entity_loader($prev);
-		return $xml;
-	}
 
 	/**
 	 * Process a raw XMLRPC payload according to the configured mode.
@@ -262,17 +226,17 @@ class XMLRPCProxy
 	 *                                 filesystem in load.start / load.normal
 	 * @return string|null        SCGI response, or null on rejection
 	 */
-	public static function process($rawData, $mode = 'sanitize', $enableLog = true, $safeParams = array(), $allowLocalPaths = false, $options = array())
+	public static function process($rawData, $mode = 'sanitize', $enableLog = true, $safeParams = [], $allowLocalPaths = false, $options = [])
 	{
 		self::$log = $enableLog;
 
 		$decision = self::decide($rawData, $mode, $safeParams, $allowLocalPaths, $options);
 
-		foreach($decision['log'] as $line)
-			self::log($line);
+		foreach($decision['log'] as $line) {
+			self::log($line); }
 
-		if($decision['action'] !== 'send')
-			return null;
+		if($decision['action'] !== 'send') {
+			return null; }
 
 		return rXMLRPCRequest::send($decision['payload'], $decision['trusted']);
 	}
@@ -299,28 +263,28 @@ class XMLRPCProxy
 	 *                'trusted' => whether the connection carrying them may be trusted
 	 *                'log'     => what happened, in the order it happened
 	 */
-	public static function decide($rawData, $mode = 'sanitize', $safeParams = array(), $allowLocalPaths = false, $options = array())
+	public static function decide($rawData, $mode = 'sanitize', $safeParams = [], $allowLocalPaths = false, $options = [])
 	{
 		$deny = isset($options['deny']) ? $options['deny'] : self::$denyPrefixes;
 		$elevate = isset($options['elevate']) ? $options['elevate'] : self::$elevate;
 		$sizeLimitMax = isset($options['sizeLimitMax']) ? $options['sizeLimitMax'] : self::$sizeLimitMax;
 
-		if($mode === 'off')
-			return self::reject("rejected (proxy disabled)");
+		if($mode === 'off') {
+			return self::reject("rejected (proxy disabled)"); }
 
-		if($mode === 'passthrough_unsafe')
-			return self::forward($rawData, true, "passthrough (UNSAFE mode)");
+		if($mode === 'passthrough_unsafe') {
+			return self::forward($rawData, true, "passthrough (UNSAFE mode)"); }
 
 		// sanitize mode
 		$xml = self::parseXml($rawData);
-		if($xml === false || !isset($xml->methodName))
-			return self::forward($rawData, false, "untrusted (invalid XML)");
+		if($xml === false || !isset($xml->methodName)) {
+			return self::forward($rawData, false, "untrusted (invalid XML)"); }
 
 		$methodName = (string)$xml->methodName;
 
-		if(self::isDenied($methodName, $deny))
+		if(self::isDenied($methodName, $deny)) {
 			return self::reject("rejected (not allowed on this connection): ".
-				self::logValue($methodName), $methodName);
+				self::logValue($methodName), $methodName); }
 
 		$directory = isset($options['directory']) ? $options['directory'] : null;
 
@@ -333,9 +297,9 @@ class XMLRPCProxy
 		if(self::isDirectoryCommand($methodName))
 		{
 			$refused = self::refusedDirectoryPath(self::callParamValues($xml), $directory);
-			if($refused !== null)
+			if($refused !== null) {
 				return self::reject("rejected (outside the directory this server allows): ".
-					$methodName." ".self::logValue($refused), $methodName);
+					$methodName." ".self::logValue($refused), $methodName); }
 		}
 
 		// An evaluator called on its own. Its arguments are command strings
@@ -345,9 +309,9 @@ class XMLRPCProxy
 		if(self::isEvaluator($methodName))
 		{
 			$refusal = self::refusedInParams(self::callParamValues($xml), $deny, $directory);
-			if($refusal !== null)
+			if($refusal !== null) {
 				return self::reject($refusal['reason'].": ".$methodName." carrying ".
-					self::logValue($refusal['subject']), $refusal['command']);
+					self::logValue($refusal['subject']), $refusal['command']); }
 		}
 
 		if(in_array($methodName, self::$sanitizeMethods, true))
@@ -355,9 +319,9 @@ class XMLRPCProxy
 			if(!$allowLocalPaths && in_array($methodName, self::$uriLoadMethods, true))
 			{
 				$uri = self::loadUri($xml);
-				if(($uri !== null) && !preg_match(self::$networkUri, $uri))
+				if(($uri !== null) && !preg_match(self::$networkUri, $uri)) {
 					return self::reject("rejected (load from a local path): ".
-						$methodName." ".self::logValue($uri), $methodName);
+						$methodName." ".self::logValue($uri), $methodName); }
 			}
 
 			$rebuilt = self::rebuildLoadParams($xml, $methodName, $safeParams, $directory);
@@ -370,13 +334,13 @@ class XMLRPCProxy
 			$state = $trusted ? "trusted" : "untrusted (a parameter could not be rebuilt)";
 			if(count($rebuilt['stripped']) > 0)
 			{
-				$stripped = array();
-				foreach($rebuilt['stripped'] as $value)
-					$stripped[] = self::logValue($value);
+				$stripped = [];
+				foreach($rebuilt['stripped'] as $value) {
+					$stripped[] = self::logValue($value); }
 				$line = $state.": ".$methodName." (kept ".$rebuilt['kept']." params, stripped: ".implode(', ', $stripped).")";
 			}
-			else
-				$line = $state.": ".$methodName." (".$rebuilt['kept']." params)";
+			else {
+				$line = $state.": ".$methodName." (".$rebuilt['kept']." params)"; }
 
 			return self::forward($rebuilt['xml'], $trusted, $line);
 		}
@@ -393,17 +357,17 @@ class XMLRPCProxy
 				foreach($rebuilt['stripped'] as $value)
 				{
 					$command = self::refusedCommandName($value, $deny);
-					if($command !== null)
+					if($command !== null) {
 						return self::reject("rejected (not allowed on this connection): ".
-							$methodName." carrying ".self::logValue($command), $command);
+							$methodName." carrying ".self::logValue($command), $command); }
 
 					// Same reason, for a command that is allowed but whose
 					// directory is not: stripping it refuses it on the
 					// single-call path, and here nothing is stripped.
 					$command = self::refusedDirectoryCommand($value, $directory);
-					if($command !== null)
+					if($command !== null) {
 						return self::reject("rejected (outside the directory this server allows): ".
-							$methodName." carrying ".self::logValue($value), $command);
+							$methodName." carrying ".self::logValue($value), $command); }
 				}
 
 				return self::forward($rawData, false, "untrusted: ".$methodName." (".
@@ -420,8 +384,8 @@ class XMLRPCProxy
 		if(isset($elevate[$methodName]))
 		{
 			$built = self::rebuildElevated($xml, $methodName, $elevate[$methodName], $sizeLimitMax);
-			if($built !== null)
-				return self::forward($built, true, "trusted: ".$methodName." (elevated)");
+			if($built !== null) {
+				return self::forward($built, true, "trusted: ".$methodName." (elevated)"); }
 
 			// Nothing stands behind this test. The shape and the $sizeLimitMax
 			// ceiling are applied by re-emitting the call from the values this
@@ -456,29 +420,29 @@ class XMLRPCProxy
 				// — and a local path can sit in the field the policy is not
 				// the one deciding on. Which field rtorrent itself would
 				// take is not something to guess at either.
-				if($member['duplicated'])
+				if($member['duplicated']) {
 					return self::reject("rejected (a member names methodName or params twice): ".
-						"system.multicall carrying ".self::logValue($member['name']), $member['name']);
+						"system.multicall carrying ".self::logValue($member['name']), $member['name']); }
 
-				if(self::isDenied($member['name'], $deny))
+				if(self::isDenied($member['name'], $deny)) {
 					return self::reject("rejected (not allowed on this connection): ".
-						"system.multicall carrying ".self::logValue($member['name']), $member['name']);
+						"system.multicall carrying ".self::logValue($member['name']), $member['name']); }
 
 				// Nothing here can reason about a nested system.multicall, and
 				// xmlrpc-c refuses one at dispatch in any case.
-				if($member['name'] === 'system.multicall')
+				if($member['name'] === 'system.multicall') {
 					return self::reject("rejected (nested system.multicall): ".
-						"system.multicall carrying system.multicall", 'system.multicall');
+						"system.multicall carrying system.multicall", 'system.multicall'); }
 
 				// A directory setter as a member of its own, judged as the same
 				// command the top level judges it as.
 				if(self::isDirectoryCommand($member['name']))
 				{
 					$refused = self::refusedDirectoryPath($member['params'], $directory);
-					if($refused !== null)
+					if($refused !== null) {
 						return self::reject("rejected (outside the directory this server allows): ".
 							"system.multicall carrying ".self::logValue($member['name']).
-							" ".self::logValue($refused), $member['name']);
+							" ".self::logValue($refused), $member['name']); }
 					continue;
 				}
 
@@ -487,10 +451,10 @@ class XMLRPCProxy
 				if(self::isEvaluator($member['name']))
 				{
 					$refusal = self::refusedInParams($member['params'], $deny, $directory);
-					if($refusal !== null)
+					if($refusal !== null) {
 						return self::reject($refusal['reason'].": system.multicall carrying ".
 							self::logValue($member['name'])." carrying ".
-							self::logValue($refusal['subject']), $refusal['command']);
+							self::logValue($refusal['subject']), $refusal['command']); }
 					continue;
 				}
 
@@ -504,10 +468,10 @@ class XMLRPCProxy
 				if(!$allowLocalPaths &&
 					in_array($member['name'], self::$uriLoadMethods, true) &&
 					isset($member['params'][1]) &&
-					!preg_match(self::$networkUri, $member['params'][1]))
+					!preg_match(self::$networkUri, $member['params'][1])) {
 					return self::reject("rejected (load from a local path): ".
 						"system.multicall carrying ".self::logValue($member['name']).
-						" ".self::logValue($member['params'][1]), $member['name']);
+						" ".self::logValue($member['params'][1]), $member['name']); }
 
 				if(!in_array($member['name'], self::$multicallMethods, true) &&
 					!in_array($member['name'], self::$sanitizeMethods, true))
@@ -520,10 +484,10 @@ class XMLRPCProxy
 					// the order the single-call path classifies it in.
 					if(isset($elevate[$member['name']]) &&
 						(self::rebuildElevatedMember($member['name'], $member['values'],
-							$elevate[$member['name']], $sizeLimitMax) === null))
+							$elevate[$member['name']], $sizeLimitMax) === null)) {
 						return self::reject("rejected (arguments did not match the allowed shape): ".
 							"system.multicall carrying ".self::logValue($member['name']),
-							$member['name']);
+							$member['name']); }
 
 					continue;
 				}
@@ -541,17 +505,17 @@ class XMLRPCProxy
 					// d.directory.set="/torrents/my import" names import -- and
 					// a batch is refused whole, so one label would cost every
 					// add in it.
-					if(self::rebuildSafeLoadParam($value, $safeParams, $directory) !== null)
-						continue;
+					if(self::rebuildSafeLoadParam($value, $safeParams, $directory) !== null) {
+						continue; }
 
 					// This one is forwarded as the caller wrote it, so anything
 					// in it that rtorrent would run as a command has to be
 					// refused here: untrusted is not a refusal on every version.
-					$refusal = self::refusedInParams(array($value), $deny, $directory);
-					if($refusal !== null)
+					$refusal = self::refusedInParams([$value], $deny, $directory);
+					if($refusal !== null) {
 						return self::reject($refusal['reason'].": system.multicall carrying ".
 							self::logValue($member['name'])." carrying ".
-							self::logValue($refusal['subject']), $refusal['command']);
+							self::logValue($refusal['subject']), $refusal['command']); }
 				}
 			}
 
@@ -560,8 +524,8 @@ class XMLRPCProxy
 			// included, is forwarded untrusted below, as it always was.
 			$trusted = self::trustedSystemMulticall($xml, $mode, $safeParams,
 				$allowLocalPaths, $options);
-			if($trusted !== null)
-				return $trusted;
+			if($trusted !== null) {
+				return $trusted; }
 
 			// What was judged is what is sent. Every command parameter the
 			// rebuild accepted goes out in its rebuilt spelling, where each
@@ -581,6 +545,187 @@ class XMLRPCProxy
 	}
 
 	/**
+	 * The name of a refused command inside this command string, or null when
+	 * it names none.
+	 *
+	 * A command string is not one name. rtorrent nests them: the arguments a
+	 * multicall takes after its view are themselves commands, separated by
+	 * ','; one command ends and the next begins at ';' or a newline
+	 * (parse_command_multiple, src/rpc/parse_commands.cc); a name introduced
+	 * by '$' is called wherever it stands, at any depth; and a braced list is
+	 * a command with its own arguments. Reading only the name before the first
+	 * '=' therefore answers for the outermost call and for nothing it carries,
+	 * which is how "d.multicall=main, execute=..." and "$execute=..." read as
+	 * commands nobody refuses.
+	 *
+	 * Every ','-, ';'-, '$'-, brace-, paren-, quote- or space-separated
+	 * element starts with a name, so each of those leading names is judged.
+	 * What follows '=' inside one element is that command's argument text and
+	 * is not judged, so a custom field whose value begins with a refused word
+	 * is not refused for it.
+	 *
+	 * Public because the httprpc plugin reaches rtorrent without a raw XMLRPC
+	 * body and still has to ask the same question over the same list.
+	 */
+	public static function refusedCommandName($value, $deny = null)
+	{
+		if($deny === null) {
+			$deny = self::$denyPrefixes; }
+		$elements = preg_split('/[,;${}()"\s]+/', (string)$value, -1, PREG_SPLIT_NO_EMPTY);
+		if($elements === false) {
+			return null; }
+		foreach($elements as $element)
+		{
+			if(!preg_match('/^[A-Za-z0-9_.]+/', $element, $match)) {
+				continue; }
+			if(self::isDenied($match[0], $deny)) {
+				return $match[0]; }
+		}
+		return null;
+	}
+
+	/**
+	 * The sentence both doors show when this filter refuses a call. It names the
+	 * command so a refusal reads the same at either door, and it says this
+	 * server refused the call rather than blaming rtorrent for an outage that
+	 * did not happen -- rtorrent never saw it.
+	 */
+	public static function rejectionMessage($method)
+	{
+		return (($method !== null) && ($method !== ''))
+			? "The command '".$method."' was rejected by this server."
+			: "This XMLRPC call was rejected by this server.";
+	}
+
+	/**
+	 * The same sentence wrapped in the XMLRPC fault a door returns: faultCode
+	 * -501, matching what rpc2.php answers for the same refusals.
+	 */
+	public static function rejectionFault($method)
+	{
+		$faultString = self::rejectionMessage($method);
+		return '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+			.'<methodResponse><fault><value><struct>'
+			.'<member><name>faultCode</name><value><i4>-501</i4></value></member>'
+			.'<member><name>faultString</name><value><string>'
+			.htmlspecialchars($faultString, ENT_NOQUOTES, 'UTF-8')
+			.'</string></value></member>'
+			.'</struct></value></fault></methodResponse>';
+	}
+
+	/**
+	 * Rebuild a command-carrying call keeping only safe parameters.
+	 *
+	 *   Param 0: target                    (always kept)
+	 *   Param 1: URL, raw data, or view    (always kept)
+	 *   Param 2+: command strings (kept iff the command name is in the
+	 *                              whitelist, otherwise stripped)
+	 *
+	 * Both families put their commands at param 2: load.start, load.normal,
+	 * load.raw, load.raw_start, d.multicall, d.multicall2,
+	 * d.multicall.filtered and t/f/p.multicall all do, on 0.9.8 and on 0.16.x
+	 * alike. Measured by side effect against both, rather than read off a
+	 * signature — the caller acts on the answer by deciding what is data.
+	 *
+	 * Public for unit testing — production callers should go through
+	 * process().
+	 *
+	 * @return array ['xml' => string, 'kept' => int, 'stripped' => array,
+	 *                'rebuiltAll' => bool] — rebuiltAll is false when any
+	 *               parameter had to be carried over verbatim, which means
+	 *               the call must not be sent as trusted.
+	 */
+	public static function rebuildLoadParams($xml, $methodName, $safeParams = [], $directory = null)
+	{
+		$cleanXml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+		$cleanXml .= '<methodCall><methodName>' . htmlspecialchars($methodName) . '</methodName>';
+		$cleanXml .= '<params>';
+
+		$kept = 0;
+		$stripped = [];
+
+		$rebuiltAll = true;
+
+		if(isset($xml->params->param))
+		{
+			$index = 0;
+			foreach($xml->params->param as $param)
+			{
+				if($index < 2)
+				{
+					// Target and URL/data are values, never commands, but they
+					// are re-emitted rather than copied so that what was read
+					// and what is sent are the same bytes.
+					$payload = self::rebuildDataParam($param->value);
+					if($payload === null)
+					{
+						$payload = '<param>' . $param->value->asXML() . '</param>';
+						$rebuiltAll = false;
+					}
+					$cleanXml .= $payload;
+					$kept++;
+				}
+				else
+				{
+					$value = self::extractParamValue($param->value);
+					$rebuiltParam = self::rebuildSafeLoadParam($value, $safeParams, $directory);
+					if($rebuiltParam !== null)
+					{
+						$cleanXml .= '<param>'.self::emitText($rebuiltParam).'</param>';
+						$kept++;
+					}
+					else
+					{
+						$stripped[] = ($value === null) ? '' : $value;
+					}
+				}
+				$index++;
+			}
+		}
+
+		$cleanXml .= '</params></methodCall>';
+
+		return ['xml' => $cleanXml, 'kept' => $kept, 'stripped' => $stripped,
+			'rebuiltAll' => $rebuiltAll];
+	}
+
+	private static function log($msg)
+	{
+		if(self::$log) {
+			FileUtil::toLog("xmlrpc-proxy: ".$msg); }
+	}
+
+	/**
+	 * Make a client-supplied value safe to put in a log line: one line, and
+	 * short enough that it cannot push the rest of the entry out of view.
+	 */
+	private static function logValue($value)
+	{
+		$value = str_replace(["\r", "\n", "\t"], ' ', (string)$value);
+		if(strlen($value) > 120) {
+			$value = substr($value, 0, 120).'...'; }
+		return $value;
+	}
+
+	/**
+	 * Parse untrusted XMLRPC XML with entity loading disabled.
+	 *
+	 * PHP 8+ libxml2 defaults external-entity loading off; PHP 7.x does
+	 * not, and ruTorrent still supports PHP 7. We disable it explicitly to
+	 * prevent XXE on client-supplied XML.
+	 */
+	private static function parseXml($rawData)
+	{
+		$prev = null;
+		if(PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader')) {
+			$prev = libxml_disable_entity_loader(true); }
+		$xml = @simplexml_load_string($rawData, 'SimpleXMLElement', LIBXML_NONET);
+		if($prev !== null) {
+			libxml_disable_entity_loader($prev); }
+		return $xml;
+	}
+
+	/**
 	 * The batch on a trusted connection, or null to leave it to the untrusted
 	 * forward. From 0.16.9 rtorrent checks UNTRUSTED_CONNECTION at each member,
 	 * so calls that are trusted alone are refused one by one when they arrive
@@ -593,44 +738,44 @@ class XMLRPCProxy
 		$allowLocalPaths, $options)
 	{
 		$data = self::systemMulticallData($xml);
-		if($data === null)
-			return null;
+		if($data === null) {
+			return null; }
 
 		$members = '';
 		$count = 0;
 		foreach($data->value as $member)
 		{
 			$call = self::systemMemberCall($member);
-			if($call === null)
-				return null;
+			if($call === null) {
+				return null; }
 			$decision = self::decide($call['xml'], $mode, $safeParams, $allowLocalPaths, $options);
-			if(($decision['action'] !== 'send') || !$decision['trusted'])
-				return null;
+			if(($decision['action'] !== 'send') || !$decision['trusted']) {
+				return null; }
 			$checked = self::parseXml($decision['payload']);
-			if(($checked === false) || ((string)$checked->methodName !== $call['method']))
-				return null;
+			if(($checked === false) || ((string)$checked->methodName !== $call['method'])) {
+				return null; }
 			$values = '';
 			$emitted = 0;
-			if(isset($checked->params->param))
+			if(isset($checked->params->param)) {
 				foreach($checked->params->param as $param)
 				{
-					if(!isset($param->value))
-						return null;
+					if(!isset($param->value)) {
+						return null; }
 					$values .= $param->value->asXML();
 					$emitted++;
-				}
+				} }
 			// A load alone may strip a command it does not rebuild; a member
 			// that would lose one is not sent trusted.
-			if($emitted !== $call['params'])
-				return null;
+			if($emitted !== $call['params']) {
+				return null; }
 			$members .= '<value><struct><member><name>methodName</name><value><string>'
 				.htmlspecialchars($call['method'], ENT_NOQUOTES, 'UTF-8')
 				.'</string></value></member><member><name>params</name><value><array><data>'
 				.$values.'</data></array></value></member></struct></value>';
 			$count++;
 		}
-		if($count === 0)
-			return null;
+		if($count === 0) {
+			return null; }
 
 		return self::forward('<?xml version="1.0" encoding="UTF-8"?>' . "\n"
 			. '<methodCall><methodName>system.multicall</methodName><params><param><value><array><data>'
@@ -646,25 +791,25 @@ class XMLRPCProxy
 		$attributes = $element->xpath('./@*');
 		if($children === false || $plain === false || $attributes === false ||
 			count($attributes) !== 0 || count($children) !== count($names) ||
-			count($plain) !== count($names) || (!$allowText && trim((string)$element) !== ''))
-			return false;
-		foreach($children as $index => $child)
-			if($child->getName() !== $names[$index])
-				return false;
+			count($plain) !== count($names) || (!$allowText && trim((string)$element) !== '')) {
+			return false; }
+		foreach($children as $index => $child) {
+			if($child->getName() !== $names[$index]) {
+				return false; } }
 		return true;
 	}
 
 	/** The members of a system.multicall in exactly the shape XML-RPC defines, or null. */
 	private static function systemMulticallData($xml)
 	{
-		if($xml->getName() !== 'methodCall' || !self::hasChildren($xml, array('methodName', 'params')) ||
-			!self::hasChildren($xml->methodName, array(), true))
-			return null;
+		if($xml->getName() !== 'methodCall' || !self::hasChildren($xml, ['methodName', 'params']) ||
+			!self::hasChildren($xml->methodName, [], true)) {
+			return null; }
 		$node = $xml->params;
-		foreach(array('param', 'value', 'array', 'data') as $name)
+		foreach(['param', 'value', 'array', 'data'] as $name)
 		{
-			if(!self::hasChildren($node, array($name)))
-				return null;
+			if(!self::hasChildren($node, [$name])) {
+				return null; }
 			$node = $node->$name;
 		}
 		return self::hasChildren($node, array_fill(0, count($node->children()), 'value')) ? $node : null;
@@ -677,40 +822,40 @@ class XMLRPCProxy
 	 */
 	private static function systemMemberCall($member)
 	{
-		if(!self::hasChildren($member, array('struct')) ||
-			!self::hasChildren($member->struct, array('member', 'member')))
-			return null;
+		if(!self::hasChildren($member, ['struct']) ||
+			!self::hasChildren($member->struct, ['member', 'member'])) {
+			return null; }
 		$name = null;
 		$params = null;
 		foreach($member->struct->member as $field)
 		{
-			if(!self::hasChildren($field, array('name', 'value')) ||
-				!self::hasChildren($field->name, array(), true))
-				return null;
+			if(!self::hasChildren($field, ['name', 'value']) ||
+				!self::hasChildren($field->name, [], true)) {
+				return null; }
 			$key = (string)$field->name;
 			if($key === 'methodName' && $name === null)
 			{
-				if(!self::hasChildren($field->value, array(), true) &&
-					(!self::hasChildren($field->value, array('string')) ||
-					!self::hasChildren($field->value->string, array(), true)))
-					return null;
+				if(!self::hasChildren($field->value, [], true) &&
+					(!self::hasChildren($field->value, ['string']) ||
+					!self::hasChildren($field->value->string, [], true))) {
+					return null; }
 				$name = isset($field->value->string)
 					? (string)$field->value->string
 					: (string)$field->value;
 			}
-			else if($key === 'params' && $params === null &&
-				self::hasChildren($field->value, array('array')) &&
-				self::hasChildren($field->value->array, array('data')))
+			elseif($key === 'params' && $params === null &&
+				self::hasChildren($field->value, ['array']) &&
+				self::hasChildren($field->value->array, ['data']))
 			{
 				$params = $field->value->array->data;
-				if(!self::hasChildren($params, array_fill(0, count($params->children()), 'value')))
-					return null;
+				if(!self::hasChildren($params, array_fill(0, count($params->children()), 'value'))) {
+					return null; }
 			}
-			else
-				return null;
+			else {
+				return null; }
 		}
-		if($name === null || $name === '' || $params === null || $name === 'system.multicall')
-			return null;
+		if($name === null || $name === '' || $params === null || $name === 'system.multicall') {
+			return null; }
 		$values = '';
 		$count = 0;
 		foreach($params->value as $value)
@@ -718,9 +863,9 @@ class XMLRPCProxy
 			$values .= '<param>'.$value->asXML().'</param>';
 			$count++;
 		}
-		return array('method' => $name, 'params' => $count,
+		return ['method' => $name, 'params' => $count,
 			'xml' => '<methodCall><methodName>'.htmlspecialchars($name, ENT_NOQUOTES, 'UTF-8')
-				.'</methodName><params>'.$values.'</params></methodCall>');
+				.'</methodName><params>'.$values.'</params></methodCall>'];
 	}
 
 	/**
@@ -730,16 +875,16 @@ class XMLRPCProxy
 	 */
 	private static function loadUri($xml)
 	{
-		if(!isset($xml->params->param))
-			return null;
+		if(!isset($xml->params->param)) {
+			return null; }
 		$index = 0;
 		foreach($xml->params->param as $param)
 		{
-			if($index === 1)
+			if($index === 1) {
 				// A base64 parameter is still a URI as far as rtorrent is
 				// concerned: it decodes to the string it opens. Read it the
 				// same way, so encoding it is not a way past this.
-				return self::extractParamText($param->value);
+				return self::extractParamText($param->value); }
 			$index++;
 		}
 		return null;
@@ -754,9 +899,9 @@ class XMLRPCProxy
 	private static function isDenied($name, $deny)
 	{
 		$name = self::canonicalName($name);
-		foreach($deny as $prefix)
-			if(strncmp($name, $prefix, strlen($prefix)) === 0)
-				return true;
+		foreach($deny as $prefix) {
+			if(strncmp($name, $prefix, strlen($prefix)) === 0) {
+				return true; } }
 		return false;
 	}
 
@@ -797,8 +942,8 @@ class XMLRPCProxy
 	private static function commandName($paramValue)
 	{
 		$separator = strpos($paramValue, '=');
-		if($separator === false)
-			return null;
+		if($separator === false) {
+			return null; }
 		return trim(substr($paramValue, 0, $separator));
 	}
 
@@ -817,52 +962,12 @@ class XMLRPCProxy
 	 */
 	private static function refusedDirectoryCommand($value, $directory)
 	{
-		if($directory === null)
-			return null;
+		if($directory === null) {
+			return null; }
 		$command = self::commandName($value);
-		if(($command === null) || !self::isDirectoryCommand($command))
-			return null;
+		if(($command === null) || !self::isDirectoryCommand($command)) {
+			return null; }
 		return $command;
-	}
-
-	/**
-	 * The name of a refused command inside this command string, or null when
-	 * it names none.
-	 *
-	 * A command string is not one name. rtorrent nests them: the arguments a
-	 * multicall takes after its view are themselves commands, separated by
-	 * ','; one command ends and the next begins at ';' or a newline
-	 * (parse_command_multiple, src/rpc/parse_commands.cc); a name introduced
-	 * by '$' is called wherever it stands, at any depth; and a braced list is
-	 * a command with its own arguments. Reading only the name before the first
-	 * '=' therefore answers for the outermost call and for nothing it carries,
-	 * which is how "d.multicall=main, execute=..." and "$execute=..." read as
-	 * commands nobody refuses.
-	 *
-	 * Every ','-, ';'-, '$'-, brace-, paren-, quote- or space-separated
-	 * element starts with a name, so each of those leading names is judged.
-	 * What follows '=' inside one element is that command's argument text and
-	 * is not judged, so a custom field whose value begins with a refused word
-	 * is not refused for it.
-	 *
-	 * Public because the httprpc plugin reaches rtorrent without a raw XMLRPC
-	 * body and still has to ask the same question over the same list.
-	 */
-	public static function refusedCommandName($value, $deny = null)
-	{
-		if($deny === null)
-			$deny = self::$denyPrefixes;
-		$elements = preg_split('/[,;${}()"\s]+/', (string)$value, -1, PREG_SPLIT_NO_EMPTY);
-		if($elements === false)
-			return null;
-		foreach($elements as $element)
-		{
-			if(!preg_match('/^[A-Za-z0-9_.]+/', $element, $match))
-				continue;
-			if(self::isDenied($match[0], $deny))
-				return $match[0];
-		}
-		return null;
 	}
 
 	/**
@@ -878,18 +983,18 @@ class XMLRPCProxy
 		foreach($values as $value)
 		{
 			$command = self::refusedCommandName($value, $deny);
-			if($command !== null)
-				return array(
+			if($command !== null) {
+				return [
 					'reason'  => "rejected (not allowed on this connection)",
 					'subject' => $command,
-					'command' => $command);
+					'command' => $command]; }
 
 			$command = self::refusedDirectoryCommand($value, $directory);
-			if($command !== null)
-				return array(
+			if($command !== null) {
+				return [
 					'reason'  => "rejected (outside the directory this server allows)",
 					'subject' => $value,
-					'command' => $command);
+					'command' => $command]; }
 		}
 		return null;
 	}
@@ -904,11 +1009,11 @@ class XMLRPCProxy
 	 */
 	private static function refusedDirectoryPath($params, $directory)
 	{
-		if($directory === null)
-			return null;
-		foreach(array_slice($params, 1) as $path)
-			if(!self::directoryIsAllowed($path, $directory))
-				return $path;
+		if($directory === null) {
+			return null; }
+		foreach(array_slice($params, 1) as $path) {
+			if(!self::directoryIsAllowed($path, $directory)) {
+				return $path; } }
 		return null;
 	}
 
@@ -919,9 +1024,9 @@ class XMLRPCProxy
 	 */
 	private static function callParamValues($xml)
 	{
-		$values = array();
-		foreach(self::callArgumentValues($xml) as $value)
-			$values[] = ($value === null) ? '' : $value;
+		$values = [];
+		foreach(self::callArgumentValues($xml) as $value) {
+			$values[] = ($value === null) ? '' : $value; }
 		return $values;
 	}
 
@@ -932,10 +1037,10 @@ class XMLRPCProxy
 	 */
 	private static function callArgumentValues($xml)
 	{
-		$values = array();
-		if(isset($xml->params->param))
-			foreach($xml->params->param as $param)
-				$values[] = self::extractParamValue($param->value);
+		$values = [];
+		if(isset($xml->params->param)) {
+			foreach($xml->params->param as $param) {
+				$values[] = self::extractParamValue($param->value); } }
 		return $values;
 	}
 
@@ -949,39 +1054,38 @@ class XMLRPCProxy
 	 */
 	private static function multicallMembers($xml)
 	{
-		$members = array();
-		if(!isset($xml->params->param->value->array->data->value))
-			return $members;
+		$members = [];
+		if(!isset($xml->params->param->value->array->data->value)) {
+			return $members; }
 		foreach($xml->params->param->value->array->data->value as $member)
 		{
-			if(!isset($member->struct->member))
-				continue;
+			if(!isset($member->struct->member)) {
+				continue; }
 			$name = null;
-			$params = array();
-			$values = array();
-			$seen = array('methodName' => 0, 'params' => 0);
+			$params = [];
+			$values = [];
+			$seen = ['methodName' => 0, 'params' => 0];
 			foreach($member->struct->member as $field)
 			{
-				if(!isset($field->name))
-					continue;
+				if(!isset($field->name)) {
+					continue; }
 				$fieldName = (string)$field->name;
-				if(isset($seen[$fieldName]))
-					$seen[$fieldName]++;
-				if($fieldName === 'methodName')
+				if(isset($seen[$fieldName])) {
+					$seen[$fieldName]++; }
+				if($fieldName === 'methodName') {
 					$name = isset($field->value->string)
 						? (string)$field->value->string
-						: trim((string)$field->value);
-				else
-				if(($fieldName === 'params') && isset($field->value->array->data->value))
+						: trim((string)$field->value); }
+				elseif(($fieldName === 'params') && isset($field->value->array->data->value)) {
 					foreach($field->value->array->data->value as $value)
 					{
 						$values[] = self::extractParamValue($value);
 						$params[] = self::extractParamText($value);
-					}
+					} }
 			}
-			if($name !== null)
-				$members[] = array('name' => $name, 'params' => $params, 'values' => $values,
-					'duplicated' => ($seen['methodName'] > 1) || ($seen['params'] > 1));
+			if($name !== null) {
+				$members[] = ['name' => $name, 'params' => $params, 'values' => $values,
+					'duplicated' => ($seen['methodName'] > 1) || ($seen['params'] > 1)]; }
 		}
 		return $members;
 	}
@@ -1010,20 +1114,20 @@ class XMLRPCProxy
 	private static function rebuildSystemMulticall($xml, $safeParams, $directory,
 		$elevate, $sizeLimitMax)
 	{
-		if(!isset($xml->params->param->value->array->data->value))
-			return null;
+		if(!isset($xml->params->param->value->array->data->value)) {
+			return null; }
 
 		$out = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
 			. '<methodCall><methodName>system.multicall</methodName>'
 			. '<params><param><value><array><data>';
 
 		$changed = false;
-		foreach($xml->params->param->value->array->data->value as $member)
+		foreach($xml->params->param->value->array->data->value as $member) {
 			$out .= self::rebuildMulticallMember($member, $safeParams, $directory,
-				$elevate, $sizeLimitMax, $changed);
+				$elevate, $sizeLimitMax, $changed); }
 
-		if(!$changed)
-			return null;
+		if(!$changed) {
+			return null; }
 
 		return $out . '</data></array></value></param></params></methodCall>';
 	}
@@ -1036,36 +1140,35 @@ class XMLRPCProxy
 	private static function rebuildMulticallMember($member, $safeParams, $directory,
 		$elevate, $sizeLimitMax, &$changed)
 	{
-		if(!isset($member->struct->member))
-			return $member->asXML();
+		if(!isset($member->struct->member)) {
+			return $member->asXML(); }
 
 		$name = null;
 		$params = null;
-		$seen = array('methodName' => 0, 'params' => 0);
+		$seen = ['methodName' => 0, 'params' => 0];
 		foreach($member->struct->member as $field)
 		{
-			if(!isset($field->name))
-				continue;
+			if(!isset($field->name)) {
+				continue; }
 			$fieldName = (string)$field->name;
-			if(isset($seen[$fieldName]))
-				$seen[$fieldName]++;
-			if($fieldName === 'methodName')
+			if(isset($seen[$fieldName])) {
+				$seen[$fieldName]++; }
+			if($fieldName === 'methodName') {
 				$name = isset($field->value->string)
 					? (string)$field->value->string
-					: trim((string)$field->value);
-			else
-			if($fieldName === 'params')
-				$params = $field->value;
+					: trim((string)$field->value); }
+			elseif($fieldName === 'params') {
+				$params = $field->value; }
 		}
 
 		// decide() refuses a member naming either field twice before anything
 		// is rebuilt. Keeping the same rule here means this reads the field
 		// the policy read, rather than the last one written, whatever calls it.
-		if(($seen['methodName'] > 1) || ($seen['params'] > 1))
-			return $member->asXML();
+		if(($seen['methodName'] > 1) || ($seen['params'] > 1)) {
+			return $member->asXML(); }
 
-		if(($name === null) || ($params === null) || !isset($params->array->data->value))
-			return $member->asXML();
+		if(($name === null) || ($params === null) || !isset($params->array->data->value)) {
+			return $member->asXML(); }
 
 		if(!in_array($name, self::$multicallMethods, true) &&
 			!in_array($name, self::$sanitizeMethods, true))
@@ -1084,16 +1187,16 @@ class XMLRPCProxy
 			// single-call path classifies a name in is the order used here.
 			if(isset($elevate[$name]))
 			{
-				$values = array();
-				foreach($params->array->data->value as $value)
-					$values[] = self::extractParamValue($value);
+				$values = [];
+				foreach($params->array->data->value as $value) {
+					$values[] = self::extractParamValue($value); }
 
 				$built = self::rebuildElevatedMember($name, $values,
 					$elevate[$name], $sizeLimitMax);
 				if($built !== null)
 				{
-					if($built !== $member->asXML())
-						$changed = true;
+					if($built !== $member->asXML()) {
+						$changed = true; }
 					return $built;
 				}
 			}
@@ -1124,8 +1227,8 @@ class XMLRPCProxy
 			}
 
 			$emitted = self::emitText($rebuilt);
-			if($emitted !== $value->asXML())
-				$changed = true;
+			if($emitted !== $value->asXML()) {
+				$changed = true; }
 			$out .= $emitted;
 		}
 
@@ -1141,8 +1244,8 @@ class XMLRPCProxy
 	{
 		$values = self::callArgumentValues($xml);
 
-		if(count($values) !== count($shapes))
-			return null;
+		if(count($values) !== count($shapes)) {
+			return null; }
 
 		$out = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
 			. '<methodCall><methodName>' . htmlspecialchars($methodName)
@@ -1151,8 +1254,8 @@ class XMLRPCProxy
 		foreach($shapes as $index => $shape)
 		{
 			$emitted = self::emitArgument($shape, $values[$index], $sizeLimitMax);
-			if($emitted === null)
-				return null;
+			if($emitted === null) {
+				return null; }
 			$out .= '<param>' . $emitted . '</param>';
 		}
 
@@ -1168,15 +1271,15 @@ class XMLRPCProxy
 	 */
 	private static function rebuildElevatedMember($name, $values, $shapes, $sizeLimitMax)
 	{
-		if(count($values) !== count($shapes))
-			return null;
+		if(count($values) !== count($shapes)) {
+			return null; }
 
 		$arguments = '';
 		foreach($shapes as $index => $shape)
 		{
 			$emitted = self::emitArgument($shape, $values[$index], $sizeLimitMax);
-			if($emitted === null)
-				return null;
+			if($emitted === null) {
+				return null; }
 			$arguments .= $emitted;
 		}
 
@@ -1198,33 +1301,33 @@ class XMLRPCProxy
 	{
 		// No argument to emit from. extractParamValue() says so for a value it
 		// could not read, and nothing may be built on one this side never had.
-		if($value === null)
-			return null;
+		if($value === null) {
+			return null; }
 
 		switch($shape)
 		{
 			case 'hash':
-				if(!preg_match('/^[0-9A-Fa-f]{40}$/', $value))
-					return null;
+				if(!preg_match('/^[0-9A-Fa-f]{40}$/', $value)) {
+					return null; }
 				return '<value><string>'.strtoupper($value).'</string></value>';
 
 			case 'empty':
-				if($value !== '')
-					return null;
+				if($value !== '') {
+					return null; }
 				return '<value><string></string></value>';
 
 			case 'int':
 				$number = self::integerValue($value);
-				if($number === null)
-					return null;
+				if($number === null) {
+					return null; }
 				return '<value><i8>'.$number.'</i8></value>';
 
 			case 'size':
 				$size = self::integerValue($value);
-				if(($size === null) || ($size < 1))
-					return null;
-				if($size > $sizeLimitMax)
-					$size = $sizeLimitMax;
+				if(($size === null) || ($size < 1)) {
+					return null; }
+				if($size > $sizeLimitMax) {
+					$size = $sizeLimitMax; }
 				return '<value><i8>'.$size.'</i8></value>';
 
 			case 'text':
@@ -1253,12 +1356,12 @@ class XMLRPCProxy
 	 */
 	private static function integerValue($text)
 	{
-		if(!preg_match('/^([+-]?)([0-9]+)$/', $text, $match))
-			return null;
+		if(!preg_match('/^([+-]?)([0-9]+)$/', $text, $match)) {
+			return null; }
 
 		$digits = ltrim($match[2], '0');
-		if($digits === '')
-			return 0;
+		if($digits === '') {
+			return 0; }
 
 		// (int) saturates at PHP_INT_MAX instead of failing, so the round trip
 		// is the range test: a value the platform's integer cannot hold comes
@@ -1286,8 +1389,8 @@ class XMLRPCProxy
 	private static function emitText($value)
 	{
 		if(preg_match('/[^\x{9}\x{A}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u',
-			$value) !== 0)
-			return '<value><base64>'.base64_encode($value).'</base64></value>';
+			$value) !== 0) {
+			return '<value><base64>'.base64_encode($value).'</base64></value>'; }
 
 		return '<value><string>'
 			. htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8')
@@ -1309,17 +1412,17 @@ class XMLRPCProxy
 	 */
 	private static function directoryIsAllowed($path, $directory)
 	{
-		if(!is_array($directory) || !isset($directory['root']))
-			return false;
+		if(!is_array($directory) || !isset($directory['root'])) {
+			return false; }
 		$root = self::normalisePath($directory['root']);
-		if(($root === null) || ($root === ''))
-			return false;
+		if(($root === null) || ($root === '')) {
+			return false; }
 
 		$path = self::normalisePath($path);
-		if($path === null)
-			return false;
-		if(!self::isInside($path, $root))
-			return false;
+		if($path === null) {
+			return false; }
+		if(!self::isInside($path, $root)) {
+			return false; }
 
 		if(isset($directory['resolve']) && is_callable($directory['resolve']))
 		{
@@ -1327,10 +1430,10 @@ class XMLRPCProxy
 			$realRoot = call_user_func($directory['resolve'], $root);
 			// A resolver that cannot answer for either side leaves the question
 			// open, and an open question about a write target is a no.
-			if(!is_string($real) || !is_string($realRoot) || ($real === '') || ($realRoot === ''))
-				return false;
-			if(!self::isInside($real, $realRoot))
-				return false;
+			if(!is_string($real) || !is_string($realRoot) || ($real === '') || ($realRoot === '')) {
+				return false; }
+			if(!self::isInside($real, $realRoot)) {
+				return false; }
 		}
 
 		return true;
@@ -1344,17 +1447,17 @@ class XMLRPCProxy
 	private static function normalisePath($path)
 	{
 		$path = trim((string)$path);
-		if(($path === '') || ($path[0] !== '/'))
-			return null;
-		$out = array();
+		if(($path === '') || ($path[0] !== '/')) {
+			return null; }
+		$out = [];
 		foreach(explode('/', $path) as $part)
 		{
-			if(($part === '') || ($part === '.'))
-				continue;
+			if(($part === '') || ($part === '.')) {
+				continue; }
 			if($part === '..')
 			{
-				if(count($out) === 0)
-					return null;
+				if(count($out) === 0) {
+					return null; }
 				array_pop($out);
 				continue;
 			}
@@ -1369,50 +1472,21 @@ class XMLRPCProxy
 	 */
 	private static function isInside($path, $root)
 	{
-		if($root === '/')
-			return true;
+		if($root === '/') {
+			return true; }
 		return ($path === $root) || (strpos($path, rtrim($root, '/').'/') === 0);
 	}
 
 	private static function forward($payload, $trusted, $line)
 	{
-		return array('action' => 'send', 'payload' => $payload,
-			'trusted' => $trusted, 'method' => null, 'log' => array($line));
+		return ['action' => 'send', 'payload' => $payload,
+			'trusted' => $trusted, 'method' => null, 'log' => [$line]];
 	}
 
 	private static function reject($line, $method = null)
 	{
-		return array('action' => 'reject', 'payload' => '',
-			'trusted' => false, 'method' => $method, 'log' => array($line));
-	}
-
-	/**
-	 * The sentence both doors show when this filter refuses a call. It names the
-	 * command so a refusal reads the same at either door, and it says this
-	 * server refused the call rather than blaming rtorrent for an outage that
-	 * did not happen -- rtorrent never saw it.
-	 */
-	public static function rejectionMessage($method)
-	{
-		return (($method !== null) && ($method !== ''))
-			? "The command '".$method."' was rejected by this server."
-			: "This XMLRPC call was rejected by this server.";
-	}
-
-	/**
-	 * The same sentence wrapped in the XMLRPC fault a door returns: faultCode
-	 * -501, matching what rpc2.php answers for the same refusals.
-	 */
-	public static function rejectionFault($method)
-	{
-		$faultString = self::rejectionMessage($method);
-		return '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-			.'<methodResponse><fault><value><struct>'
-			.'<member><name>faultCode</name><value><i4>-501</i4></value></member>'
-			.'<member><name>faultString</name><value><string>'
-			.htmlspecialchars($faultString, ENT_NOQUOTES, 'UTF-8')
-			.'</string></value></member>'
-			.'</struct></value></fault></methodResponse>';
+		return ['action' => 'reject', 'payload' => '',
+			'trusted' => false, 'method' => $method, 'log' => [$line]];
 	}
 
 	/**
@@ -1429,15 +1503,15 @@ class XMLRPCProxy
 	 */
 	private static function splitLoadArguments($value)
 	{
-		$arguments = array();
+		$arguments = [];
 		$len = strlen($value);
 		$i = 0;
 		while($i < $len)
 		{
-			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t"))
-				$i++;
-			if($i >= $len)
-				break;
+			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t")) {
+				$i++; }
+			if($i >= $len) {
+				break; }
 
 			if($value[$i] === '"')
 			{
@@ -1462,8 +1536,8 @@ class XMLRPCProxy
 					$argument .= $c;
 					$i++;
 				}
-				if(!$closed)
-					return null;
+				if(!$closed) {
+					return null; }
 				$arguments[] = $argument;
 			}
 			else
@@ -1485,8 +1559,8 @@ class XMLRPCProxy
 				while($i < $len)
 				{
 					$c = $value[$i];
-					if($c === ',')
-						break;
+					if($c === ',') {
+						break; }
 					if(($c === '\\') && ($i + 1 < $len) && ($value[$i + 1] === ','))
 					{
 						$argument .= ',';
@@ -1497,18 +1571,18 @@ class XMLRPCProxy
 					$argument .= $c;
 					$i++;
 					// Trailing whitespace is trimmed as rtorrent trims it.
-					if(($c !== ' ') && ($c !== "\t"))
-						$keep = strlen($argument);
+					if(($c !== ' ') && ($c !== "\t")) {
+						$keep = strlen($argument); }
 				}
 				$arguments[] = substr($argument, 0, $keep);
 			}
 
-			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t"))
-				$i++;
+			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t")) {
+				$i++; }
 			if($i < $len)
 			{
-				if($value[$i] !== ',')
-					return null;
+				if($value[$i] !== ',') {
+					return null; }
 				$i++;
 			}
 		}
@@ -1533,20 +1607,20 @@ class XMLRPCProxy
 	private static function rebuildSafeLoadParam($paramValue, $safeParams, $directory = null)
 	{
 		// Nothing this side could read is nothing this side can rebuild.
-		if($paramValue === null)
-			return null;
+		if($paramValue === null) {
+			return null; }
 
 		$separator = strpos($paramValue, '=');
-		if($separator === false)
-			return null;
+		if($separator === false) {
+			return null; }
 
 		$command = trim(substr($paramValue, 0, $separator));
-		if(!in_array($command, $safeParams, true))
-			return null;
+		if(!in_array($command, $safeParams, true)) {
+			return null; }
 
 		$parts = self::splitLoadArguments(substr($paramValue, $separator + 1));
-		if($parts === null)
-			return null;
+		if($parts === null) {
+			return null; }
 
 		// A caller that states no boundary is not policed here, which is the
 		// behaviour every caller had before this existed. rpc2.php always states
@@ -1555,21 +1629,21 @@ class XMLRPCProxy
 		if(($directory !== null) && self::isDirectoryCommand($command))
 		{
 			$path = isset($parts[0]) ? $parts[0] : '';
-			if(!self::directoryIsAllowed($path, $directory))
-				return null;
+			if(!self::directoryIsAllowed($path, $directory)) {
+				return null; }
 		}
 
-		$arguments = array();
+		$arguments = [];
 		foreach($parts as $argument)
 		{
 			// An argument whose first character is '$' is parsed and called as a
 			// command after quoting is undone, so quoting cannot make it safe.
 			// Unquoted values are already trimmed by the split; trimming again
 			// here would not turn a leading space into a leading '$'.
-			if(isset($argument[0]) && $argument[0] === '$')
-				return null;
+			if(isset($argument[0]) && $argument[0] === '$') {
+				return null; }
 
-			$arguments[] = '"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $argument).'"';
+			$arguments[] = '"'.str_replace(['\\', '"'], ['\\\\', '\\"'], $argument).'"';
 		}
 
 		return $command.'='.implode(',', $arguments);
@@ -1615,24 +1689,24 @@ class XMLRPCProxy
 		// valid state-changing one. Only normalise a value whose entire shape is
 		// understood.
 		$children = $paramElement->xpath('./*');
-		if($children === false)
-			return null;
-		if(count($children) === 0)
-			return (string)$paramElement;
-		if(count($children) !== 1)
-			return null;
+		if($children === false) {
+			return null; }
+		if(count($children) === 0) {
+			return (string)$paramElement; }
+		if(count($children) !== 1) {
+			return null; }
 
 		// XMLRPC type names are unqualified. xpath('./*') deliberately counted
 		// namespaced children above as well, so one cannot disappear from the
 		// shape check and make the value look like an implicit empty string.
 		$plainChildren = $paramElement->xpath('./*[namespace-uri() = ""]');
-		if(($plainChildren === false) || (count($plainChildren) !== 1))
-			return null;
+		if(($plainChildren === false) || (count($plainChildren) !== 1)) {
+			return null; }
 
 		$typed = $children[0];
 		$nested = $typed->xpath('./*');
-		if(($nested === false) || (count($nested) !== 0))
-			return null;
+		if(($nested === false) || (count($nested) !== 0)) {
+			return null; }
 
 		$type = $typed->getName();
 		if($type === 'base64')
@@ -1640,10 +1714,10 @@ class XMLRPCProxy
 			$decoded = base64_decode((string)$typed, true);
 			return ($decoded === false) ? null : $decoded;
 		}
-		if($type === 'string')
-			return (string)$typed;
-		if(in_array($type, self::$scalarTypes, true))
-			return (string)$typed;
+		if($type === 'string') {
+			return (string)$typed; }
+		if(in_array($type, self::$scalarTypes, true)) {
+			return (string)$typed; }
 		return null;
 	}
 
@@ -1663,82 +1737,6 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * Rebuild a command-carrying call keeping only safe parameters.
-	 *
-	 *   Param 0: target                    (always kept)
-	 *   Param 1: URL, raw data, or view    (always kept)
-	 *   Param 2+: command strings (kept iff the command name is in the
-	 *                              whitelist, otherwise stripped)
-	 *
-	 * Both families put their commands at param 2: load.start, load.normal,
-	 * load.raw, load.raw_start, d.multicall, d.multicall2,
-	 * d.multicall.filtered and t/f/p.multicall all do, on 0.9.8 and on 0.16.x
-	 * alike. Measured by side effect against both, rather than read off a
-	 * signature — the caller acts on the answer by deciding what is data.
-	 *
-	 * Public for unit testing — production callers should go through
-	 * process().
-	 *
-	 * @return array ['xml' => string, 'kept' => int, 'stripped' => array,
-	 *                'rebuiltAll' => bool] — rebuiltAll is false when any
-	 *               parameter had to be carried over verbatim, which means
-	 *               the call must not be sent as trusted.
-	 */
-	public static function rebuildLoadParams($xml, $methodName, $safeParams = array(), $directory = null)
-	{
-		$cleanXml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-		$cleanXml .= '<methodCall><methodName>' . htmlspecialchars($methodName) . '</methodName>';
-		$cleanXml .= '<params>';
-
-		$kept = 0;
-		$stripped = array();
-
-		$rebuiltAll = true;
-
-		if(isset($xml->params->param))
-		{
-			$index = 0;
-			foreach($xml->params->param as $param)
-			{
-				if($index < 2)
-				{
-					// Target and URL/data are values, never commands, but they
-					// are re-emitted rather than copied so that what was read
-					// and what is sent are the same bytes.
-					$payload = self::rebuildDataParam($param->value);
-					if($payload === null)
-					{
-						$payload = '<param>' . $param->value->asXML() . '</param>';
-						$rebuiltAll = false;
-					}
-					$cleanXml .= $payload;
-					$kept++;
-				}
-				else
-				{
-					$value = self::extractParamValue($param->value);
-					$rebuiltParam = self::rebuildSafeLoadParam($value, $safeParams, $directory);
-					if($rebuiltParam !== null)
-					{
-						$cleanXml .= '<param>'.self::emitText($rebuiltParam).'</param>';
-						$kept++;
-					}
-					else
-					{
-						$stripped[] = ($value === null) ? '' : $value;
-					}
-				}
-				$index++;
-			}
-		}
-
-		$cleanXml .= '</params></methodCall>';
-
-		return array('xml' => $cleanXml, 'kept' => $kept, 'stripped' => $stripped,
-			'rebuiltAll' => $rebuiltAll);
-	}
-
-	/**
 	 * Re-emit a target or URL/data parameter from its own content, keeping the
 	 * type the client used. Returns null for a type this side cannot rebuild,
 	 * which makes the whole request go untrusted.
@@ -1748,8 +1746,8 @@ class XMLRPCProxy
 		if(isset($paramElement->base64))
 		{
 			$decoded = base64_decode((string)$paramElement->base64, true);
-			if($decoded === false)
-				return null;
+			if($decoded === false) {
+				return null; }
 			return '<param><value><base64>'.base64_encode($decoded).'</base64></value></param>';
 		}
 

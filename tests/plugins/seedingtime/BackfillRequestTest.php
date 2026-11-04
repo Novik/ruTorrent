@@ -31,7 +31,7 @@ class BackfillRequestTest extends TestCase
 		@mkdir($this->base . '/profile/settings', 0700, true);
 		$this->tree = $this->base . '/tree';
 		$root = realpath(__DIR__ . '/../../..');
-		foreach (array('php', 'conf', 'plugins/seedingtime') as $dir) {
+		foreach (['php', 'conf', 'plugins/seedingtime'] as $dir) {
 			$this->copyTree($root . '/' . $dir, $this->tree . '/' . $dir);
 		}
 	}
@@ -40,6 +40,52 @@ class BackfillRequestTest extends TestCase
 	{
 		$this->stopDaemon();
 		$this->removeTree($this->base);
+	}
+
+	public function testThePassIsSentAfterTheHandlersAreRegistered()
+	{
+		$output = $this->runInit([['0', '0', '0'], ['']]);
+		$calls = $this->daemon->calls();
+		$this->assertTrue($this->daemon->received('d.multicall'),
+			'the pass reaches the daemon: ' . json_encode($calls) . ' ' . substr($output, 0, 200));
+		$this->assertEquals('d.multicall', end($calls),
+			'and it is sent after the handlers, not before: ' . json_encode($calls));
+		$this->assertTrue(strpos($output, 'plugin.disable()') === false,
+			'the plugin stays enabled: ' . substr($output, 0, 200));
+	}
+
+	public function testThePassCarriesTheMainViewAndTheHandlerExpression()
+	{
+		$this->runInit([['0', '0', '0'], ['']]);
+		$pass = $this->bodyOf('d.multicall');
+		$this->assertTrue(strpos($pass, '<value><string>main</string></value>') !== false,
+			'the pass runs over every download: ' . substr($pass, 0, 400));
+
+		$expression = $this->passExpression($pass);
+		// Guards the comparison below: an empty or truncated match would
+		// otherwise be found in any body at all.
+		$this->assertTrue(strpos($expression, 'seedingtime') !== false
+			&& strpos($expression, 'addtime') !== false
+			&& substr_count($expression, 'branch=') === 2,
+			'the pass writes a missing seedingtime from addtime: ' . $expression);
+
+		// The handler covers downloads completing from now on and the pass
+		// covers those already complete. One expression, or one of the two
+		// populations is left without a seedingtime.
+		$handlers = $this->bodyOf('system.multicall');
+		$this->assertTrue(strpos($handlers, $expression) !== false,
+			'the hash_done handler stores the same expression: ' . substr($handlers, 0, 800));
+	}
+
+	public function testNoPassWhenTheHandlersCouldNotBeRegistered()
+	{
+		// The handlers are refused, so the plugin disables itself; sending the
+		// pass as well would only wait on the same daemon again.
+		$output = $this->runInit([FakeRtorrentDaemon::fault('no such command'), ['']]);
+		$this->assertTrue(strpos($output, 'plugin.disable()') !== false,
+			'the plugin reports it cannot start: ' . substr($output, 0, 200));
+		$this->assertTrue(!$this->daemon->received('d.multicall'),
+			'and no pass is sent: ' . json_encode($this->daemon->calls()));
 	}
 
 	private function stopDaemon()
@@ -128,51 +174,5 @@ class BackfillRequestTest extends TestCase
 	{
 		preg_match_all('|<value><string>(.*)</string></value>|Us', $body, $values);
 		return empty($values[1]) ? '' : end($values[1]);
-	}
-
-	public function testThePassIsSentAfterTheHandlersAreRegistered()
-	{
-		$output = $this->runInit(array(array('0', '0', '0'), array('')));
-		$calls = $this->daemon->calls();
-		$this->assertTrue($this->daemon->received('d.multicall'),
-			'the pass reaches the daemon: ' . json_encode($calls) . ' ' . substr($output, 0, 200));
-		$this->assertEquals('d.multicall', end($calls),
-			'and it is sent after the handlers, not before: ' . json_encode($calls));
-		$this->assertTrue(strpos($output, 'plugin.disable()') === false,
-			'the plugin stays enabled: ' . substr($output, 0, 200));
-	}
-
-	public function testThePassCarriesTheMainViewAndTheHandlerExpression()
-	{
-		$this->runInit(array(array('0', '0', '0'), array('')));
-		$pass = $this->bodyOf('d.multicall');
-		$this->assertTrue(strpos($pass, '<value><string>main</string></value>') !== false,
-			'the pass runs over every download: ' . substr($pass, 0, 400));
-
-		$expression = $this->passExpression($pass);
-		// Guards the comparison below: an empty or truncated match would
-		// otherwise be found in any body at all.
-		$this->assertTrue(strpos($expression, 'seedingtime') !== false
-			&& strpos($expression, 'addtime') !== false
-			&& substr_count($expression, 'branch=') === 2,
-			'the pass writes a missing seedingtime from addtime: ' . $expression);
-
-		// The handler covers downloads completing from now on and the pass
-		// covers those already complete. One expression, or one of the two
-		// populations is left without a seedingtime.
-		$handlers = $this->bodyOf('system.multicall');
-		$this->assertTrue(strpos($handlers, $expression) !== false,
-			'the hash_done handler stores the same expression: ' . substr($handlers, 0, 800));
-	}
-
-	public function testNoPassWhenTheHandlersCouldNotBeRegistered()
-	{
-		// The handlers are refused, so the plugin disables itself; sending the
-		// pass as well would only wait on the same daemon again.
-		$output = $this->runInit(array(FakeRtorrentDaemon::fault('no such command'), array('')));
-		$this->assertTrue(strpos($output, 'plugin.disable()') !== false,
-			'the plugin reports it cannot start: ' . substr($output, 0, 200));
-		$this->assertTrue(!$this->daemon->received('d.multicall'),
-			'and no pass is sent: ' . json_encode($this->daemon->calls()));
 	}
 }

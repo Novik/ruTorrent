@@ -34,14 +34,14 @@ class GetpluginsRtorrentResponder
 		$this->version = $version;
 	}
 
-	public function __invoke($body, $methods = array())
+	public function __invoke($body, $methods = [])
 	{
 		$names = RtorrentProbeFixture::methodNames($body);
 		$single = (count($names) === 1) ? $names[0] : '';
-		if($single === 'execute.capture')
-			return array($this->uid . "\n" . $this->gids . "\n" . $this->home . "\n");
-		if(($single === 'system.client_version') && ($this->version !== null))
-			return array($this->version);
+		if($single === 'execute.capture') {
+			return [$this->uid . "\n" . $this->gids . "\n" . $this->home . "\n"]; }
+		if(($single === 'system.client_version') && ($this->version !== null)) {
+			return [$this->version]; }
 		$responder = RtorrentProbeFixture::responder();
 		return $responder($body);
 	}

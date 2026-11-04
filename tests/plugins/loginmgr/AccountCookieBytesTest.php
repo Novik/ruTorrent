@@ -26,7 +26,7 @@ define('LM_AUTH', 'Authorization: Basic ' . base64_encode(LM_USER . ':' . LM_PAS
 
 function lmAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 function lmHeaderBlock($wire)
@@ -84,9 +84,9 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open(array(PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))),
-        array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+        base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     lmAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
@@ -96,12 +96,12 @@ PHP;
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) $json .= $line;
+        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
         $requests = json_decode(trim($json), true);
         lmAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
         proc_close($process);
     }
 }
@@ -131,15 +131,15 @@ function lmHtml($body)
 function nnmLogin($scriptValue, callable $check)
 {
     $page = "<script>document.cookie='_ddn_" . $scriptValue . ";'</script>";
-    lmPeer(array(lmHtml($page)), function ($port) use ($check) {
+    lmPeer([lmHtml($page)], function ($port) use ($check) {
         $account = new NNMClubAccount();
         $account->url = 'http://127.0.0.1:' . $port;
         $client = lmClient();
         $method = new ReflectionMethod('NNMClubAccount', 'login');
-        if (PHP_VERSION_ID < 80100) $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
         $url = $verb = $type = $body = $fetched = null;
-        $method->invokeArgs($account, array($client, LM_USER, LM_PASS,
-            &$url, &$verb, &$type, &$body, &$fetched));
+        $method->invokeArgs($account, [$client, LM_USER, LM_PASS,
+            &$url, &$verb, &$type, &$body, &$fetched]);
         return $check;
     });
 }
@@ -152,7 +152,7 @@ function lostfilmRetry($tokenValue, callable $check)
     $details = '<a href="' . $download . '" onMouseOver="setCookie(\'dlt\',\'' . $tokenValue . '\'';
     $answer = base64_encode("HTTP/1.0 200 OK\r\nContent-Disposition: attachment; filename=\"a.torrent\"\r\n"
         . "Content-Length: 2\r\n\r\nok");
-    lmPeer(array(lmHtml($details), $answer), function ($port) use ($check, $download) {
+    lmPeer([lmHtml($details), $answer], function ($port) use ($check, $download) {
         $account = new LostFilmAccount();
         $account->url = 'http://127.0.0.1:' . $port;
         $client = lmClient();
@@ -160,13 +160,13 @@ function lostfilmRetry($tokenValue, callable $check)
         $client->results = 'a page with no guest marker';
         $client->lastredirectaddr = 'http://127.0.0.1:' . $port . '/browse.php?cat=1';
         $method = new ReflectionMethod('LostFilmAccount', 'isOKPostFetch');
-        if (PHP_VERSION_ID < 80100) $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
         $method->invoke($account, $client, 'http://127.0.0.1:' . $port . $download, 'GET', '', '');
         return $check;
     });
 }
 
-$tests = array(
+$tests = [
     // The control: a token the script could really name is sent as named, so
     // a bound that refused everything would not pass this file.
     'a clean _ddn_ token rides the credential POST' => function () {
@@ -283,7 +283,7 @@ $tests = array(
             }
         });
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

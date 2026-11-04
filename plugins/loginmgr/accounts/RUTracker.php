@@ -3,6 +3,15 @@
 class ruTrackerAccount extends commonAccount
 {
 	public $url = "https://rutracker.org";
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/rutracker.org/forum/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
+	public function test($url)
+	{
+		return(self::urlAddresses($url,
+			["rutracker.org","rutracker.cr","rutracker.net","rutracker.nl"],null,"/forum/"));
+	}
 
 	protected function isOK($client)
 	{
@@ -23,8 +32,8 @@ class ruTrackerAccount extends commonAccount
 	}
 	protected function getDownloadId($url)
 	{
-		if(preg_match( "/(\.|)rutracker.(org|cr|net|nl)\/forum\/dl\.php\?t=(?P<id>\d+)$/si", $url, $matches ))
-			return($matches["id"]);
+		if(preg_match( "/(\.|)rutracker.(org|cr|net|nl)\/forum\/dl\.php\?t=(?P<id>\d+)$/si", $url, $matches )) {
+			return($matches["id"]); }
 		return(false);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
@@ -57,14 +66,5 @@ class ruTrackerAccount extends commonAccount
 			return(true);
 		}
 		return(false);
-	}
-	// Matched against the URL's host, not against the URL string: the pattern
-	// this replaced also accepted https://evil.test/path/rutracker.org/forum/x, whose
-	// host is the attacker's, and loginmgr would then have sent this account's
-	// cookies there.
-	public function test($url)
-	{
-		return(self::urlAddresses($url,
-			array("rutracker.org","rutracker.cr","rutracker.net","rutracker.nl"),null,"/forum/"));
 	}
 }

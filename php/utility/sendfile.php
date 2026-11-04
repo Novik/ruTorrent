@@ -4,13 +4,6 @@ require_once( 'lfs.php' );
 
 class SendFile
 {
-	// Copy this function from FileUtil.php
-	// We don't need the whole class for one function
-	private static function getFileName($path)
-	{
-		$arr = explode('/',$path);
-		return(end($arr));
-	}
 
 	public static function send( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 	{
@@ -20,13 +13,13 @@ class SendFile
 		{
 			$etag = sprintf('"%x-%x-%x"', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
 			if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
-							(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime']))
-				header('HTTP/1.0 304 Not Modified');
+							(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime'])) {
+				header('HTTP/1.0 304 Not Modified'); }
 			else
 			{
 				header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
-				if(is_null($nameToSent))
-					$nameToSent = self::getFileName($filename);
+				if(is_null($nameToSent)) {
+					$nameToSent = self::getFileName($filename); }
 				require_once( __DIR__.'/contentdisposition.php' );
 				header('Content-Disposition: '.ContentDisposition::attachment($nameToSent,
 					isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null));
@@ -50,8 +43,8 @@ class SendFile
 					header('Content-Transfer-Encoding: binary');
 					header('Content-Description: File Transfer');
 
-					if(ob_get_level())
-						while(@ob_end_clean());
+					if(ob_get_level()) {
+						while(@ob_end_clean()); }
 
 					$begin = 0;
 					$end = $stat['size'];
@@ -60,22 +53,22 @@ class SendFile
 						if(preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
 							{
 								$begin=intval($matches[1]);
-							if(!empty($matches[2]))
-								$end=intval($matches[2]);
+							if(!empty($matches[2])) {
+								$end=intval($matches[2]); }
 						}
 					}
 					$size = $end - $begin;
-					if((PHP_INT_SIZE<=4) && ($size >= 2147483647))
-						passthru('cat '.Utility::escapeShellArg($filename));
+					if((PHP_INT_SIZE<=4) && ($size >= 2147483647)) {
+						passthru('cat '.Utility::escapeShellArg($filename)); }
 					else
 					{
-						if(!ini_get("zlib.output_compression"))
-							header('Content-Length:' . $size);
+						if(!ini_get("zlib.output_compression")) {
+							header('Content-Length:' . $size); }
 						if($size != $stat['size'])
 						{
 							$f = @fopen($filename,'rb');
-							if($f===false)
-								header ("HTTP/1.0 505 Internal Server Error");
+							if($f===false) {
+								header ("HTTP/1.0 505 Internal Server Error"); }
 							else
 							{
 								header('HTTP/1.0 206 Partial Content');
@@ -98,10 +91,10 @@ class SendFile
 					}
 				}
 			}
-			if($mustExit)
-				exit(0);
-			else
-				return(true);
+			if($mustExit) {
+				exit(0); }
+			else {
+				return(true); }
 		}
 		return(false);
 	}
@@ -113,5 +106,12 @@ class SendFile
 		header('HTTP/1.0 200 OK');
 		readfile($location);
 		exit;
+	}
+	// Copy this function from FileUtil.php
+	// We don't need the whole class for one function
+	private static function getFileName($path)
+	{
+		$arr = explode('/',$path);
+		return(end($arr));
 	}
 }

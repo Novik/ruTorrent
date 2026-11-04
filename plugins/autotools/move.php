@@ -1,10 +1,10 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if( !chdir( dirname( __FILE__) ) ) {
+	exit(); }
 
-if( count( $argv ) > 7 )
-	$_SERVER['REMOTE_USER'] = $argv[7];
+if( count( $argv ) > 7 ) {
+	$_SERVER['REMOTE_USER'] = $argv[7]; }
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
@@ -14,7 +14,7 @@ eval( FileUtil::getPluginConf( 'autotools' ) );
 function Debug( $str )
 {
 	global $autodebug_enabled;
-	if( $autodebug_enabled ) rtDbg( "AutoMove", $str );
+	if( $autodebug_enabled ) { rtDbg( "AutoMove", $str ); }
 }
 
 
@@ -26,8 +26,8 @@ function skip_move($files)
 	if(strlen($filter)>0)
     	{
 		Debug("using filter:".$filter);
-		if($at->skipsMove($files))
-			return true;
+		if($at->skipsMove($files)) {
+			return true; }
 		Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
 	}
 	return(false);
@@ -39,10 +39,10 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 	global $autodebug_enabled;
 
 	$ret = false;
-	if( $is_multy_file )
-		$sub_dir = rtAddTailSlash( $base_file );	// $base_file - is a directory
-	else
-		$sub_dir = '';					// $base_file - is really a file
+	if( $is_multy_file ) {
+		$sub_dir = rtAddTailSlash( $base_file ); }	// $base_file - is a directory
+	else {
+		$sub_dir = ''; }					// $base_file - is really a file
 
 	$base_path.=$sub_dir;
 	$dest_path.=$sub_dir;
@@ -51,13 +51,13 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 	Debug( "from ".$base_path );
 	Debug( "to   ".$dest_path );
 
-        $files = array();
+        $files = [];
         $info = $torrent->info;
-	if(isset($info['files']))
-		foreach($info['files'] as $key=>$file)
-			$files[] = implode('/',$file['path']);
-	else
-		$files[] = $base_file;
+	if(isset($info['files'])) {
+		foreach($info['files'] as $key=>$file) {
+			$files[] = implode('/',$file['path']); } }
+	else {
+		$files[] = $base_file; }
 
     if (skip_move($files)){
         $ret = false;
@@ -120,20 +120,19 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 				//------------------------------------------------------------------------------
 				if( $rel_path != '' )
 				{
-					if( $rel_path == './' ) $rel_path = '';
+					if( $rel_path == './' ) { $rel_path = ''; }
 					$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
 					// last condition avoids appending duplicate path from combining folder and label (eg autowatch and autolabel)
-					if($at->addLabel && ($label!='') && ($label!=trim($rel_path,'/')))
-		        			$dest_path.=FileUtil::addslash($label);
-			        	if($at->addName && ($name!=''))
-						$dest_path.=FileUtil::addslash($name);
+					if($at->addLabel && ($label!='') && ($label!=trim($rel_path,'/'))) {
+		        			$dest_path.=FileUtil::addslash($label); }
+			        	if($at->addName && ($name!='')) {
+						$dest_path.=FileUtil::addslash($name); }
 					// Checked here as well as in check.php: the older and the
 					// copy and link hooks run this script alone.
 					$target = $dest_path.($is_multi ? rtAddTailSlash( $base_name ) : '');
-					if(!rTorrent::isInsideTopDirectory($target))
-						Debug( "outside the top directory: ".$target );
-					else
-					if(operationOnTorrentFiles($torrent,$base_path,$base_name,$is_multi,$dest_path,$fileop_type))
+					if(!rTorrent::isInsideTopDirectory($target)) {
+						Debug( "outside the top directory: ".$target ); }
+					elseif(operationOnTorrentFiles($torrent,$base_path,$base_name,$is_multi,$dest_path,$fileop_type))
 					{
 //						if($fileop_type=="Move")
 							echo $base_path;
@@ -155,18 +154,18 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 								while( count( $lines ) > 0 )
 								{
 									$params = explode( ":", $lines[0] );
-									if( count( $params ) < 2 )
-										break;
-									if     ( trim( $params[0] ) == "TO"      ) $mail_to   = trim( $params[1] );
-									else if( trim( $params[0] ) == "CC"      ) $mail_cc   = trim( $params[1] );
-									else if( trim( $params[0] ) == "BCC"     ) $mail_bcc  = trim( $params[1] );
-									else if( trim( $params[0] ) == "FROM"    ) $mail_from = trim( $params[1] );
-									else if( trim( $params[0] ) == "SUBJECT" ) $subject   = trim( $params[1] );
-									else break;
+									if( count( $params ) < 2 ) {
+										break; }
+									if     ( trim( $params[0] ) == "TO"      ) { $mail_to   = trim( $params[1] ); }
+									elseif( trim( $params[0] ) == "CC"      ) { $mail_cc   = trim( $params[1] ); }
+									elseif( trim( $params[0] ) == "BCC"     ) { $mail_bcc  = trim( $params[1] ); }
+									elseif( trim( $params[0] ) == "FROM"    ) { $mail_from = trim( $params[1] ); }
+									elseif( trim( $params[0] ) == "SUBJECT" ) { $subject   = trim( $params[1] ); }
+									else { break; }
 									array_shift( $lines );
 								}
-								if( $mail_to == "" )
-									Debug( "mail recepient is not set!" );
+								if( $mail_to == "" ) {
+									Debug( "mail recepient is not set!" ); }
 								else
 								{
 									Debug( "mail to          : ".$mail_to   );
@@ -179,21 +178,21 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 									$message = implode( '', $lines );
 									$message = str_replace( "{TORRENT}", $torrent_name, $message );
 									$headers  = "From: ".$mail_from."\r\n";
-									if( $mail_cc != "" )
-										$headers .= "CC: ".$mail_cc."\r\n";
-									if( $mail_bcc != "" )
-										$headers .= "BCC: ".$mail_bcc."\r\n";
+									if( $mail_cc != "" ) {
+										$headers .= "CC: ".$mail_cc."\r\n"; }
+									if( $mail_bcc != "" ) {
+										$headers .= "BCC: ".$mail_bcc."\r\n"; }
 									$headers .= "Content-type: text/plain; charset=utf-8"."\r\n";
-									if( !mail( $mail_to, $subject, $message, $headers ) )
-										Debug( "mail() to \"".$mail_to."\" fail!" );
+									if( !mail( $mail_to, $subject, $message, $headers ) ) {
+										Debug( "mail() to \"".$mail_to."\" fail!" ); }
 								}
 								break;
 							}
 							$path = rtRemoveLastToken( $path, "/" );
 							$mailto_file = "";
 						}
-						if( $mailto_file == '' )
-							Debug( "\".mailto\" file   : not found!" );
+						if( $mailto_file == '' ) {
+							Debug( "\".mailto\" file   : not found!" ); }
 					}
 				}
 			}

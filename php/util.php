@@ -18,16 +18,16 @@ spl_autoload_register(function ($class)
 	// arrives here belongs to a plugin or to a later autoloader. Only a name
 	// this one can place is worth an include; the rest are passed over.
 	$file = dirname(__FILE__).'/utility/'. strtolower($class). '.php';
-	if(!is_file($file))
-		return;
+	if(!is_file($file)) {
+		return; }
 
 	// Suppress include warnings if the user disables al_diagnostic
 	// For compatibility with 3rd party plugins which use autoloaders
 	global $al_diagnostic;
-	if($al_diagnostic)
-		include_once $file;
-	else
-		@include_once $file;
+	if($al_diagnostic) {
+		include_once $file; }
+	else {
+		@include_once $file; }
 });
 
 // Only allow "POST" or "GET" request methods
@@ -51,21 +51,20 @@ if(function_exists('ini_set'))
 
 if(!isset($_SERVER['REMOTE_USER']))
 {
-	if(isset($_SERVER['PHP_AUTH_USER']))
-		$_SERVER['REMOTE_USER'] = $_SERVER['PHP_AUTH_USER'];
-	else
-	if(isset($_SERVER['REDIRECT_REMOTE_USER']))
-		$_SERVER['REMOTE_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
+	if(isset($_SERVER['PHP_AUTH_USER'])) {
+		$_SERVER['REMOTE_USER'] = $_SERVER['PHP_AUTH_USER']; }
+	elseif(isset($_SERVER['REDIRECT_REMOTE_USER'])) {
+		$_SERVER['REMOTE_USER'] = $_SERVER['REDIRECT_REMOTE_USER']; }
 }
 
 FileUtil::getProfilePath();	// for creation profile, if it is absent
 $conf = FileUtil::getConfFile('config.php');
-if($conf)
-	require_once($conf);
+if($conf) {
+	require_once($conf); }
 
-if(!isset($profileMask))
-	$profileMask = 0777;
-if(!isset($locale))
-	$locale = "UTF8";
+if(!isset($profileMask)) {
+	$profileMask = 0777; }
+if(!isset($locale)) {
+	$locale = "UTF8"; }
 setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 setlocale(LC_COLLATE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");

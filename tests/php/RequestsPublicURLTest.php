@@ -32,16 +32,6 @@ class RequestsPublicURLTest extends TestCase
 		ini_set('error_log', $this->log);
 	}
 
-	// TestCase calls setUp once per class; every scenario needs its own request and policy.
-	private function resetRequest()
-	{
-		global $publicURL;
-		putenv('RU_PUBLIC_URL');
-		$publicURL = '';
-		$_SERVER = array('HTTP_HOST' => 'public.test:8443', 'HTTPS' => 'off',
-			'SCRIPT_NAME' => '/app/plugins/feeds/action.php');
-	}
-
 	public function testNonemptyEnvironmentOverridesConfigAndRequestHosts()
 	{
 		$this->resetRequest();
@@ -133,21 +123,21 @@ class RequestsPublicURLTest extends TestCase
 		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
 			'A plain request with nothing forwarded is HTTP');
 		$this->resetRequest();
-		$_SERVER['HTTPS'] = array('on');
-		$_SERVER['REQUEST_SCHEME'] = array('https');
-		$_SERVER['HTTP_X_FORWARDED_PROTO'] = array('https');
+		$_SERVER['HTTPS'] = ['on'];
+		$_SERVER['REQUEST_SCHEME'] = ['https'];
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = ['https'];
 		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
 			'Metadata that is not a string at all names no scheme, and is not fatal to the feed');
-		$_SERVER['HTTP_HOST'] = array('public.test');
+		$_SERVER['HTTP_HOST'] = ['public.test'];
 		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === false,
 			'Nor does it name a host');
 	}
 
 	public function testInvalidExplicitBaseIsVisibleAndNeverUsesTheInternalHost()
 	{
-		foreach (array('https://user:secret@public.test/app/', 'https://public.test/app/?a=b',
+		foreach (['https://user:secret@public.test/app/', 'https://public.test/app/?a=b',
 			'https://public.test/app/#anchor', 'ftp://public.test/', '//public.test/app/',
-			"https://public.test/\r\nInjected: value", 'https://public.test\\trap/', array('https://public.test/')) as $bad) {
+			"https://public.test/\r\nInjected: value", 'https://public.test\\trap/', ['https://public.test/']] as $bad) {
 			$this->resetRequest();
 			global $publicURL;
 			$publicURL = $bad;
@@ -166,9 +156,9 @@ class RequestsPublicURLTest extends TestCase
 
 	public function testInvalidRequestMetadataIsRefusedWithoutAnExplicitBase()
 	{
-		foreach (array(array('HTTP_HOST' => 'user@trap.test'), array('HTTP_HOST' => 'public.test/path'),
-			array('HTTP_HOST' => "public.test\r\nHeader: x"),
-			array('SCRIPT_NAME' => '/app/plugins/feeds/action.php/extra')) as $bad) {
+		foreach ([['HTTP_HOST' => 'user@trap.test'], ['HTTP_HOST' => 'public.test/path'],
+			['HTTP_HOST' => "public.test\r\nHeader: x"],
+			['SCRIPT_NAME' => '/app/plugins/feeds/action.php/extra']] as $bad) {
 			$this->resetRequest();
 			$_SERVER = array_merge($_SERVER, $bad);
 			$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === false,
@@ -176,5 +166,15 @@ class RequestsPublicURLTest extends TestCase
 		}
 		$this->resetRequest();
 		$this->assertTrue(Requests::publicBaseURL('') === false, 'An empty endpoint suffix is refused');
+	}
+
+	// TestCase calls setUp once per class; every scenario needs its own request and policy.
+	private function resetRequest()
+	{
+		global $publicURL;
+		putenv('RU_PUBLIC_URL');
+		$publicURL = '';
+		$_SERVER = ['HTTP_HOST' => 'public.test:8443', 'HTTPS' => 'off',
+			'SCRIPT_NAME' => '/app/plugins/feeds/action.php'];
 	}
 }

@@ -6,9 +6,9 @@ class AniDUBCheckImpl{
     // account names. commonAccount::test() refuses a url weaker than its
     // site's, so a cleartext request selects no account and reads the page a
     // guest is shown.
-    const SITE = "https://tr.anidub.com";
+    public const SITE = "https://tr.anidub.com";
 
-    static public function download_torrent($url, $hash, $old_torrent){
+    public static function download_torrent($url, $hash, $old_torrent){
         if( preg_match( '`^http://tr\.anidub\.com/\?newsid=(?P<id>\d+)$`',$url, $matches ) ) {
             $topic_id = $matches["id"];
             $torrent_name = $old_torrent->name();
@@ -27,29 +27,29 @@ class AniDUBCheckImpl{
                     $torrent_quality = strtolower($qmatches["vq3"]); # bd quality
                     $torrent_quality_type = "bd";
                 }
-                if (array_key_exists("vq1", $qmatches)) $torrent_quality = strtolower($qmatches["vq1"]);
-                if (array_key_exists("vq2", $qmatches)) $torrent_quality = strtolower($qmatches["vq2"]);
+                if (array_key_exists("vq1", $qmatches)) { $torrent_quality = strtolower($qmatches["vq1"]); }
+                if (array_key_exists("vq2", $qmatches)) { $torrent_quality = strtolower($qmatches["vq2"]); }
             }
 
             // ToDo: if torrent doesn't contain any quality tag, try to guess in other ways
 
             # exit, no way to get torrent file without this
-            if ($torrent_quality === null) return ruTrackerChecker::STE_NOT_NEED;
+            if ($torrent_quality === null) { return ruTrackerChecker::STE_NOT_NEED; }
 
             $client = ruTrackerChecker::makeClient(self::SITE."/?newsid=".$topic_id);
-            if($client->status!=200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
+            if($client->status!=200) { return ruTrackerChecker::STE_CANT_REACH_TRACKER; }
 
             $resp = preg_replace( "/\r|\n/", "", $client->results);
             $q =$torrent_quality_type.$torrent_quality;  // e.g. tv.720
             $pattern = sprintf('/\<div\sid\=\"%s\"\>\<div\sid=\'[\d\w\_]+\'\>\s+\<div\sclass=\"torrent\_h\"\>\s+\<a\shref=\"(?P<url>[\w\d\_\/\.\=\?]+)\"\s/i', $q);
-            if (!preg_match($pattern, $resp, $url_matches)) ruTrackerChecker::STE_CANT_REACH_TRACKER;
+            if (!preg_match($pattern, $resp, $url_matches)) { ruTrackerChecker::STE_CANT_REACH_TRACKER; }
 
-            if (!preg_match('/\/engine\/download\.php\?id=\d{1,10}/i', $url_matches["url"], $m)) ruTrackerChecker::STE_CANT_REACH_TRACKER;
+            if (!preg_match('/\/engine\/download\.php\?id=\d{1,10}/i', $url_matches["url"], $m)) { ruTrackerChecker::STE_CANT_REACH_TRACKER; }
 
             $client->setcookies();
             $client->fetchComplex(self::SITE . $url_matches["url"]);
 
-            if(intval($client->status)!=200) return (($client->status<0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED );
+            if(intval($client->status)!=200) { return (($client->status<0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED ); }
 
             return ruTrackerChecker::createTorrent($client->results, $hash);
         }

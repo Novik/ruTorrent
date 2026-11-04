@@ -11,7 +11,7 @@ require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 // measure the class, and the ones about the private-network guard turn it on
 // for the client they test, so hold it off here rather than inherit it.
 $GLOBALS['httpBlockPrivateNetworks'] = false;
-$GLOBALS['httpPrivateNetworkAllowlist'] = array();
+$GLOBALS['httpPrivateNetworkAllowlist'] = [];
 
 function snoopyAssertTrue($condition, $message)
 {
@@ -25,7 +25,7 @@ function snoopyAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -109,12 +109,12 @@ function snoopyRespondWith($response)
 // judged on its own merits.
 class SnoopyResolvesToPublic extends Snoopy
 {
-    static public function resolveHost($host)
+    public static function resolveHost($host)
     {
         if (filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) !== false) {
             return parent::resolveHost($host);
         }
-        return array('93.184.216.34');
+        return ['93.184.216.34'];
     }
 }
 
@@ -125,9 +125,9 @@ class SnoopyResolvesToPublic extends Snoopy
 // complete answer; what Snoopy wrote is read back from the far end afterwards.
 class SnoopyOverSocketPair extends Snoopy
 {
-    public $requests = array();
-    private $responses = array();
-    private $farEnds = array();
+    public $requests = [];
+    private $responses = [];
+    private $farEnds = [];
 
     public function __construct($responses)
     {
@@ -135,7 +135,7 @@ class SnoopyOverSocketPair extends Snoopy
         $this->responses = $responses;
     }
 
-    function connect()
+    public function connect()
     {
         $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
         if (!is_array($pair)) {
@@ -158,7 +158,7 @@ class SnoopyOverSocketPair extends Snoopy
             $this->requests[] = (string) stream_get_contents($far);
             fclose($far);
         }
-        $this->farEnds = array();
+        $this->farEnds = [];
     }
 }
 
@@ -177,7 +177,7 @@ class SnoopyOriginProbe extends Snoopy
 // of gzip, which is the shape of answer that inflates past memory_limit.
 function snoopyGzipZeros($size)
 {
-    $deflater = deflate_init(ZLIB_ENCODING_GZIP, array('level' => 9));
+    $deflater = deflate_init(ZLIB_ENCODING_GZIP, ['level' => 9]);
     $chunk = str_repeat("\0", 1048576);
     $encoded = '';
     while ($size > 0) {
@@ -203,12 +203,12 @@ function snoopyGzipResponse($body)
 // a developer's system php.ini cannot change what they measure.
 class SnoopyGzipServer
 {
-    const SUITE_INI = __DIR__ . '/../php-test.ini';
+    public const SUITE_INI = __DIR__ . '/../php-test.ini';
     public $address;
     private $directory;
     private $process = null;
     private $log;
-    private $files = array();
+    private $files = [];
 
     public function __construct($bodies)
     {
@@ -240,8 +240,8 @@ PHP
                 'exec ' . escapeshellarg(PHP_BINARY) . ' -c ' . escapeshellarg(self::SUITE_INI)
                 . ' -S ' . escapeshellarg($this->address)
                 . ' -t ' . escapeshellarg($this->directory) . ' ' . escapeshellarg($router),
-                array(0 => array('pipe', 'r'), 1 => array('file', $this->log, 'a'), 2 => array('file', $this->log, 'a')),
-                $pipes
+                [0 => ['pipe', 'r'], 1 => ['file', $this->log, 'a'], 2 => ['file', $this->log, 'a']],
+                $pipes,
             );
             snoopyAssertTrue(is_resource($this->process), 'Could not start the loopback server');
             fclose($pipes[0]);
@@ -259,14 +259,6 @@ PHP
             $this->close();
             throw $error;
         }
-    }
-
-    private function write($name, $content)
-    {
-        $path = $this->directory . '/' . $name;
-        file_put_contents($path, $content);
-        $this->files[] = $path;
-        return $path;
     }
 
     // What the child saw: fetch()'s answer, status, error and the body's
@@ -296,10 +288,10 @@ echo json_encode(array(
 PHP
         );
         $process = proc_open(
-            array(PHP_BINARY, '-c', self::SUITE_INI, '-d', 'memory_limit=' . $memoryLimit, $script,
-                __DIR__ . '/../../php/Snoopy.class.inc', 'http://' . $this->address . $path, (string) $maxlength),
-            array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
-            $pipes
+            [PHP_BINARY, '-c', self::SUITE_INI, '-d', 'memory_limit=' . $memoryLimit, $script,
+                __DIR__ . '/../../php/Snoopy.class.inc', 'http://' . $this->address . $path, (string) $maxlength],
+            [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
         );
         snoopyAssertTrue(is_resource($process), 'Could not start the fetching child');
         fclose($pipes[0]);
@@ -312,7 +304,7 @@ PHP
         if (!is_array($seen)) {
             throw new RuntimeException(
                 'The child exited ' . $exit . ' without answering; it printed: '
-                . trim($stdout . "\n" . $stderr)
+                . trim($stdout . "\n" . $stderr),
             );
         }
         return $seen;
@@ -330,14 +322,22 @@ PHP
         }
         @rmdir($this->directory);
     }
+
+    private function write($name, $content)
+    {
+        $path = $this->directory . '/' . $name;
+        file_put_contents($path, $content);
+        $this->files[] = $path;
+        return $path;
+    }
 }
 
-$tests = array(
+$tests = [
     'explicit HTTPS POST forwards -X POST to curl' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://example.test/resource', 'POST', 'application/x-www-form-urlencoded', ''),
-            'HTTPS request did not complete through the curl test double'
+            'HTTPS request did not complete through the curl test double',
         );
         $args = snoopyCurlArgs();
         $flag = array_search('-X', $args, true);
@@ -345,24 +345,24 @@ $tests = array(
         snoopyAssertSame(
             'POST',
             isset($args[$flag + 1]) ? $args[$flag + 1] : null,
-            'Empty-body explicit POST request was not preserved'
+            'Empty-body explicit POST request was not preserved',
         );
     },
     'legacy positional HTTPS request never adds -X' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->_httpsrequest('https://example.test/legacy', 'application/x-www-form-urlencoded', 'payload'),
-            'Legacy positional HTTPS request did not complete'
+            'Legacy positional HTTPS request did not complete',
         );
         $args = snoopyCurlArgs();
         snoopyAssertSame(
             false,
             array_search('-X', $args, true),
-            'Legacy 3-argument call must leave the HTTP method to curl'
+            'Legacy 3-argument call must leave the HTTP method to curl',
         );
         snoopyAssertTrue(
             in_array('Content-type: application/x-www-form-urlencoded', $args, true),
-            'Legacy positional content-type argument remains supported'
+            'Legacy positional content-type argument remains supported',
         );
         snoopyAssertTrue(in_array('payload', $args, true), 'Legacy positional request body remains supported');
     },
@@ -370,20 +370,20 @@ $tests = array(
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://example.test/get-with-body', 'GET', 'text/plain', 'payload'),
-            'Explicit GET-with-body request did not complete'
+            'Explicit GET-with-body request did not complete',
         );
         $args = snoopyCurlArgs();
         $flag = array_search('-X', $args, true);
         snoopyAssertTrue(
             $flag !== false && isset($args[$flag + 1]) && $args[$flag + 1] === 'GET',
-            'Explicit HTTPS GET method must not be changed to POST by curl -d'
+            'Explicit HTTPS GET method must not be changed to POST by curl -d',
         );
     },
     'private targets stay reachable while the guard is off' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://127.0.0.1/feed'),
-            'Default configuration must not block loopback targets'
+            'Default configuration must not block loopback targets',
         );
     },
     'the guard blocks a literal private address' => function () {
@@ -392,7 +392,7 @@ $tests = array(
         snoopyAssertSame(false, $client->fetch('https://127.0.0.1/feed'), 'Loopback target was fetched anyway');
         snoopyAssertTrue(
             strpos($client->error, '127.0.0.1') !== false,
-            'Blocked fetch must name the offending address, got: ' . $client->error
+            'Blocked fetch must name the offending address, got: ' . $client->error,
         );
     },
     'the guard blocks the IPv6 loopback literal' => function () {
@@ -408,7 +408,7 @@ $tests = array(
     'the allowlist exempts a host from the guard' => function () {
         $client = new Snoopy();
         $client->block_private = true;
-        $client->private_allowlist = array('127.0.0.1');
+        $client->private_allowlist = ['127.0.0.1'];
         snoopyAssertTrue($client->fetch('https://127.0.0.1/feed'), 'Allowlisted host was blocked: ' . $client->error);
     },
     'the guard blocks a hostname that resolves to loopback' => function () {
@@ -422,11 +422,11 @@ $tests = array(
         snoopyAssertSame(
             false,
             $client->fetch('https://tracker.nonexistent.invalid/feed'),
-            'Unresolvable host was fetched anyway'
+            'Unresolvable host was fetched anyway',
         );
         snoopyAssertTrue(
             stripos($client->error, 'resolve') !== false,
-            'Unresolvable host must be reported as such, got: ' . $client->error
+            'Unresolvable host must be reported as such, got: ' . $client->error,
         );
     },
     'the validated address is pinned for the HTTPS request' => function () {
@@ -439,7 +439,7 @@ $tests = array(
         snoopyAssertSame(
             'tracker.test:443:93.184.216.34',
             isset($args[$flag + 1]) ? $args[$flag + 1] : null,
-            'Pinned address must be the one the guard validated'
+            'Pinned address must be the one the guard validated',
         );
     },
     'the guard covers ranges filter_var calls public' => function () {
@@ -450,7 +450,7 @@ $tests = array(
     },
     'the guard is configured from conf/config.php' => function () {
         $GLOBALS['httpBlockPrivateNetworks'] = true;
-        $GLOBALS['httpPrivateNetworkAllowlist'] = array('127.0.0.1');
+        $GLOBALS['httpPrivateNetworkAllowlist'] = ['127.0.0.1'];
         $client = new Snoopy();
         unset($GLOBALS['httpBlockPrivateNetworks'], $GLOBALS['httpPrivateNetworkAllowlist']);
         snoopyAssertTrue($client->block_private, 'Configured guard was not picked up');
@@ -464,11 +464,11 @@ $tests = array(
         snoopyAssertSame(
             false,
             $client->fetch('https://tracker.test/start'),
-            'Redirect to a private address was followed'
+            'Redirect to a private address was followed',
         );
         snoopyAssertTrue(
             strpos($client->error, '127.0.0.1') !== false,
-            'Blocked redirect must name the offending address, got: ' . $client->error
+            'Blocked redirect must name the offending address, got: ' . $client->error,
         );
     },
     // A Location like "//host/path" is a network-path reference (RFC 3986
@@ -483,13 +483,13 @@ $tests = array(
             $client = new Snoopy();
             snoopyAssertTrue(
                 $client->fetch('https://dl.kinozal.guru/download.php?id=1'),
-                'Redirected HTTPS request did not complete'
+                'Redirected HTTPS request did not complete',
             );
             $args = snoopyCurlArgs();
             snoopyAssertSame(
                 'https://kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D1',
                 end($args),
-                'The redirect must be followed to the host it names'
+                'The redirect must be followed to the host it names',
             );
             snoopyAssertSame('200', $client->status, 'The redirect target answered');
         } finally {
@@ -515,7 +515,7 @@ $tests = array(
         try {
             snoopyAssertTrue(
                 $client->_httprequest('/download.php?id=1', $near, 'http://dl.kinozal.guru/download.php?id=1', 'GET'),
-                'Plain HTTP request did not complete'
+                'Plain HTTP request did not complete',
             );
         } finally {
             fclose($near);
@@ -524,7 +524,7 @@ $tests = array(
         snoopyAssertSame(
             'http://kinozal.guru/login.php?to=x',
             $client->_redirectaddr,
-            'The redirect must be followed to the host it names'
+            'The redirect must be followed to the host it names',
         );
     },
     // A redirect names a host of its own choosing. What travelled with the
@@ -541,21 +541,21 @@ $tests = array(
             $client->rawheaders['Authorization'] = 'Bearer secret-token';
             snoopyAssertTrue(
                 $client->fetch('https://user:pass@tracker.test/feed'),
-                'Redirected HTTPS request did not complete'
+                'Redirected HTTPS request did not complete',
             );
             $args = snoopyCurlArgs();
             snoopyAssertSame(
                 'https://collector.test/landing',
                 end($args),
-                'The redirect must be followed to the host it names'
+                'The redirect must be followed to the host it names',
             );
             snoopyAssertSame(
-                array(),
+                [],
                 array_values(array_filter($args, function ($arg) {
                     return stripos($arg, 'Authorization:') === 0
                         || stripos($arg, 'Cookie:') === 0;
                 })),
-                'Credentials were sent to the redirect target'
+                'Credentials were sent to the redirect target',
             );
             snoopyAssertSame('', $client->user, 'Basic user survived a cross-host redirect');
             snoopyAssertSame('', $client->pass, 'Basic password survived a cross-host redirect');
@@ -573,16 +573,16 @@ $tests = array(
             $client->rawheaders['Authorization'] = 'Bearer secret-token';
             snoopyAssertTrue(
                 $client->fetch('https://user:pass@tracker.test/feed'),
-                'Redirected HTTPS request did not complete'
+                'Redirected HTTPS request did not complete',
             );
             $args = snoopyCurlArgs();
             snoopyAssertTrue(
                 in_array('Authorization: Bearer secret-token', $args, true),
-                'A caller header must survive a redirect on the same host'
+                'A caller header must survive a redirect on the same host',
             );
             snoopyAssertTrue(
                 in_array('Cookie: session=secret-session', $args, true),
-                'The cookie jar must survive a redirect on the same host'
+                'The cookie jar must survive a redirect on the same host',
             );
         } finally {
             putenv('SNOOPY_TEST_REDIRECT');
@@ -594,44 +594,44 @@ $tests = array(
     // whether that leaves the origin).
     'the origin rule reads the scheme, the host and the port' => function () {
         $probe = new SnoopyOriginProbe();
-        $pairs = array(
+        $pairs = [
             // The same origin, however it is spelled.
-            array('https://tracker.test/feed', 'https://tracker.test/elsewhere', false),
-            array('https://tracker.test/feed', 'https://TRACKER.test/elsewhere', false),
-            array('https://tracker.test/feed', 'https://tracker.test:443/x', false),
-            array('http://tracker.test:8080/feed', 'http://tracker.test:8080/x', false),
-            array('https://tracker.test/feed', '/relative/path', false),
+            ['https://tracker.test/feed', 'https://tracker.test/elsewhere', false],
+            ['https://tracker.test/feed', 'https://TRACKER.test/elsewhere', false],
+            ['https://tracker.test/feed', 'https://tracker.test:443/x', false],
+            ['http://tracker.test:8080/feed', 'http://tracker.test:8080/x', false],
+            ['https://tracker.test/feed', '/relative/path', false],
             // A different port is a different service, even on the same name.
-            array('https://tracker.test/feed', 'https://tracker.test:8443/x', true),
-            array('http://tracker.test/feed', 'http://tracker.test:8080/x', true),
-            array('http://tracker.test:8080/feed', 'http://tracker.test/x', true),
-            array('http://tracker.test:8080/feed', 'http://tracker.test:9090/x', true),
+            ['https://tracker.test/feed', 'https://tracker.test:8443/x', true],
+            ['http://tracker.test/feed', 'http://tracker.test:8080/x', true],
+            ['http://tracker.test:8080/feed', 'http://tracker.test/x', true],
+            ['http://tracker.test:8080/feed', 'http://tracker.test:9090/x', true],
             // A different host, with and without a port to argue about.
-            array('https://tracker.test/feed', 'https://collector.test/landing', true),
-            array('https://tracker.test:8443/feed', 'https://collector.test:8443/x', true),
+            ['https://tracker.test/feed', 'https://collector.test/landing', true],
+            ['https://tracker.test:8443/feed', 'https://collector.test:8443/x', true],
             // Off tls, which is where the credential would go out in clear.
-            array('https://tracker.test/feed', 'http://tracker.test/feed', true),
-            array('https://tracker.test:8443/feed', 'http://tracker.test:8443/x', true),
+            ['https://tracker.test/feed', 'http://tracker.test/feed', true],
+            ['https://tracker.test:8443/feed', 'http://tracker.test:8443/x', true],
             // The one move that keeps them, and only in that plain form.
-            array('http://tracker.test/feed', 'https://tracker.test/feed', false),
-            array('http://tracker.test:8080/feed', 'https://tracker.test:8080/x', true),
-        );
+            ['http://tracker.test/feed', 'https://tracker.test/feed', false],
+            ['http://tracker.test:8080/feed', 'https://tracker.test:8080/x', true],
+        ];
         foreach ($pairs as $pair) {
             list($url, $redirect, $expected) = $pair;
             snoopyAssertSame(
                 $expected,
                 $probe->leavesOrigin($url, $redirect),
-                $url . ' -> ' . $redirect
+                $url . ' -> ' . $redirect,
             );
         }
     },
     // And on the wire, over the socket path, so the drop is read off the bytes
     // rather than off the predicate.
     'a redirect to another port on the same host drops the credentials' => function () {
-        $client = new SnoopyOverSocketPair(array(
+        $client = new SnoopyOverSocketPair([
             "HTTP/1.1 302 Found\r\nLocation: http://tracker.test:8080/landing\r\n\r\n",
             "HTTP/1.1 200 OK\r\n\r\n",
-        ));
+        ]);
         $client->cookies['session'] = 'secret-session';
         $client->rawheaders['Authorization'] = 'Bearer secret-token';
         $client->fetch('http://user:pass@tracker.test/feed');
@@ -640,22 +640,22 @@ $tests = array(
         snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
         snoopyAssertTrue(
             stripos($client->requests[0], "\r\nAuthorization:") !== false,
-            'The first request should have carried the credentials'
+            'The first request should have carried the credentials',
         );
         snoopyAssertTrue(
             stripos($client->requests[1], "\r\nAuthorization:") === false,
-            'An Authorization header was written to the other port'
+            'An Authorization header was written to the other port',
         );
         snoopyAssertTrue(
             strpos($client->requests[1], 'secret-session') === false,
-            'The cookie jar reached the other port'
+            'The cookie jar reached the other port',
         );
     },
     'a redirect staying on one port keeps the credentials' => function () {
-        $client = new SnoopyOverSocketPair(array(
+        $client = new SnoopyOverSocketPair([
             "HTTP/1.1 302 Found\r\nLocation: http://tracker.test:8080/landing\r\n\r\n",
             "HTTP/1.1 200 OK\r\n\r\n",
-        ));
+        ]);
         $client->cookies['session'] = 'secret-session';
         $client->rawheaders['Authorization'] = 'Bearer secret-token';
         $client->fetch('http://user:pass@tracker.test:8080/feed');
@@ -664,11 +664,11 @@ $tests = array(
         snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
         snoopyAssertTrue(
             stripos($client->requests[1], "\r\nAuthorization:") !== false,
-            'A caller header must survive a redirect within one origin'
+            'A caller header must survive a redirect within one origin',
         );
         snoopyAssertTrue(
             strpos($client->requests[1], 'secret-session') !== false,
-            'The cookie jar must survive a redirect within one origin'
+            'The cookie jar must survive a redirect within one origin',
         );
     },
     // Same host, but the redirect moves off tls. The second leg leaves the
@@ -678,7 +678,7 @@ $tests = array(
         @unlink($seenPath);
         putenv('SNOOPY_TEST_REDIRECT=http://tracker.test/feed');
         try {
-            $client = new SnoopyOverSocketPair(array("HTTP/1.1 200 OK\r\n\r\n"));
+            $client = new SnoopyOverSocketPair(["HTTP/1.1 200 OK\r\n\r\n"]);
             $client->cookies['session'] = 'secret-session';
             $client->rawheaders['Authorization'] = 'Bearer secret-token';
             $client->fetch('https://tracker.test/feed');
@@ -686,11 +686,11 @@ $tests = array(
             snoopyAssertSame(1, count($client->requests), 'The redirect was not followed');
             snoopyAssertTrue(
                 stripos($client->requests[0], "\r\nAuthorization:") === false,
-                'An Authorization header went out over plain http'
+                'An Authorization header went out over plain http',
             );
             snoopyAssertTrue(
                 strpos($client->requests[0], 'secret-session') === false,
-                'The cookie jar went out over plain http'
+                'The cookie jar went out over plain http',
             );
         } finally {
             putenv('SNOOPY_TEST_REDIRECT');
@@ -703,10 +703,10 @@ $tests = array(
     // response with its write side shut, and what Snoopy wrote is read back
     // from it afterwards.
     'a cross-host redirect drops the credentials over plain http' => function () {
-        $client = new SnoopyOverSocketPair(array(
+        $client = new SnoopyOverSocketPair([
             "HTTP/1.1 302 Found\r\nLocation: http://collector.test/landing\r\n\r\n",
             "HTTP/1.1 200 OK\r\n\r\n",
-        ));
+        ]);
         $client->cookies['session'] = 'secret-session';
         $client->rawheaders['Authorization'] = 'Bearer secret-token';
         $client->fetch('http://user:pass@tracker.test/feed');
@@ -715,19 +715,19 @@ $tests = array(
         snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
         snoopyAssertTrue(
             stripos($client->requests[0], "\r\nAuthorization:") !== false,
-            'The first request should have carried the credentials'
+            'The first request should have carried the credentials',
         );
         snoopyAssertTrue(
             stripos($client->requests[1], "\r\nAuthorization:") === false,
-            'An Authorization header was written to the redirect target'
+            'An Authorization header was written to the redirect target',
         );
         snoopyAssertTrue(
             stripos($client->requests[1], "\r\nCookie:") === false,
-            'A Cookie header was written to the redirect target'
+            'A Cookie header was written to the redirect target',
         );
         snoopyAssertTrue(
             strpos($client->requests[1], 'secret-session') === false,
-            'The cookie jar reached the redirect target'
+            'The cookie jar reached the redirect target',
         );
     },
     // curl -k turns off certificate checking. It used to be appended to every
@@ -740,7 +740,7 @@ $tests = array(
         snoopyAssertSame(
             false,
             array_search('-k', snoopyCurlArgs(), true),
-            'Certificate checking was turned off without being asked'
+            'Certificate checking was turned off without being asked',
         );
     },
     'turning the check off puts -k back' => function () {
@@ -749,7 +749,7 @@ $tests = array(
         snoopyAssertTrue($client->fetch('https://tracker.test/feed'), 'HTTPS request did not complete');
         snoopyAssertTrue(
             array_search('-k', snoopyCurlArgs(), true) !== false,
-            'An install that opts out must still reach a self-signed host'
+            'An install that opts out must still reach a self-signed host',
         );
     },
     'the certificate check is configured from conf/config.php' => function () {
@@ -760,7 +760,7 @@ $tests = array(
         snoopyAssertTrue($client->fetch('https://tracker.test/feed'), 'HTTPS request did not complete');
         snoopyAssertTrue(
             array_search('-k', snoopyCurlArgs(), true) !== false,
-            'Configured opt-out did not reach curl'
+            'Configured opt-out did not reach curl',
         );
     },
     'the proxy leg is checked on the same terms' => function () {
@@ -772,11 +772,11 @@ $tests = array(
         snoopyAssertSame(
             false,
             array_search('--proxy-insecure', $args, true),
-            'The proxy leg was made insecure while checking is on'
+            'The proxy leg was made insecure while checking is on',
         );
         snoopyAssertTrue(
             array_search('--proxy', $args, true) !== false,
-            'The proxy itself must still be passed to curl'
+            'The proxy itself must still be passed to curl',
         );
 
         $client = new Snoopy();
@@ -786,7 +786,7 @@ $tests = array(
         snoopyAssertTrue($client->fetch('https://tracker.test/feed'), 'Proxied HTTPS request did not complete');
         snoopyAssertTrue(
             array_search('--proxy-insecure', snoopyCurlArgs(), true) !== false,
-            'An install that opts out must still reach a self-signed proxy'
+            'An install that opts out must still reach a self-signed proxy',
         );
     },
     // curl exits 60 when it cannot verify the peer. "error 60" on its own tells
@@ -798,15 +798,15 @@ $tests = array(
             snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
             snoopyAssertTrue(
                 stripos($client->error, 'certificate') !== false,
-                'The failure must say it was the certificate, got: ' . $client->error
+                'The failure must say it was the certificate, got: ' . $client->error,
             );
             snoopyAssertTrue(
                 strpos($client->error, 'httpVerifyCertificates') !== false,
-                'The failure must name the setting that turns it off, got: ' . $client->error
+                'The failure must name the setting that turns it off, got: ' . $client->error,
             );
             snoopyAssertTrue(
                 strpos($client->error, 'tracker.test') !== false,
-                'The failure must name the host, got: ' . $client->error
+                'The failure must name the host, got: ' . $client->error,
             );
         } finally {
             putenv('SNOOPY_TEST_EXIT');
@@ -820,7 +820,7 @@ $tests = array(
             snoopyAssertSame(
                 'Error: cURL could not retrieve the document, error 7.',
                 $client->error,
-                'A non-certificate failure must keep its wording'
+                'A non-certificate failure must keep its wording',
             );
         } finally {
             putenv('SNOOPY_TEST_EXIT');
@@ -839,7 +839,7 @@ $tests = array(
             snoopyAssertSame(
                 'Error: cURL could not retrieve the document, error 35.',
                 $client->error,
-                'A handshake failure must not be diagnosed as a certificate'
+                'A handshake failure must not be diagnosed as a certificate',
             );
         } finally {
             putenv('SNOOPY_TEST_EXIT');
@@ -849,7 +849,7 @@ $tests = array(
     // turned it off is told to do the thing it did, about a check that did
     // not run -- curl was given -k.
     'an install that already opted out is not told to opt out' => function () {
-        foreach (array(35, 51, 60, 77) as $exit) {
+        foreach ([35, 51, 60, 77] as $exit) {
             putenv('SNOOPY_TEST_EXIT=' . $exit);
             try {
                 $client = new Snoopy();
@@ -857,7 +857,7 @@ $tests = array(
                 snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
                 snoopyAssertTrue(
                     strpos($client->error, 'httpVerifyCertificates') === false,
-                    'With verification off, exit ' . $exit . ' must not name the setting, got: ' . $client->error
+                    'With verification off, exit ' . $exit . ' must not name the setting, got: ' . $client->error,
                 );
             } finally {
                 putenv('SNOOPY_TEST_EXIT');
@@ -878,11 +878,11 @@ $tests = array(
             snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
             snoopyAssertTrue(
                 stripos($client->error, 'proxy') !== false,
-                'A proxied failure must say the proxy could be the one, got: ' . $client->error
+                'A proxied failure must say the proxy could be the one, got: ' . $client->error,
             );
             snoopyAssertTrue(
                 strpos($client->error, 'tracker.test') !== false,
-                'and must still name the host it was fetching, got: ' . $client->error
+                'and must still name the host it was fetching, got: ' . $client->error,
             );
         } finally {
             putenv('SNOOPY_TEST_EXIT');
@@ -894,7 +894,7 @@ $tests = array(
     // with a fatal error. The bound refuses the body instead, as a failed
     // fetch with a status below 100 and the reason in ->error.
     'a gzip body inflating past maxlength is refused before it fills memory' => function () {
-        $server = new SnoopyGzipServer(array('zeros' => snoopyGzipZeros(64 * 1048576)));
+        $server = new SnoopyGzipServer(['zeros' => snoopyGzipZeros(64 * 1048576)]);
         try {
             $seen = $server->fetchInChild('/zeros', '32M');
         } finally {
@@ -907,7 +907,7 @@ $tests = array(
     },
     'a small gzip body still decodes whole over plain http' => function () {
         $body = str_repeat("The quick brown fox jumps over the lazy dog.\n", 100);
-        $server = new SnoopyGzipServer(array('small' => gzencode($body, 9)));
+        $server = new SnoopyGzipServer(['small' => gzencode($body, 9)]);
         try {
             $seen = $server->fetchInChild('/small', '32M');
         } finally {
@@ -922,10 +922,10 @@ $tests = array(
     // are a body, one more is not. Over the socket pair, in this process.
     'the bound is maxlength exactly: that many bytes decode, one more is refused' => function () {
         $exact = str_repeat('a', 100000);
-        $client = new SnoopyOverSocketPair(array(
+        $client = new SnoopyOverSocketPair([
             snoopyGzipResponse(gzencode($exact, 9)),
             snoopyGzipResponse(gzencode($exact . 'a', 9)),
-        ));
+        ]);
         $client->maxlength = 100000;
         try {
             snoopyAssertTrue($client->fetch('http://tracker.test/exact'), 'A body of exactly maxlength bytes was refused: ' . $client->error);
@@ -945,7 +945,7 @@ $tests = array(
     // refused on the same terms as an oversized one: gzinflate's return value
     // does not say which, and both become one classified reason on purpose.
     'a body that is not gzip at all is refused rather than returned as false' => function () {
-        $client = new SnoopyOverSocketPair(array(snoopyGzipResponse('this is not a gzip member')));
+        $client = new SnoopyOverSocketPair([snoopyGzipResponse('this is not a gzip member')]);
         try {
             snoopyAssertSame(false, $client->fetch('http://tracker.test/plain'), 'An unreadable body was reported as fetched');
             snoopyAssertSame(Snoopy::RESPONSE_BODY_FAILED, $client->status, 'The refusal must carry its own status');
@@ -960,7 +960,7 @@ $tests = array(
     // at the trailer, and a bound must not start to: the document is whole.
     'a gzip body cut after its deflate stream still decodes, as before' => function () {
         $body = str_repeat("hello world\n", 700);
-        $client = new SnoopyOverSocketPair(array(snoopyGzipResponse(substr(gzencode($body, 9), 0, -8))));
+        $client = new SnoopyOverSocketPair([snoopyGzipResponse(substr(gzencode($body, 9), 0, -8))]);
         try {
             snoopyAssertTrue($client->fetch('http://tracker.test/cut'), 'A body without its trailer was refused: ' . $client->error);
             snoopyAssertSame($body, $client->results, 'A body without its trailer must still come back whole');
@@ -974,12 +974,12 @@ $tests = array(
     // body under its own status, never a refusal; the base left results ===
     // false there. An empty gzip member is the same answer, spelled out.
     'a bodyless answer with a gzip header keeps its status and an empty body' => function () {
-        $answers = array(
+        $answers = [
             '304' => "HTTP/1.1 304 Not Modified\r\nETag: \"x\"\r\nContent-Encoding: gzip\r\n\r\n",
             '204' => "HTTP/1.1 204 No Content\r\nContent-Encoding: gzip\r\n\r\n",
             '200' => "HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\n\r\n",
             '200 with an empty member' => snoopyGzipResponse(gzencode('', 9)),
-        );
+        ];
         $client = new SnoopyOverSocketPair(array_values($answers));
         try {
             foreach ($answers as $label => $answer) {
@@ -1056,14 +1056,14 @@ $tests = array(
     // Anything that is not a positive byte count would refuse every fetch, and
     // an operator who wrote one did not mean that, so the shipped bound stands.
     'a bound that is not a positive byte count is ignored' => function () {
-        foreach (array(0, -1, 'four megabytes') as $value) {
+        foreach ([0, -1, 'four megabytes'] as $value) {
             $GLOBALS['httpMaxResponseLength'] = $value;
             $client = new Snoopy();
             unset($GLOBALS['httpMaxResponseLength']);
             snoopyAssertSame(
                 4194304,
                 $client->maxlength,
-                'A bound of ' . var_export($value, true) . ' must leave the shipped one in place'
+                'A bound of ' . var_export($value, true) . ' must leave the shipped one in place',
             );
         }
     },
@@ -1073,7 +1073,7 @@ $tests = array(
     'a raised bound accepts a body the shipped one refuses' => function () {
         $size = 5 * 1048576;
         $encoded = snoopyGzipZeros($size);
-        $refusing = new SnoopyOverSocketPair(array(snoopyGzipResponse($encoded)));
+        $refusing = new SnoopyOverSocketPair([snoopyGzipResponse($encoded)]);
         try {
             snoopyAssertSame(false, $refusing->fetch('http://tracker.test/big'), 'The shipped bound accepted a 5 MiB body');
             snoopyAssertSame(Snoopy::RESPONSE_BODY_FAILED, $refusing->status, 'The refusal must carry its own status');
@@ -1081,7 +1081,7 @@ $tests = array(
             $refusing->closeSockets();
         }
         $GLOBALS['httpMaxResponseLength'] = 8 * 1048576;
-        $raised = new SnoopyOverSocketPair(array(snoopyGzipResponse($encoded)));
+        $raised = new SnoopyOverSocketPair([snoopyGzipResponse($encoded)]);
         unset($GLOBALS['httpMaxResponseLength']);
         try {
             snoopyAssertTrue($raised->fetch('http://tracker.test/big'), 'A body under the raised bound was refused: ' . $raised->error);
@@ -1099,15 +1099,15 @@ $tests = array(
         $exact = str_repeat('a', $limit);
         $over = $exact . 'a';
         $GLOBALS['httpMaxResponseLength'] = $limit;
-        $client = new SnoopyOverSocketPair(array(
+        $client = new SnoopyOverSocketPair([
             "HTTP/1.1 200 OK\r\n\r\n" . $exact,
             "HTTP/1.1 200 OK\r\n\r\n" . $over,
             snoopyGzipResponse(gzencode($exact, 9)),
             snoopyGzipResponse(gzencode($over, 9)),
-        ));
+        ]);
         unset($GLOBALS['httpMaxResponseLength']);
         try {
-            foreach (array('plaintext' => 'oversized-response-body', 'gzip' => 'invalid-or-oversized-gzip') as $encoding => $reason) {
+            foreach (['plaintext' => 'oversized-response-body', 'gzip' => 'invalid-or-oversized-gzip'] as $encoding => $reason) {
                 snoopyAssertTrue($client->fetch('http://tracker.test/exact'), 'A ' . $encoding . ' body of exactly the bound was refused: ' . $client->error);
                 snoopyAssertSame($exact, $client->results, 'A ' . $encoding . ' body of exactly the bound must come back whole');
                 snoopyAssertSame(false, $client->fetch('http://tracker.test/over'), 'A ' . $encoding . ' body one byte past the bound was accepted');
@@ -1125,7 +1125,7 @@ $tests = array(
         putenv('SNOOPY_TEST_BODY=' . $bodyPath);
         $GLOBALS['httpMaxResponseLength'] = $limit;
         try {
-            foreach (array('plaintext' => 'oversized-response-body', 'gzip' => 'invalid-or-oversized-gzip') as $encoding => $reason) {
+            foreach (['plaintext' => 'oversized-response-body', 'gzip' => 'invalid-or-oversized-gzip'] as $encoding => $reason) {
                 $gzipped = $encoding === 'gzip';
                 snoopyRespondWith($gzipped ? 'HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\n' : 'HTTP/1.1 200 OK\r\n');
                 file_put_contents($bodyPath, $gzipped ? gzencode($exact, 9) : $exact);
@@ -1175,10 +1175,10 @@ PHP
         putenv('SNOOPY_TEST_BODY=' . $huge);
         try {
             $process = proc_open(
-                array(PHP_BINARY, '-c', SnoopyGzipServer::SUITE_INI, '-d', 'memory_limit=32M',
-                    $child, __DIR__ . '/../../php/Snoopy.class.inc', $curlPath),
-                array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
-                $pipes
+                [PHP_BINARY, '-c', SnoopyGzipServer::SUITE_INI, '-d', 'memory_limit=32M',
+                    $child, __DIR__ . '/../../php/Snoopy.class.inc', $curlPath],
+                [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+                $pipes,
             );
             snoopyAssertTrue(is_resource($process), 'Could not start the fetching child');
             fclose($pipes[0]);
@@ -1191,7 +1191,7 @@ PHP
             snoopyAssertTrue(
                 is_array($seen),
                 'The child exited ' . $exit . ' without answering, which is what reading the whole file does; it printed: '
-                . trim($stdout . "\n" . $stderr)
+                . trim($stdout . "\n" . $stderr),
             );
             snoopyAssertSame(false, $seen['fetched'], 'A 64 MiB answer was reported as fetched');
             snoopyAssertSame(Snoopy::RESPONSE_BODY_FAILED, $seen['status'], 'The refusal must carry its own status');
@@ -1208,7 +1208,7 @@ PHP
     // than it is refused without being inflated at all.
     'a gzip body already past the bound on the wire is refused before inflating' => function () {
         $GLOBALS['httpMaxResponseLength'] = 50000;
-        $client = new SnoopyOverSocketPair(array(snoopyGzipResponse(gzencode(str_repeat('a', 80000), 0))));
+        $client = new SnoopyOverSocketPair([snoopyGzipResponse(gzencode(str_repeat('a', 80000), 0))]);
         unset($GLOBALS['httpMaxResponseLength']);
         try {
             snoopyAssertSame(false, $client->fetch('http://tracker.test/stored'), 'A body oversized on the wire was accepted');
@@ -1219,7 +1219,7 @@ PHP
             $client->closeSockets();
         }
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

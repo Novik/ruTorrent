@@ -2,30 +2,30 @@
 
 class DB9Engine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1',
-		'Videos'=>'&filter_cat[4]=1' );
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
+	public $categories = [ 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1',
+		'Videos'=>'&filter_cat[4]=1' ];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://www.deepbassnine.com';
-		if($useGlobalCats)
-			$categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1', 'Videos'=>'&filter_cat[4]=1' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1', 'Videos'=>'&filter_cat[4]=1' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		for($pg = 1; $pg<10; $pg++)
 		{
 			$itemsFound = false;
 			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&tags_type=1&order_by=seeders&order_way=desc&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
-				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
-				break;
+				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false)) {
+				break; }
 
 
 			$res = preg_match_all('/<a href="artist.php\?id=.*">(?P<artist>.*)<\/a>.*'.
@@ -56,14 +56,14 @@ class DB9Engine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
 
-			if(!$itemsFound)
-				break;
+			if(!$itemsFound) {
+				break; }
 		}
 	}
 }

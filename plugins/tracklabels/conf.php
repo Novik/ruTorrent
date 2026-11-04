@@ -5,8 +5,8 @@
 // $hideTrackers = array (
 // "tracker.net", "tracker.org"
 // );
-$hideTrackers = array (
-);
+$hideTrackers =  [
+];
 
 // Label aliases is used:
 // 1. Map a label to already known label

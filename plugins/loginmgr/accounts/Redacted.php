@@ -18,8 +18,8 @@ class RedactedAccount extends commonAccount
 
 	protected function unconfigured()
 	{
-		if($this->url!=='')
-			return('');
+		if($this->url!=='') {
+			return(''); }
 		return(self::unconfiguredOrigin('redactedOrigin',$this->originError));
 	}
 

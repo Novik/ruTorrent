@@ -5,10 +5,10 @@ eval(FileUtil::getPluginConf("_getdir"));
 
 function compareEntries( $a, $b )
 {
-	if($a=='..')
-		return( -1 );
-	if($b=='..')
-		return( 1 );
+	if($a=='..') {
+		return( -1 ); }
+	if($b=='..') {
+		return( 1 ); }
 	return( strcmp(mb_strtolower($a), mb_strtolower($b)) );
 }
 
@@ -32,8 +32,8 @@ if(isset($requestedDir) && strlen($requestedDir))
 else
 {
 	$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
-	if (strpos($dir, $topDirectory) !== 0)
-		$dir = $topDirectory;
+	if (strpos($dir, $topDirectory) !== 0) {
+		$dir = $topDirectory; }
 }
 
 $dir = FileUtil::addslash($dir);
@@ -51,9 +51,8 @@ usort($directories, "compareEntries");
 usort($files, "compareEntries");
 
 header("Content-Type: application/json");
-echo JSON::safeEncode(array(
+echo JSON::safeEncode([
 	"path" => $dir,
 	"directories" => array_values($directories),
 	"files" => array_values($files),
-));
-?>
+]);

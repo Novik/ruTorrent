@@ -2,14 +2,14 @@
 
 class ZamundaNetEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>20, "auth"=>1 );
+	public $defaults = [ "public"=>false, "page_size"=>20, "auth"=>1 ];
 
 	// The search url of the page being walked. makeClient() sends it as the
 	// referer of every request action() makes.
 	public $search = "";
 
-	public $categories = array
-	(
+	public $categories = 
+	[
 		'All'=>'',
 		'Movies'=>'&c5=1&c19=1&c20=1&c24=1&c25=1&c28=1&c31=1&c35=1&c42=1&c46=1',
 		'Serial'=>'&c7=1&c33=1',
@@ -18,8 +18,8 @@ class ZamundaNetEngine extends commonEngine
 		'Software'=>'&c1=1&c22=1&c38=1',
 		'Sport'=>'&c41=1&c43=1',
 		'Other'=>'&c23=1&c26=1&c32=1&c36=1&c37=1&c52=1&c53=1',
-		'XXX'=>'&c9=1&c27=1&c48=1&c49=1'
-	);
+		'XXX'=>'&c9=1&c27=1&c48=1&c49=1',
+	];
 
 	public function makeClient($url)
 	{
@@ -34,8 +34,8 @@ class ZamundaNetEngine extends commonEngine
 		$url = 'https://zamunda.net';
 		if($useGlobalCats)
 		{
-			$categories = array
-			(
+			$categories = 
+			[
 				'all'=>'',
 				'movies'=>'&c5=1&c19=1&c20=1&c24=1&c25=1&c28=1&c31=1&c35=1&c42=1&c46=1',
 				'tv'=>'&c7=1&c33=1',
@@ -43,8 +43,8 @@ class ZamundaNetEngine extends commonEngine
 				'games'=>'&c4=1&c12=1&c17=1&c21=1&c39=1&c40=1&c54=1',
 				'anime'=>'&c25=1',
 				'software'=>'&c1=1&c22=1&c38=1',
-				'books'=>'&c32=1'
-			);
+				'books'=>'&c32=1',
+			];
 		}
 		else
 		{
@@ -103,8 +103,8 @@ class ZamundaNetEngine extends commonEngine
 					break;
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

@@ -3,22 +3,8 @@
 class mTeamEngine extends commonEngine
 {
 
-	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array( 'Tout'=>'' );
-
-	protected static function disableEntityLoader()
-	{
-		if( (PHP_VERSION_ID < 80000) && function_exists('libxml_disable_entity_loader') )
-		{
-			libxml_disable_entity_loader( true );
-		}
-	}
-
-	protected static function getDate($ago)
-	{
-		$date = date_create()->modify('-'.$ago.' days')->format('Y-m-d');
-		return($date);
-	}
+	public $defaults = [ "public"=>false, "page_size"=>50, "auth"=>1 ];
+	public $categories = [ 'Tout'=>'' ];
 
 	public function makeClient($url)
 	{
@@ -30,20 +16,20 @@ class mTeamEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$url = 'https://mteam.fr';
-		if($useGlobalCats)
-			$categories = array( 'all'=>'' );
-		else
-			$categories = &$this->categories;
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if($useGlobalCats) {
+			$categories = [ 'all'=>'' ]; }
+		else {
+			$categories = &$this->categories; }
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		self::disableEntityLoader();
 
 		$cli = $this->fetch($url . '/home.php?ref=search&sub=menu&value=' . $what);
-		if (($cli == false) || (strpos($cli->results, "Les www du lien mteam.fr ne sont plus valides.") !== false))
-			return;
+		if (($cli == false) || (strpos($cli->results, "Les www du lien mteam.fr ne sont plus valides.") !== false)) {
+			return; }
 
 		$doc = new DOMDocument();
 		@$doc->loadHTML($cli->results);
@@ -51,15 +37,15 @@ class mTeamEngine extends commonEngine
 		foreach ($doc->getElementsByTagName('table') as $table) {
 			foreach ($table->getElementsByTagName('tr') as $tr) {
 				$tds = $tr->getElementsByTagName('td');
-				if ($tds->length != 6) continue; //bail if table rows isn't as expected
+				if ($tds->length != 6) { continue; } //bail if table rows isn't as expected
 
 				try {
 					$item = $this->getNewEntry();
 
 					$link = $tds[5]->getElementsByTagName('a')[0];
-					if (!$link) continue; //bail if no download link found
+					if (!$link) { continue; } //bail if no download link found
 					$link = $link->getAttribute('href');
-					if (substr( $link, 0, 2 ) !== "/a") continue; //bail if download link isn't a .torrent file
+					if (substr( $link, 0, 2 ) !== "/a") { continue; } //bail if download link isn't a .torrent file
 					$link = $url . $link;
 
 					$item["cat"] = "Jeux PC > ".$tds[0]->getElementsByTagName('img')[0]->getAttribute('title');
@@ -76,5 +62,19 @@ class mTeamEngine extends commonEngine
 				}
 			}
 		}
+	}
+
+	protected static function disableEntityLoader()
+	{
+		if( (PHP_VERSION_ID < 80000) && function_exists('libxml_disable_entity_loader') )
+		{
+			libxml_disable_entity_loader( true );
+		}
+	}
+
+	protected static function getDate($ago)
+	{
+		$date = date_create()->modify('-'.$ago.' days')->format('Y-m-d');
+		return($date);
 	}
 }

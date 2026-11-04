@@ -30,7 +30,7 @@ class EditActionReloadTest extends TestCase
 {
 	use TorrentSequenceFixtures;
 
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
 
 	private $base;
 	private $daemon;
@@ -49,90 +49,6 @@ class EditActionReloadTest extends TestCase
 			$this->daemon = null;
 		}
 		$this->removeTree($this->base);
-	}
-
-	private function removeTree($path)
-	{
-		if (!is_dir($path)) {
-			return;
-		}
-		foreach (glob($path . '/*') as $entry) {
-			is_dir($entry) ? $this->removeTree($entry) : @unlink($entry);
-		}
-		@rmdir($path);
-	}
-
-	private function repoRoot()
-	{
-		return realpath(__DIR__ . '/../../..');
-	}
-
-	/**
-	 * Runs plugins/edit/action.php against the daemon and returns what it
-	 * printed. The nine values are the multicall action.php opens with:
-	 * get_session, d.is_open, d.is_active, d.get_state, d.get_tied_to_file,
-	 * d.get_custom1, d.get_directory_base, d.get_connection_seed and
-	 * d.get_complete. d.get_complete is 0 so the reload does not take the
-	 * fast resume branch, and the directory is empty so the add does not need
-	 * a directory to be approved.
-	 */
-	private function saveAnEdit($post)
-	{
-		$root = $this->repoRoot();
-		if ($this->daemon !== null) {
-			$this->daemon->stop();
-		}
-		// sendTorrent() is called with saveTorrent false, so it unlinks the
-		// session copy it loaded from; each run gets a fresh one.
-		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
-			$this->announceOnlyTorrent());
-		// An install whose interface has been opened has a settings cache.
-		// This script is driven against a profile of its own, so leave one
-		// there rather than have it probe and spend the replies below.
-		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
-		$this->daemon = new FakeRtorrentDaemon(array(
-			array($this->base . '/session/', 1, 1, 1, '', '', '', 'seed', 0),
-			array(0),
-			array(0),
-			array(0),
-		), $this->base . '/calls.log');
-
-		$driver = $this->base . '/drive-edit.php';
-		file_put_contents($driver, "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
-			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
-			. '$scgi_host = "127.0.0.1";' . "\n"
-			. '$scgi_port = ' . $this->daemon->port() . ";\n"
-			. '$rpcTimeOut = 10;' . "\n"
-			. '$rpcLogCalls = false;' . "\n"
-			. '$saveUploadedTorrents = false;' . "\n"
-			. '$HTTP_RAW_POST_DATA = ' . var_export($post, true) . ";\n"
-			. 'chdir(' . var_export($root . '/plugins/edit', true) . ");\n"
-			. 'require(' . var_export($root . '/plugins/edit/action.php', true) . ");\n");
-
-		$output = array();
-		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
-			escapeshellarg($driver) . ' 2>&1', $output);
-		return implode("\n", $output);
-	}
-
-	/** The index of the first call to $method, or -1. */
-	private function indexOf($method)
-	{
-		$calls = $this->daemon->calls();
-		$at = array_search($method, $calls, true);
-		return $at === false ? -1 : $at;
-	}
-
-	/** The load command, whatever the daemon in front of it spells it. */
-	private function loadCallIndex()
-	{
-		foreach ($this->daemon->calls() as $index => $call) {
-			if (strpos($call, 'load') === 0 || strpos($call, 'load.') === 0) {
-				return $index;
-			}
-		}
-		return -1;
 	}
 
 	/**
@@ -190,5 +106,89 @@ class EditActionReloadTest extends TestCase
 			'the fixture has no throttle plugin, so no throttle name is read');
 		$this->assertTrue($this->loadCallIndex() >= 0,
 			'and the reload still happens; calls: ' . implode(', ', $calls));
+	}
+
+	private function removeTree($path)
+	{
+		if (!is_dir($path)) {
+			return;
+		}
+		foreach (glob($path . '/*') as $entry) {
+			is_dir($entry) ? $this->removeTree($entry) : @unlink($entry);
+		}
+		@rmdir($path);
+	}
+
+	private function repoRoot()
+	{
+		return realpath(__DIR__ . '/../../..');
+	}
+
+	/**
+	 * Runs plugins/edit/action.php against the daemon and returns what it
+	 * printed. The nine values are the multicall action.php opens with:
+	 * get_session, d.is_open, d.is_active, d.get_state, d.get_tied_to_file,
+	 * d.get_custom1, d.get_directory_base, d.get_connection_seed and
+	 * d.get_complete. d.get_complete is 0 so the reload does not take the
+	 * fast resume branch, and the directory is empty so the add does not need
+	 * a directory to be approved.
+	 */
+	private function saveAnEdit($post)
+	{
+		$root = $this->repoRoot();
+		if ($this->daemon !== null) {
+			$this->daemon->stop();
+		}
+		// sendTorrent() is called with saveTorrent false, so it unlinks the
+		// session copy it loaded from; each run gets a fresh one.
+		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
+			$this->announceOnlyTorrent());
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
+		$this->daemon = new FakeRtorrentDaemon([
+			[$this->base . '/session/', 1, 1, 1, '', '', '', 'seed', 0],
+			[0],
+			[0],
+			[0],
+		], $this->base . '/calls.log');
+
+		$driver = $this->base . '/drive-edit.php';
+		file_put_contents($driver, "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
+			. '$scgi_host = "127.0.0.1";' . "\n"
+			. '$scgi_port = ' . $this->daemon->port() . ";\n"
+			. '$rpcTimeOut = 10;' . "\n"
+			. '$rpcLogCalls = false;' . "\n"
+			. '$saveUploadedTorrents = false;' . "\n"
+			. '$HTTP_RAW_POST_DATA = ' . var_export($post, true) . ";\n"
+			. 'chdir(' . var_export($root . '/plugins/edit', true) . ");\n"
+			. 'require(' . var_export($root . '/plugins/edit/action.php', true) . ");\n");
+
+		$output = [];
+		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
+			escapeshellarg($driver) . ' 2>&1', $output);
+		return implode("\n", $output);
+	}
+
+	/** The index of the first call to $method, or -1. */
+	private function indexOf($method)
+	{
+		$calls = $this->daemon->calls();
+		$at = array_search($method, $calls, true);
+		return $at === false ? -1 : $at;
+	}
+
+	/** The load command, whatever the daemon in front of it spells it. */
+	private function loadCallIndex()
+	{
+		foreach ($this->daemon->calls() as $index => $call) {
+			if (strpos($call, 'load') === 0 || strpos($call, 'load.') === 0) {
+				return $index;
+			}
+		}
+		return -1;
 	}
 }

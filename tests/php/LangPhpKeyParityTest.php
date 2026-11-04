@@ -25,7 +25,7 @@ class LangPhpKeyParityTest extends TestCase
 	private $root;
 
 	/** The lang/*.php sets, as directory => (file name => leaf key => value). */
-	private $sets = array();
+	private $sets = [];
 
 	/**
 	 * Read once for the whole class. require() executes the file every time it
@@ -48,42 +48,6 @@ class LangPhpKeyParityTest extends TestCase
 			}
 			$this->sets[$dir][basename($file)] = $this->leavesOf($file);
 		}
-	}
-
-	/**
-	 * Every value the file defines, flattened to leaf paths, so that a nested
-	 * group counts as its members and not as one key -- a translation cannot
-	 * lose all but one member of a group and still look complete. The mirror of
-	 * leafEntries() in tests/js/lang.spec.js.
-	 */
-	private function leavesOf($file)
-	{
-		// require() assigns into this method's own $theUILang, which is what
-		// keeps each file's keys to itself. Read in one shared scope, every
-		// file would inherit the keys of the files read before it and nothing
-		// would ever be reported missing.
-		$theUILang = array();
-		require($file);
-		$leaves = array();
-		self::flatten($theUILang, '', $leaves);
-		return $leaves;
-	}
-
-	private static function flatten($value, $prefix, &$out)
-	{
-		foreach ($value as $key => $child) {
-			$name = ($prefix === '') ? (string)$key : $prefix . '.' . $key;
-			if (is_array($child)) {
-				self::flatten($child, $name, $out);
-			} else {
-				$out[$name] = $child;
-			}
-		}
-	}
-
-	private function shorten($path)
-	{
-		return substr($path, strlen($this->root) + 1);
 	}
 
 	/**
@@ -167,5 +131,41 @@ class LangPhpKeyParityTest extends TestCase
 			}
 		}
 		$this->assertTrue($checked > 0, 'found translated keys to check');
+	}
+
+	/**
+	 * Every value the file defines, flattened to leaf paths, so that a nested
+	 * group counts as its members and not as one key -- a translation cannot
+	 * lose all but one member of a group and still look complete. The mirror of
+	 * leafEntries() in tests/js/lang.spec.js.
+	 */
+	private function leavesOf($file)
+	{
+		// require() assigns into this method's own $theUILang, which is what
+		// keeps each file's keys to itself. Read in one shared scope, every
+		// file would inherit the keys of the files read before it and nothing
+		// would ever be reported missing.
+		$theUILang = [];
+		require($file);
+		$leaves = [];
+		self::flatten($theUILang, '', $leaves);
+		return $leaves;
+	}
+
+	private static function flatten($value, $prefix, &$out)
+	{
+		foreach ($value as $key => $child) {
+			$name = ($prefix === '') ? (string)$key : $prefix . '.' . $key;
+			if (is_array($child)) {
+				self::flatten($child, $name, $out);
+			} else {
+				$out[$name] = $child;
+			}
+		}
+	}
+
+	private function shorten($path)
+	{
+		return substr($path, strlen($this->root) + 1);
 	}
 }

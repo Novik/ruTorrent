@@ -10,8 +10,8 @@ function getTorrent( $url )
 	if($cli->fetchComplex($url) && $cli->status>=200 && $cli->status<300)
 	{
 		$name = $cli->get_filename();
-		if($name===false)
-			$name = md5($url).".torrent";
+		if($name===false) {
+			$name = md5($url).".torrent"; }
 		$name = FileUtil::getUniqueUploadedFilename($name);
 		$f = @fopen($name,"w");
 		if($f===false)
@@ -60,19 +60,19 @@ function parseValue( $value )
 ignore_user_abort( true );
 set_time_limit( 0 );
 
-$result = array
-(
+$result = 
+[
 	'error' => 0,
 	'success' => 0,
 	'duplicate' => 0,
-);
+];
 
-if(!isset($HTTP_RAW_POST_DATA))
-	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+if(!isset($HTTP_RAW_POST_DATA)) {
+	$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
-	$torrents = array();
+	$torrents = [];
 	$loaded = rTorrent::loadedHashes();
 	foreach($vars as $var)
 	{
@@ -87,7 +87,7 @@ if(isset($HTTP_RAW_POST_DATA))
 				{
 					$result['error'] = $result['error'] + 1;
 				}
-				else if( isset( $loaded[strtoupper($hash)] ) )
+				elseif( isset( $loaded[strtoupper($hash)] ) )
 				{
 					$result['duplicate'] = $result['duplicate'] + 1;
 				}

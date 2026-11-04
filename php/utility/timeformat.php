@@ -42,20 +42,20 @@ class TimeFormat
 		$swap = false;
 		foreach(str_split($flags) as $flag)
 		{
-			if($flag === '^')
-				$upper = true;
-			elseif($flag === '#')
-				$swap = true;
-			elseif($flag !== '')
-				$pad = $flag;
+			if($flag === '^') {
+				$upper = true; }
+			elseif($flag === '#') {
+				$swap = true; }
+			elseif($flag !== '') {
+				$pad = $flag; }
 		}
 		$width = ($width === '') ? 0 : (int)$width;
 		if((($modifier === 'E') && (strpos('aAbBdDeFgGhHIjklmMSUVwW', $conv) !== false)) ||
-			(($modifier === 'O') && (strpos('aAcDFxXY', $conv) !== false)))
-			return self::literal($spec, $conv, $upper, $swap, $pad, $width);
+			(($modifier === 'O') && (strpos('aAcDFxXY', $conv) !== false))) {
+			return self::literal($spec, $conv, $upper, $swap, $pad, $width); }
 
-		$composite = array('c' => '%a %b %e %H:%M:%S %Y', 'D' => '%m/%d/%y', 'x' => '%m/%d/%y',
-			'F' => '%Y-%m-%d', 'r' => '%I:%M:%S %p', 'R' => '%H:%M', 'T' => '%H:%M:%S', 'X' => '%H:%M:%S');
+		$composite = ['c' => '%a %b %e %H:%M:%S %Y', 'D' => '%m/%d/%y', 'x' => '%m/%d/%y',
+			'F' => '%Y-%m-%d', 'r' => '%I:%M:%S %p', 'R' => '%H:%M', 'T' => '%H:%M:%S', 'X' => '%H:%M:%S'];
 		if(isset($composite[$conv]))
 		{
 			$text = self::render($composite[$conv], $at, $utc);
@@ -86,7 +86,7 @@ class TimeFormat
 			case 'm': $number = (int)$at->format('n'); break;
 			case 'M': $number = (int)$at->format('i'); break;
 			case 'n': $text = "\n"; break;
-			case 'p': $text = $at->format('A'); if($swap) $text = strtolower($text); break;
+			case 'p': $text = $at->format('A'); if($swap) { $text = strtolower($text); } break;
 			case 'P': $text = $at->format('a'); $upper = false; break;
 			case 's': $number = $at->getTimestamp(); $digits = 1; $spaces = true; break;
 			case 'S': $number = (int)$at->format('s'); break;
@@ -103,14 +103,14 @@ class TimeFormat
 				$sign = self::fill(($offset < 0) ? '-' : '+', $width, $pad === '0' ? '0' : ' ');
 				$offset = abs($offset);
 				return $sign.self::number(intdiv($offset, 3600) * 100 + intdiv($offset % 3600, 60), 4, false, $pad, $width);
-			case 'Z': $text = $utc ? 'GMT' : $at->format('T'); if($swap) $text = strtolower($text); break;
+			case 'Z': $text = $utc ? 'GMT' : $at->format('T'); if($swap) { $text = strtolower($text); } break;
 			case '%': $text = '%'; break;
 			default: return self::literal($spec, $conv, $upper, $swap, $pad, $width);
 		}
-		if(!is_null($number))
-			return self::number($number, $digits, $spaces, $pad, $width);
-		if($upper)
-			$text = strtoupper($text);
+		if(!is_null($number)) {
+			return self::number($number, $digits, $spaces, $pad, $width); }
+		if($upper) {
+			$text = strtoupper($text); }
 		return self::fill($text, $width, ($pad === '0') ? '0' : ' ');
 	}
 
@@ -118,19 +118,19 @@ class TimeFormat
 	// case its flags ask for.
 	private static function literal($spec, $conv, $upper, $swap, $pad, $width)
 	{
-		if($upper || ($swap && (strpos('bBh', $conv) !== false)))
-			$spec = strtoupper($spec);
+		if($upper || ($swap && (strpos('bBh', $conv) !== false))) {
+			$spec = strtoupper($spec); }
 		return self::fill($spec, $width, ($pad === '0') ? '0' : ' ');
 	}
 
 	private static function number($number, $digits, $spaces, $pad, $width)
 	{
 		$text = (string)$number;
-		if($width > 0)
+		if($width > 0) {
 			return self::fill($text, ($pad === '-') ? $width : max($width, $digits),
-				(($pad === '0') || (($pad === '') && !$spaces)) ? '0' : ' ');
-		if($pad === '-')
-			return $text;
+				(($pad === '0') || (($pad === '') && !$spaces)) ? '0' : ' '); }
+		if($pad === '-') {
+			return $text; }
 		return self::fill($text, $digits, (($pad === '_') || (($pad === '') && $spaces)) ? ' ' : '0');
 	}
 

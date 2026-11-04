@@ -9,7 +9,7 @@ if(!class_exists('FileUtil'))
 {
 	class FileUtil
 	{
-		public static $log = array();
+		public static $log = [];
 		public static function toLog($msg) { self::$log[] = $msg; }
 	}
 }
@@ -34,13 +34,6 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
 
 class XMLRPCProxyTest extends TestCase
 {
-	private function resetMocks()
-	{
-		rXMLRPCRequest::$lastPayload = null;
-		rXMLRPCRequest::$lastTrusted = null;
-		rXMLRPCRequest::$sent = 0;
-		FileUtil::$log = array();
-	}
 
 	// ---- Mode dispatch ----
 
@@ -86,7 +79,7 @@ class XMLRPCProxyTest extends TestCase
 	public function testSanitizeStripsDangerousCommandParam()
 	{
 		$xml = simplexml_load_string('<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.com/t.torrent</string></value></param><param><value><string>execute=evil</string></value></param></params></methodCall>');
-		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', array('d.directory.set', 'd.custom1.set'));
+		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', ['d.directory.set', 'd.custom1.set']);
 		$this->assertEquals(2, $result['kept'], 'should keep target + URL only');
 		$this->assertEquals(1, count($result['stripped']), 'should strip one param');
 		$this->assertTrue(strpos($result['xml'], 'execute=evil') === false, 'rebuilt XML must not contain execute=evil');
@@ -95,7 +88,7 @@ class XMLRPCProxyTest extends TestCase
 	public function testSanitizeKeepsWhitelistedCommandParam()
 	{
 		$xml = simplexml_load_string('<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.com/t.torrent</string></value></param><param><value><string>d.directory.set=/srv/torrents</string></value></param></params></methodCall>');
-		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', array('d.directory.set', 'd.custom1.set'));
+		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', ['d.directory.set', 'd.custom1.set']);
 		$this->assertEquals(3, $result['kept'], 'should keep target + URL + safe param');
 		$this->assertEquals(0, count($result['stripped']), 'should strip nothing');
 		$this->assertTrue(strpos($result['xml'], 'd.directory.set="/srv/torrents"') !== false,
@@ -105,14 +98,14 @@ class XMLRPCProxyTest extends TestCase
 	public function testSanitizeAlwaysKeepsFirstTwoParams()
 	{
 		$xml = simplexml_load_string('<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>execute=looks_evil_but_is_url</string></value></param></params></methodCall>');
-		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', array());
+		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', []);
 		$this->assertEquals(2, $result['kept'], 'positional params always kept');
 	}
 
 	public function testEmptyWhitelistStripsAllCommandParams()
 	{
 		$xml = simplexml_load_string('<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.com/t.torrent</string></value></param><param><value><string>d.directory.set=/srv</string></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>');
-		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', array());
+		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', []);
 		$this->assertEquals(2, $result['kept'], 'empty whitelist keeps only positional');
 		$this->assertEquals(2, count($result['stripped']), 'both command params stripped');
 	}
@@ -120,7 +113,7 @@ class XMLRPCProxyTest extends TestCase
 	public function testRebuiltXmlIsValid()
 	{
 		$xml = simplexml_load_string('<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.com/t.torrent</string></value></param></params></methodCall>');
-		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', array());
+		$result = XMLRPCProxy::rebuildLoadParams($xml, 'load.start', []);
 		$reparsed = @simplexml_load_string($result['xml']);
 		$this->assertTrue($reparsed !== false, 'rebuilt XML round-trips through simplexml');
 		$this->assertEquals('load.start', (string)$reparsed->methodName, 'method name preserved');
@@ -130,7 +123,7 @@ class XMLRPCProxyTest extends TestCase
 	{
 		$this->resetMocks();
 		$xml = '<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.com/t.torrent</string></value></param><param><value><string>execute=evil</string></value></param></params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', false, array('d.directory.set'));
+		XMLRPCProxy::process($xml, 'sanitize', false, ['d.directory.set']);
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'sanitized load.start forwarded as trusted');
 		$this->assertTrue(strpos(rXMLRPCRequest::$lastPayload, 'execute=evil') === false, 'forwarded payload must not contain malicious param');
 		$this->assertTrue(strpos(rXMLRPCRequest::$lastPayload, 'http://example.com/t.torrent') !== false, 'URL preserved');
@@ -148,20 +141,6 @@ class XMLRPCProxyTest extends TestCase
 		$this->assertTrue(!in_array('execute', $methods), 'execute NOT in sanitize list');
 		$this->assertTrue(!in_array('system.multicall', $methods), 'system.multicall NOT in sanitize list');
 		$this->assertTrue(!in_array('execute2', $methods), 'execute2 NOT in sanitize list');
-	}
-
-	// ---- A command parameter is not one command ----
-
-	private function sanitizeParam($param, $safeParams = array('d.custom1.set', 'd.custom2.set', 'd.custom.set'))
-	{
-		$this->resetMocks();
-		$xml = '<?xml version="1.0"?><methodCall><methodName>load.raw_start</methodName><params>'
-			. '<param><value><string></string></value></param>'
-			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
-			. '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES) . '</string></value></param>'
-			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', false, $safeParams);
-		return (string) rXMLRPCRequest::$lastPayload;
 	}
 
 	public function testChainedCommandIsNotForwarded()
@@ -230,7 +209,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><int>1</int></value></param>'
 			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
 			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', false, array('d.custom1.set'));
+		XMLRPCProxy::process($xml, 'sanitize', false, ['d.custom1.set']);
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false,
 			'anything not rebuilt here is forwarded untrusted, for rtorrent to judge');
 	}
@@ -256,13 +235,6 @@ class XMLRPCProxyTest extends TestCase
 			'only a leading $ is special, so ordinary values keep theirs');
 	}
 
-	// ---- what the log says ----
-
-	private function logText()
-	{
-		return implode("\n", FileUtil::$log);
-	}
-
 	public function testUntrustedRequestIsNeverLoggedAsTrusted()
 	{
 		$this->resetMocks();
@@ -272,12 +244,12 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><int>1</int></value></param>'
 			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
 			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, array('d.custom1.set'));
+		XMLRPCProxy::process($xml, 'sanitize', true, ['d.custom1.set']);
 
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false, 'the call is sent untrusted');
-		foreach(FileUtil::$log as $line)
+		foreach(FileUtil::$log as $line) {
 			$this->assertTrue(strpos($line, 'xmlrpc-proxy: trusted') !== 0,
-				'a request sent untrusted is never logged as trusted');
+				'a request sent untrusted is never logged as trusted'); }
 		$this->assertTrue(strpos($this->logText(), 'untrusted') !== false, 'and it is logged as untrusted');
 	}
 
@@ -294,16 +266,6 @@ class XMLRPCProxyTest extends TestCase
 		$this->resetMocks();
 		$this->sanitizeParamLogged('execute=' . str_repeat('A', 500));
 		$this->assertTrue(strlen($this->logText()) < 400, 'a long stripped value is truncated');
-	}
-
-	private function sanitizeParamLogged($param)
-	{
-		$xml = '<?xml version="1.0"?><methodCall><methodName>load.raw_start</methodName><params>'
-			. '<param><value><string></string></value></param>'
-			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
-			. '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES) . '</string></value></param>'
-			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, array('d.custom1.set'));
 	}
 
 	// ---- shapes rtorrent itself accepts ----
@@ -339,7 +301,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
 			. '<param><value>d.custom1.set=label</value></param>'
 			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', false, array('d.custom1.set'));
+		XMLRPCProxy::process($xml, 'sanitize', false, ['d.custom1.set']);
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, 'd.custom1.set="label"') !== false,
 			'a value without an explicit <string> is read the same way');
 	}
@@ -353,7 +315,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><base64>' . chunk_split(base64_encode($data), 76, "\n") . '</base64></value></param>'
 			. '<param><value><string>d.custom1.set=label</string></value></param>'
 			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', false, array('d.custom1.set'));
+		XMLRPCProxy::process($xml, 'sanitize', false, ['d.custom1.set']);
 		$sent = (string) rXMLRPCRequest::$lastPayload;
 
 		$this->assertTrue(preg_match('#<base64>(.*?)</base64>#s', $sent, $m) === 1, 'the data param is still base64');
@@ -373,13 +335,13 @@ class XMLRPCProxyTest extends TestCase
 	public function testCrossSeedQuotedLoadParamsAreKept()
 	{
 		$sent = $this->sanitizeParam('d.custom1.set="cross-seed"',
-			array('d.custom1.set', 'd.directory_base.set', 'd.custom.set'));
+			['d.custom1.set', 'd.directory_base.set', 'd.custom.set']);
 		$this->assertTrue(strpos($sent, 'd.custom1.set="cross-seed"') !== false,
 			'cross-seed quotes the label; that must still set custom1');
 
 		$sent = $this->sanitizeParam(
 			'd.directory_base.set="/data/Media/torrent/download/cross-seed/PassThePopcorn"',
-			array('d.custom1.set', 'd.directory_base.set', 'd.custom.set'));
+			['d.custom1.set', 'd.directory_base.set', 'd.custom.set']);
 		$this->assertTrue(strpos($sent,
 			'd.directory_base.set="/data/Media/torrent/download/cross-seed/PassThePopcorn"') !== false,
 			'and the quoted save path must still set directory_base');
@@ -408,30 +370,16 @@ class XMLRPCProxyTest extends TestCase
 		$name = "system.foo\nxmlrpc-proxy: trusted: forged";
 		$xml = '<?xml version="1.0"?><methodCall><methodName>' . htmlspecialchars($name)
 			. '</methodName><params></params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, array());
+		XMLRPCProxy::process($xml, 'sanitize', true, []);
 
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false, 'an unknown method is sent untrusted');
 		$this->assertTrue(strpos($this->logText(), "\nxmlrpc-proxy: trusted") === false,
 			'a method name cannot start a log line of its own');
 	}
 
-	// ---- multicalls carry commands too ----
-
-	private function multicall($params, $safeParams = array('d.custom1.set'))
-	{
-		$this->resetMocks();
-		$xml = '<?xml version="1.0"?><methodCall><methodName>d.multicall2</methodName><params>';
-		foreach($params as $param)
-			$xml .= '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES)
-				. '</string></value></param>';
-		$xml .= '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, $safeParams);
-		return $xml;
-	}
-
 	public function testMulticallCommandsAreRebuiltLikeLoadParams()
 	{
-		$this->multicall(array('', 'main', 'd.custom1.set=Movies (2024)'));
+		$this->multicall(['', 'main', 'd.custom1.set=Movies (2024)']);
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload,
 			'd.custom1.set="Movies (2024)"') !== false,
 			'an allowed command in a multicall is quoted the same way as in a load');
@@ -447,7 +395,7 @@ class XMLRPCProxyTest extends TestCase
 	 */
 	public function testMulticallWithAnUnknownCommandIsForwardedUntouched()
 	{
-		$sent = $this->multicall(array('', 'main', 'd.name='));
+		$sent = $this->multicall(['', 'main', 'd.name=']);
 		$this->assertTrue(rXMLRPCRequest::$lastPayload === $sent,
 			'the request is forwarded byte for byte, not rebuilt');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false,
@@ -456,7 +404,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testMulticallNeverSilentlyDropsACommand()
 	{
-		$this->multicall(array('', 'main', 'd.custom1.set=label', 'd.name='));
+		$this->multicall(['', 'main', 'd.custom1.set=label', 'd.name=']);
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, 'd.name=') !== false,
 			'a read command is not stripped out of the caller\'s multicall');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false,
@@ -465,7 +413,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testMulticallCarryingExecuteIsRefused()
 	{
-		$this->multicall(array('', 'main', 'execute.capture=/bin/sh,-c,id'));
+		$this->multicall(['', 'main', 'execute.capture=/bin/sh,-c,id']);
 		$this->assertTrue(rXMLRPCRequest::$sent === 0,
 			'a multicall carrying execute.capture is refused, not forwarded');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === null,
@@ -479,7 +427,7 @@ class XMLRPCProxyTest extends TestCase
 		// forwarded untrusted, which is a refusal only from 0.16.10, because
 		// the name read off the parameter was d.custom1.set and nothing looked
 		// past the first '='.
-		$this->multicall(array('', 'main', 'd.custom1.set=$execute.capture=/bin/hostname'));
+		$this->multicall(['', 'main', 'd.custom1.set=$execute.capture=/bin/hostname']);
 		$this->assertTrue(rXMLRPCRequest::$sent === 0,
 			'an allowed command whose argument would be re-parsed is refused, not forwarded');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === null,
@@ -488,7 +436,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testMulticallViewNameIsDataNotACommand()
 	{
-		$this->multicall(array('', 'd.custom1.set=notacommand', 'd.custom1.set=label'));
+		$this->multicall(['', 'd.custom1.set=notacommand', 'd.custom1.set=label']);
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload,
 			'<string>d.custom1.set=notacommand</string>') !== false,
 			'the view name is re-emitted as the value it is, not quoted as a command');
@@ -505,19 +453,6 @@ class XMLRPCProxyTest extends TestCase
 			'system.multicall is NOT: its members are calls, not command strings');
 		$this->assertTrue(!in_array('load.start', $methods),
 			'load.start belongs to the list that strips, not this one');
-	}
-
-	// ---- load.* may not name a path on rtorrent's own filesystem ----
-
-	private function load($uri, $allowLocalPaths = false, $method = 'load.start')
-	{
-		$this->resetMocks();
-		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
-			. '</methodName><params>'
-			. '<param><value><string></string></value></param>'
-			. '<param><value><string>' . htmlspecialchars($uri, ENT_NOQUOTES) . '</string></value></param>'
-			. '</params></methodCall>';
-		return XMLRPCProxy::process($xml, 'sanitize', true, array('d.custom1.set'), $allowLocalPaths);
 	}
 
 	public function testLoadFromALocalPathIsRejected()
@@ -542,8 +477,8 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testNetworkAndMagnetUrisAreAccepted()
 	{
-		foreach(array('http://example.test/x.torrent', 'https://example.test/x.torrent',
-			'ftp://example.test/x.torrent', 'magnet:?xt=urn:btih:abc') as $uri)
+		foreach(['http://example.test/x.torrent', 'https://example.test/x.torrent',
+			'ftp://example.test/x.torrent', 'magnet:?xt=urn:btih:abc'] as $uri)
 		{
 			$this->load($uri);
 			$this->assertTrue(rXMLRPCRequest::$sent === 1, $uri . ' is forwarded');
@@ -557,9 +492,9 @@ class XMLRPCProxyTest extends TestCase
 	 */
 	public function testSchemeMatchingIsAsStrictAsRtorrents()
 	{
-		foreach(array('HTTP://example.test/x.torrent', 'Magnet:?xt=urn:btih:abc',
+		foreach(['HTTP://example.test/x.torrent', 'Magnet:?xt=urn:btih:abc',
 			'magnet:xt=urn:btih:abc', ' http://example.test/x.torrent',
-			'file:///srv/watch/x.torrent', 'watch/x.torrent', '~/x.torrent') as $uri)
+			'file:///srv/watch/x.torrent', 'watch/x.torrent', '~/x.torrent'] as $uri)
 		{
 			$this->assertTrue($this->load($uri) === null, $uri . ' is treated as a local path');
 		}
@@ -572,7 +507,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><string></string></value></param>'
 			. '<param><value><base64>' . base64_encode('/srv/watch/x.torrent') . '</base64></value></param>'
 			. '</params></methodCall>';
-		$this->assertTrue(XMLRPCProxy::process($xml, 'sanitize', true, array(), false) === null,
+		$this->assertTrue(XMLRPCProxy::process($xml, 'sanitize', true, [], false) === null,
 			'a base64 parameter is read as the URI it decodes to');
 	}
 
@@ -583,7 +518,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<param><value><string></string></value></param>'
 			. '<param><value><base64>' . base64_encode('d4:infoe') . '</base64></value></param>'
 			. '</params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, array(), false);
+		XMLRPCProxy::process($xml, 'sanitize', true, [], false);
 		$this->assertTrue(rXMLRPCRequest::$sent === 1,
 			'load.raw_start carries the torrent itself, not a URI, so it is untouched');
 	}
@@ -605,25 +540,12 @@ class XMLRPCProxyTest extends TestCase
 			'load.raw_start takes the torrent, so it is not checked');
 	}
 
-	// ---- refused outright, without asking rtorrent ----
-
-	private function callMethod($method, $params = array(), $mode = 'sanitize')
-	{
-		$this->resetMocks();
-		$xml = '<?xml version="1.0"?><methodCall><methodName>' . htmlspecialchars($method)
-			. '</methodName><params>';
-		foreach($params as $p)
-			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES) . '</string></value></param>';
-		$xml .= '</params></methodCall>';
-		return XMLRPCProxy::process($xml, $mode, true, array('d.custom1.set'));
-	}
-
 	public function testExecutionPrimitivesAreRefused()
 	{
-		foreach(array('execute', 'execute.capture', 'execute.raw.bg', 'execute2',
+		foreach(['execute', 'execute.capture', 'execute.raw.bg', 'execute2',
 			'method.insert', 'method.set_key', 'import', 'try_import',
 			'schedule', 'schedule2', 'schedule.remove', 'log.execute',
-			'log.open_file', 'network.scgi.open_port', 'catch', 'system.env') as $method)
+			'log.open_file', 'network.scgi.open_port', 'catch', 'system.env'] as $method)
 		{
 			$this->assertTrue($this->callMethod($method) === null, $method . ' is refused');
 			$this->assertTrue(rXMLRPCRequest::$sent === 0, $method . ' never reaches rtorrent');
@@ -648,7 +570,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testHarmlessMethodsAreNotCaughtByTheRefusalList()
 	{
-		foreach(array('system.client_version', 'd.name', 'view.list', 'directory.default') as $method)
+		foreach(['system.client_version', 'd.name', 'view.list', 'directory.default'] as $method)
 		{
 			$this->callMethod($method);
 			$this->assertTrue(rXMLRPCRequest::$sent === 1, $method . ' is still forwarded');
@@ -658,7 +580,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testPassthroughUnsafeIsNotSubjectToTheRefusalList()
 	{
-		$this->callMethod('execute.capture', array('', '/bin/sh'), 'passthrough_unsafe');
+		$this->callMethod('execute.capture', ['', '/bin/sh'], 'passthrough_unsafe');
 		$this->assertTrue(rXMLRPCRequest::$sent === 1,
 			'passthrough_unsafe is documented as dangerous and stays literal');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'and trusted');
@@ -673,7 +595,7 @@ class XMLRPCProxyTest extends TestCase
 			. '<member><name>params</name><value><array><data>'
 			. '<value><string></string></value></data></array></value></member>'
 			. '</struct></value></data></array></value></param></params></methodCall>';
-		$this->assertTrue(XMLRPCProxy::process($xml, 'sanitize', true, array()) === null,
+		$this->assertTrue(XMLRPCProxy::process($xml, 'sanitize', true, []) === null,
 			'a refused method does not get through inside a struct');
 		$this->assertTrue(rXMLRPCRequest::$sent === 0, 'and nothing is forwarded');
 	}
@@ -682,9 +604,9 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testOneDownloadByHashIsElevated()
 	{
-		foreach(array('d.open', 'd.start', 'd.stop', 'd.delete_tied') as $method)
+		foreach(['d.open', 'd.start', 'd.stop', 'd.delete_tied'] as $method)
 		{
-			$this->callMethod($method, array('0123456789abcdef0123456789ABCDEF01234567'));
+			$this->callMethod($method, ['0123456789abcdef0123456789ABCDEF01234567']);
 			$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, $method . ' is elevated');
 			$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload,
 				'0123456789ABCDEF0123456789ABCDEF01234567') !== false,
@@ -700,10 +622,10 @@ class XMLRPCProxyTest extends TestCase
 	 */
 	public function testAnArgumentThatIsNotAHashIsRefused()
 	{
-		foreach(array('not-a-hash', '', '0123456789abcdef0123456789ABCDEF0123456',
-			'0123456789abcdef0123456789ABCDEF012345678', '../../etc/passwd') as $bad)
+		foreach(['not-a-hash', '', '0123456789abcdef0123456789ABCDEF0123456',
+			'0123456789abcdef0123456789ABCDEF012345678', '../../etc/passwd'] as $bad)
 		{
-			$this->assertTrue($this->callMethod('d.start', array($bad)) === null,
+			$this->assertTrue($this->callMethod('d.start', [$bad]) === null,
 				var_export($bad, true) . ' is not a hash, so the call is refused');
 			$this->assertTrue(rXMLRPCRequest::$sent === 0,
 				var_export($bad, true) . ' never reaches rtorrent');
@@ -713,7 +635,7 @@ class XMLRPCProxyTest extends TestCase
 	public function testTheArgumentCountHasToMatch()
 	{
 		$this->assertTrue($this->callMethod('d.start',
-			array('0123456789ABCDEF0123456789ABCDEF01234567', 'extra')) === null,
+			['0123456789ABCDEF0123456789ABCDEF01234567', 'extra']) === null,
 			'an extra argument means the call is not the shape that was approved');
 		$this->assertTrue(rXMLRPCRequest::$sent === 0, 'and it never reaches rtorrent');
 	}
@@ -721,7 +643,7 @@ class XMLRPCProxyTest extends TestCase
 	public function testAnElevatedValueIsCarriedAsDataNotAsACommand()
 	{
 		$this->callMethod('d.custom1.set',
-			array('0123456789ABCDEF0123456789ABCDEF01234567', '$execute.capture=/bin/hostname'));
+			['0123456789ABCDEF0123456789ABCDEF01234567', '$execute.capture=/bin/hostname']);
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'the call is elevated');
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload,
 			'<string>$execute.capture=/bin/hostname</string>') !== false,
@@ -730,11 +652,11 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testTheSizeLimitIsClamped()
 	{
-		$this->callMethod('network.xmlrpc.size_limit.set', array('', '999999999'));
+		$this->callMethod('network.xmlrpc.size_limit.set', ['', '999999999']);
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'the call is elevated');
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, '<i8>16777216</i8>') !== false,
 			'a client raising it to add a big torrent is fine; an unbounded value is not');
-		$this->callMethod('network.xmlrpc.size_limit.set', array('', '2097152'));
+		$this->callMethod('network.xmlrpc.size_limit.set', ['', '2097152']);
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, '<i8>2097152</i8>') !== false,
 			'a value under the ceiling is passed through as asked');
 	}
@@ -744,36 +666,14 @@ class XMLRPCProxyTest extends TestCase
 		$ref = new ReflectionProperty('XMLRPCProxy', 'elevate');
 		$ref->setAccessible(true);
 		$elevated = array_keys($ref->getValue());
-		foreach(array('load.start', 'load.raw_start', 'd.multicall2', 't.multicall') as $method)
+		foreach(['load.start', 'load.raw_start', 'd.multicall2', 't.multicall'] as $method) {
 			$this->assertTrue(!in_array($method, $elevated),
-				$method . ' takes command strings, so it is rebuilt rather than elevated');
-	}
-
-	// ---- where a download may be written ----
-	//
-	// d.directory.set names the directory rtorrent writes a download into, and
-	// the caller supplies the torrent, so it names the file too. Unconfined and
-	// forwarded trusted, that is an arbitrary file write as the rtorrent user —
-	// found by a tester writing a .php into a webroot and running it.
-
-	private function loadInto($dir, $policy = null, $command = 'd.directory.set')
-	{
-		$this->resetMocks();
-		$xml = '<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params>'
-			. '<param><value><string></string></value></param>'
-			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
-			. '<param><value><string>' . $command . '=' . htmlspecialchars($dir, ENT_NOQUOTES)
-			. '</string></value></param>'
-			. '</params></methodCall>';
-		$options = ($policy === null) ? array() : array('directory' => $policy);
-		XMLRPCProxy::process($xml, 'sanitize', true,
-			array('d.directory.set', 'd.directory_base.set'), false, $options);
-		return strpos((string) rXMLRPCRequest::$lastPayload, $command . '=') !== false;
+				$method . ' takes command strings, so it is rebuilt rather than elevated'); }
 	}
 
 	public function testADirectoryOutsideTheBoundaryIsDropped()
 	{
-		$policy = array('root' => '/torrents1/downloads');
+		$policy = ['root' => '/torrents1/downloads'];
 		$this->assertTrue(!$this->loadInto('/var/www/user1/rtorrent/share/settings/x/', $policy),
 			'the reported attack — a webroot path — does not reach rtorrent');
 		$this->assertTrue(rXMLRPCRequest::$sent === 1,
@@ -782,7 +682,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testADirectoryInsideTheBoundaryIsKept()
 	{
-		$policy = array('root' => '/torrents1/downloads');
+		$policy = ['root' => '/torrents1/downloads'];
 		$this->assertTrue($this->loadInto('/torrents1/downloads/Movies', $policy),
 			'a directory the customer is entitled to still works');
 		$this->assertTrue($this->loadInto('/torrents1/downloads', $policy),
@@ -791,7 +691,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testDirectoryBaseIsConfinedTheSameWay()
 	{
-		$policy = array('root' => '/torrents1/downloads');
+		$policy = ['root' => '/torrents1/downloads'];
 		$this->assertTrue(!$this->loadInto('/var/www/user1', $policy, 'd.directory_base.set'),
 			'd.directory_base.set sets the root directly, so it is the blunter of the two');
 		$this->assertTrue($this->loadInto('/torrents1/downloads/x', $policy, 'd.directory_base.set'),
@@ -800,22 +700,22 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testQuotedDirectoryInsideTheBoundaryIsKept()
 	{
-		$policy = array('root' => '/torrents1/downloads');
+		$policy = ['root' => '/torrents1/downloads'];
 		$this->assertTrue($this->loadInto('"/torrents1/downloads/cross-seed"', $policy, 'd.directory_base.set'),
 			'a client-quoted path is unquoted before the boundary check');
 	}
 
 	public function testPathTricksDoNotEscape()
 	{
-		$policy = array('root' => '/torrents1/downloads');
-		foreach(array(
+		$policy = ['root' => '/torrents1/downloads'];
+		foreach([
 			'/torrents1/downloads/../../var/www',   // climbing out
 			'/torrents1/downloads/./../../etc',     // with a . in the way
 			'/torrents1/downloadsEVIL',             // a prefix, not a child
 			'/torrents1/downloads/../downloads2',   // sibling
 			'downloads/x',                          // not absolute at all
 			'',                                     // nothing
-		) as $dir)
+		] as $dir)
 		{
 			$this->assertTrue(!$this->loadInto($dir, $policy),
 				var_export($dir, true) . ' is not inside the boundary');
@@ -830,15 +730,15 @@ class XMLRPCProxyTest extends TestCase
 	 */
 	public function testASymlinkOutOfTheTreeIsCaught()
 	{
-		$policy = array(
+		$policy = [
 			'root' => '/torrents1/downloads',
 			'resolve' => function($path) {
 				// stands in for a symlink at /torrents1/downloads/escape
-				if(strpos($path, '/torrents1/downloads/escape') === 0)
-					return '/var/www/user1' . substr($path, strlen('/torrents1/downloads/escape'));
+				if(strpos($path, '/torrents1/downloads/escape') === 0) {
+					return '/var/www/user1' . substr($path, strlen('/torrents1/downloads/escape')); }
 				return $path;
 			},
-		);
+		];
 		$this->assertTrue(!$this->loadInto('/torrents1/downloads/escape/x', $policy),
 			'a path that is inside on paper and outside in fact is dropped');
 		$this->assertTrue($this->loadInto('/torrents1/downloads/real/x', $policy),
@@ -847,10 +747,10 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testAResolverThatCannotAnswerIsANo()
 	{
-		$policy = array(
+		$policy = [
 			'root' => '/torrents1/downloads',
 			'resolve' => function($path) { return ''; },
-		);
+		];
 		$this->assertTrue(!$this->loadInto('/torrents1/downloads/x', $policy),
 			'an open question about a write target is not a yes');
 	}
@@ -867,7 +767,7 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testAPolicyWithNoRootRefuses()
 	{
-		$this->assertTrue(!$this->loadInto('/torrents1/downloads/x', array()),
+		$this->assertTrue(!$this->loadInto('/torrents1/downloads/x', []),
 			'a stated policy that names no root permits nothing, rather than everything');
 	}
 
@@ -887,7 +787,7 @@ class XMLRPCProxyTest extends TestCase
 		$this->resetMocks();
 		$xml = '<?xml version="1.0"?><methodCall><methodName>system.multicall</methodName>'
 			. '<params><param><value><string>x</string></value></param></params></methodCall>';
-		XMLRPCProxy::process($xml, 'sanitize', true, array('d.custom1.set'));
+		XMLRPCProxy::process($xml, 'sanitize', true, ['d.custom1.set']);
 		$this->assertTrue(rXMLRPCRequest::$lastPayload === $xml, 'forwarded byte for byte');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false, 'and untrusted');
 	}
@@ -896,21 +796,21 @@ class XMLRPCProxyTest extends TestCase
 
 	public function testAnEscapedCommaDoesNotSeparateArguments()
 	{
-		$sent = $this->sanitizeParam('d.custom.set=a\,b', array('d.custom.set'));
+		$sent = $this->sanitizeParam('d.custom.set=a\,b', ['d.custom.set']);
 		$this->assertTrue(strpos($sent, 'd.custom.set="a,b"') !== false,
 			'rtorrent reads a\,b as the one argument a,b; splitting on it invented a second');
 	}
 
 	public function testAnEscapedCommaAtTheEndOfAValueIsKept()
 	{
-		$sent = $this->sanitizeParam('d.custom1.set=a\,', array('d.custom1.set'));
+		$sent = $this->sanitizeParam('d.custom1.set=a\,', ['d.custom1.set']);
 		$this->assertTrue(strpos($sent, 'd.custom1.set="a,"') !== false,
 			'the comma is value content, so it survives to the end');
 	}
 
 	public function testAnUnescapedCommaStillSeparates()
 	{
-		$sent = $this->sanitizeParam('d.custom.set=chk-state,7', array('d.custom.set'));
+		$sent = $this->sanitizeParam('d.custom.set=chk-state,7', ['d.custom.set']);
 		$this->assertTrue(strpos($sent, 'd.custom.set="chk-state","7"') !== false,
 			'a bare comma keeps separating arguments');
 	}
@@ -923,15 +823,115 @@ class XMLRPCProxyTest extends TestCase
 	 */
 	public function testABackslashThatIsNotBeforeACommaIsKept()
 	{
-		$sent = $this->sanitizeParam('d.custom1.set=C:\downloads\tv', array('d.custom1.set'));
+		$sent = $this->sanitizeParam('d.custom1.set=C:\downloads\tv', ['d.custom1.set']);
 		$this->assertTrue(strpos($sent, 'd.custom1.set="C:\\\\downloads\\\\tv"') !== false,
 			'a windows-style path survives, re-escaped on the way out');
 	}
 
 	public function testATrailingBackslashIsStillJustAValue()
 	{
-		$sent = $this->sanitizeParam('d.custom1.set=abc\\', array('d.custom1.set'));
+		$sent = $this->sanitizeParam('d.custom1.set=abc\\', ['d.custom1.set']);
 		$this->assertTrue(strpos($sent, 'd.custom1.set="abc\\\\"') !== false,
 			'a value ending in a backslash is quoted, not dropped');
+	}
+	private function resetMocks()
+	{
+		rXMLRPCRequest::$lastPayload = null;
+		rXMLRPCRequest::$lastTrusted = null;
+		rXMLRPCRequest::$sent = 0;
+		FileUtil::$log = [];
+	}
+
+	// ---- A command parameter is not one command ----
+
+	private function sanitizeParam($param, $safeParams = ['d.custom1.set', 'd.custom2.set', 'd.custom.set'])
+	{
+		$this->resetMocks();
+		$xml = '<?xml version="1.0"?><methodCall><methodName>load.raw_start</methodName><params>'
+			. '<param><value><string></string></value></param>'
+			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
+			. '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES) . '</string></value></param>'
+			. '</params></methodCall>';
+		XMLRPCProxy::process($xml, 'sanitize', false, $safeParams);
+		return (string) rXMLRPCRequest::$lastPayload;
+	}
+
+	// ---- what the log says ----
+
+	private function logText()
+	{
+		return implode("\n", FileUtil::$log);
+	}
+
+	private function sanitizeParamLogged($param)
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>load.raw_start</methodName><params>'
+			. '<param><value><string></string></value></param>'
+			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
+			. '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES) . '</string></value></param>'
+			. '</params></methodCall>';
+		XMLRPCProxy::process($xml, 'sanitize', true, ['d.custom1.set']);
+	}
+
+	// ---- multicalls carry commands too ----
+
+	private function multicall($params, $safeParams = ['d.custom1.set'])
+	{
+		$this->resetMocks();
+		$xml = '<?xml version="1.0"?><methodCall><methodName>d.multicall2</methodName><params>';
+		foreach($params as $param) {
+			$xml .= '<param><value><string>' . htmlspecialchars($param, ENT_NOQUOTES)
+				. '</string></value></param>'; }
+		$xml .= '</params></methodCall>';
+		XMLRPCProxy::process($xml, 'sanitize', true, $safeParams);
+		return $xml;
+	}
+
+	// ---- load.* may not name a path on rtorrent's own filesystem ----
+
+	private function load($uri, $allowLocalPaths = false, $method = 'load.start')
+	{
+		$this->resetMocks();
+		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
+			. '</methodName><params>'
+			. '<param><value><string></string></value></param>'
+			. '<param><value><string>' . htmlspecialchars($uri, ENT_NOQUOTES) . '</string></value></param>'
+			. '</params></methodCall>';
+		return XMLRPCProxy::process($xml, 'sanitize', true, ['d.custom1.set'], $allowLocalPaths);
+	}
+
+	// ---- refused outright, without asking rtorrent ----
+
+	private function callMethod($method, $params = [], $mode = 'sanitize')
+	{
+		$this->resetMocks();
+		$xml = '<?xml version="1.0"?><methodCall><methodName>' . htmlspecialchars($method)
+			. '</methodName><params>';
+		foreach($params as $p) {
+			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES) . '</string></value></param>'; }
+		$xml .= '</params></methodCall>';
+		return XMLRPCProxy::process($xml, $mode, true, ['d.custom1.set']);
+	}
+
+	// ---- where a download may be written ----
+	//
+	// d.directory.set names the directory rtorrent writes a download into, and
+	// the caller supplies the torrent, so it names the file too. Unconfined and
+	// forwarded trusted, that is an arbitrary file write as the rtorrent user —
+	// found by a tester writing a .php into a webroot and running it.
+
+	private function loadInto($dir, $policy = null, $command = 'd.directory.set')
+	{
+		$this->resetMocks();
+		$xml = '<?xml version="1.0"?><methodCall><methodName>load.start</methodName><params>'
+			. '<param><value><string></string></value></param>'
+			. '<param><value><string>http://example.test/x.torrent</string></value></param>'
+			. '<param><value><string>' . $command . '=' . htmlspecialchars($dir, ENT_NOQUOTES)
+			. '</string></value></param>'
+			. '</params></methodCall>';
+		$options = ($policy === null) ? [] : ['directory' => $policy];
+		XMLRPCProxy::process($xml, 'sanitize', true,
+			['d.directory.set', 'd.directory_base.set'], false, $options);
+		return strpos((string) rXMLRPCRequest::$lastPayload, $command . '=') !== false;
 	}
 }

@@ -3,11 +3,11 @@ require_once( 'util.php' );
 
 class rLock
 {
+
+	public const MAX_LOCK_TIME = 1800;
 	protected $file;
 	protected $lockTime;
 	protected $locked = false;
-
-	const MAX_LOCK_TIME = 1800;
 
 	protected function __construct( $name, $maxLockTime )
 	{
@@ -15,7 +15,7 @@ class rLock
 		$this->file = FileUtil::getSettingsPath().'/'.$name.".lock";
 	}
 
-	function __destruct()
+	public function __destruct()
 	{
 		$this->release();
 	}
@@ -36,11 +36,11 @@ class rLock
 		}
 	}
 
-	static public function obtain( $name = '', $maxLockTime = self::MAX_LOCK_TIME )
+	public static function obtain( $name = '', $maxLockTime = self::MAX_LOCK_TIME )
 	{
 		$lck = new rLock($name,$maxLockTime);
-		if(!$lck->lock())
-			$lck = false;
+		if(!$lck->lock()) {
+			$lck = false; }
 		return($lck);
 	}
 }

@@ -7,6 +7,10 @@ class LostFilmAccount extends commonAccount
 	// POST that has already gone out in the clear -- and the site issues
 	// exactly such a redirect, so http here bought nothing but the exposure.
 	public $url = "https://lostfilm.tv";
+	public function test($url)
+	{
+		return(self::urlAddresses($url,["lostfilm.tv"],"https","/download.php"));
+	}
 
 	protected function isOK($client)
 	{
@@ -61,9 +65,5 @@ class LostFilmAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(self::urlAddresses($url,array("lostfilm.tv"),"https","/download.php"));
 	}
 }

@@ -30,17 +30,17 @@ class ipDB
 
 	public function __destruct()
 	{
-		if($this->handle)
-			sqlite_close1($this->handle);
+		if($this->handle) {
+			sqlite_close1($this->handle); }
 	}
 
-	static public function trunc( $str, $maxlength = 128 )
+	public static function trunc( $str, $maxlength = 128 )
 	{
 		$str = trim($str);
-		if(function_exists('mb_substr'))
-			$ret = mb_substr($str,0,$maxlength,'UTF-8');
-		else
-			$ret = substr($str,0,$maxlength);
+		if(function_exists('mb_substr')) {
+			$ret = mb_substr($str,0,$maxlength,'UTF-8'); }
+		else {
+			$ret = substr($str,0,$maxlength); }
 		return($ret);
 	}
 
@@ -53,9 +53,9 @@ class ipDB
 	{
 		$comment = self::trunc($comment);
 		$ip = "'".sqlite_escape_string1($ip)."'";
-		if( $comment=='' )
+		if( $comment=='' ) {
 			sqlite_exec1($this->handle, "delete from comments where ip=".$ip,
-				$this->error);
+				$this->error); }
 		else
 		{
 			$comment = "'".sqlite_escape_string1($comment)."'";
@@ -64,9 +64,9 @@ class ipDB
 				sqlite_exec1($this->handle, "update comments set comment=".$comment." where ip=".$ip,
 					$this->error);
 			}
-			else
+			else {
 				sqlite_exec1($this->handle, "insert into comments (ip,comment) values (".$ip.",".$comment.")",
-					$this->error);
+					$this->error); }
 		}
 	}
 }

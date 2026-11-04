@@ -11,19 +11,6 @@ require_once(__DIR__ . '/../../php/TestCase.php');
  */
 class CreateWrapperScriptsListedTest extends TestCase
 {
-	private function pluginDir()
-	{
-		return dirname(dirname(dirname(__DIR__))) . '/plugins/create';
-	}
-
-	private function declaredScripts()
-	{
-		$key = 'rtorrent.script.error:';
-		foreach (explode("\n", file_get_contents($this->pluginDir() . '/plugin.info')) as $line)
-			if (strpos($line, $key) === 0)
-				return array_map('trim', explode(',', trim(substr($line, strlen($key)))));
-		return array();
-	}
 
 	public function testEveryWrapperTheDispatchCanReachIsDeclared()
 	{
@@ -40,9 +27,9 @@ class CreateWrapperScriptsListedTest extends TestCase
 
 	public function testTheListNamesOnlyScriptsThatShip()
 	{
-		foreach ($this->declaredScripts() as $name)
+		foreach ($this->declaredScripts() as $name) {
 			$this->assertTrue(is_file($this->pluginDir() . '/' . $name),
-				$name . ' is declared and present');
+				$name . ' is declared and present'); }
 	}
 
 	/** action.php builds the wrapper name from $useExternal, so inner is one too. */
@@ -50,5 +37,18 @@ class CreateWrapperScriptsListedTest extends TestCase
 	{
 		$this->assertTrue(in_array('inner.sh', $this->declaredScripts()),
 			'inner.sh is dispatched like any other backend');
+	}
+	private function pluginDir()
+	{
+		return dirname(dirname(dirname(__DIR__))) . '/plugins/create';
+	}
+
+	private function declaredScripts()
+	{
+		$key = 'rtorrent.script.error:';
+		foreach (explode("\n", file_get_contents($this->pluginDir() . '/plugin.info')) as $line) {
+			if (strpos($line, $key) === 0) {
+				return array_map('trim', explode(',', trim(substr($line, strlen($key))))); } }
+		return [];
 	}
 }

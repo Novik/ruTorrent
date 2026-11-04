@@ -11,10 +11,6 @@ require_once(__DIR__ . '/../../../plugins/create/externals.php');
  */
 class CreateExternalEXETest extends TestCase
 {
-	private function pluginDir()
-	{
-		return dirname(dirname(dirname(__DIR__))) . '/plugins/create';
-	}
 
 	public function testTheTransmissionBackendResolvesToTheProgramTransmissionShips()
 	{
@@ -24,9 +20,9 @@ class CreateExternalEXETest extends TestCase
 
 	public function testABackendSpelledLikeItsProgramIsLeftAlone()
 	{
-		foreach (array('mktorrent', 'buildtorrent', 'createtorrent', 'torrenttools') as $backend)
+		foreach (['mktorrent', 'buildtorrent', 'createtorrent', 'torrenttools'] as $backend) {
 			$this->assertEquals($backend, createExternalEXE($backend),
-				$backend . ' is spelled the same either way');
+				$backend . ' is spelled the same either way'); }
 	}
 
 	public function testTheInternalRealizationIsNotAProgramName()
@@ -53,5 +49,9 @@ class CreateExternalEXETest extends TestCase
 			$this->assertTrue(is_file($dir . '/' . $choice[1] . '.sh'),
 				$choice[1] . ' has a wrapper script to dispatch to');
 		}
+	}
+	private function pluginDir()
+	{
+		return dirname(dirname(dirname(__DIR__))) . '/plugins/create';
 	}
 }

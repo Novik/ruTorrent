@@ -11,7 +11,7 @@ require_once(__DIR__ . '/../../../php/utility/utility.php');
  */
 final class UnpackPlaceFixture
 {
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
 
 	/**
 	 * The PHP options that give place.php this process's configuration. A
@@ -20,17 +20,17 @@ final class UnpackPlaceFixture
 	 */
 	public static function phpOptions()
 	{
-		return array_merge(PhpProcess::sameIni(), array('-d', 'variables_order=EGPCS'));
+		return array_merge(PhpProcess::sameIni(), ['-d', 'variables_order=EGPCS']);
 	}
 
 	/** Every path under $directory, sorted, links shown with their targets. */
 	public static function tree($directory)
 	{
-		$found = array();
+		$found = [];
 		$entries = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory,
 			FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
-		foreach ($entries as $path => $entry)
-			$found[] = substr($path, strlen($directory) + 1) . (is_link($path) ? ' -> ' . readlink($path) : '');
+		foreach ($entries as $path => $entry) {
+			$found[] = substr($path, strlen($directory) + 1) . (is_link($path) ? ' -> ' . readlink($path) : ''); }
 		sort($found);
 		return $found;
 	}
@@ -46,8 +46,8 @@ final class UnpackPlaceFixture
 	/** Removes $base, directories a test made unwritable included. */
 	public static function remove($base)
 	{
-		if ($base === null)
-			return;
+		if ($base === null) {
+			return; }
 		exec('chmod -R u+rwx ' . Utility::escapeShellArg($base) . ' 2>/dev/null');
 		TestTree::remove($base);
 	}

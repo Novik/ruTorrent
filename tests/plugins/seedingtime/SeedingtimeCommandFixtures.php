@@ -14,8 +14,8 @@ class SeedingtimeCommandsCaptured extends Exception {}
 
 class SeedingtimeTestSettings extends rTorrentSettings
 {
-	public $built = array();	// every command constructed, in order
-	public $requested = array();	// the commands of the first request to run
+	public $built = [];	// every command constructed, in order
+	public $requested = [];	// the commands of the first request to run
 
 	public function patchDeprecatedCommand($cmd, $name)
 	{
@@ -34,23 +34,6 @@ class SeedingtimeTestSettings extends rTorrentSettings
 
 trait SeedingtimeCommandFixtures
 {
-	// The version thresholds php/settings.php applies. iVersion packs one
-	// component per byte, so 0.10.2 is 0x0a02 and 0.16.23 is 0x1017.
-	private function aliasMapsFor($iVersion)
-	{
-		$maps = array(
-			0x904  => 'methods-0.9.4.php',
-			0x0a02 => 'methods-0.10.2.php',
-			0x1000 => 'methods-0.16.0.php',
-			0x1010 => 'methods-0.16.16.php',
-			0x1012 => 'methods-0.16.18.php',
-		);
-		$wanted = array();
-		foreach($maps as $from => $file)
-			if($iVersion >= $from)
-				$wanted[] = __DIR__ . '/../../../php/' . $file;
-		return($wanted);
-	}
 
 	// Runs the plugin's init.php against a given rTorrent version and returns
 	// the settings double holding what it built.
@@ -58,20 +41,20 @@ trait SeedingtimeCommandFixtures
 	{
 		$settings = (new ReflectionClass('SeedingtimeTestSettings'))->newInstanceWithoutConstructor();
 		$settings->iVersion = $iVersion;
-		$settings->aliases = array();
+		$settings->aliases = [];
 
 		// Each map does $this->aliases = array_merge($this->aliases, ...),
 		// so the requires run bound to the settings object.
 		$maps = $this->aliasMapsFor($iVersion);
 		$loadAliases = function () use ($maps) {
-			foreach($maps as $map)
-				require $map;
+			foreach($maps as $map) {
+				require $map; }
 		};
 		$loadAliases->call($settings);
 
 		$property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-		if(PHP_VERSION_ID < 80100)
-			$property->setAccessible(true);
+		if(PHP_VERSION_ID < 80100) {
+			$property->setAccessible(true); }
 		$previous = $property->getValue();
 		$property->setValue(null, $settings);
 		try
@@ -92,19 +75,36 @@ trait SeedingtimeCommandFixtures
 
 	protected function parameterValues($command)
 	{
-		$values = array();
-		foreach($command->params as $parameter)
-			$values[] = $parameter->value;
+		$values = [];
+		foreach($command->params as $parameter) {
+			$values[] = $parameter->value; }
 		return($values);
 	}
 
 	// The command stored for one event key, e.g. event.download.hash_done.
 	protected function eventCommand($iVersion, $event)
 	{
-		foreach($this->initPlugin($iVersion)->requested as $command)
-			foreach($command->params as $parameter)
-				if($parameter->value === $event)
-					return(end($command->params)->value);
+		foreach($this->initPlugin($iVersion)->requested as $command) {
+			foreach($command->params as $parameter) {
+				if($parameter->value === $event) {
+					return(end($command->params)->value); } } }
 		throw new Exception('Plugin did not register a handler for ' . $event);
+	}
+	// The version thresholds php/settings.php applies. iVersion packs one
+	// component per byte, so 0.10.2 is 0x0a02 and 0.16.23 is 0x1017.
+	private function aliasMapsFor($iVersion)
+	{
+		$maps = [
+			0x904  => 'methods-0.9.4.php',
+			0x0a02 => 'methods-0.10.2.php',
+			0x1000 => 'methods-0.16.0.php',
+			0x1010 => 'methods-0.16.16.php',
+			0x1012 => 'methods-0.16.18.php',
+		];
+		$wanted = [];
+		foreach($maps as $from => $file) {
+			if($iVersion >= $from) {
+				$wanted[] = __DIR__ . '/../../../php/' . $file; } }
+		return($wanted);
 	}
 }

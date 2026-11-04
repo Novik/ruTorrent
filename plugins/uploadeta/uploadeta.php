@@ -9,7 +9,7 @@ class rUploadeta
 	public $modified = false;
 	public $uploadtarget = 200; /* Just a default value */
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$inst = new rUploadeta();

@@ -38,6 +38,48 @@ class HttprpcBatchedAdditionTest extends TestCase
 		$this->removeTree($this->base);
 	}
 
+	public function testABatchOfAddsPutIntoARatioViewReachesRtorrent()
+	{
+		$out = $this->post($this->batchedAdd([
+			'view.set_visible=evening catch-up',
+			'view.set_visible=evening catch-up',
+			'view.set_visible=evening catch-up']));
+
+		$this->assertTrue(strpos($out, 'rejected by this server') === false,
+			'the door did not refuse the batch: ' . substr($out, 0, 200));
+		$this->assertTrue(count($this->daemon->calls()) === 3,
+			'all three adds reached rtorrent, not none of them: '
+				. json_encode($this->daemon->calls()));
+	}
+
+	public function testABatchSettingTheConnectionTypeReachesRtorrent()
+	{
+		$out = $this->post($this->batchedAdd([
+			'd.connection_seed.set=seed',
+			'd.throttle_name.set=evening catch-up',
+			'd.custom.set=x-filename,evening catch-up.mkv']));
+
+		$this->assertTrue(strpos($out, 'rejected by this server') === false,
+			'the door did not refuse the batch: ' . substr($out, 0, 200));
+		$this->assertTrue(count($this->daemon->calls()) === 3,
+			'all three adds reached rtorrent: ' . json_encode($this->daemon->calls()));
+	}
+
+	public function testABatchCarryingExecuteIsStillRefusedAtTheDoor()
+	{
+		// The other half: the door still refuses, and refuses without opening a
+		// connection, so a refusal cannot be mistaken for rtorrent being down.
+		$out = $this->post($this->batchedAdd([
+			'view.set_visible=evening catch-up',
+			'execute=/bin/id',
+			'view.set_visible=films']));
+
+		$this->assertTrue(strpos($out, "The command 'execute' was rejected by this server") !== false,
+			'the door refuses execute and names it: ' . substr($out, 0, 200));
+		$this->assertTrue($this->daemon->calls() === [],
+			'rtorrent was never asked: ' . json_encode($this->daemon->calls()));
+	}
+
 	private function removeTree($path)
 	{
 		if (!is_dir($path)) {
@@ -88,7 +130,7 @@ class HttprpcBatchedAdditionTest extends TestCase
 		if ($this->daemon !== null) {
 			$this->daemon->stop();
 		}
-		$this->daemon = new FakeRtorrentDaemon(array(array(0, 0, 0)),
+		$this->daemon = new FakeRtorrentDaemon([[0, 0, 0]],
 			$this->base . '/calls.log');
 
 		$driver = $this->base . '/drive-httprpc.php';
@@ -104,51 +146,9 @@ class HttprpcBatchedAdditionTest extends TestCase
 			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
 			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($driver) . ' 2>&1', $output);
 		return implode("\n", $output);
-	}
-
-	public function testABatchOfAddsPutIntoARatioViewReachesRtorrent()
-	{
-		$out = $this->post($this->batchedAdd(array(
-			'view.set_visible=evening catch-up',
-			'view.set_visible=evening catch-up',
-			'view.set_visible=evening catch-up')));
-
-		$this->assertTrue(strpos($out, 'rejected by this server') === false,
-			'the door did not refuse the batch: ' . substr($out, 0, 200));
-		$this->assertTrue(count($this->daemon->calls()) === 3,
-			'all three adds reached rtorrent, not none of them: '
-				. json_encode($this->daemon->calls()));
-	}
-
-	public function testABatchSettingTheConnectionTypeReachesRtorrent()
-	{
-		$out = $this->post($this->batchedAdd(array(
-			'd.connection_seed.set=seed',
-			'd.throttle_name.set=evening catch-up',
-			'd.custom.set=x-filename,evening catch-up.mkv')));
-
-		$this->assertTrue(strpos($out, 'rejected by this server') === false,
-			'the door did not refuse the batch: ' . substr($out, 0, 200));
-		$this->assertTrue(count($this->daemon->calls()) === 3,
-			'all three adds reached rtorrent: ' . json_encode($this->daemon->calls()));
-	}
-
-	public function testABatchCarryingExecuteIsStillRefusedAtTheDoor()
-	{
-		// The other half: the door still refuses, and refuses without opening a
-		// connection, so a refusal cannot be mistaken for rtorrent being down.
-		$out = $this->post($this->batchedAdd(array(
-			'view.set_visible=evening catch-up',
-			'execute=/bin/id',
-			'view.set_visible=films')));
-
-		$this->assertTrue(strpos($out, "The command 'execute' was rejected by this server") !== false,
-			'the door refuses execute and names it: ' . substr($out, 0, 200));
-		$this->assertTrue($this->daemon->calls() === array(),
-			'rtorrent was never asked: ' . json_encode($this->daemon->calls()));
 	}
 }

@@ -2,9 +2,9 @@
 
 class NyaaSukebeEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>75 );
+	public $defaults = [ "public"=>true, "page_size"=>75 ];
 
-	public $categories = array(
+	public $categories = [
 		'All categories'=>'0_0',
 		'> Art'=>'1_0',
 		'-- Anime'=>'1_1',
@@ -14,8 +14,8 @@ class NyaaSukebeEngine extends commonEngine
 		'-- Pictures'=>'1_5',
 		'> Reallife'=>'2_0',
 		'-- Photobooks & Pictures'=>'2_1',
-		'-- Videos'=>'2_2'
-		);
+		'-- Videos'=>'2_2',
+		];
 
 	public function makeClient($url)
 	{
@@ -28,19 +28,19 @@ class NyaaSukebeEngine extends commonEngine
 		$added = 0;
 		$url = 'https://sukebei.nyaa.si';
 
-		if($useGlobalCats)
-			$categories = array(
+		if($useGlobalCats) {
+			$categories = [
 			'all' => '0_0',
 			'art' => '1_0',
-			'reallife' => '2_0'
-			);
-		else
-			$categories = &$this->categories;
+			'reallife' => '2_0',
+			]; }
+		else {
+			$categories = &$this->categories; }
 
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		$maxPage = 10;
 
@@ -49,8 +49,8 @@ class NyaaSukebeEngine extends commonEngine
 			$search = $url . '/?c=' . $cat . '&q=' . $what . '&s=seeders&o=desc&p=' . $pg;
 			$cli = $this->fetch($search);
 
-			if (($cli == false) || (strpos($cli->results, ">No results found<") !== false))
-				break;
+			if (($cli == false) || (strpos($cli->results, ">No results found<") !== false)) {
+				break; }
 
 			$res = preg_match_all('`<tr class.*>.*'.
 				'<td.*>.*<a.*title="(?P<cat>.*)">.*'.
@@ -76,12 +76,12 @@ class NyaaSukebeEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["peers"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if ($added >= $limit)
-							return;
+						if ($added >= $limit) {
+							return; }
 					}
 				}
-			} else
-				break;
+			} else {
+				break; }
 		}
 	}
 }

@@ -9,7 +9,7 @@ if(!class_exists('FileUtil'))
 {
 	class FileUtil
 	{
-		public static $log = array();
+		public static $log = [];
 		public static function toLog($msg) { self::$log[] = $msg; }
 	}
 }
@@ -44,45 +44,26 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
  */
 class XMLRPCProxyContractTest extends TestCase
 {
-	private $cases = array();
+	private $cases = [];
 
 	public function setUp()
 	{
 		$this->cases = require(__DIR__ . '/XMLRPCProxyContractFixture.php');
 	}
 
-	private function callProcess($case)
-	{
-		FileUtil::$log = array();
-		rXMLRPCRequest::$lastPayload = null;
-		rXMLRPCRequest::$lastTrusted = null;
-		rXMLRPCRequest::$sent = 0;
-
-		$returned = XMLRPCProxy::process($case['request'], $case['mode'],
-			$case['enableLog'], $case['safeParams'], $case['allowLocalPaths']);
-
-		return array(
-			'returned' => $returned,
-			'sends'    => rXMLRPCRequest::$sent,
-			'trusted'  => rXMLRPCRequest::$lastTrusted,
-			'payload'  => rXMLRPCRequest::$lastPayload,
-			'log'      => FileUtil::$log,
-		);
-	}
-
 	public function testFixtureCoversEveryBranch()
 	{
 		$this->assertTrue(count($this->cases) > 0, 'the contract fixture loaded');
 
-		$seen = array();
+		$seen = [];
 		foreach($this->cases as $case)
 		{
-			if($case['sends'] === 0)
-				$seen['reject'] = true;
-			else if($case['trusted'] === true)
-				$seen['trusted'] = true;
-			else
-				$seen['untrusted'] = true;
+			if($case['sends'] === 0) {
+				$seen['reject'] = true; }
+			elseif($case['trusted'] === true) {
+				$seen['trusted'] = true; }
+			else {
+				$seen['untrusted'] = true; }
 		}
 		$this->assertTrue(isset($seen['reject']), 'a rejected request is covered');
 		$this->assertTrue(isset($seen['trusted']), 'a trusted forward is covered');
@@ -140,14 +121,14 @@ class XMLRPCProxyContractTest extends TestCase
 		foreach($this->cases as $name => $case)
 		{
 			rXMLRPCRequest::$sent = 0;
-			FileUtil::$log = array();
+			FileUtil::$log = [];
 
 			XMLRPCProxy::decide($case['request'], $case['mode'], $case['safeParams'],
 				$case['allowLocalPaths']);
 
 			$this->assertTrue(rXMLRPCRequest::$sent === 0,
 				$name.' — decide() reaches no socket');
-			$this->assertTrue(FileUtil::$log === array(),
+			$this->assertTrue(FileUtil::$log === [],
 				$name.' — decide() writes no log of its own');
 		}
 	}
@@ -167,9 +148,9 @@ class XMLRPCProxyContractTest extends TestCase
 
 			if($case['enableLog'])
 			{
-				$expected = array();
-				foreach($case['log'] as $line)
-					$expected[] = substr($line, strlen('xmlrpc-proxy: '));
+				$expected = [];
+				foreach($case['log'] as $line) {
+					$expected[] = substr($line, strlen('xmlrpc-proxy: ')); }
 				$this->assertTrue($decision['log'] === $expected,
 					$name.' — reports what process() logged, without the prefix');
 			}
@@ -199,7 +180,7 @@ class XMLRPCProxyContractTest extends TestCase
 			. '$d = XMLRPCProxy::decide("not xml at all", "sanitize", array());'
 			. 'echo $d["action"], "|", $d["trusted"] ? "trusted" : "untrusted", "|", $d["payload"];';
 
-		$output = array();
+		$output = [];
 		$status = 1;
 		@exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=E_ALL -d display_errors=1 -r '
 			. escapeshellarg($script) . ' 2>&1', $output, $status);
@@ -209,5 +190,24 @@ class XMLRPCProxyContractTest extends TestCase
 			. implode(' / ', $output));
 		$this->assertTrue(implode("\n", $output) === 'send|untrusted|not xml at all',
 			'and reaches the same decision there');
+	}
+
+	private function callProcess($case)
+	{
+		FileUtil::$log = [];
+		rXMLRPCRequest::$lastPayload = null;
+		rXMLRPCRequest::$lastTrusted = null;
+		rXMLRPCRequest::$sent = 0;
+
+		$returned = XMLRPCProxy::process($case['request'], $case['mode'],
+			$case['enableLog'], $case['safeParams'], $case['allowLocalPaths']);
+
+		return [
+			'returned' => $returned,
+			'sends'    => rXMLRPCRequest::$sent,
+			'trusted'  => rXMLRPCRequest::$lastTrusted,
+			'payload'  => rXMLRPCRequest::$lastPayload,
+			'log'      => FileUtil::$log,
+		];
 	}
 }

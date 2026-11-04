@@ -21,27 +21,6 @@ class ImplicitNullableParameterTest extends TestCase
 		$this->root = realpath(__DIR__ . '/../..');
 	}
 
-	private function shippedSources()
-	{
-		$files = array();
-		foreach (array('/conf', '/php', '/plugins') as $sub) {
-			$dir = $this->root . $sub;
-			if (!is_dir($dir)) {
-				continue;
-			}
-			$walk = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
-				$dir, FilesystemIterator::SKIP_DOTS));
-			foreach ($walk as $file) {
-				if (substr($file->getFilename(), -4) === '.php') {
-					$files[] = $file->getPathname();
-				}
-			}
-		}
-		$files[] = $this->root . '/rpc2.php';
-		sort($files);
-		return $files;
-	}
-
 	public function testNoShippedFunctionTakesAnImplicitlyNullableParameter()
 	{
 		// A type name that is neither nullable (?T) nor a union carrying null,
@@ -49,7 +28,7 @@ class ImplicitNullableParameterTest extends TestCase
 		$pattern = '`(?<![?|\w\\\\])\b(?!null\b)'
 			. '[A-Za-z_\\\\][A-Za-z0-9_\\\\]*'
 			. '\s+&?\.{0,3}\$[A-Za-z_][A-Za-z0-9_]*\s*=\s*null\b`i';
-		$bad = array();
+		$bad = [];
 		foreach ($this->shippedSources() as $path) {
 			$src = @file_get_contents($path);
 			if ($src === false) {
@@ -74,5 +53,26 @@ class ImplicitNullableParameterTest extends TestCase
 			? 'no shipped signature spells a nullable parameter implicitly'
 			: 'implicitly nullable parameters: ' . implode(', ', $bad);
 		$this->assertEquals('[]', json_encode($bad), $message);
+	}
+
+	private function shippedSources()
+	{
+		$files = [];
+		foreach (['/conf', '/php', '/plugins'] as $sub) {
+			$dir = $this->root . $sub;
+			if (!is_dir($dir)) {
+				continue;
+			}
+			$walk = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
+				$dir, FilesystemIterator::SKIP_DOTS));
+			foreach ($walk as $file) {
+				if (substr($file->getFilename(), -4) === '.php') {
+					$files[] = $file->getPathname();
+				}
+			}
+		}
+		$files[] = $this->root . '/rpc2.php';
+		sort($files);
+		return $files;
 	}
 }

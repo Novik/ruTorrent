@@ -26,7 +26,7 @@ class AddDirectoryOutcomeTest extends TestCase
 {
 	use TorrentSequenceFixtures;
 
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
 
 	private $previousSettings;
 	private $previousGlobals;
@@ -54,7 +54,7 @@ class AddDirectoryOutcomeTest extends TestCase
 		$settings->home = $this->base;
 		$settings->iVersion = 0x904;
 		$settings->apiVersion = 0;
-		$settings->aliases = array();
+		$settings->aliases = [];
 		$this->previousSettings = self::swapSettings($settings);
 
 		$GLOBALS['topDirectory'] = $this->top . '/';
@@ -80,11 +80,126 @@ class AddDirectoryOutcomeTest extends TestCase
 		finally
 		{
 			$this->previousGlobals->restore();
-			if($this->hadTopDirectory)
-				$GLOBALS['topDirectory'] = $this->previousTopDirectory;
-			else
-				unset($GLOBALS['topDirectory']);
+			if($this->hadTopDirectory) {
+				$GLOBALS['topDirectory'] = $this->previousTopDirectory; }
+			else {
+				unset($GLOBALS['topDirectory']); }
 		}
+	}
+
+	// ---- the senders -------------------------------------------------------
+
+	public function testANewMagnetIsLoadedOnlyAfterItsDirectoryIsMade()
+	{
+		$this->daemon([[0], [0]]);
+		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, '/thisisthedownloaddir', '');
+		$this->assertTrue($result === self::HASH, 'the magnet is added');
+		$bodies = $this->daemon->bodies();
+		$this->assertTrue((count($bodies) === 2) && (strpos($bodies[0], '<methodName>execute') !== false)
+				&& (strpos($bodies[0], $this->top . '/thisisthedownloaddir') !== false)
+				&& (strpos($bodies[1], 'system.multicall') === false),
+			'mkdir is a request of its own, sent first, for the directory under the top one: ' . json_encode($this->daemon->calls()));
+		$this->assertTrue(strpos($bodies[1], 'd.set_directory_base="' . $this->top . '/thisisthedownloaddir"') !== false,
+			'and the load carries that directory');
+	}
+
+	public function testANewMagnetIsNotLoadedWhenItsDirectoryCannotBeMade()
+	{
+		$this->daemon([FakeRtorrentDaemon::fault('mkdir: Permission denied')]);
+		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'x', '');
+		$this->assertTrue($result === false, 'the magnet is not added');
+		$this->assertEquals(['execute'], $this->daemon->calls(), 'and only the mkdir was sent');
+		$this->assertTrue(rTorrent::refusedDirectory() === true, 'the failure is the directory');
+	}
+
+	public function testANewTorrentIsNotLoadedWhenItsDirectoryCannotBeMade()
+	{
+		$this->daemon([FakeRtorrentDaemon::fault('mkdir: Permission denied')]);
+		$torrent = new Torrent($this->announceOnlyTorrent());
+		$result = rTorrent::sendTorrent($torrent, true, false, 'x', '', false, false);
+		$this->assertTrue($result === false, 'the torrent is not added');
+		$this->assertEquals(['execute'], $this->daemon->calls(), 'and only the mkdir was sent');
+		$this->assertTrue(rTorrent::refusedDirectory() === true, 'the failure is the directory');
+	}
+
+	public function testARefusedDirectoryIsReportedAsTheDirectory()
+	{
+		$this->daemon([]);
+		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'http://x/y', '');
+		$this->assertTrue(($result === false) && (rTorrent::refusedDirectory() === true),
+			'a refused directory is the directory failure');
+		$this->assertEquals([], $this->daemon->calls(), 'and nothing was sent');
+	}
+
+	public function testAFailedLoadIsNotReportedAsTheDirectory()
+	{
+		$this->daemon([[0], FakeRtorrentDaemon::fault('Could not create download')]);
+		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'x', '');
+		$this->assertTrue(($result === false) && (rTorrent::refusedDirectory() === false),
+			'a load rtorrent refused after the directory was made is not the directory failure');
+	}
+
+	public function testAReloadStillSendsTheDirectoryAndTheLoadTogether()
+	{
+		$this->daemon([[0, 0]]);
+		$torrent = new Torrent($this->announceOnlyTorrent());
+		$result = rTorrent::sendTorrent($torrent, true, false, $this->top . '/x', '', false, false, false);
+		$this->assertTrue($result === $torrent->hash_info(), 'the reload is sent');
+		$this->assertEquals(['execute', 'load_raw_start'], $this->daemon->calls(), 'in one request, as before');
+	}
+
+	public function testAnAmbiguousFastResumeStillLoadsWithoutFabricatedProgress()
+	{
+		$this->daemon([[0], [0]]);
+		$torrent = new Torrent($this->sessionTorrent());
+		$torrent->info['name'] = 'legacy.data';
+		$torrent->info['name.utf-8'] = 'selected.data';
+		$infoHash = $torrent->hash_info();
+		try
+		{
+			file_put_contents($this->top . '/legacy.data', '');
+			$result = rTorrent::sendTorrent($torrent, true, false, $this->top, '', false, true);
+		}
+		finally
+		{
+			@unlink($this->top . '/legacy.data');
+		}
+		$this->assertTrue($result === $infoHash, 'uncertain fast resume still sends an ordinary load');
+		$this->assertEquals(['execute', 'load_raw_start'], $this->daemon->calls(),
+			'only the normal directory creation and load are sent');
+		$bodies = $this->daemon->bodies();
+		$this->assertTrue(preg_match('~<base64>([^<]+)</base64>~', $bodies[1], $match) === 1,
+			'the actual load carries raw metainfo');
+		$loaded = new Torrent(base64_decode($match[1]));
+		$this->assertTrue(!isset($loaded->libtorrent_resume),
+			'the wire metainfo contains no completed bitfield for a guessed filename');
+		$this->assertTrue($loaded->hash_info() === $infoHash, 'the daemon receives the original filename alternatives');
+	}
+
+	public function testAddTorrentRefusesAUrlAsItWasTyped()
+	{
+		$results = $this->add('dir_edit=' . rawurlencode('http://x/y'), [[0], [0]]);
+		$this->assertEquals(['FailedDirectory'], $results,
+			'a URL in the directory is the directory failure: ' . json_encode($results));
+		$this->assertEquals([], $this->loads(), 'and nothing was made or loaded: ' . json_encode($this->daemon->calls()));
+	}
+
+	public function testAddTorrentPutsALeadingSlashUnderTheTopDirectory()
+	{
+		$results = $this->add('dir_edit=' . rawurlencode('/thisisthedownloaddir'), [[0], [0]]);
+		$this->assertEquals(['Success'], $results, 'the magnet is added: ' . json_encode($results));
+		$bodies = $this->daemon->bodies();
+		$this->assertTrue(strpos(implode("\n", $bodies), $this->top . '/thisisthedownloaddir') !== false,
+			'into the directory under the top one');
+	}
+
+	public function testAddTorrentReportsADirectoryThatCannotBeMade()
+	{
+		$results = $this->add('dir_edit=x', [FakeRtorrentDaemon::fault('mkdir: Permission denied'), [0]]);
+		$this->assertEquals(['FailedDirectory'], $results,
+			'a directory rtorrent could not make is the directory failure: ' . json_encode($results));
+		$this->assertEquals(['execute'], $this->loads(),
+			'and the magnet was not loaded: ' . json_encode($this->daemon->calls()));
 	}
 
 	private static function swapSettings($settings)
@@ -102,7 +217,7 @@ class AddDirectoryOutcomeTest extends TestCase
 			$this->daemon->stop();
 			$this->daemon = null;
 		}
-		if ($this->server !== null) $this->server->close();
+		if ($this->server !== null) { $this->server->close(); }
 		$this->server = null;
 	}
 
@@ -120,95 +235,6 @@ class AddDirectoryOutcomeTest extends TestCase
 		}));
 	}
 
-	// ---- the senders -------------------------------------------------------
-
-	public function testANewMagnetIsLoadedOnlyAfterItsDirectoryIsMade()
-	{
-		$this->daemon(array(array(0), array(0)));
-		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, '/thisisthedownloaddir', '');
-		$this->assertTrue($result === self::HASH, 'the magnet is added');
-		$bodies = $this->daemon->bodies();
-		$this->assertTrue((count($bodies) === 2) && (strpos($bodies[0], '<methodName>execute') !== false)
-				&& (strpos($bodies[0], $this->top . '/thisisthedownloaddir') !== false)
-				&& (strpos($bodies[1], 'system.multicall') === false),
-			'mkdir is a request of its own, sent first, for the directory under the top one: ' . json_encode($this->daemon->calls()));
-		$this->assertTrue(strpos($bodies[1], 'd.set_directory_base="' . $this->top . '/thisisthedownloaddir"') !== false,
-			'and the load carries that directory');
-	}
-
-	public function testANewMagnetIsNotLoadedWhenItsDirectoryCannotBeMade()
-	{
-		$this->daemon(array(FakeRtorrentDaemon::fault('mkdir: Permission denied')));
-		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'x', '');
-		$this->assertTrue($result === false, 'the magnet is not added');
-		$this->assertEquals(array('execute'), $this->daemon->calls(), 'and only the mkdir was sent');
-		$this->assertTrue(rTorrent::refusedDirectory() === true, 'the failure is the directory');
-	}
-
-	public function testANewTorrentIsNotLoadedWhenItsDirectoryCannotBeMade()
-	{
-		$this->daemon(array(FakeRtorrentDaemon::fault('mkdir: Permission denied')));
-		$torrent = new Torrent($this->announceOnlyTorrent());
-		$result = rTorrent::sendTorrent($torrent, true, false, 'x', '', false, false);
-		$this->assertTrue($result === false, 'the torrent is not added');
-		$this->assertEquals(array('execute'), $this->daemon->calls(), 'and only the mkdir was sent');
-		$this->assertTrue(rTorrent::refusedDirectory() === true, 'the failure is the directory');
-	}
-
-	public function testARefusedDirectoryIsReportedAsTheDirectory()
-	{
-		$this->daemon(array());
-		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'http://x/y', '');
-		$this->assertTrue(($result === false) && (rTorrent::refusedDirectory() === true),
-			'a refused directory is the directory failure');
-		$this->assertEquals(array(), $this->daemon->calls(), 'and nothing was sent');
-	}
-
-	public function testAFailedLoadIsNotReportedAsTheDirectory()
-	{
-		$this->daemon(array(array(0), FakeRtorrentDaemon::fault('Could not create download')));
-		$result = rTorrent::sendMagnet('magnet:?xt=urn:btih:' . self::HASH, true, false, 'x', '');
-		$this->assertTrue(($result === false) && (rTorrent::refusedDirectory() === false),
-			'a load rtorrent refused after the directory was made is not the directory failure');
-	}
-
-	public function testAReloadStillSendsTheDirectoryAndTheLoadTogether()
-	{
-		$this->daemon(array(array(0, 0)));
-		$torrent = new Torrent($this->announceOnlyTorrent());
-		$result = rTorrent::sendTorrent($torrent, true, false, $this->top . '/x', '', false, false, false);
-		$this->assertTrue($result === $torrent->hash_info(), 'the reload is sent');
-		$this->assertEquals(array('execute', 'load_raw_start'), $this->daemon->calls(), 'in one request, as before');
-	}
-
-	public function testAnAmbiguousFastResumeStillLoadsWithoutFabricatedProgress()
-	{
-		$this->daemon(array(array(0), array(0)));
-		$torrent = new Torrent($this->sessionTorrent());
-		$torrent->info['name'] = 'legacy.data';
-		$torrent->info['name.utf-8'] = 'selected.data';
-		$infoHash = $torrent->hash_info();
-		try
-		{
-			file_put_contents($this->top . '/legacy.data', '');
-			$result = rTorrent::sendTorrent($torrent, true, false, $this->top, '', false, true);
-		}
-		finally
-		{
-			@unlink($this->top . '/legacy.data');
-		}
-		$this->assertTrue($result === $infoHash, 'uncertain fast resume still sends an ordinary load');
-		$this->assertEquals(array('execute', 'load_raw_start'), $this->daemon->calls(),
-			'only the normal directory creation and load are sent');
-		$bodies = $this->daemon->bodies();
-		$this->assertTrue(preg_match('~<base64>([^<]+)</base64>~', $bodies[1], $match) === 1,
-			'the actual load carries raw metainfo');
-		$loaded = new Torrent(base64_decode($match[1]));
-		$this->assertTrue(!isset($loaded->libtorrent_resume),
-			'the wire metainfo contains no completed bitfield for a guessed filename');
-		$this->assertTrue($loaded->hash_info() === $infoHash, 'the daemon receives the original filename alternatives');
-	}
-
 	// ---- addtorrent.php ----------------------------------------------------
 
 	/** One request to addtorrent.php; answers the result[] values it redirects with. */
@@ -217,7 +243,7 @@ class AddDirectoryOutcomeTest extends TestCase
 		$this->stop();
 		$root = realpath(__DIR__ . '/../..');
 		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
-		$this->daemon = new FakeRtorrentDaemon(array_merge(array(array()), $replies), $this->base . '/calls.log');
+		$this->daemon = new FakeRtorrentDaemon(array_merge([[]], $replies), $this->base . '/calls.log');
 		$router = $this->base . '/router.php';
 		file_put_contents($router, "<?php\n"
 			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
@@ -230,40 +256,14 @@ class AddDirectoryOutcomeTest extends TestCase
 			. 'chdir(' . var_export($root . '/php', true) . ");\n"
 			. 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n"
 			. "return true;\n");
-		$this->server = TestHttpServer::start($this->base, array(), PhpProcess::sameIni(), $router);
+		$this->server = TestHttpServer::start($this->base, [], PhpProcess::sameIni(), $router);
 		$response = TestHttpServer::rawPost($this->server->port(), '/php/addtorrent.php?' . $query,
 			'url=' . rawurlencode('magnet:?xt=urn:btih:' . self::HASH), 'application/x-www-form-urlencoded');
 		if (!isset($response['headers']['location'])
 			|| !preg_match('`^[^?]*\?(.*)$`', $response['headers']['location'], $location)) {
-			return array('no redirect: ' . $response['body']);
+			return ['no redirect: ' . $response['body']];
 		}
 		parse_str($location[1], $answer);
-		return isset($answer['result']) ? $answer['result'] : array();
-	}
-
-	public function testAddTorrentRefusesAUrlAsItWasTyped()
-	{
-		$results = $this->add('dir_edit=' . rawurlencode('http://x/y'), array(array(0), array(0)));
-		$this->assertEquals(array('FailedDirectory'), $results,
-			'a URL in the directory is the directory failure: ' . json_encode($results));
-		$this->assertEquals(array(), $this->loads(), 'and nothing was made or loaded: ' . json_encode($this->daemon->calls()));
-	}
-
-	public function testAddTorrentPutsALeadingSlashUnderTheTopDirectory()
-	{
-		$results = $this->add('dir_edit=' . rawurlencode('/thisisthedownloaddir'), array(array(0), array(0)));
-		$this->assertEquals(array('Success'), $results, 'the magnet is added: ' . json_encode($results));
-		$bodies = $this->daemon->bodies();
-		$this->assertTrue(strpos(implode("\n", $bodies), $this->top . '/thisisthedownloaddir') !== false,
-			'into the directory under the top one');
-	}
-
-	public function testAddTorrentReportsADirectoryThatCannotBeMade()
-	{
-		$results = $this->add('dir_edit=x', array(FakeRtorrentDaemon::fault('mkdir: Permission denied'), array(0)));
-		$this->assertEquals(array('FailedDirectory'), $results,
-			'a directory rtorrent could not make is the directory failure: ' . json_encode($results));
-		$this->assertEquals(array('execute'), $this->loads(),
-			'and the magnet was not loaded: ' . json_encode($this->daemon->calls()));
+		return isset($answer['result']) ? $answer['result'] : [];
 	}
 }

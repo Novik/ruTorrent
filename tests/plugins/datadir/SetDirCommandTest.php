@@ -14,22 +14,6 @@ require_once(__DIR__ . '/../../../plugins/datadir/setdircommand.php');
  */
 class SetDirCommandTest extends TestCase
 {
-	private function build($hash)
-	{
-		return rtSetDirCommand('/usr/bin/php', '/srv/plugins/datadir/setdir.php',
-			$hash, '/srv/downloads', '1', '0', '1', 'someone');
-	}
-
-	// What the interpolation produced, kept as the control: the hash reached
-	// the shell as shell, and a hash is a request parameter.
-	private function buildTheOldWay($hash)
-	{
-		return escapeshellarg('/usr/bin/php') . ' ' .
-			escapeshellarg('/srv/plugins/datadir/setdir.php') .
-			' ' . $hash . ' ' . escapeshellarg('/srv/downloads') .
-			' ' . '1' . ' ' . '0' . ' ' . '1' .
-			' ' . escapeshellarg('someone') . ' & exit 0';
-	}
 
 	public function testTheInterpolatedHashReachedTheShellAsShell()
 	{
@@ -53,8 +37,8 @@ class SetDirCommandTest extends TestCase
 		// claim is about all of them rather than about the hash.
 		$command = rtSetDirCommand('p h p', 's c r i p t', 'h a s h', 'd i r',
 			'a d d', 'm o v e', 'r e s u m e', 'u s e r');
-		foreach(array('p h p', 's c r i p t', 'h a s h', 'd i r',
-			'a d d', 'm o v e', 'r e s u m e', 'u s e r') as $value)
+		foreach(['p h p', 's c r i p t', 'h a s h', 'd i r',
+			'a d d', 'm o v e', 'r e s u m e', 'u s e r'] as $value)
 		{
 			$this->assertTrue(strpos($command, escapeshellarg($value)) !== false,
 				'"'.$value.'" is quoted');
@@ -87,5 +71,21 @@ class SetDirCommandTest extends TestCase
 		// rtorrent, so the shell has to return before setdir.php finishes.
 		$this->assertTrue(substr($this->build('abc123'), -9) === ' & exit 0',
 			'the script is still backgrounded and the shell still exits 0');
+	}
+	private function build($hash)
+	{
+		return rtSetDirCommand('/usr/bin/php', '/srv/plugins/datadir/setdir.php',
+			$hash, '/srv/downloads', '1', '0', '1', 'someone');
+	}
+
+	// What the interpolation produced, kept as the control: the hash reached
+	// the shell as shell, and a hash is a request parameter.
+	private function buildTheOldWay($hash)
+	{
+		return escapeshellarg('/usr/bin/php') . ' ' .
+			escapeshellarg('/srv/plugins/datadir/setdir.php') .
+			' ' . $hash . ' ' . escapeshellarg('/srv/downloads') .
+			' ' . '1' . ' ' . '0' . ' ' . '1' .
+			' ' . escapeshellarg('someone') . ' & exit 0';
 	}
 }

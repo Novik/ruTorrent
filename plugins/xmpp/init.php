@@ -33,5 +33,5 @@ if($at->setHandlers())
 	}*/
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
-else
-        $jResult .= "plugin.disable(); noty('xmpp: '+theUILang.pluginCantStart,'error');";
+else {
+        $jResult .= "plugin.disable(); noty('xmpp: '+theUILang.pluginCantStart,'error');"; }

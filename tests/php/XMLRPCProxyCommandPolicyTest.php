@@ -18,28 +18,12 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
  */
 class XMLRPCProxyCommandPolicyTest extends TestCase
 {
-	private $safe = array('d.custom1.set', 'd.directory.set');
+	private $safe = ['d.custom1.set', 'd.directory.set'];
 	private $opts;
 
 	public function setUp()
 	{
-		$this->opts = array('directory' => array('root' => '/', 'resolve' => null));
-	}
-
-	private function decide($xml)
-	{
-		return XMLRPCProxy::decide($xml, 'sanitize', $this->safe, false, $this->opts);
-	}
-
-	private function call($method, $params = array())
-	{
-		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
-			. '</methodName><params>';
-		foreach($params as $p)
-			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
-				. '</string></value></param>';
-		$xml .= '</params></methodCall>';
-		return $xml;
+		$this->opts = ['directory' => ['root' => '/', 'resolve' => null]];
 	}
 
 	// --- a load.* spelling the method list did not hold ---
@@ -50,7 +34,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// only in what it prints. Absent from the list it was not rebuilt, so
 		// the command parameter travelled to rtorrent as written.
 		$xml = $this->call('load.start_verbose',
-			array('', 'http://example.invalid/a.torrent', 'execute=/bin/id'));
+			['', 'http://example.invalid/a.torrent', 'execute=/bin/id']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'send',
@@ -64,7 +48,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// load.verbose reads parameter 1 as a URI exactly as load.normal does,
 		// and a value that is not a network URI is a path on rtorrent's own
 		// filesystem, which becomes the download's tied file.
-		$xml = $this->call('load.verbose', array('', '/etc/passwd'));
+		$xml = $this->call('load.verbose', ['', '/etc/passwd']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'reject',
@@ -76,14 +60,14 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// src/command_events.cc registers these eight, unchanged between 0.9.8
 		// and current master. A spelling missing from the list is a spelling
 		// whose command parameters are never looked at.
-		$spellings = array(
+		$spellings = [
 			'load.normal', 'load.start', 'load.verbose', 'load.start_verbose',
 			'load.raw', 'load.raw_start', 'load.raw_verbose', 'load.raw_start_verbose',
-		);
+		];
 		foreach($spellings as $method)
 		{
-			$xml = $this->call($method, array('', 'http://example.invalid/a.torrent',
-				'execute=/bin/id'));
+			$xml = $this->call($method, ['', 'http://example.invalid/a.torrent',
+				'execute=/bin/id']);
 			$d = $this->decide($xml);
 			$this->assertTrue(($d['action'] === 'reject') ||
 				(strpos($d['payload'], 'execute') === false),
@@ -141,7 +125,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// own. Reading only the name before the first '=' answers for the
 		// outer call and for nothing it carries.
 		$xml = $this->call('d.multicall',
-			array('', 'main', 'd.multicall=main,execute=/bin/id'));
+			['', 'main', 'd.multicall=main,execute=/bin/id']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'reject',
@@ -156,7 +140,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// and it can stand anywhere. '$execute' has no '=' before it, so the
 		// name read off the front of the string was "$execute", which begins
 		// with no refused prefix.
-		$xml = $this->call('d.multicall', array('', 'main', '$execute=/bin/id'));
+		$xml = $this->call('d.multicall', ['', 'main', '$execute=/bin/id']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'reject',
@@ -228,7 +212,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 
 	public function testAnOrdinaryReadMulticallIsStillForwarded()
 	{
-		$xml = $this->call('d.multicall', array('', 'main', 'd.name=', 'd.get_custom=seedingtime'));
+		$xml = $this->call('d.multicall', ['', 'main', 'd.name=', 'd.get_custom=seedingtime']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'send',
@@ -240,7 +224,7 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 		// "scheduled" begins with the refused prefix "schedule", but it stands
 		// where a command's argument stands, not where a command stands. What
 		// follows '=' inside one element is argument text and is not a name.
-		$xml = $this->call('d.multicall', array('', 'main', 'd.get_custom=scheduled'));
+		$xml = $this->call('d.multicall', ['', 'main', 'd.get_custom=scheduled']);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'send',
@@ -251,10 +235,26 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
 	{
 		// plugins/show_peers_like_wtorrent ships this, nested and $-introduced.
 		$expression = 'cat="$t.multicall=d.get_hash=,t.get_scrape_complete=,cat={#}"';
-		$xml = $this->call('d.multicall', array('', 'main', $expression));
+		$xml = $this->call('d.multicall', ['', 'main', $expression]);
 		$d = $this->decide($xml);
 
 		$this->assertTrue($d['action'] === 'send',
 			'the shipped nested tracker-column expression is still forwarded');
+	}
+
+	private function decide($xml)
+	{
+		return XMLRPCProxy::decide($xml, 'sanitize', $this->safe, false, $this->opts);
+	}
+
+	private function call($method, $params = [])
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
+			. '</methodName><params>';
+		foreach($params as $p) {
+			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
+				. '</string></value></param>'; }
+		$xml .= '</params></methodCall>';
+		return $xml;
 	}
 }

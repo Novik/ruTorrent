@@ -7,15 +7,15 @@ class GlobalSettingsFixtureTest extends TestCase
 {
 	public function testRestorePreservesAbsentNullAndPopulatedSettings()
 	{
-		$names = array('scgiFixtureAbsent', 'scgiFixtureNull', 'scgiFixtureValue');
-		$previous = array();
-		foreach($names as $name)
-			$previous[$name] = array(array_key_exists($name, $GLOBALS), $GLOBALS[$name] ?? null);
+		$names = ['scgiFixtureAbsent', 'scgiFixtureNull', 'scgiFixtureValue'];
+		$previous = [];
+		foreach($names as $name) {
+			$previous[$name] = [array_key_exists($name, $GLOBALS), $GLOBALS[$name] ?? null]; }
 		try
 		{
 			unset($GLOBALS['scgiFixtureAbsent']);
 			$GLOBALS['scgiFixtureNull'] = null;
-			$GLOBALS['scgiFixtureValue'] = array('port' => 5000);
+			$GLOBALS['scgiFixtureValue'] = ['port' => 5000];
 			$fixture = new GlobalSettingsFixture($names);
 			$GLOBALS['scgiFixtureAbsent'] = 'created';
 			$GLOBALS['scgiFixtureNull'] = 'changed';
@@ -24,48 +24,48 @@ class GlobalSettingsFixtureTest extends TestCase
 			$this->assertTrue(!array_key_exists('scgiFixtureAbsent', $GLOBALS), 'an absent setting becomes absent again');
 			$this->assertTrue(array_key_exists('scgiFixtureNull', $GLOBALS) && $GLOBALS['scgiFixtureNull'] === null,
 				'a null setting remains present with its original value');
-			$this->assertTrue(isset($GLOBALS['scgiFixtureValue']) && $GLOBALS['scgiFixtureValue'] === array('port' => 5000),
+			$this->assertTrue(isset($GLOBALS['scgiFixtureValue']) && $GLOBALS['scgiFixtureValue'] === ['port' => 5000],
 				'a removed populated setting regains its original value');
 		}
 		finally
 		{
 			// Cleanup is independent of the helper under test.
-			foreach($previous as $name => $setting)
-				if($setting[0])
-					$GLOBALS[$name] = $setting[1];
-				else
-					unset($GLOBALS[$name]);
+			foreach($previous as $name => $setting) {
+				if($setting[0]) {
+					$GLOBALS[$name] = $setting[1]; }
+				else {
+					unset($GLOBALS[$name]); } }
 		}
 	}
 
 	public function testScgiFixtureCoversEverySettingTheTransportReads()
 	{
-		$previous = array();
-		foreach(GlobalSettingsFixture::SCGI as $name)
-			$previous[$name] = array(array_key_exists($name, $GLOBALS), $GLOBALS[$name] ?? null);
+		$previous = [];
+		foreach(GlobalSettingsFixture::SCGI as $name) {
+			$previous[$name] = [array_key_exists($name, $GLOBALS), $GLOBALS[$name] ?? null]; }
 		try
 		{
-			foreach(GlobalSettingsFixture::SCGI as $name)
-				$GLOBALS[$name] = 'before';
+			foreach(GlobalSettingsFixture::SCGI as $name) {
+				$GLOBALS[$name] = 'before'; }
 			$fixture = GlobalSettingsFixture::scgi();
-			foreach(GlobalSettingsFixture::SCGI as $name)
-				$GLOBALS[$name] = 'after';
+			foreach(GlobalSettingsFixture::SCGI as $name) {
+				$GLOBALS[$name] = 'after'; }
 			$fixture->restore();
 			$restored = true;
-			foreach(GlobalSettingsFixture::SCGI as $name)
-				$restored = $restored && ($GLOBALS[$name] === 'before');
+			foreach(GlobalSettingsFixture::SCGI as $name) {
+				$restored = $restored && ($GLOBALS[$name] === 'before'); }
 			$this->assertTrue($restored, 'every SCGI setting returns to its value');
-			$this->assertTrue(count(array_intersect(array('scgi_host', 'rpcTransferTimeOut', 'rpcMaxResponseBytes',
-				'tempDirectory', 'tempDirectory_init_done'), GlobalSettingsFixture::SCGI)) === 5,
+			$this->assertTrue(count(array_intersect(['scgi_host', 'rpcTransferTimeOut', 'rpcMaxResponseBytes',
+				'tempDirectory', 'tempDirectory_init_done'], GlobalSettingsFixture::SCGI)) === 5,
 				'the list names the transport, budget, limit and temporary directory settings');
 		}
 		finally
 		{
-			foreach($previous as $name => $setting)
-				if($setting[0])
-					$GLOBALS[$name] = $setting[1];
-				else
-					unset($GLOBALS[$name]);
+			foreach($previous as $name => $setting) {
+				if($setting[0]) {
+					$GLOBALS[$name] = $setting[1]; }
+				else {
+					unset($GLOBALS[$name]); } }
 		}
 	}
 }

@@ -36,46 +36,11 @@ class LogPathAgreementTest extends TestCase
 		$this->wipe();
 	}
 
-	private function wipe()
-	{
-		if (!is_dir($this->root)) {
-			return;
-		}
-		foreach (array_diff(scandir($this->root), array('.', '..')) as $entry) {
-			$path = $this->root . '/' . $entry;
-			is_dir($path) ? rmdir($path) : unlink($path);
-		}
-		rmdir($this->root);
-	}
-
-	/**
-	 * True when toLog() accepted the path as one it could write to -- that is,
-	 * it did not bail out with the "must be an absolute path" warning.
-	 */
-	private function runtimeAccepts($path)
-	{
-		global $log_file, $profileMask;
-		$log_file = $path;
-		$profileMask = 0777;
-
-		$this->refused = false;
-		set_error_handler(function ($errno, $errstr) {
-			if (strpos($errstr, 'absolute path') !== false) {
-				$this->refused = true;
-			}
-			return true;
-		});
-		FileUtil::toLog('agreement probe');
-		restore_error_handler();
-
-		return !$this->refused;
-	}
-
 	/** One table of paths, both verdicts, asserted equal. */
 	public function testTheCheckerAndTheRuntimeAgreeOnEveryShapeOfLogPath()
 	{
 		$abs = $this->root . '/log.txt';
-		$paths = array(
+		$paths = [
 			'an absolute path'            => $abs,
 			'a bare relative path'        => 'errors.log',
 			'a dotted relative path'      => './errors.log',
@@ -85,7 +50,7 @@ class LogPathAgreementTest extends TestCase
 			'a relative file URI'         => 'file://errors.log',
 			'a file URI with a query'     => 'file://' . $abs . '?x=1',
 			'a remote-host file URI'      => 'file://elsewhere' . $abs,
-		);
+		];
 
 		foreach ($paths as $what => $path) {
 			$checker = Requirements::logFilePathValid($path);
@@ -129,5 +94,40 @@ class LogPathAgreementTest extends TestCase
 		$this->assertTrue($this->runtimeAccepts('errors.log') === false,
 			'and so does toLog()');
 		$this->assertEquals($before, scandir($this->root), 'and no file appeared');
+	}
+
+	private function wipe()
+	{
+		if (!is_dir($this->root)) {
+			return;
+		}
+		foreach (array_diff(scandir($this->root), ['.', '..']) as $entry) {
+			$path = $this->root . '/' . $entry;
+			is_dir($path) ? rmdir($path) : unlink($path);
+		}
+		rmdir($this->root);
+	}
+
+	/**
+	 * True when toLog() accepted the path as one it could write to -- that is,
+	 * it did not bail out with the "must be an absolute path" warning.
+	 */
+	private function runtimeAccepts($path)
+	{
+		global $log_file, $profileMask;
+		$log_file = $path;
+		$profileMask = 0777;
+
+		$this->refused = false;
+		set_error_handler(function ($errno, $errstr) {
+			if (strpos($errstr, 'absolute path') !== false) {
+				$this->refused = true;
+			}
+			return true;
+		});
+		FileUtil::toLog('agreement probe');
+		restore_error_handler();
+
+		return !$this->refused;
 	}
 }

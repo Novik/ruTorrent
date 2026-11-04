@@ -16,9 +16,9 @@ class TorrentFileNames
 
 	public static function needsMetadata($rows)
 	{
-		foreach($rows as $row)
-			if(self::legacy($row[0] ?? null))
-				return(true);
+		foreach($rows as $row) {
+			if(self::legacy($row[0] ?? null)) {
+				return(true); } }
 		return(false);
 	}
 
@@ -40,7 +40,7 @@ class TorrentFileNames
 	public static function titles($names)
 	{
 		$paths = null;
-		foreach($names as $hash=>$name)
+		foreach($names as $hash=>$name) {
 			if(self::legacy($name))
 			{
 				if($paths === null)
@@ -50,7 +50,7 @@ class TorrentFileNames
 				}
 				// A torrent missing from the batch is not asked about again.
 				$names[$hash] = self::label($name, $hash, self::source($hash, $paths[strtoupper($hash)] ?? false));
-			}
+			} }
 		return($names);
 	}
 
@@ -60,17 +60,17 @@ class TorrentFileNames
 	{
 		self::loadDaemon();
 		$leaf = FileUtil::getFileName($filename);
-		if(UTF::isValid($leaf))
-			return(null);
-		$req = new rXMLRPCRequest(array(
-			new rXMLRPCCommand('f.get_path', array($hash, $index)),
-			new rXMLRPCCommand('f.get_size_bytes', array($hash, $index)),
-			new rXMLRPCCommand('d.get_size_files', $hash)));
-		if(!$req->success() || (count($req->val) !== 3))
-			return(UTF::display($leaf));
+		if(UTF::isValid($leaf)) {
+			return(null); }
+		$req = new rXMLRPCRequest([
+			new rXMLRPCCommand('f.get_path', [$hash, $index]),
+			new rXMLRPCCommand('f.get_size_bytes', [$hash, $index]),
+			new rXMLRPCCommand('d.get_size_files', $hash)]);
+		if(!$req->success() || (count($req->val) !== 3)) {
+			return(UTF::display($leaf)); }
 		$path = rXMLRPCRequest::unescapeValue($req->val[0]);
-		if(FileUtil::getFileName($path) !== $leaf)
-			return(UTF::display($leaf));
+		if(FileUtil::getFileName($path) !== $leaf) {
+			return(UTF::display($leaf)); }
 		return(self::fileName($path, $index, $req->val[1], $req->val[2], $hash, self::source($hash)));
 	}
 
@@ -83,14 +83,14 @@ class TorrentFileNames
 	public static function resolve($rows, $hash, $source)
 	{
 		$files = null;
-		$components = array();
-		$prefixes = array();
+		$components = [];
+		$prefixes = [];
 		foreach($rows as $index=>$row)
 		{
-			if(!self::legacy($row[0] ?? null))
-				continue;
-			if($files === null)
-				$files = self::sourceFiles($source, $hash, count($rows), $encoding);
+			if(!self::legacy($row[0] ?? null)) {
+				continue; }
+			if($files === null) {
+				$files = self::sourceFiles($source, $hash, count($rows), $encoding); }
 			$path = explode('/', $row[0]);
 			list($alias, $rowEncoding) = self::attested($files, $index, $path, $row[3] ?? null, $encoding);
 			$raw = null;
@@ -99,26 +99,26 @@ class TorrentFileNames
 				// A component is known by its raw path from the torrent root.
 				$raw = ($raw === null) ? $part : $raw.'/'.$part;
 				$prefix = null;
-				if(UTF::isValid($part))
-					$label = $part;
+				if(UTF::isValid($part)) {
+					$label = $part; }
 				else
 				{
 					$label = ($alias !== false) ? $alias[$depth] : self::fallback($part, $rowEncoding);
 					$prefix = $raw;
-					if(!array_key_exists($prefix, $prefixes))
-						$prefixes[$prefix] = $label;
-					else if($prefixes[$prefix] !== $label)
-						$prefixes[$prefix] = false;
+					if(!array_key_exists($prefix, $prefixes)) {
+						$prefixes[$prefix] = $label; }
+					elseif($prefixes[$prefix] !== $label) {
+						$prefixes[$prefix] = false; }
 				}
-				$components[$index][] = array($part, $label, $prefix);
+				$components[$index][] = [$part, $label, $prefix];
 			}
 		}
-		$names = array();
+		$names = [];
 		foreach($components as $index=>$entries)
 		{
-			$display = array();
-			foreach($entries as list($part, $label, $prefix))
-				$display[] = (($prefix !== null) && ($prefixes[$prefix] === false)) ? UTF::display($part) : $label;
+			$display = [];
+			foreach($entries as list($part, $label, $prefix)) {
+				$display[] = (($prefix !== null) && ($prefixes[$prefix] === false)) ? UTF::display($part) : $label; }
 			$names[$index] = implode('/', $display);
 		}
 		return($names);
@@ -152,8 +152,8 @@ class TorrentFileNames
 		$encoding = null;
 		if(self::sourceMatches($source, $hash) && isset($source->info['name']) && ($source->info['name'] === $name))
 		{
-			if(isset($source->info['name.utf-8']) && self::component($source->info['name.utf-8']))
-				return($source->info['name.utf-8']);
+			if(isset($source->info['name.utf-8']) && self::component($source->info['name.utf-8'])) {
+				return($source->info['name.utf-8']); }
 			$encoding = $source->encoding;
 		}
 		return(self::fallback($name, $encoding));
@@ -174,11 +174,11 @@ class TorrentFileNames
 	// A path.utf-8 list with one usable component for each raw one.
 	private static function alias($path, $width)
 	{
-		if(!is_array($path) || (count($path) !== $width))
-			return(false);
-		for($depth = 0; $depth < $width; $depth++)
-			if(!isset($path[$depth]) || !self::component($path[$depth]))
-				return(false);
+		if(!is_array($path) || (count($path) !== $width)) {
+			return(false); }
+		for($depth = 0; $depth < $width; $depth++) {
+			if(!isset($path[$depth]) || !self::component($path[$depth])) {
+				return(false); } }
 		return($path);
 	}
 
@@ -186,21 +186,21 @@ class TorrentFileNames
 	// conversions are not, so a conversion must map back to the same bytes.
 	private static function converted($text, $encoding)
 	{
-		if(!is_string($encoding) || (preg_match('/\A[A-Za-z0-9._:-]{1,64}\z/', $encoding) !== 1))
-			return(false);
+		if(!is_string($encoding) || (preg_match('/\A[A-Za-z0-9._:-]{1,64}\z/', $encoding) !== 1)) {
+			return(false); }
 		if(function_exists('iconv'))
 		{
 			$result = @iconv($encoding, 'UTF-8', $text);
-			if(self::component($result) && (@iconv('UTF-8', $encoding, $result) === $text))
-				return($result);
+			if(self::component($result) && (@iconv('UTF-8', $encoding, $result) === $text)) {
+				return($result); }
 		}
 		try
 		{
 			// mbstring is optional: a missing function throws an Error, and
 			// PHP 8 throws a ValueError for an encoding mbstring does not know.
 			$result = @mb_convert_encoding($text, 'UTF-8', $encoding);
-			if(self::component($result) && (@mb_convert_encoding($result, $encoding, 'UTF-8') === $text))
-				return($result);
+			if(self::component($result) && (@mb_convert_encoding($result, $encoding, 'UTF-8') === $text)) {
+				return($result); }
 		}
 		catch(Throwable $error)
 		{
@@ -219,21 +219,21 @@ class TorrentFileNames
 	private static function sourceFiles($source, $hash, $count, &$encoding)
 	{
 		$encoding = null;
-		if(!self::sourceMatches($source, $hash))
-			return(false);
+		if(!self::sourceMatches($source, $hash)) {
+			return(false); }
 		$info = $source->info;
-		if(isset($info['files']))
-			$files = $info['files'];
+		if(isset($info['files'])) {
+			$files = $info['files']; }
 		else
 		{
-			if(!isset($info['name'], $info['length']))
-				return(false);
-			$files = array(array('path'=>array($info['name']), 'length'=>$info['length']));
-			if(isset($info['name.utf-8']))
-				$files[0]['path.utf-8'] = array($info['name.utf-8']);
+			if(!isset($info['name'], $info['length'])) {
+				return(false); }
+			$files = [['path'=>[$info['name']], 'length'=>$info['length']]];
+			if(isset($info['name.utf-8'])) {
+				$files[0]['path.utf-8'] = [$info['name.utf-8']]; }
 		}
-		if(!is_array($files) || (count($files) !== $count))
-			return(false);
+		if(!is_array($files) || (count($files) !== $count)) {
+			return(false); }
 		$encoding = $source->encoding;
 		return($files);
 	}
@@ -243,9 +243,9 @@ class TorrentFileNames
 	private static function attested($files, $index, $path, $size, $encoding)
 	{
 		$file = $files[$index] ?? null;
-		if((($file['path'] ?? null) !== $path) || !is_int($file['length'] ?? null) || ((string)$file['length'] !== (string)$size))
-			return(array(false, null));
-		return(array(isset($file['path.utf-8']) ? self::alias($file['path.utf-8'], count($path)) : false, $encoding));
+		if((($file['path'] ?? null) !== $path) || !is_int($file['length'] ?? null) || ((string)$file['length'] !== (string)$size)) {
+			return([false, null]); }
+		return([isset($file['path.utf-8']) ? self::alias($file['path.utf-8'], count($path)) : false, $encoding]);
 	}
 
 	// A label for one live file whose last component is not UTF-8.

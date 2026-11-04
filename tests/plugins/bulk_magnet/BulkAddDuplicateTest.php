@@ -18,8 +18,8 @@ require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
  */
 class BulkAddDuplicateTest extends TestCase
 {
-	const LOADED = '1111111111111111111111111111111111111111';
-	const FRESH = '2222222222222222222222222222222222222222';
+	public const LOADED = '1111111111111111111111111111111111111111';
+	public const FRESH = '2222222222222222222222222222222222222222';
 
 	private $base;
 	private $daemon;
@@ -44,6 +44,20 @@ class BulkAddDuplicateTest extends TestCase
 		@rmdir($this->base);
 	}
 
+	public function testATorrentAlreadyLoadedIsADuplicateNotAnAddition()
+	{
+		$result = $this->bulkAdd([
+			'magnet:?xt=urn:btih:' . self::LOADED . '&dn=loaded',
+			strtolower(self::FRESH),
+			'magnet:?xt=urn:btih:' . self::FRESH,
+			'not a link',
+		]);
+		$this->assertEquals(['error' => 1, 'success' => 1, 'duplicate' => 2], $result,
+			'one new torrent is added, the loaded one and the second copy of the new one are '
+			. 'duplicates, and the line that is not a link is an error; the script answered '
+			. json_encode($result));
+	}
+
 	/**
 	 * Runs action.php against a daemon that has LOADED and answers every
 	 * load with 0, and returns what the script printed.
@@ -51,9 +65,9 @@ class BulkAddDuplicateTest extends TestCase
 	private function bulkAdd($items)
 	{
 		$root = realpath(__DIR__ . '/../../..');
-		$replies = array(array(self::LOADED));
+		$replies = [[self::LOADED]];
 		foreach ($items as $item) {
-			$replies[] = array(0);
+			$replies[] = [0];
 		}
 		// An install whose interface has been opened has a settings cache.
 		// This script is driven against a profile of its own, so leave one
@@ -77,23 +91,9 @@ class BulkAddDuplicateTest extends TestCase
 			. 'chdir(' . var_export($root . '/plugins/bulk_magnet', true) . ");\n"
 			. 'require(' . var_export($root . '/plugins/bulk_magnet/action.php', true) . ");\n");
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($driver) . ' 2>&1', $output);
 		return json_decode(implode("\n", $output), true);
-	}
-
-	public function testATorrentAlreadyLoadedIsADuplicateNotAnAddition()
-	{
-		$result = $this->bulkAdd(array(
-			'magnet:?xt=urn:btih:' . self::LOADED . '&dn=loaded',
-			strtolower(self::FRESH),
-			'magnet:?xt=urn:btih:' . self::FRESH,
-			'not a link',
-		));
-		$this->assertEquals(array('error' => 1, 'success' => 1, 'duplicate' => 2), $result,
-			'one new torrent is added, the loaded one and the second copy of the new one are '
-			. 'duplicates, and the line that is not a link is an error; the script answered '
-			. json_encode($result));
 	}
 }

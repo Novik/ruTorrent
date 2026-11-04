@@ -19,48 +19,48 @@ else
     CachedEcho::send($body, 'text/plain', true, false);
 echo 'CONTINUED';
 PHP;
-    $pipes = array();
+    $pipes = [];
     $process = null;
     try {
-        $process = proc_open(array(PHP_BINARY, '-c', $root . '/tests/php-test.ini',
+        $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini',
             '-d', 'zlib.output_compression=0', '-r', $worker,
-            $root . '/php/utility/cachedecho.php', $exit ? '1' : '0'),
-            array(0 => array('file', '/dev/null', 'r'),
-                1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
-        if (!is_resource($process)) throw new RuntimeException('Could not start the response child');
+            $root . '/php/utility/cachedecho.php', $exit ? '1' : '0'],
+            [0 => ['file', '/dev/null', 'r'],
+                1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+        if (!is_resource($process)) { throw new RuntimeException('Could not start the response child'); }
         $output = stream_get_contents($pipes[1]);
         $errors = stream_get_contents($pipes[2]);
-        foreach ($pipes as $pipe) fclose($pipe);
-        $pipes = array();
+        foreach ($pipes as $pipe) { fclose($pipe); }
+        $pipes = [];
         $status = proc_close($process);
         $process = null;
-        if ($status !== 0 || $errors !== '')
-            throw new RuntimeException('Response child exited ' . $status . ': ' . $errors);
+        if ($status !== 0 || $errors !== '') {
+            throw new RuntimeException('Response child exited ' . $status . ': ' . $errors); }
         return $output;
     } finally {
         if (is_resource($process)) {
             proc_terminate($process);
-            foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+            foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
             proc_close($process);
         }
     }
 }
 
 $failures = 0;
-$cases = array(
+$cases = [
     'a matched etag with default exit stops the caller' => true,
     'a matched etag with exit false permits caller cleanup' => false,
-);
+];
 foreach ($cases as $name => $exit) {
     try {
         $output = cachedEchoNotModified($exit);
-        if (strpos($output, str_repeat('A', 64)) !== false)
-            throw new RuntimeException('The 304 answer carried the content as a body');
+        if (strpos($output, str_repeat('A', 64)) !== false) {
+            throw new RuntimeException('The 304 answer carried the content as a body'); }
         $continued = $output === 'CONTINUED';
-        if ($continued === $exit)
-            throw new RuntimeException('Unexpected caller continuation: ' . ($continued ? 'yes' : 'no'));
-        if (!$continued && $output !== '')
-            throw new RuntimeException('Unexpected output: ' . var_export($output, true));
+        if ($continued === $exit) {
+            throw new RuntimeException('Unexpected caller continuation: ' . ($continued ? 'yes' : 'no')); }
+        if (!$continued && $output !== '') {
+            throw new RuntimeException('Unexpected output: ' . var_export($output, true)); }
         echo 'ok - ', $name, "\n";
     } catch (Throwable $error) {
         $failures++;

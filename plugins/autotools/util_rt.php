@@ -9,12 +9,12 @@ require_once( "../../php/rtorrent.php" );
 //------------------------------------------------------------------------------
 function rtDbg( $prefix, $str )
 {
-	if( !$str )
-		FileUtil::toLog( "" );
-	elseif( $prefix && strlen( $prefix ) > 0 )
-		FileUtil::toLog( $prefix.": ".$str );
-	else
-		FileUtil::toLog( $str );
+	if( !$str ) {
+		FileUtil::toLog( "" ); }
+	elseif( $prefix && strlen( $prefix ) > 0 ) {
+		FileUtil::toLog( $prefix.": ".$str ); }
+	else {
+		FileUtil::toLog( $str ); }
 }
 
 
@@ -23,9 +23,9 @@ function rtDbg( $prefix, $str )
 //------------------------------------------------------------------------------
 function rtIsDaemon( $args )
 {
-	foreach( $args as $arg )
-		if( $arg == '--daemon' )
-			return true;
+	foreach( $args as $arg ) {
+		if( $arg == '--daemon' ) {
+			return true; } }
 	return false;
 }
 
@@ -34,10 +34,10 @@ function rtIsDaemon( $args )
 //------------------------------------------------------------------------------
 function rtDaemon( $php, $script, $args )
 {
-	if( !$php || $php == '' ) $php = 'php';
+	if( !$php || $php == '' ) { $php = 'php'; }
 	$params = escapeshellarg( $script ).' --daemon';
-	foreach( $args as $arg )
-		$params .= ' '.escapeshellarg( $arg );
+	foreach( $args as $arg ) {
+		$params .= ' '.escapeshellarg( $arg ); }
 	exec( $php.' '.$params.' > /dev/null 2>/dev/null &', $out, $ret );
 	exit( (int)$ret );
 }
@@ -56,13 +56,13 @@ function rtSemGet( $id )
 //------------------------------------------------------------------------------
 function rtSemLock( $sem_key )
 {
-	if( $sem_key ) sem_acquire( $sem_key );
+	if( $sem_key ) { sem_acquire( $sem_key ); }
 }
 
 //------------------------------------------------------------------------------
 function rtSemUnlock( $sem_key )
 {
-	if( $sem_key ) sem_release( $sem_key );
+	if( $sem_key ) { sem_release( $sem_key ); }
 }
 
 
@@ -72,8 +72,8 @@ function rtSemUnlock( $sem_key )
 function rtAddTailSlash( $str )
 {
 	$len = strlen( $str );
-	if( $len > 0 && $str[$len-1] == '/' )
-		return $str;
+	if( $len > 0 && $str[$len-1] == '/' ) {
+		return $str; }
 	return $str.'/';
 }
 
@@ -81,8 +81,8 @@ function rtAddTailSlash( $str )
 function rtRemoveTailSlash( $str )
 {
 	$len = strlen( $str );
-	if( $len == 0 || $str[$len-1] != '/' )
-		return $str;
+	if( $len == 0 || $str[$len-1] != '/' ) {
+		return $str; }
 	return substr( $str, 0, -1 );
 }
 
@@ -90,8 +90,8 @@ function rtRemoveTailSlash( $str )
 function rtRemoveHeadSlash( $str )
 {
 	$len = strlen( $str );
-	if( $len == 0 || $str[0] != '/' )
-		return $str;
+	if( $len == 0 || $str[0] != '/' ) {
+		return $str; }
 	return substr( $str, 1 );
 }
 
@@ -101,8 +101,8 @@ function rtRemoveHeadSlash( $str )
 function rtRemoveLastToken( $str, $sep )
 {
 	$pos = strrpos( $str, $sep );
-	if( $pos === false )
-		return $str;
+	if( $pos === false ) {
+		return $str; }
 	return substr( $str, 0, $pos );
 }
 
@@ -114,11 +114,11 @@ function rtGetRelativePath( $base_dir, $real_dir )
 	$base_dir = rtAddTailSlash( $base_dir );
 	$len = strlen( $base_dir );
 	$str = substr( $real_dir, 0, $len );
-	if( $str != $base_dir )
-		return '';			// $real_dir is NOT SUBDIR of $base_dir
+	if( $str != $base_dir ) {
+		return ''; }			// $real_dir is NOT SUBDIR of $base_dir
 	$str = substr( $real_dir, $len );
-	if( $str != '' )
-		return $str;			// $read_dir is SUBDIR of $base_dir
+	if( $str != '' ) {
+		return $str; }			// $read_dir is SUBDIR of $base_dir
 	return './';				// $real_dir is EQUAL to $base_dir
 }
 
@@ -148,8 +148,8 @@ function rtMkDir( $dir, $mode = 0777 )
 		// recursive mkdir() only after PHP_5.0
 		mkdir( $dir, $mode, true );
 		//system( 'mkdir -p "'.$dst_dir.'"' );
-		if( !is_dir( $dir ) )
-			return false;
+		if( !is_dir( $dir ) ) {
+			return false; }
 	}
 	return true;
 }
@@ -162,20 +162,20 @@ function rtMoveFile( $src, $dst, $dbg = false )
 	$ss = LFS::stat($src);
 	if( !rename( $src, $dst ) )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
-		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dst );
-		if( $dbg ) rtDbg( __FUNCTION__, "move fail, try to copy" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "from ".$src ); }
+		if( $dbg ) { rtDbg( __FUNCTION__, "to   ".$dst ); }
+		if( $dbg ) { rtDbg( __FUNCTION__, "move fail, try to copy" ); }
 		if( !copy( $src, $dst ) )
 		{
-			if( $dbg ) rtDbg( __FUNCTION__, "copy fail" );
+			if( $dbg ) { rtDbg( __FUNCTION__, "copy fail" ); }
 			return false;
 		}
-		if( !unlink( $src ) )
-			if( $dbg ) rtDbg( __FUNCTION__, "delete fail (".$src.")" );
+		if( !unlink( $src ) ) {
+			if( $dbg ) { rtDbg( __FUNCTION__, "delete fail (".$src.")" ); } }
 	}
 	// there are problems here, if run-user is not file owner
-	if($ss!==false)
-		touch( $dst, $ss['mtime'], $ss['atime'] );
+	if($ss!==false) {
+		touch( $dst, $ss['mtime'], $ss['atime'] ); }
 	return true;
 }
 
@@ -189,29 +189,29 @@ function rtMoveFile( $src, $dst, $dbg = false )
 function rtDestinationRoot( $dst )
 {
 	$dst = rtRemoveTailSlash( $dst );
-	if( $dst == '' )
-		return '';
+	if( $dst == '' ) {
+		return ''; }
 	$real = realpath( $dst );
-	if( $real !== false )
-		return rtRemoveTailSlash( $real );
+	if( $real !== false ) {
+		return rtRemoveTailSlash( $real ); }
 	// Not there yet, so there is nothing in it to resolve. The deepest part of
 	// it that is there is resolved instead, and what is added to that is
 	// elements that do not exist and so cannot be symlinks. rtOpFiles()
 	// confirms that is still so once it has made them.
-	$tail = array();
+	$tail = [];
 	$path = $dst;
 	while( true )
 	{
 		$parent = dirname( $path );
-		if( $parent === $path )
-			return '';
+		if( $parent === $path ) {
+			return ''; }
 		// Not basename(): it depends on the locale, and PHP 7.4 in a non-UTF-8
 		// one, such as C when rtorrent runs without LANG, drops non-ASCII names.
 		$slash = strrpos( $path, '/' );
 		array_unshift( $tail, ( $slash === false ) ? $path : substr( $path, $slash + 1 ) );
 		$real = realpath( $parent );
-		if( $real !== false )
-			return rtRemoveTailSlash( $real ).'/'.implode( '/', $tail );
+		if( $real !== false ) {
+			return rtRemoveTailSlash( $real ).'/'.implode( '/', $tail ); }
 		$path = $parent;
 	}
 }
@@ -234,42 +234,42 @@ function rtDestinationRoot( $dst )
 function rtContainedPath( $root, $file, $make = false, &$made = null )
 {
 	$root = rtRemoveTailSlash( $root );
-	if( $root == '' || !is_string( $file ) || $file == '' || $file[0] == '/' )
-		return '';
+	if( $root == '' || !is_string( $file ) || $file == '' || $file[0] == '/' ) {
+		return ''; }
 	$parts = explode( '/', $file );
 	$leaf = array_pop( $parts );
-	if( $leaf == '' || $leaf == '.' || $leaf == '..' )
-		return '';
+	if( $leaf == '' || $leaf == '.' || $leaf == '..' ) {
+		return ''; }
 	$path = $root;
 	foreach( $parts as $part )
 	{
-		if( $part == '' || $part == '.' || $part == '..' )
-			return '';
+		if( $part == '' || $part == '.' || $part == '..' ) {
+			return ''; }
 		$path .= '/'.$part;
 		$st = @lstat( $path );
 		if( $st === false )
 		{
 			// Something is there that cannot be inspected. What it is decides
 			// where the walk goes, so not knowing ends it.
-			if( is_link( $path ) || file_exists( $path ) )
-				return '';
-			if( !$make )
-				continue;
+			if( is_link( $path ) || file_exists( $path ) ) {
+				return ''; }
+			if( !$make ) {
+				continue; }
 			if( !@mkdir( $path, 0777 ) )
 			{
 				// Lost the race to create it. What won is only acceptable if
 				// it is the directory this was going to make.
 				$st = @lstat( $path );
-				if( $st === false || ( $st['mode'] & 0170000 ) != 0040000 )
-					return '';
+				if( $st === false || ( $st['mode'] & 0170000 ) != 0040000 ) {
+					return ''; }
 				continue;
 			}
-			if( is_array( $made ) )
-				$made[] = array( 'rmdir', $path );
+			if( is_array( $made ) ) {
+				$made[] = [ 'rmdir', $path ]; }
 			continue;
 		}
-		if( ( $st['mode'] & 0170000 ) != 0040000 )
-			return '';
+		if( ( $st['mode'] & 0170000 ) != 0040000 ) {
+			return ''; }
 	}
 	return $path.'/'.$leaf;
 }
@@ -292,18 +292,18 @@ function rtNameInUse( $path )
 //------------------------------------------------------------------------------
 function rtTakenDestination( $files, $dst )
 {
-	if( !is_array( $files ) || $dst == '' )
-		return '';
+	if( !is_array( $files ) || $dst == '' ) {
+		return ''; }
 	$root = rtDestinationRoot( $dst );
-	if( $root == '' )
-		return rtAddTailSlash( $dst );
+	if( $root == '' ) {
+		return rtAddTailSlash( $dst ); }
 	foreach( $files as $file )
 	{
 		$dest = rtContainedPath( $root, $file );
-		if( $dest == '' )
-			return rtAddTailSlash( $dst ).( is_string( $file ) ? $file : '' );
-		if( rtNameInUse( $dest ) )
-			return $dest;
+		if( $dest == '' ) {
+			return rtAddTailSlash( $dst ).( is_string( $file ) ? $file : '' ); }
+		if( rtNameInUse( $dest ) ) {
+			return $dest; }
 	}
 	return '';
 }
@@ -323,7 +323,7 @@ function rtUndoOpFiles( $journal, $dbg = false )
 			{
 				if( !rtMoveFile( $entry[1], $entry[2], $dbg ) )
 				{
-					if( $dbg ) rtDbg( __FUNCTION__, "can't carry ".$entry[1]." back to ".$entry[2] );
+					if( $dbg ) { rtDbg( __FUNCTION__, "can't carry ".$entry[1]." back to ".$entry[2] ); }
 					$whole = false;
 				}
 				break;
@@ -332,7 +332,7 @@ function rtUndoOpFiles( $journal, $dbg = false )
 			{
 				if( !@unlink( $entry[1] ) )
 				{
-					if( $dbg ) rtDbg( __FUNCTION__, "can't remove ".$entry[1] );
+					if( $dbg ) { rtDbg( __FUNCTION__, "can't remove ".$entry[1] ); }
 					$whole = false;
 				}
 				break;
@@ -359,23 +359,23 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	// Check if source and destination directories are valid
 	if( !is_array( $files ) || $src == '' || $dst == '' )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "invalid params" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "invalid params" ); }
 		return false;
 	}
 
 	// Check if source directory exists
 	if( !is_dir( $src ) )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "src is not a directory" );
-		if( $dbg ) rtDbg( __FUNCTION__, "( ".$src." )" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "src is not a directory" ); }
+		if( $dbg ) { rtDbg( __FUNCTION__, "( ".$src." )" ); }
 		return false;
 	}
-	else $src = rtAddTailSlash( $src );
+	else { $src = rtAddTailSlash( $src ); }
 
 	// Check if destination directory exists or can be created
 	if( !rtMkDir( dirname( rtRemoveTailSlash( $dst ) ), 0777 ) )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
+		if( $dbg ) { rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) ); }
 		return false;
 	}
 
@@ -383,7 +383,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	$root = rtDestinationRoot( $dst );
 	if( $root == '' )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "can't resolve ".$dst );
+		if( $dbg ) { rtDbg( __FUNCTION__, "can't resolve ".$dst ); }
 		return false;
 	}
 	$dst = rtAddTailSlash( $root );
@@ -391,8 +391,8 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	// Check if source and destination directories are the same
 	if( realpath( $src ) === $root )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "source is equal to destination" );
-		if( $dbg ) rtDbg( __FUNCTION__, "( ".$root." )" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "source is equal to destination" ); }
+		if( $dbg ) { rtDbg( __FUNCTION__, "( ".$root." )" ); }
 		return false;
 	}
 
@@ -401,7 +401,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	// download split between two directories with nothing to say where the
 	// other half went, and every caller reads false as "the operation did not
 	// happen".
-	$journal = array();
+	$journal = [];
 
 	// The root itself. Its parent was made above; this one is made here so
 	// that a refusal can take it away again.
@@ -409,10 +409,10 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	{
 		if( !@mkdir( $root, 0777 ) && !is_dir( $root ) )
 		{
-			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".$root );
+			if( $dbg ) { rtDbg( __FUNCTION__, "can't create ".$root ); }
 			return false;
 		}
-		$journal[] = array( 'rmdir', $root );
+		$journal[] = [ 'rmdir', $root ];
 	}
 
 	// Everything below is measured from the root, so the root has to be what
@@ -420,7 +420,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	// it that was not there when it was resolved.
 	if( realpath( $root ) !== $root )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "refused, ".$root." is no longer its own path" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "refused, ".$root." is no longer its own path" ); }
 		rtUndoOpFiles( $journal, $dbg );
 		return false;
 	}
@@ -432,7 +432,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	$taken = rtTakenDestination( $files, $root );
 	if( $taken != '' )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "refused, destination not available: ".$taken );
+		if( $dbg ) { rtDbg( __FUNCTION__, "refused, destination not available: ".$taken ); }
 		rtUndoOpFiles( $journal, $dbg );
 		return false;
 	}
@@ -442,17 +442,17 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	{
 		$source = $src.$file;
 		$dest = rtContainedPath( $root, $file, true, $journal );
-		if( $dest == '' )
-			$failed = "can't reach ".$dst.$file;
-		elseif( rtNameInUse( $dest ) )
-			$failed = "destination already exists: ".$dest;
-		else switch( $op )
+		if( $dest == '' ) {
+			$failed = "can't reach ".$dst.$file; }
+		elseif( rtNameInUse( $dest ) ) {
+			$failed = "destination already exists: ".$dest; }
+		else { switch( $op )
 		{
 			case "HardLink":
 			{
 				if( link( $source, $dest ) )
 				{
-					$journal[] = array( 'unlink', $dest );
+					$journal[] = [ 'unlink', $dest ];
 					break;
 				}
 			}
@@ -463,7 +463,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 					$failed = "can't copy ".$source;
 					break;
 				}
-				$journal[] = array( 'unlink', $dest );
+				$journal[] = [ 'unlink', $dest ];
 				break;
 			}
 			case "SoftLink":
@@ -473,7 +473,7 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 					$failed = "can't link ".$dest;
 					break;
 				}
-				$journal[] = array( 'unlink', $dest );
+				$journal[] = [ 'unlink', $dest ];
 				break;
 			}
 			default:
@@ -483,23 +483,23 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 					$failed = "can't move ".$source;
 					break;
 				}
-				$journal[] = array( 'moveback', $dest, $source );
+				$journal[] = [ 'moveback', $dest, $source ];
 				break;
 			}
-		}
-		if( $failed != '' )
-			break;
+		} }
+		if( $failed != '' ) {
+			break; }
 	}
 
 	if( $failed == '' )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "finished" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "finished" ); }
 		return true;
 	}
 
-	if( $dbg ) rtDbg( __FUNCTION__, "refused, ".$failed );
-	if( !rtUndoOpFiles( $journal, $dbg ) )
-		if( $dbg ) rtDbg( __FUNCTION__, "and it could not be undone in full" );
+	if( $dbg ) { rtDbg( __FUNCTION__, "refused, ".$failed ); }
+	if( !rtUndoOpFiles( $journal, $dbg ) ) {
+		if( $dbg ) { rtDbg( __FUNCTION__, "and it could not be undone in full" ); } }
 	return false;
 }
 
@@ -509,9 +509,9 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 function rtScanFiles( $path, $mask, $subdir = '' )
 {
 	$path = rtAddTailSlash( $path );
-	if( $subdir != '' )
-		$subdir = rtAddTailSlash( $subdir );
-	$ret = array();
+	if( $subdir != '' ) {
+		$subdir = rtAddTailSlash( $subdir ); }
+	$ret = [];
 	if( is_dir( $path.$subdir ) )
 	{
 		$handle = @opendir( $path.$subdir );
@@ -519,8 +519,8 @@ function rtScanFiles( $path, $mask, $subdir = '' )
 		{
 			while( false !== ( $item = readdir( $handle ) ) )
 			{
-				if( $item == '.' || $item == '..' )
-					continue;
+				if( $item == '.' || $item == '..' ) {
+					continue; }
 				$path_to_item = $path.$subdir.$item;
 				if( is_dir( $path_to_item ) )
 				{
@@ -546,26 +546,26 @@ function rtScanFiles( $path, $mask, $subdir = '' )
 function rtRemoveDirectory( $path, $with_files = false )
 {
 	$path = rtRemoveTailSlash( $path );
-	if( !file_exists( $path ) || !is_dir( $path ) )
-		return false;
+	if( !file_exists( $path ) || !is_dir( $path ) ) {
+		return false; }
 	$empty = true;
 	$handle = @opendir( $path );
 	if($handle !== false)
 	{
 		while( false !== ( $item = readdir( $handle ) ) )
 		{
-			if( $item == '.' || $item == '..' )
-				continue;
+			if( $item == '.' || $item == '..' ) {
+				continue; }
 			$path_to_item = $path.'/'.$item;
 			if( is_dir( $path_to_item ) )
 			{
-				if( !rtRemoveDirectory( $path_to_item, $with_files ) )
-					$empty = false;
+				if( !rtRemoveDirectory( $path_to_item, $with_files ) ) {
+					$empty = false; }
 			}
 			else
 			{
-				if( !$with_files || !@unlink( $path_to_item ) )
-					$empty = false;
+				if( !$with_files || !@unlink( $path_to_item ) ) {
+					$empty = false; }
 			}
 		}
 		closedir( $handle );
@@ -583,7 +583,7 @@ function rtExec( $cmds, $hash, $dbg )
 	if( !is_array( $cmds ) )
 	{
 		$req->addCommand( new rXMLRPCCommand( $cmds, $hash ) );
-		if( $dbg ) rtDbg( __FUNCTION__, $cmds );
+		if( $dbg ) { rtDbg( __FUNCTION__, $cmds ); }
 	}
 	else {
 		$s = '';
@@ -592,17 +592,17 @@ function rtExec( $cmds, $hash, $dbg )
 			$s.= $cmd.", ";
 			$req->addCommand( new rXMLRPCCommand( $cmd, $hash ) );
 		}
-		if( $dbg ) rtDbg( __FUNCTION__, substr( $s, 0, -2 ) );
+		if( $dbg ) { rtDbg( __FUNCTION__, substr( $s, 0, -2 ) ); }
 	}
 	if( !$req->run() )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() run fail" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "rXMLRPCRequest() run fail" ); }
 		return null;
 	}
 	elseif( $req->fault )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() fault" );
+		if( $dbg ) { rtDbg( __FUNCTION__, "rXMLRPCRequest() fault" ); }
 		return null;
 	}
-	else return $req;
+	else { return $req; }
 }

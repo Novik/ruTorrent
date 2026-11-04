@@ -15,11 +15,22 @@ class TfileAccount extends commonAccount
 		global $tfileOrigin;
 		$this->url = self::configuredOrigin(isset($tfileOrigin) ? $tfileOrigin : '', $this->originError);
 	}
+	// The forum of the configured origin, and nothing else. Matched against
+	// the URL's host, not against the URL string, which would also accept
+	// https://evil.test/path/<host>/forum/x -- whose host is the attacker's,
+	// and loginmgr would hand this account's cookies to whoever runs it.
+	public function test($url)
+	{
+		if($this->refuseUnconfigured()) {
+			return(false); }
+		$site = parse_url($this->url);
+		return(self::urlAddresses($url,[$site["host"]],$site["scheme"],"/forum/"));
+	}
 
 	protected function unconfigured()
 	{
-		if($this->url!=='')
-			return('');
+		if($this->url!=='') {
+			return(''); }
 		return(self::unconfiguredOrigin('tfileOrigin',$this->originError));
 	}
 
@@ -42,16 +53,5 @@ class TfileAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	// The forum of the configured origin, and nothing else. Matched against
-	// the URL's host, not against the URL string, which would also accept
-	// https://evil.test/path/<host>/forum/x -- whose host is the attacker's,
-	// and loginmgr would hand this account's cookies to whoever runs it.
-	public function test($url)
-	{
-		if($this->refuseUnconfigured())
-			return(false);
-		$site = parse_url($this->url);
-		return(self::urlAddresses($url,array($site["host"]),$site["scheme"],"/forum/"));
 	}
 }

@@ -64,16 +64,16 @@ class GetpluginsHarness
 		foreach($parts as $part)
 		{
 			$walk .= '/' . $part;
-			if(!is_dir($walk))
-				@mkdir($walk, $mode);
+			if(!is_dir($walk)) {
+				@mkdir($walk, $mode); }
 		}
 		@chmod($path, $mode);
 		umask($mask);
 		clearstatcache(true, $path);
 		$actual = is_dir($path) ? (fileperms($path) & 07777) : -1;
-		if($actual !== $mode)
+		if($actual !== $mode) {
 			throw new Exception('could not create ' . $path . ' with mode '
-				. decoct($mode) . '; it is ' . (($actual < 0) ? 'absent' : decoct($actual)));
+				. decoct($mode) . '; it is ' . (($actual < 0) ? 'absent' : decoct($actual))); }
 		return $path;
 	}
 
@@ -100,7 +100,7 @@ class GetpluginsHarness
 		$this->daemon = new FakeRtorrentDaemon(
 			new GetpluginsRtorrentResponder($uid, $gids, '/home/rtorrent', $version),
 			$this->path('calls.log'), false,
-			array(dirname(__FILE__) . '/GetpluginsRtorrentResponder.php'));
+			[dirname(__FILE__) . '/GetpluginsRtorrentResponder.php']);
 		$this->port = $this->daemon->port();
 		$this->host = '127.0.0.1';
 		return $uid;
@@ -112,20 +112,20 @@ class GetpluginsHarness
 	 * leaves that entry unset, which is what an install that configured
 	 * nothing has.
 	 */
-	public function run($environment = array())
+	public function run($environment = [])
 	{
-		$settings = array_merge(array(
+		$settings = array_merge([
 			'RU_PROFILE_PATH' => $this->path('profile'),
 			'RU_LOG_FILE' => $this->path('errors.log'),
 			'RU_SCGI_PORT' => (string)$this->port,
 			'RU_SCGI_HOST' => $this->host,
-		), $environment);
+		], $environment);
 
 		$source = "<?php\n";
-		foreach($settings as $name => $value)
-			if($value !== null)
+		foreach($settings as $name => $value) {
+			if($value !== null) {
 				$source .= '$_ENV[' . var_export($name, true) . '] = '
-					. var_export((string)$value, true) . ";\n";
+					. var_export((string)$value, true) . ";\n"; } }
 		// getplugins.php reads ../plugins and ../conf relative to the working
 		// directory, so it is run from the one it is installed in.
 		$source .= 'chdir(' . var_export(dirname(__DIR__, 2) . '/php', true) . ");\n"
@@ -133,7 +133,7 @@ class GetpluginsHarness
 
 		$script = $this->path('run.php');
 		file_put_contents($script, $source);
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 -d display_errors=0 '
 			. escapeshellarg($script) . ' 2>&1', $output);
 		return implode("\n", $output);
@@ -183,17 +183,17 @@ class GetpluginsHarness
 
 	private function wipe($path)
 	{
-		if(!is_dir($path) || is_link($path))
-			return;
+		if(!is_dir($path) || is_link($path)) {
+			return; }
 		// A fixture directory may deny its own listing; it is the harness's
 		// own, inside the harness's own tree, so it is reopened to remove it.
 		@chmod($path, 0700);
-		foreach(scandir($path) as $entry)
+		foreach(scandir($path) as $entry) {
 			if(($entry !== '.') && ($entry !== '..'))
 			{
 				$child = $path . '/' . $entry;
 				(is_dir($child) && !is_link($child)) ? $this->wipe($child) : @unlink($child);
-			}
+			} }
 		@rmdir($path);
 	}
 }

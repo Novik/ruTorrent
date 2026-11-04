@@ -44,7 +44,7 @@ class AdditionProxyPolicyParityTest extends TestCase
 	 * custom field: nothing in it is a command, and the second word begins
 	 * with a refused prefix, which is all refusedCommandName() looks at.
 	 */
-	const ORDINARY_VALUE = 'evening catch-up';
+	public const ORDINARY_VALUE = 'evening catch-up';
 
 	private $previousSettings;
 
@@ -56,6 +56,167 @@ class AdditionProxyPolicyParityTest extends TestCase
 	public function tearDown()
 	{
 		$this->restoreSettings($this->previousSettings);
+	}
+
+	// ---- the fixtures are honest -----------------------------------------
+
+	/**
+	 * A scan that found nothing, or a policy file that defined nothing, would
+	 * pass everything below. These are the controls that say both are read.
+	 */
+	public function testTheAdditionSetAndThePolicyAreBothRead()
+	{
+		$tables = $this->supportedVersions();
+		$this->assertTrue(count($tables) >= 6,
+			'php/settings.php produces several distinct alias tables; found ' . count($tables));
+
+		$safe = $this->shippedSafeParams();
+		$this->assertTrue(count($safe) > 0,
+			'conf/xmlrpc_proxy.php defines $XMLRPCProxySafeParams');
+
+		foreach ($tables as $iVersion => $version) {
+			$additions = $this->additionsUnder($iVersion);
+			$this->assertTrue(count($additions) >= 4,
+				'the tree builds additions on rtorrent ' . $version . '; found '
+					. count($additions));
+		}
+	}
+
+	/**
+	 * And the probe value really does trip the name scan, so a green below is
+	 * the proxy rebuilding the command rather than the value being harmless.
+	 * d.set_directory is on neither list, which is what makes it the control.
+	 */
+	public function testTheOrdinaryValueIsRefusedOnACommandTheProxyDoesNotRebuild()
+	{
+		$this->assertTrue(!in_array('d.set_directory', $this->shippedSafeParams(), true),
+			'the control command is one the proxy does not rebuild');
+		$decision = $this->decide($this->batched(['d.set_directory=' . self::ORDINARY_VALUE]));
+		$this->assertTrue($decision['action'] === 'reject',
+			'batched, an ordinary value on a command the proxy does not rebuild is refused: '
+				. implode(' ', $decision['log']));
+	}
+
+	// ---- the end condition -----------------------------------------------
+
+	/**
+	 * Every addition the shipped plugins build is a command the proxy rebuilds,
+	 * on every alias table php/settings.php can produce.
+	 */
+	public function testEveryAdditionTheTreeBuildsIsOnTheProxyPolicy()
+	{
+		$safe = $this->shippedSafeParams();
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			$absent = [];
+			foreach ($this->additionsUnder($iVersion) as $addition) {
+				if (!in_array($addition['name'], $safe, true)) {
+					$absent[] = $addition['name'] . ' (' . $addition['where'] . ')';
+				}
+			}
+			$this->assertTrue($absent === [],
+				'on rtorrent ' . $version . ' every addition the tree builds is a command name '
+				. '$XMLRPCProxySafeParams allows'
+				. (count($absent) ? '; absent: ' . implode(', ', $absent) : ''));
+		}
+	}
+
+	/**
+	 * Sent on its own, the command reaches rtorrent rather than being stripped
+	 * out of the call.
+	 */
+	public function testNoAdditionIsStrippedOutOfASingleAdd()
+	{
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			foreach ($this->additionsUnder($iVersion) as $addition) {
+				$parameter = $addition['name'] . '=' . self::ORDINARY_VALUE;
+				$decision = $this->decide($this->single([$parameter]));
+				$this->assertTrue($decision['action'] === 'send',
+					'on rtorrent ' . $version . ' an add carrying ' . $addition['name']
+						. ' is not refused');
+				$this->assertTrue(strpos($decision['payload'], $addition['name']) !== false,
+					'on rtorrent ' . $version . ' ' . $addition['name'] . ' from '
+						. $addition['where'] . ' survives into the call sent to rtorrent: '
+						. implode(' ', $decision['log']));
+			}
+		}
+	}
+
+	/**
+	 * Batched, one ordinary value does not cost the whole batch. This is the
+	 * shape a client sends when it adds several torrents at once.
+	 */
+	public function testABatchOfAddsIsNotRefusedForTheValuesTheAdditionsCarry()
+	{
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			$additions = $this->additionsUnder($iVersion);
+
+			foreach ($additions as $addition) {
+				$parameter = $addition['name'] . '=' . self::ORDINARY_VALUE;
+				$decision = $this->decide($this->batched([$parameter]));
+				$this->assertTrue($decision['action'] === 'send',
+					'on rtorrent ' . $version . ' a batched add carrying ' . $addition['name']
+						. ' from ' . $addition['where'] . ' is not refused: '
+						. implode(' ', $decision['log']));
+			}
+
+			// And all of them together, which is the whole batch a client loses.
+			$parameters = [];
+			foreach ($additions as $addition) {
+				$parameters[] = $addition['name'] . '=' . self::ORDINARY_VALUE;
+			}
+			$decision = $this->decide($this->batched($parameters));
+			$this->assertTrue($decision['action'] === 'send',
+				'on rtorrent ' . $version . ' a batch of ' . count($parameters)
+					. ' adds, one addition each, is not refused: '
+					. implode(' ', $decision['log']));
+		}
+	}
+
+	// ---- and the refusals still refuse -----------------------------------
+
+	/**
+	 * Widening what the proxy rebuilds does not widen what it allows. The
+	 * execution primitives stay refused, batched alongside an addition and on
+	 * their own.
+	 */
+	public function testTheRefusedCommandsStayRefusedAlongsideAnAddition()
+	{
+		$refused = ['execute=/bin/id', 'execute2=/bin/id', 'import=/etc/passwd',
+			'try_import=/etc/passwd', 'method.insert=x,simple,"d.name="',
+			'schedule2=x,0,0,"d.name="', 'catch=/bin/id', 'log.open_file=x,/tmp/x',
+			'network.scgi.open_port=0.0.0.0:5000', 'session.path.set=/tmp',
+			'directory.default.set=/', 'system.env=PATH'];
+
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			$additions = $this->additionsUnder($iVersion);
+			$first = reset($additions);
+			foreach ($refused as $parameter) {
+				$decision = $this->decide($this->batched(
+					[$first['name'] . '=' . self::ORDINARY_VALUE, $parameter]));
+				$this->assertTrue($decision['action'] === 'reject',
+					'on rtorrent ' . $version . ' a batch carrying ' . $parameter
+						. ' is refused even beside an addition');
+			}
+		}
+	}
+
+	/**
+	 * An addition whose argument would be called rather than stored is still
+	 * refused: quoting cannot make a '$'-introduced argument safe, and
+	 * rebuildSafeLoadParam drops the parameter, which puts it back in front of
+	 * the name scan.
+	 */
+	public function testAnAdditionCarryingACalledArgumentIsStillRefused()
+	{
+		foreach ($this->supportedVersions() as $iVersion => $version) {
+			foreach ($this->additionsUnder($iVersion) as $addition) {
+				$decision = $this->decide($this->batched(
+					[$addition['name'] . '=$execute=/bin/id']));
+				$this->assertTrue($decision['action'] === 'reject',
+					'on rtorrent ' . $version . ' ' . $addition['name']
+						. ' carrying a called argument is refused');
+			}
+		}
 	}
 
 	/** $XMLRPCProxySafeParams exactly as conf/xmlrpc_proxy.php ships it. */
@@ -77,7 +238,7 @@ class AdditionProxyPolicyParityTest extends TestCase
 	{
 		$this->installSettingsFor($iVersion);
 		$scanner = new TorrentAdditionSourceScanner($this->repoRoot());
-		$out = array();
+		$out = [];
 		foreach ($scanner->callSites() as $site) {
 			foreach ($site['elements'] as $element) {
 				$name = TorrentAdditionSourceScanner::commandName($element);
@@ -86,8 +247,8 @@ class AdditionProxyPolicyParityTest extends TestCase
 					// failure, not this one's.
 					continue;
 				}
-				$out[$name] = array('name' => $name,
-					'where' => $site['file'] . ':' . $site['line']);
+				$out[$name] = ['name' => $name,
+					'where' => $site['file'] . ':' . $site['line']];
 			}
 		}
 		ksort($out);
@@ -142,167 +303,6 @@ class AdditionProxyPolicyParityTest extends TestCase
 	private function decide($xml)
 	{
 		return XMLRPCProxy::decide($xml, 'sanitize', $this->shippedSafeParams(), false,
-			array('directory' => array('root' => '/', 'resolve' => null)));
-	}
-
-	// ---- the fixtures are honest -----------------------------------------
-
-	/**
-	 * A scan that found nothing, or a policy file that defined nothing, would
-	 * pass everything below. These are the controls that say both are read.
-	 */
-	public function testTheAdditionSetAndThePolicyAreBothRead()
-	{
-		$tables = $this->supportedVersions();
-		$this->assertTrue(count($tables) >= 6,
-			'php/settings.php produces several distinct alias tables; found ' . count($tables));
-
-		$safe = $this->shippedSafeParams();
-		$this->assertTrue(count($safe) > 0,
-			'conf/xmlrpc_proxy.php defines $XMLRPCProxySafeParams');
-
-		foreach ($tables as $iVersion => $version) {
-			$additions = $this->additionsUnder($iVersion);
-			$this->assertTrue(count($additions) >= 4,
-				'the tree builds additions on rtorrent ' . $version . '; found '
-					. count($additions));
-		}
-	}
-
-	/**
-	 * And the probe value really does trip the name scan, so a green below is
-	 * the proxy rebuilding the command rather than the value being harmless.
-	 * d.set_directory is on neither list, which is what makes it the control.
-	 */
-	public function testTheOrdinaryValueIsRefusedOnACommandTheProxyDoesNotRebuild()
-	{
-		$this->assertTrue(!in_array('d.set_directory', $this->shippedSafeParams(), true),
-			'the control command is one the proxy does not rebuild');
-		$decision = $this->decide($this->batched(array('d.set_directory=' . self::ORDINARY_VALUE)));
-		$this->assertTrue($decision['action'] === 'reject',
-			'batched, an ordinary value on a command the proxy does not rebuild is refused: '
-				. implode(' ', $decision['log']));
-	}
-
-	// ---- the end condition -----------------------------------------------
-
-	/**
-	 * Every addition the shipped plugins build is a command the proxy rebuilds,
-	 * on every alias table php/settings.php can produce.
-	 */
-	public function testEveryAdditionTheTreeBuildsIsOnTheProxyPolicy()
-	{
-		$safe = $this->shippedSafeParams();
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			$absent = array();
-			foreach ($this->additionsUnder($iVersion) as $addition) {
-				if (!in_array($addition['name'], $safe, true)) {
-					$absent[] = $addition['name'] . ' (' . $addition['where'] . ')';
-				}
-			}
-			$this->assertTrue($absent === array(),
-				'on rtorrent ' . $version . ' every addition the tree builds is a command name '
-				. '$XMLRPCProxySafeParams allows'
-				. (count($absent) ? '; absent: ' . implode(', ', $absent) : ''));
-		}
-	}
-
-	/**
-	 * Sent on its own, the command reaches rtorrent rather than being stripped
-	 * out of the call.
-	 */
-	public function testNoAdditionIsStrippedOutOfASingleAdd()
-	{
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			foreach ($this->additionsUnder($iVersion) as $addition) {
-				$parameter = $addition['name'] . '=' . self::ORDINARY_VALUE;
-				$decision = $this->decide($this->single(array($parameter)));
-				$this->assertTrue($decision['action'] === 'send',
-					'on rtorrent ' . $version . ' an add carrying ' . $addition['name']
-						. ' is not refused');
-				$this->assertTrue(strpos($decision['payload'], $addition['name']) !== false,
-					'on rtorrent ' . $version . ' ' . $addition['name'] . ' from '
-						. $addition['where'] . ' survives into the call sent to rtorrent: '
-						. implode(' ', $decision['log']));
-			}
-		}
-	}
-
-	/**
-	 * Batched, one ordinary value does not cost the whole batch. This is the
-	 * shape a client sends when it adds several torrents at once.
-	 */
-	public function testABatchOfAddsIsNotRefusedForTheValuesTheAdditionsCarry()
-	{
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			$additions = $this->additionsUnder($iVersion);
-
-			foreach ($additions as $addition) {
-				$parameter = $addition['name'] . '=' . self::ORDINARY_VALUE;
-				$decision = $this->decide($this->batched(array($parameter)));
-				$this->assertTrue($decision['action'] === 'send',
-					'on rtorrent ' . $version . ' a batched add carrying ' . $addition['name']
-						. ' from ' . $addition['where'] . ' is not refused: '
-						. implode(' ', $decision['log']));
-			}
-
-			// And all of them together, which is the whole batch a client loses.
-			$parameters = array();
-			foreach ($additions as $addition) {
-				$parameters[] = $addition['name'] . '=' . self::ORDINARY_VALUE;
-			}
-			$decision = $this->decide($this->batched($parameters));
-			$this->assertTrue($decision['action'] === 'send',
-				'on rtorrent ' . $version . ' a batch of ' . count($parameters)
-					. ' adds, one addition each, is not refused: '
-					. implode(' ', $decision['log']));
-		}
-	}
-
-	// ---- and the refusals still refuse -----------------------------------
-
-	/**
-	 * Widening what the proxy rebuilds does not widen what it allows. The
-	 * execution primitives stay refused, batched alongside an addition and on
-	 * their own.
-	 */
-	public function testTheRefusedCommandsStayRefusedAlongsideAnAddition()
-	{
-		$refused = array('execute=/bin/id', 'execute2=/bin/id', 'import=/etc/passwd',
-			'try_import=/etc/passwd', 'method.insert=x,simple,"d.name="',
-			'schedule2=x,0,0,"d.name="', 'catch=/bin/id', 'log.open_file=x,/tmp/x',
-			'network.scgi.open_port=0.0.0.0:5000', 'session.path.set=/tmp',
-			'directory.default.set=/', 'system.env=PATH');
-
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			$additions = $this->additionsUnder($iVersion);
-			$first = reset($additions);
-			foreach ($refused as $parameter) {
-				$decision = $this->decide($this->batched(
-					array($first['name'] . '=' . self::ORDINARY_VALUE, $parameter)));
-				$this->assertTrue($decision['action'] === 'reject',
-					'on rtorrent ' . $version . ' a batch carrying ' . $parameter
-						. ' is refused even beside an addition');
-			}
-		}
-	}
-
-	/**
-	 * An addition whose argument would be called rather than stored is still
-	 * refused: quoting cannot make a '$'-introduced argument safe, and
-	 * rebuildSafeLoadParam drops the parameter, which puts it back in front of
-	 * the name scan.
-	 */
-	public function testAnAdditionCarryingACalledArgumentIsStillRefused()
-	{
-		foreach ($this->supportedVersions() as $iVersion => $version) {
-			foreach ($this->additionsUnder($iVersion) as $addition) {
-				$decision = $this->decide($this->batched(
-					array($addition['name'] . '=$execute=/bin/id')));
-				$this->assertTrue($decision['action'] === 'reject',
-					'on rtorrent ' . $version . ' ' . $addition['name']
-						. ' carrying a called argument is refused');
-			}
-		}
+			['directory' => ['root' => '/', 'resolve' => null]]);
 	}
 }

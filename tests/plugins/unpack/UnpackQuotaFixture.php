@@ -60,7 +60,7 @@ trait UnpackQuotaProbe
 			'/nonexistent',
 			'',
 			'probe',
-			str_repeat('0', 40)
+			str_repeat('0', 40),
 		);
 		$body = is_file($this->probeLog) ? file_get_contents($this->probeLog) : '';
 		return strpos($body, '[Auto] Check torrent') !== false;
@@ -81,6 +81,6 @@ trait UnpackQuotaProbe
 
 	private function quotaRefusal()
 	{
-		return array('Quota limitation was reached. Unpack failed.');
+		return ['Quota limitation was reached. Unpack failed.'];
 	}
 }

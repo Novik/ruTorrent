@@ -24,8 +24,8 @@ class KATBytesClient extends Snoopy
 
 class commonEngine
 {
-    public $defaults = array('public' => true, 'page_size' => 100);
-    public $categories = array('All' => '');
+    public $defaults = ['public' => true, 'page_size' => 100];
+    public $categories = ['All' => ''];
 
     public function makeClient($url)
     {
@@ -41,8 +41,8 @@ class commonEngine
 
     public function getNewEntry()
     {
-        return array('time' => 0, 'cat' => '', 'size' => 0, 'name' => '',
-            'link' => '', 'desc' => '', 'seeds' => 0, 'peers' => 0);
+        return ['time' => 0, 'cat' => '', 'size' => 0, 'name' => '',
+            'link' => '', 'desc' => '', 'seeds' => 0, 'peers' => 0];
     }
 
     public static function removeTags($value) { return strip_tags($value); }
@@ -53,7 +53,7 @@ require_once(__DIR__ . '/../../../plugins/extsearch/engines/KAT.php');
 
 function katAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 // Every field line of the header block, the request line excluded.
@@ -100,9 +100,9 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open(array(PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))),
-        array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+        base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     katAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
@@ -112,12 +112,12 @@ PHP;
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) $json .= $line;
+        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
         $requests = json_decode(trim($json), true);
         katAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
         proc_close($process);
     }
 }
@@ -127,16 +127,16 @@ function katSearch($setCookieLines, callable $check)
     $page = '<div class="torrents_table__torrent_name"></div>';
     $first = base64_encode("HTTP/1.0 200 OK\r\n" . $setCookieLines . "Content-Length: 2\r\n\r\nok");
     $second = base64_encode("HTTP/1.0 200 OK\r\nContent-Length: " . strlen($page) . "\r\n\r\n" . $page);
-    katPeer(array($first, $second), function ($port) use ($check) {
+    katPeer([$first, $second], function ($port) use ($check) {
         $engine = new KATEngine();
         $engine->url = 'http://katcr.test:' . $port;
-        $results = array();
+        $results = [];
         $engine->action('term', 'all', $results, 10, false);
         return $check;
     });
 }
 
-$tests = array(
+$tests = [
     // A Set-Cookie carrying no attribute ends its value at the end of the
     // line, and fgets() keeps that line's CRLF in $client->headers. Those two
     // bytes are not part of the value, and the request that sends them ends
@@ -161,8 +161,8 @@ $tests = array(
             $wire = $requests[1];
             katAssert(in_array('Cookie: a=x; b=y', katFieldLines($wire), true),
                 'Both crumbs ride one Cookie line');
-            foreach (katFieldLines($wire) as $line)
-                katAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator');
+            foreach (katFieldLines($wire) as $line) {
+                katAssert(strpos($line, ';') !== 0, 'No field line begins with a crumb separator'); }
         });
     },
     // fgets() splits the header stream on LF, so a bare CR is what a value can
@@ -199,7 +199,7 @@ $tests = array(
                 'A cookie that ends at an attribute is sent as the attribute left it');
         });
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

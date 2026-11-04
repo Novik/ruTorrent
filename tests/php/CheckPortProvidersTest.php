@@ -14,16 +14,6 @@ require_once(__DIR__ . '/../../plugins/check_port/providers.php');
  */
 class CheckPortProvidersTest extends TestCase
 {
-	/** conf.php assigns at file scope, so including it here yields locals. */
-	private function shippedConf()
-	{
-		include(__DIR__ . '/../../plugins/check_port/conf.php');
-
-		return array(
-			'primary' => array('ipv4' => $useWebsiteIPv4, 'ipv6' => $useWebsiteIPv6),
-			'failover' => array('ipv4' => $failoverProvidersIPv4, 'ipv6' => $failoverProvidersIPv6),
-		);
-	}
 
 	public function testEveryRegisteredProviderNamesAFunctionThatExists()
 	{
@@ -86,8 +76,8 @@ class CheckPortProvidersTest extends TestCase
 		$conf = $this->shippedConf();
 
 		foreach ($conf['primary'] as $family => $name) {
-			if ($name === false)
-				continue;
+			if ($name === false) {
+				continue; }
 
 			$this->assertTrue(isset($checkPortProviders[$name]),
 				"$family primary provider $name is a registered provider");
@@ -110,5 +100,15 @@ class CheckPortProvidersTest extends TestCase
 			$this->assertEquals(count($providers), count(array_unique($providers)),
 				"$family failover chain lists each provider once");
 		}
+	}
+	/** conf.php assigns at file scope, so including it here yields locals. */
+	private function shippedConf()
+	{
+		include(__DIR__ . '/../../plugins/check_port/conf.php');
+
+		return [
+			'primary' => ['ipv4' => $useWebsiteIPv4, 'ipv6' => $useWebsiteIPv6],
+			'failover' => ['ipv4' => $failoverProvidersIPv4, 'ipv6' => $failoverProvidersIPv6],
+		];
 	}
 }

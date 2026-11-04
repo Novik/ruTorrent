@@ -57,9 +57,9 @@ trait TorrentSequenceFixtures
 	/** A bencoded list of bencoded lists of strings, i.e. an announce-list. */
 	protected function bannounceList($groups)
 	{
-		$encoded = array();
+		$encoded = [];
 		foreach ($groups as $group) {
-			$strings = array();
+			$strings = [];
 			foreach ($group as $tracker) {
 				$strings[] = $this->bstr($tracker);
 			}
@@ -78,12 +78,12 @@ trait TorrentSequenceFixtures
 	/** The info dictionary of a single file torrent. */
 	protected function singleFileInfo($private = null)
 	{
-		$pairs = array(
+		$pairs = [
 			'length'       => $this->bint(1024),
 			'name'         => $this->bstr('test.data'),
 			'piece length' => $this->bint(16384),
 			'pieces'       => $this->bstr($this->pieces()),
-		);
+		];
 		if (!is_null($private)) {
 			$pairs['private'] = $this->bint($private ? 1 : 0);
 		}
@@ -93,21 +93,21 @@ trait TorrentSequenceFixtures
 	/** The info dictionary of a two file torrent. */
 	protected function multiFileInfo($private = null)
 	{
-		$pairs = array(
-			'files' => $this->blist(array(
-				$this->bdict(array(
+		$pairs = [
+			'files' => $this->blist([
+				$this->bdict([
 					'length' => $this->bint(600),
-					'path'   => $this->blist(array($this->bstr('one.data'))),
-				)),
-				$this->bdict(array(
+					'path'   => $this->blist([$this->bstr('one.data')]),
+				]),
+				$this->bdict([
 					'length' => $this->bint(400),
-					'path'   => $this->blist(array($this->bstr('sub'), $this->bstr('two.data'))),
-				)),
-			)),
+					'path'   => $this->blist([$this->bstr('sub'), $this->bstr('two.data')]),
+				]),
+			]),
 			'name'         => $this->bstr('payload'),
 			'piece length' => $this->bint(16384),
 			'pieces'       => $this->bstr($this->pieces()),
-		);
+		];
 		if (!is_null($private)) {
 			$pairs['private'] = $this->bint($private ? 1 : 0);
 		}
@@ -116,23 +116,23 @@ trait TorrentSequenceFixtures
 
 	protected function resumeDictionary()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'bitfield' => $this->bint(1),
-			'files'    => $this->blist(array(
-				$this->bdict(array(
+			'files'    => $this->blist([
+				$this->bdict([
 					'mtime'    => $this->bint(1234567891),
 					'priority' => $this->bint(2),
-				)),
-			)),
-		));
+				]),
+			]),
+		]);
 	}
 
 	protected function rtorrentDictionary()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'directory' => $this->bstr('/downloads/test.data'),
 			'tied_to_file' => $this->bstr('/session/AAAA.torrent'),
-		));
+		]);
 	}
 
 	// ---- who wrote the fixture ------------------------------------------
@@ -163,50 +163,50 @@ trait TorrentSequenceFixtures
 	/** A plain public torrent with a single tracker and no announce-list. */
 	protected function announceOnlyTorrent()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'announce'      => $this->bstr('http://one.test/announce'),
 			'created by'    => $this->bstr($this->sourceCreator()),
 			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
-		));
+		]);
 	}
 
 	/** A torrent with no tracker at all -- retrackers has a branch for it. */
 	protected function trackerlessTorrent()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'created by'    => $this->bstr($this->sourceCreator()),
 			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
-		));
+		]);
 	}
 
 	/** A torrent that already carries an announce-list of two groups. */
 	protected function announceListTorrent()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'announce'      => $this->bstr('http://one.test/announce'),
-			'announce-list' => $this->bannounceList(array(
-				array('http://one.test/announce'),
-				array('udp://two.test/announce', 'udp://two.test/announce2'),
-			)),
+			'announce-list' => $this->bannounceList([
+				['http://one.test/announce'],
+				['udp://two.test/announce', 'udp://two.test/announce2'],
+			]),
 			'created by'    => $this->bstr($this->sourceCreator()),
 			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
-		));
+		]);
 	}
 
 	/** A private, multi file torrent carrying a comment. */
 	protected function privateMultiFileTorrent()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'announce'      => $this->bstr('http://one.test/announce'),
 			'comment'       => $this->bstr('from the tracker'),
 			'created by'    => $this->bstr($this->sourceCreator()),
 			'creation date' => $this->bint($this->sourceDate()),
 			'encoding'      => $this->bstr('UTF-8'),
 			'info'          => $this->multiFileInfo(true),
-		));
+		]);
 	}
 
 	/**
@@ -216,18 +216,18 @@ trait TorrentSequenceFixtures
 	 */
 	protected function sessionTorrent()
 	{
-		return $this->bdict(array(
+		return $this->bdict([
 			'announce'          => $this->bstr('http://one.test/announce'),
-			'announce-list'     => $this->bannounceList(array(
-				array('http://one.test/announce'),
-				array('udp://two.test/announce'),
-			)),
+			'announce-list'     => $this->bannounceList([
+				['http://one.test/announce'],
+				['udp://two.test/announce'],
+			]),
 			'created by'        => $this->bstr($this->sourceCreator()),
 			'creation date'     => $this->bint($this->sourceDate()),
 			'info'              => $this->singleFileInfo(),
 			'libtorrent_resume' => $this->resumeDictionary(),
 			'rtorrent'          => $this->rtorrentDictionary(),
-		));
+		]);
 	}
 
 	// ---- reading what was written ----------------------------------------

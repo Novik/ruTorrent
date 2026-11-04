@@ -10,7 +10,7 @@ class RequirementsTest extends TestCase
 {
 	public function testRtorrentSupportedVersions()
 	{
-		foreach (array('0.9.8', '0.9.8-1', '0.16.0', '0.16.14', '0.16.17', '0.16.19', '0.16.21') as $v) {
+		foreach (['0.9.8', '0.9.8-1', '0.16.0', '0.16.14', '0.16.17', '0.16.19', '0.16.21'] as $v) {
 			list($ok, ) = Requirements::rtorrentSupport($v);
 			$this->assertTrue($ok, "rtorrent $v should be supported");
 		}
@@ -19,7 +19,7 @@ class RequirementsTest extends TestCase
 	public function testRtorrentUnsupportedVersions()
 	{
 		// 0.9.6/0.9.7 (not the 0.9.8 baseline), the 0.10-0.15 gap, and future 0.17+
-		foreach (array('0.9.6', '0.9.7', '0.13.8', '0.15.4', '0.17.0', '1.0.0', '') as $v) {
+		foreach (['0.9.6', '0.9.7', '0.13.8', '0.15.4', '0.17.0', '1.0.0', ''] as $v) {
 			list($ok, ) = Requirements::rtorrentSupport($v);
 			$this->assertTrue(!$ok, "rtorrent '$v' should NOT be flagged supported");
 		}
@@ -72,7 +72,7 @@ class RequirementsTest extends TestCase
 		$this->assertEquals(
 			DIRECTORY_SEPARATOR === '\\',
 			Requirements::looksAbsolute('C:\\torrents'),
-			'Windows drive paths are absolute only on Windows'
+			'Windows drive paths are absolute only on Windows',
 		);
 		$this->assertTrue(!Requirements::looksAbsolute('relative/path'), 'relative is not absolute');
 		$this->assertTrue(!Requirements::looksAbsolute(''), 'empty is not absolute');
@@ -87,7 +87,7 @@ class RequirementsTest extends TestCase
 		$this->assertEquals(
 			DIRECTORY_SEPARATOR === '\\',
 			Requirements::logFilePathValid('file://server/share/errors.log'),
-			'A remote file authority is a UNC path only on Windows'
+			'A remote file authority is a UNC path only on Windows',
 		);
 		$this->assertTrue(!Requirements::logFilePathValid('errors.log'), 'relative log path is unstable');
 	}
@@ -102,53 +102,53 @@ class RequirementsTest extends TestCase
 
 	public function testLogFileStreamAvailability()
 	{
-		$wrappers = array('file', 'http', 'php', 'MyScheme');
+		$wrappers = ['file', 'http', 'php', 'MyScheme'];
 		$this->assertTrue(
 			Requirements::logFileStreamAvailable('php://stderr', $wrappers),
-			'A registered log stream wrapper is available'
+			'A registered log stream wrapper is available',
 		);
 		$this->assertTrue(
 			Requirements::logFileStreamAvailable('PHP://stderr', $wrappers),
-			'A built-in log stream wrapper is case-insensitive'
+			'A built-in log stream wrapper is case-insensitive',
 		);
 		$this->assertTrue(
 			Requirements::logFileStreamAvailable('MyScheme://sink', $wrappers),
-			'A mixed-case custom wrapper keeps its registered spelling'
+			'A mixed-case custom wrapper keeps its registered spelling',
 		);
 		$this->assertTrue(
 			!Requirements::logFileStreamAvailable('myscheme://sink', $wrappers),
-			'A custom wrapper with the wrong case is unavailable'
+			'A custom wrapper with the wrong case is unavailable',
 		);
 		$this->assertTrue(
 			!Requirements::logFileStreamAvailable('nosuch://sink', $wrappers),
-			'An unregistered log stream wrapper is unavailable'
+			'An unregistered log stream wrapper is unavailable',
 		);
 	}
 
 	public function testRutorrentHandlersIgnoresRtorrentBuiltins()
 	{
 		// A freshly started rtorrent that no ruTorrent has ever talked to.
-		$this->assertEquals(array(), Requirements::rutorrentHandlers(array('1_prepare', '~_save_full')));
-		$this->assertEquals(array(), Requirements::rutorrentHandlers(array()));
+		$this->assertEquals([], Requirements::rutorrentHandlers(['1_prepare', '~_save_full']));
+		$this->assertEquals([], Requirements::rutorrentHandlers([]));
 	}
 
 	public function testRutorrentHandlersFindsPluginKeys()
 	{
-		$keys = array('1_prepare', '_exratio1', '_ratio', 'addtime', 'thistory', '~_save_full');
-		$this->assertEquals(array('_exratio1', '_ratio', 'addtime', 'thistory'),
+		$keys = ['1_prepare', '_exratio1', '_ratio', 'addtime', 'thistory', '~_save_full'];
+		$this->assertEquals(['_exratio1', '_ratio', 'addtime', 'thistory'],
 			Requirements::rutorrentHandlers($keys));
 	}
 
 	public function testRutorrentHandlersKeepsPerUserSuffixes()
 	{
 		// Multi-user installs suffix every key with the ruTorrent username.
-		$keys = array('1_prepare', '_exratio1bob', 'addtimebob', '~_save_full');
-		$this->assertEquals(array('_exratio1bob', 'addtimebob'), Requirements::rutorrentHandlers($keys));
+		$keys = ['1_prepare', '_exratio1bob', 'addtimebob', '~_save_full'];
+		$this->assertEquals(['_exratio1bob', 'addtimebob'], Requirements::rutorrentHandlers($keys));
 	}
 
 	public function testRutorrentHandlersToleratesNonArray()
 	{
-		$this->assertEquals(array(), Requirements::rutorrentHandlers(null));
+		$this->assertEquals([], Requirements::rutorrentHandlers(null));
 	}
 
 	public function testScgiLabel()

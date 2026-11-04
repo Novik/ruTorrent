@@ -31,16 +31,16 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 
 function discoveryAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 function discoveryRemoveTree($path)
 {
     if (!is_dir($path) || is_link($path)) {
-        if (file_exists($path) || is_link($path)) unlink($path);
+        if (file_exists($path) || is_link($path)) { unlink($path); }
         return;
     }
-    foreach (array_diff(scandir($path), array('.', '..')) as $name) discoveryRemoveTree($path . '/' . $name);
+    foreach (array_diff(scandir($path), ['.', '..']) as $name) { discoveryRemoveTree($path . '/' . $name); }
     rmdir($path);
 }
 
@@ -64,7 +64,7 @@ function discoverySeed()
     $accounts = $discoveryBase . '/available';
     discoveryRemoveTree($accounts);
     mkdir($accounts, 0700);
-    foreach (array('Alpha', 'Beta') as $name) touch($accounts . '/' . $name . '.php');
+    foreach (['Alpha', 'Beta'] as $name) { touch($accounts . '/' . $name . '.php'); }
     return $accounts;
 }
 
@@ -101,7 +101,7 @@ function discoveryUnreadableDir()
     touch($locked . '/Gamma.php');
     chmod($locked, 0000);
     $handle = @opendir($locked);
-    if ($handle === false) return $locked;
+    if ($handle === false) { return $locked; }
     closedir($handle);
     chmod($locked, 0700);
     return $discoveryBase . '/absent';
@@ -123,9 +123,9 @@ function discoveryFailedEnumeration($dir)
     // and error_reporting() is what says which those were. What is asserted
     // is that nothing reportable is raised: obtain() runs while action.php is
     // composing a response, and a warning there is printed into it.
-    $diagnostics = array();
+    $diagnostics = [];
     set_error_handler(function ($number, $message) use (&$diagnostics) {
-        if (error_reporting() & $number) $diagnostics[] = $message;
+        if (error_reporting() & $number) { $diagnostics[] = $message; }
         return true;
     });
     ob_start();
@@ -137,7 +137,7 @@ function discoveryFailedEnumeration($dir)
     }
 
     discoveryAssert($written === false, 'A discovery that could not read the directory answers false');
-    discoveryAssert($diagnostics === array(),
+    discoveryAssert($diagnostics === [],
         'and raises no PHP diagnostic into the answer being composed: ' . implode('; ', $diagnostics));
     discoveryAssert($printed === '', 'and prints nothing into it: ' . $printed);
     discoveryAssert(discoveryStored() === $before, 'The stored credentials are the ones that were there');
@@ -164,7 +164,7 @@ function discoveryAction($blocked, $check)
     $directory = $discoveryBase . '/http';
     $settings = $directory . '/profile/settings';
     mkdir($settings . '/accounts', 0700, true);
-    if ($blocked) mkdir($settings . '/loginmgr.dat.lock', 0700);
+    if ($blocked) { mkdir($settings . '/loginmgr.dat.lock', 0700); }
     $router = '<?php $_ENV["RU_PROFILE_PATH"] = ' . var_export($directory . '/profile', true)
         . '; $_ENV["RU_LOG_FILE"] = ' . var_export($directory . '/application.log', true)
         . '; require ' . var_export($root . '/plugins/loginmgr/accounts.php', true) . ';'
@@ -176,17 +176,17 @@ function discoveryAction($blocked, $check)
     discoveryAssert($listener !== false, 'The HTTP fixture reserves an address: ' . $error);
     $address = stream_socket_get_name($listener, false);
     fclose($listener);
-    $process = proc_open(array(PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
-        $directory . '/router.php'), array(0 => array('file', '/dev/null', 'r'),
-        1 => array('file', $directory . '/server.log', 'a'),
-        2 => array('file', $directory . '/server.log', 'a')), $pipes, $root . '/plugins/loginmgr');
+    $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
+        $directory . '/router.php'], [0 => ['file', '/dev/null', 'r'],
+        1 => ['file', $directory . '/server.log', 'a'],
+        2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
     discoveryAssert(is_resource($process), 'The HTTP fixture starts without a shell');
     try {
         $ready = false;
         for ($attempt = 0; $attempt < 100; ++$attempt) {
             $peer = @stream_socket_client('tcp://' . $address, $errno, $error, 0.05);
             if ($peer !== false) { fclose($peer); $ready = true; break; }
-            if (!proc_get_status($process)['running']) break;
+            if (!proc_get_status($process)['running']) { break; }
             usleep(10000);
         }
         discoveryAssert($ready, 'The HTTP fixture is ready: ' . file_get_contents($directory . '/server.log'));
@@ -194,7 +194,7 @@ function discoveryAction($blocked, $check)
         discoveryAssert($peer !== false, 'The settings request connects');
         try {
             stream_set_timeout($peer, 3);
-            $form = http_build_query(array('mode' => 'info'));
+            $form = http_build_query(['mode' => 'info']);
             fwrite($peer, "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Type: application/x-www-form-urlencoded\r\n"
                 . 'Content-Length: ' . strlen($form) . "\r\nConnection: close\r\n\r\n" . $form);
             $response = stream_get_contents($peer);
@@ -212,7 +212,7 @@ function discoveryAction($blocked, $check)
     }
 }
 
-$tests = array(
+$tests = [
     'a discovery write that was refused is not reported as success' => function () {
         global $discoveryBase;
         $accounts = discoverySeed();
@@ -227,7 +227,7 @@ $tests = array(
             'No schedule is registered for a list the next request cannot read');
         discoveryAssert(strpos(file_get_contents($discoveryBase . '/application.log'),
             'the discovered account list could not be saved') !== false, 'The refusal is logged');
-        discoveryAssert(array_keys($manager->accounts) === array('Alpha', 'Beta'),
+        discoveryAssert(array_keys($manager->accounts) === ['Alpha', 'Beta'],
             'The list this request answers from is still the one that was discovered');
     },
     'an accounts directory that cannot be read is not a discovery of nothing' => function () {
@@ -248,7 +248,7 @@ $tests = array(
         discoveryAssert($manager->obtain($accounts) === true, 'A discovery that was written answers true');
         discoveryAssert($manager->handlerCalls === 1, 'The schedule is registered once');
         $stored = new DiscoveryManager();
-        discoveryAssert((new rCache())->get($stored) && array_keys($stored->accounts) === array('Alpha', 'Beta'),
+        discoveryAssert((new rCache())->get($stored) && array_keys($stored->accounts) === ['Alpha', 'Beta'],
             'The durable list is the one that was discovered');
     },
     'the action reports a discovery it could not write' => function () {
@@ -268,7 +268,7 @@ $tests = array(
             discoveryAssert(is_file($settings . '/loginmgr.dat'), 'The discovered list is durable');
         });
     },
-);
+];
 
 $failures = 0;
 try {

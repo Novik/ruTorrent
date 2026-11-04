@@ -10,16 +10,16 @@ eval( FileUtil::getPluginConf( 'datadir' ) );
 function Debug( $str )
 {
 	global $datadir_debug_enabled;
-	if( $datadir_debug_enabled ) rtDbg( "DataDir", $str );
+	if( $datadir_debug_enabled ) { rtDbg( "DataDir", $str ); }
 }
 
 ignore_user_abort( true );
 set_time_limit( 0 );
 
-$errors = array();
+$errors = [];
 
-if( !isset( $HTTP_RAW_POST_DATA ) )
-	$HTTP_RAW_POST_DATA = file_get_contents( "php://input" );
+if( !isset( $HTTP_RAW_POST_DATA ) ) {
+	$HTTP_RAW_POST_DATA = file_get_contents( "php://input" ); }
 if( isset( $HTTP_RAW_POST_DATA ) )
 {
 	$vars = explode( '&', $HTTP_RAW_POST_DATA );
@@ -39,19 +39,19 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 				$hash = null;
 			}
 		}
-		else if( $parts[0] == "datadir" )
+		elseif( $parts[0] == "datadir" )
 		{
 			$datadir = trim( rawurldecode( $parts[1] ) );
 		}
-		else if($parts[0]=="move_addpath")
+		elseif($parts[0]=="move_addpath")
 		{
 			$move_addpath = intval( $parts[1] );
 		}
-		else if( $parts[0] == "move_datafiles" )
+		elseif( $parts[0] == "move_datafiles" )
 		{
 			$move_datafiles = intval( $parts[1] );
 		}
-		else if( $parts[0] == "move_fastresume" )
+		elseif( $parts[0] == "move_fastresume" )
 		{
 			$move_fastresume = intval( $parts[1] );
 		}
@@ -101,24 +101,24 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		if( $taken != '' )
 		{
 			Debug( "refused, destination already exists: ".$taken );
-			$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$taken);
+			$errors[] = ['desc'=>"theUILang.datadirSetDirFail", 'prm'=>$taken];
 		}
-		else
+		else {
 			$res = rtExec( "execute",
-				array( "sh",
+				[ "sh",
 					"-c",
 					rtSetDirCommand( $php, $script_dir."setdir.php", $hash, $datadir,
 						$move_addpath, $move_datafiles, $move_fastresume, User::getUser() ),
-				),
-				$datadir_debug_enabled );
+				],
+				$datadir_debug_enabled ); }
 	}
 
 	if( !$res && !count( $errors ) )
 	{
-		$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
+		$errors[] = ['desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir];
 	}
 }
 
 Debug( "--- end ---" );
 
-CachedEcho::send(JSON::safeEncode(array( "errors"=>$errors )),"application/json");
+CachedEcho::send(JSON::safeEncode([ "errors"=>$errors ]),"application/json");

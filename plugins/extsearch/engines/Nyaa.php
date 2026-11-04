@@ -2,9 +2,9 @@
 
 class NyaaEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>75 );
+	public $defaults = [ "public"=>true, "page_size"=>75 ];
 
-	public $categories = array(
+	public $categories = [
 		'All categories'=>'0_0',
 		'> Anime'=>'1_0',
 		'--A-- Anine Music Video'=>'1_1',
@@ -28,8 +28,8 @@ class NyaaEngine extends commonEngine
 		'-- Photos'=>'5_2',
 		'> Software'=>'6_0',
 		'-- Applications'=>'6_1',
-		'-- Games'=>'6_2'
-		);
+		'-- Games'=>'6_2',
+		];
 
 	public function makeClient($url)
 	{
@@ -42,8 +42,8 @@ class NyaaEngine extends commonEngine
 		$added = 0;
 		$url = 'https://nyaa.si';
 
-		if($useGlobalCats)
-			$categories = array(
+		if($useGlobalCats) {
+			$categories = [
 			'all' => '0_0',
 			'anime' => '1_0',
 			'music' => '2_0',
@@ -51,15 +51,15 @@ class NyaaEngine extends commonEngine
 			'live action' => '4_0',
 			'pictures' => '5_0',
 			'software' => '6_1',
-			'games' => '6_2'
-			);
-		else
-			$categories = &$this->categories;
+			'games' => '6_2',
+			]; }
+		else {
+			$categories = &$this->categories; }
 
-		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+		if(!array_key_exists($cat,$categories)) {
+			$cat = $categories['all']; }
+		else {
+			$cat = $categories[$cat]; }
 
 		$maxPage = 10;
 
@@ -68,8 +68,8 @@ class NyaaEngine extends commonEngine
 			$search = $url . '/?c=' . $cat . '&q=' . $what . '&s=seeders&o=desc&p=' . $pg;
 			$cli = $this->fetch($search);
 
-			if (($cli == false) || (strpos($cli->results, ">No results found<") !== false))
-				break;
+			if (($cli == false) || (strpos($cli->results, ">No results found<") !== false)) {
+				break; }
 
 			$res = preg_match_all('`<tr class.*>.*'.
 				'<td.*>.*<a.*title="(?P<cat>.*)">.*'.
@@ -95,12 +95,12 @@ class NyaaEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["peers"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if ($added >= $limit)
-							return;
+						if ($added >= $limit) {
+							return; }
 					}
 				}
-			} else
-				break;
+			} else {
+				break; }
 		}
 	}
 }

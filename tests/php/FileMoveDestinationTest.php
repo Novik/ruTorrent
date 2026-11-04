@@ -42,15 +42,74 @@ class FileMoveDestinationTest extends TestCase
 		$this->wipe();
 	}
 
+	/**
+	 * A scan that finds nothing, or finds one of the two that ship, is a false
+	 * green and not a pass.
+	 */
+	public function testTheScanFindsTheCopiesThatShip()
+	{
+		$sources = $this->sources();
+		$this->assertTrue(count($sources) >= 2,
+			'the tree ships more than one rtOpFiles(); found: ' . implode(', ', $sources));
+		foreach (['plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php'] as $known) {
+			$this->assertTrue(in_array($known, $sources, true),
+				$known . ' is among them; found: ' . implode(', ', $sources)); }
+	}
+
+	public function testEveryCopyStillMovesADownload()
+	{
+		foreach ($this->sources() as $source)
+		{
+			$r = $this->drive($source);
+			$this->assertTrue($r['control'][0] === true, $source . ': an ordinary move succeeds');
+			$this->assertEquals('AAA', $r['control'][1], $source . ': the file arrives with its content');
+			$this->assertEquals('BBB', $r['control'][2], $source . ': and the one in a subdirectory too');
+			$this->assertTrue($r['control'][3] === false, $source . ': and it leaves the source');
+		}
+	}
+
+	public function testNoCopyWritesOverAFileAlreadyAtTheDestination()
+	{
+		foreach ($this->sources() as $source)
+		{
+			$r = $this->drive($source);
+			foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op)
+			{
+				$this->assertTrue($r[$op][0] === false,
+					$source . ': ' . $op . ' into a taken name is refused');
+				$this->assertEquals('already there', $r[$op][1],
+					$source . ': the file that was already there survives ' . $op);
+				$this->assertTrue($r[$op][2] === true,
+					$source . ': and the download has not left the source after ' . $op);
+			}
+		}
+	}
+
+	public function testNoCopyWritesOverADirectoryOrASymlink()
+	{
+		foreach ($this->sources() as $source)
+		{
+			$r = $this->drive($source);
+			$this->assertTrue($r['directory'][0] === false,
+				$source . ': a directory in the way refuses the move');
+			$this->assertEquals('kept', $r['directory'][1],
+				$source . ': and what is inside it is still there');
+			$this->assertTrue($r['symlink'][0] === false,
+				$source . ': a symlink in the way refuses the move');
+			$this->assertEquals('already there', $r['symlink'][1],
+				$source . ': and what it pointed at is untouched');
+		}
+	}
+
 	private function wipe()
 	{
-		if (!is_dir($this->tree))
-			return;
+		if (!is_dir($this->tree)) {
+			return; }
 		$items = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator($this->tree, FilesystemIterator::SKIP_DOTS),
 			RecursiveIteratorIterator::CHILD_FIRST);
-		foreach ($items as $item)
-			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+		foreach ($items as $item) {
+			$item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname()); }
 		@rmdir($this->tree);
 	}
 
@@ -62,21 +121,21 @@ class FileMoveDestinationTest extends TestCase
 	/** Every file in the tree that defines rtOpFiles(), relative to the root. */
 	private function sources()
 	{
-		$found = array();
-		foreach (array('php', 'plugins') as $dir)
+		$found = [];
+		foreach (['php', 'plugins'] as $dir)
 		{
 			$path = $this->repoRoot() . '/' . $dir;
-			if (!is_dir($path))
-				continue;
+			if (!is_dir($path)) {
+				continue; }
 			$items = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS));
 			foreach ($items as $item)
 			{
-				if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php')
-					continue;
+				if (!$item->isFile() || substr($item->getFilename(), -4) !== '.php') {
+					continue; }
 				$body = file_get_contents($item->getPathname());
-				if (preg_match('/function\s+rtOpFiles\s*\(/i', $body))
-					$found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1);
+				if (preg_match('/function\s+rtOpFiles\s*\(/i', $body)) {
+					$found[] = substr($item->getPathname(), strlen($this->repoRoot()) + 1); }
 			}
 		}
 		sort($found);
@@ -97,8 +156,8 @@ class FileMoveDestinationTest extends TestCase
 		$from = $this->repoRoot() . '/' . $source;
 		$to = $holder . '/' . basename($source);
 		copy($from, $to);
-		if (hash_file('sha256', $from) !== hash_file('sha256', $to))
-			throw new Exception('could not copy ' . $source);
+		if (hash_file('sha256', $from) !== hash_file('sha256', $to)) {
+			throw new Exception('could not copy ' . $source); }
 
 		// Everything below the copy's own boundary: the log sink and the
 		// large file helpers it asks about the filesystem through.
@@ -169,72 +228,13 @@ class FileMoveDestinationTest extends TestCase
 			echo json_encode($out);
 		');
 
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' .
 			escapeshellarg($probe) . ' 2>&1', $output);
 		$printed = implode("\n", $output);
 		$result = json_decode($printed, true);
-		if (!is_array($result))
-			throw new Exception('the probe for ' . $source . ' printed: ' . $printed);
+		if (!is_array($result)) {
+			throw new Exception('the probe for ' . $source . ' printed: ' . $printed); }
 		return $result;
-	}
-
-	/**
-	 * A scan that finds nothing, or finds one of the two that ship, is a false
-	 * green and not a pass.
-	 */
-	public function testTheScanFindsTheCopiesThatShip()
-	{
-		$sources = $this->sources();
-		$this->assertTrue(count($sources) >= 2,
-			'the tree ships more than one rtOpFiles(); found: ' . implode(', ', $sources));
-		foreach (array('plugins/datadir/util_rt.php', 'plugins/autotools/util_rt.php') as $known)
-			$this->assertTrue(in_array($known, $sources, true),
-				$known . ' is among them; found: ' . implode(', ', $sources));
-	}
-
-	public function testEveryCopyStillMovesADownload()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			$this->assertTrue($r['control'][0] === true, $source . ': an ordinary move succeeds');
-			$this->assertEquals('AAA', $r['control'][1], $source . ': the file arrives with its content');
-			$this->assertEquals('BBB', $r['control'][2], $source . ': and the one in a subdirectory too');
-			$this->assertTrue($r['control'][3] === false, $source . ': and it leaves the source');
-		}
-	}
-
-	public function testNoCopyWritesOverAFileAlreadyAtTheDestination()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			foreach (array('Move', 'Copy', 'HardLink', 'SoftLink') as $op)
-			{
-				$this->assertTrue($r[$op][0] === false,
-					$source . ': ' . $op . ' into a taken name is refused');
-				$this->assertEquals('already there', $r[$op][1],
-					$source . ': the file that was already there survives ' . $op);
-				$this->assertTrue($r[$op][2] === true,
-					$source . ': and the download has not left the source after ' . $op);
-			}
-		}
-	}
-
-	public function testNoCopyWritesOverADirectoryOrASymlink()
-	{
-		foreach ($this->sources() as $source)
-		{
-			$r = $this->drive($source);
-			$this->assertTrue($r['directory'][0] === false,
-				$source . ': a directory in the way refuses the move');
-			$this->assertEquals('kept', $r['directory'][1],
-				$source . ': and what is inside it is still there');
-			$this->assertTrue($r['symlink'][0] === false,
-				$source . ': a symlink in the way refuses the move');
-			$this->assertEquals('already there', $r['symlink'][1],
-				$source . ': and what it pointed at is untouched');
-		}
 	}
 }

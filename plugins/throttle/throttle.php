@@ -7,30 +7,30 @@ class rThrottle
 {
 	public $hash = "throttle.dat";
 	public $modified = false;
-	public $thr = array();
+	public $thr = [];
 	public $default = 0;
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new rThrottle();
-		if(!$cache->get($rt) || (count($rt->thr)!=MAX_THROTTLE))
-			$rt->fillArray();
+		if(!$cache->get($rt) || (count($rt->thr)!=MAX_THROTTLE)) {
+			$rt->fillArray(); }
 		return($rt);
 	}
 	public function fillArray()
 	{
-		$this->thr = array();
+		$this->thr = [];
 		$v = 16;
 	        for($i=0; $i<MAX_THROTTLE/2; $i++)
 	        {
-			$this->thr[] = array( "up"=>$v, "down"=>0, "name"=>"up".$v );
+			$this->thr[] = [ "up"=>$v, "down"=>0, "name"=>"up".$v ];
 			$v = $v*2;
 		}
 		$v = 16;
 	        for($i=0; $i<MAX_THROTTLE/2; $i++)
 	        {
-			$this->thr[] = array( "up"=>0, "down"=>$v, "name"=>"down".$v );
+			$this->thr[] = [ "up"=>0, "down"=>$v, "name"=>"down".$v ];
 			$v = $v*2;
 		}
 		$this->default = 0;
@@ -64,27 +64,27 @@ class rThrottle
 				$up = 0;
 				$down = 0;
 			}
-			$req->addCommand(new rXMLRPCCommand("throttle_up", array("thr_".$i,$up."")));
-			$req->addCommand(new rXMLRPCCommand("throttle_down", array("thr_".$i,$down."")));
+			$req->addCommand(new rXMLRPCCommand("throttle_up", ["thr_".$i,$up.""]));
+			$req->addCommand(new rXMLRPCCommand("throttle_down", ["thr_".$i,$down.""]));
 		}
 
-		if($this->isCorrect($this->default-1))
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(),
-				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_throttle_name").'=,'.getCmd('d.set_throttle_name').'=thr_'.($this->default-1))));
-		else
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), getCmd('cat='))));
+		if($this->isCorrect($this->default-1)) {
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(['_throttle'.User::getUser(),
+				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_throttle_name").'=,'.getCmd('d.set_throttle_name').'=thr_'.($this->default-1)])); }
+		else {
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(['_throttle'.User::getUser(), getCmd('cat=')])); }
 		return($req->run() && !$req->fault);
 	}
 	public function correct()
 	{
-		$toCorrect = array();
+		$toCorrect = [];
 		$req = new rXMLRPCRequest(
-			new rXMLRPCCommand( "d.multicall", array(
+			new rXMLRPCCommand( "d.multicall", [
 			        "",
 				getCmd("d.get_hash="),
 				getCmd("d.get_throttle_name="),
 				getCmd('cat').'=$'.getCmd("get_throttle_up_max").'=$'.getCmd("d.get_throttle_name="),
-				getCmd('cat').'=$'.getCmd("get_throttle_down_max").'=$'.getCmd("d.get_throttle_name=")))
+				getCmd('cat').'=$'.getCmd("get_throttle_down_max").'=$'.getCmd("d.get_throttle_name=")]),
 			);
 		if($req->run() && !$req->fault)
 		{
@@ -94,8 +94,8 @@ class rThrottle
 				{
 					$no = intval(substr($req->val[$i+1],4));
 					if(($req->val[$i+2]==="-1") && ($req->val[$i+3]==="-1") &&
-						$this->isThrottled($no))
-						$toCorrect[$req->val[$i]] = $req->val[$i+1];
+						$this->isThrottled($no)) {
+						$toCorrect[$req->val[$i]] = $req->val[$i+1]; }
 				}
 			}
 			if($this->init())
@@ -103,11 +103,11 @@ class rThrottle
 				$req = new rXMLRPCRequest();
 				foreach($toCorrect as $hash=>$name)
 				{
-					$req->addCommand(new rXMLRPCCommand( "branch", array(
+					$req->addCommand(new rXMLRPCCommand( "branch", [
 						$hash,
 						getCmd("d.is_active="),
 						getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='),
-						getCmd('d.set_throttle_name=').$name )));
+						getCmd('d.set_throttle_name=').$name ]));
 				}
 				if($req->getCommandsCount())
 				{
@@ -120,42 +120,42 @@ class rThrottle
 	}
 	public function apply()
 	{
-		$hashes = isset($_REQUEST['hash']) ? $_REQUEST['hash'] : array();
-		if(!is_array($hashes))
-			$hashes = array($hashes);
+		$hashes = isset($_REQUEST['hash']) ? $_REQUEST['hash'] : [];
+		if(!is_array($hashes)) {
+			$hashes = [$hashes]; }
 		$v = isset($_REQUEST['v']) ? intval($_REQUEST['v']) : -1;
 		$name = ($v>=0) ? ("thr_".$v) : "";
 		$req = new rXMLRPCRequest();
 		foreach($hashes as $hash)
 		{
-			if((strlen($hash)!=40) || !ctype_xdigit($hash))
-				continue;
-			$req->addCommand(new rXMLRPCCommand( "branch", array(
+			if((strlen($hash)!=40) || !ctype_xdigit($hash)) {
+				continue; }
+			$req->addCommand(new rXMLRPCCommand( "branch", [
 				$hash,
 				getCmd("d.is_active="),
 				getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='),
-				getCmd('d.set_throttle_name=').$name )));
+				getCmd('d.set_throttle_name=').$name ]));
 		}
-		if($req->getCommandsCount())
-			return($req->run() && !$req->fault);
+		if($req->getCommandsCount()) {
+			return($req->run() && !$req->fault); }
 		return(true);
 	}
 	public function obtain()
 	{
-		$req = new rXMLRPCRequest( array(
+		$req = new rXMLRPCRequest( [
 			new rXMLRPCCommand( "get_upload_rate" ),
-			new rXMLRPCCommand( "get_download_rate" ) ));
+			new rXMLRPCCommand( "get_download_rate" ) ]);
 		if($req->run() && !$req->fault)
 		{
 			global $throttleMaxSpeed;
 			$req1 = new rXMLRPCRequest();
-			if($req->val[0]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", $throttleMaxSpeed ));
-			if($req->val[1]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", $throttleMaxSpeed ));
+			if($req->val[0]==0) {
+				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", $throttleMaxSpeed )); }
+			if($req->val[1]==0) {
+				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", $throttleMaxSpeed )); }
 			if((($req->val[0]==0) || ($req->val[1]==0)) &&
-				(!$req1->run() || $req1->fault))
-				return(false);
+				(!$req1->run() || $req1->fault)) {
+				return(false); }
 			return($this->correct());
         	}
 		return(false);
@@ -167,44 +167,44 @@ class rThrottle
 	}
 	public function set()
 	{
-		$this->thr = array();
+		$this->thr = [];
 		$this->default = 0;
 		for($i = 0; $i<MAX_THROTTLE; $i++)
 		{
-			$arr = array( "up"=>0, "down"=>0, "name"=>"" );
+			$arr = [ "up"=>0, "down"=>0, "name"=>"" ];
 			if(isset($_REQUEST['thr_up'.$i]))
 			{
 				$v = intval($_REQUEST['thr_up'.$i]);
-				if($v>=0)
-					$arr["up"] = $v;
+				if($v>=0) {
+					$arr["up"] = $v; }
 			}
 			if(isset($_REQUEST['thr_down'.$i]))
 			{
 				$v = intval($_REQUEST['thr_down'.$i]);
-				if($v>=0)
-					$arr["down"] = $v;
+				if($v>=0) {
+					$arr["down"] = $v; }
 			}
 			if(isset($_REQUEST['thr_name'.$i]))
 			{
 			        $v = trim($_REQUEST['thr_name'.$i]);
-			        if($v!='')
-					$arr["name"] = $v;
+			        if($v!='') {
+					$arr["name"] = $v; }
 			}
 			$this->thr[] = $arr;
 		}
-		if(isset($_REQUEST['default']))
-			$this->default = intval($_REQUEST['default']);
+		if(isset($_REQUEST['default'])) {
+			$this->default = intval($_REQUEST['default']); }
                 $this->store();
 		$this->init();
 	}
 	public function get()
 	{
 		$ret = "theWebUI.throttles = [";
-		foreach($this->thr as $item)
-			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
+		foreach($this->thr as $item) {
+			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },"; }
 		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
+		if($ret[$len-1]==',') {
+			$ret = substr($ret,0,$len-1); }
 		return($ret."];\ntheWebUI.maxThrottle = ".MAX_THROTTLE.";\ntheWebUI.defaultThrottle = ".$this->default.";\n");
 	}
 }

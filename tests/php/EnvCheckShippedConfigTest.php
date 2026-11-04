@@ -25,29 +25,6 @@ class EnvCheckShippedConfigTest extends TestCase
 		$this->root = dirname(dirname(__DIR__));
 	}
 
-	/** The shipped config read the way env_check reads it. */
-	private function shippedConfig()
-	{
-		// The defaults are what an installer gets; an environment left over
-		// from another test must not stand in for them.
-		$saved = $_ENV;
-		foreach (array('RU_LOG_FILE', 'RU_TOP_DIR', 'RU_SCGI_PORT', 'RU_SCGI_HOST',
-			'RU_TEMP_DIRECTORY', 'RU_PROFILE_MASK', 'RU_PROFILE_PATH') as $key) {
-			unset($_ENV[$key]);
-		}
-		include($this->root . '/conf/config.php');
-		$_ENV = $saved;
-
-		return array(
-			'log_file' => $log_file,
-			'topDirectory' => $topDirectory,
-			'XMLRPCMountPoint' => $XMLRPCMountPoint,
-			'scgi_host' => $scgi_host,
-			'scgi_port' => $scgi_port,
-			'profileMask' => $profileMask,
-		);
-	}
-
 	public function testTheShippedLogFileIsOneTheCheckerAccepts()
 	{
 		$cfg = $this->shippedConfig();
@@ -86,26 +63,6 @@ class EnvCheckShippedConfigTest extends TestCase
 			'and carries no bits outside a file mode');
 	}
 
-	/** Does conf/config.php complain about this mask? */
-	private function configWarnsAbout($mask)
-	{
-		$saved = $_ENV;
-		$_ENV['RU_PROFILE_MASK'] = $mask;
-		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
-		$oldErrorLog = ini_get('error_log');
-		ini_set('error_log', $errorLog);
-		try {
-			include($this->root . '/conf/config.php');
-		} finally {
-			$diagnostic = is_file($errorLog) ? file_get_contents($errorLog) : '';
-			ini_set('error_log', $oldErrorLog);
-			unlink($errorLog);
-			$_ENV = $saved;
-		}
-
-		return strpos($diagnostic, 'RU_PROFILE_MASK') !== false;
-	}
-
 	/**
 	 * The checker holds the mask rule separately from conf/config.php, for the
 	 * same reason it holds the log path rule separately: it must run with
@@ -114,7 +71,7 @@ class EnvCheckShippedConfigTest extends TestCase
 	 */
 	public function testTheCheckerAndTheConfigAgreeAboutEveryMask()
 	{
-		$masks = array('0777', '777', '0770', '0700', '02770', '1777', '0666x', 'garbage', '8');
+		$masks = ['0777', '777', '0770', '0700', '02770', '1777', '0666x', 'garbage', '8'];
 		foreach ($masks as $mask) {
 			$checkerAccepts = Requirements::profileMaskValid($mask);
 			$configAccepts = !$this->configWarnsAbout($mask);
@@ -129,7 +86,7 @@ class EnvCheckShippedConfigTest extends TestCase
 		$script = tempnam(sys_get_temp_dir(), 'envcheck') . '.php';
 		file_put_contents($script, '<?php $_ENV["RU_PROFILE_MASK"] = "02770"; require '
 			. var_export($this->root . '/env_check.php', true) . ';');
-		$out = array();
+		$out = [];
 		$code = 0;
 		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($script) . ' 2>&1', $out, $code);
 		unlink($script);
@@ -150,7 +107,7 @@ class EnvCheckShippedConfigTest extends TestCase
 	 */
 	public function testTheCheckerPassesOnTheTreeAsItShips()
 	{
-		$out = array();
+		$out = [];
 		$code = 0;
 		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($this->root . '/env_check.php')
 			. ' 2>&1', $out, $code);
@@ -160,5 +117,48 @@ class EnvCheckShippedConfigTest extends TestCase
 			'env_check exits clean on the tree as it ships');
 		$this->assertTrue(strpos($text, '[FAIL') === false,
 			'env_check prints no failure line on the tree as it ships');
+	}
+
+	/** The shipped config read the way env_check reads it. */
+	private function shippedConfig()
+	{
+		// The defaults are what an installer gets; an environment left over
+		// from another test must not stand in for them.
+		$saved = $_ENV;
+		foreach (['RU_LOG_FILE', 'RU_TOP_DIR', 'RU_SCGI_PORT', 'RU_SCGI_HOST',
+			'RU_TEMP_DIRECTORY', 'RU_PROFILE_MASK', 'RU_PROFILE_PATH'] as $key) {
+			unset($_ENV[$key]);
+		}
+		include($this->root . '/conf/config.php');
+		$_ENV = $saved;
+
+		return [
+			'log_file' => $log_file,
+			'topDirectory' => $topDirectory,
+			'XMLRPCMountPoint' => $XMLRPCMountPoint,
+			'scgi_host' => $scgi_host,
+			'scgi_port' => $scgi_port,
+			'profileMask' => $profileMask,
+		];
+	}
+
+	/** Does conf/config.php complain about this mask? */
+	private function configWarnsAbout($mask)
+	{
+		$saved = $_ENV;
+		$_ENV['RU_PROFILE_MASK'] = $mask;
+		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
+		$oldErrorLog = ini_get('error_log');
+		ini_set('error_log', $errorLog);
+		try {
+			include($this->root . '/conf/config.php');
+		} finally {
+			$diagnostic = is_file($errorLog) ? file_get_contents($errorLog) : '';
+			ini_set('error_log', $oldErrorLog);
+			unlink($errorLog);
+			$_ENV = $saved;
+		}
+
+		return strpos($diagnostic, 'RU_PROFILE_MASK') !== false;
 	}
 }

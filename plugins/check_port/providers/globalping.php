@@ -24,13 +24,13 @@ function check_port_globalping($ip, $port, $timeout) {
 		"https://api.globalping.io/v1/measurements",
 		"POST",
 		"application/json",
-		$payload
+		$payload,
 	);
 
 	if ($client->status < 200 || $client->status >= 300) {
 		error_log(
 			"check_port: Globalping create failed for {$ip}. " .
-			"Status: {$client->status}, Error: {$client->error}"
+			"Status: {$client->status}, Error: {$client->error}",
 		);
 		return 0;
 	}
@@ -39,7 +39,7 @@ function check_port_globalping($ip, $port, $timeout) {
 	if (!is_array($created) || empty($created["id"])) {
 		error_log(
 			"check_port: Invalid Globalping create response for {$ip}. " .
-			"Response: " . substr($client->results, 0, 500)
+			"Response: " . substr($client->results, 0, 500),
 		);
 		return 0;
 	}
@@ -63,13 +63,13 @@ function check_port_globalping($ip, $port, $timeout) {
 
 		@$client->fetch(
 			"https://api.globalping.io/v1/measurements/" .
-			rawurlencode($id)
+			rawurlencode($id),
 		);
 
 		if ($client->status != 200) {
 			error_log(
 				"check_port: Globalping poll failed for {$id}. " .
-				"Status: {$client->status}, Error: {$client->error}"
+				"Status: {$client->status}, Error: {$client->error}",
 			);
 			return 0;
 		}

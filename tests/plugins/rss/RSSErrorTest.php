@@ -9,13 +9,16 @@ declare(strict_types=1);
 require_once(__DIR__ . '/../../php/TestCase.php');
 
 $minInterval = 2;	// in minutes
-$feedsWithIncorrectTimes = array();
+$feedsWithIncorrectTimes = [];
 $rss_debug_enabled = true;
 require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
 class ErrorSnoopyMock
 {
-	public $status = 200, $results = NULL, $headers = array(), $error = '';
+	public $status = 200;
+	public $results = null;
+	public $headers = [];
+	public $error = '';
 }
 
 final class RSSErrorTest extends TestCase

@@ -10,15 +10,15 @@ trait QuietCall
 	// The call's result and the diagnostics it raised.
 	private static function quietly($call)
 	{
-		$errors = array();
+		$errors = [];
 		set_error_handler(function($number, $message) use (&$errors) {
-			if(error_reporting() & $number)
-				$errors[] = $message;
+			if(error_reporting() & $number) {
+				$errors[] = $message; }
 			return true;
 		});
 		try
 		{
-			return array($call(), $errors);
+			return [$call(), $errors];
 		}
 		finally
 		{

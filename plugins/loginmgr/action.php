@@ -23,7 +23,7 @@ if(isset($_REQUEST['mode']))
 	{
 		case "set":
 		{
-			$notRetired = array();
+			$notRetired = [];
 			if(!$em->set($notRetired))
 			{
 				FileUtil::toLog('loginmgr: account-save-failed');

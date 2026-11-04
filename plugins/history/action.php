@@ -22,9 +22,9 @@ if(isset($_REQUEST['cmd']))
 		case "delete":
 		{
 			$up = rHistoryData::load();
-			$hashes = array();
-			if(!isset($HTTP_RAW_POST_DATA))
-				$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+			$hashes = [];
+			if(!isset($HTTP_RAW_POST_DATA)) {
+				$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 			if(isset($HTTP_RAW_POST_DATA))
 			{
 				$vars = explode('&', $HTTP_RAW_POST_DATA);

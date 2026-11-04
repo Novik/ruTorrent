@@ -17,32 +17,21 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
  */
 class XMLRPCProxyRejectionTest extends TestCase
 {
-	private $safe = array('d.custom1.set', 'd.directory.set');
+	private $safe = ['d.custom1.set', 'd.directory.set'];
 	private $opts;
 
 	public function setUp()
 	{
 		// The directory boundary action.php passes; irrelevant to these
 		// refusals but present so decide() runs the same code path it does live.
-		$this->opts = array('directory' => array('root' => '/', 'resolve' => null));
-	}
-
-	private function call($method, $params = array())
-	{
-		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
-			. '</methodName><params>';
-		foreach($params as $p)
-			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
-				. '</string></value></param>';
-		$xml .= '</params></methodCall>';
-		return XMLRPCProxy::decide($xml, 'sanitize', $this->safe, false, $this->opts);
+		$this->opts = ['directory' => ['root' => '/', 'resolve' => null]];
 	}
 
 	// --- a refusal carries the name of the command it refused ---
 
 	public function testADeniedMethodIsRejectedAndNamed()
 	{
-		$d = $this->call('execute.capture', array('', '/bin/id'));
+		$d = $this->call('execute.capture', ['', '/bin/id']);
 		$this->assertTrue($d['action'] === 'reject',
 			'execute.capture is refused');
 		$this->assertTrue(isset($d['method']) && $d['method'] === 'execute.capture',
@@ -62,7 +51,7 @@ class XMLRPCProxyRejectionTest extends TestCase
 	{
 		// The command the multicall smuggles is what the caller must be told
 		// about, not the multicall wrapper.
-		$d = $this->call('d.multicall2', array('', 'main', 'execute.capture=/bin/id'));
+		$d = $this->call('d.multicall2', ['', 'main', 'execute.capture=/bin/id']);
 		$this->assertTrue($d['action'] === 'reject',
 			'a multicall carrying execute.capture is refused');
 		$this->assertTrue(isset($d['method']) && $d['method'] === 'execute.capture',
@@ -102,8 +91,8 @@ class XMLRPCProxyRejectionTest extends TestCase
 	{
 		$this->assertTrue(method_exists('XMLRPCProxy', 'rejectionMessage'),
 			'the proxy exposes one raw refusal message for both HTTP doors');
-		if(!method_exists('XMLRPCProxy', 'rejectionMessage'))
-			return;
+		if(!method_exists('XMLRPCProxy', 'rejectionMessage')) {
+			return; }
 
 		$this->assertEquals("The command 'execute.capture' was rejected by this server.",
 			XMLRPCProxy::rejectionMessage('execute.capture'),
@@ -127,8 +116,8 @@ class XMLRPCProxyRejectionTest extends TestCase
 	{
 		$this->assertTrue(method_exists('XMLRPCProxy', 'rejectionFault'),
 			'the proxy renders a refusal fault the door can return');
-		if(!method_exists('XMLRPCProxy', 'rejectionFault'))
-			return;
+		if(!method_exists('XMLRPCProxy', 'rejectionFault')) {
+			return; }
 
 		$fault = XMLRPCProxy::rejectionFault('execute.capture');
 		$this->assertTrue(strpos($fault, '<i4>-501</i4>') !== false,
@@ -155,5 +144,16 @@ class XMLRPCProxyRejectionTest extends TestCase
 			'the generic refusal still says this server refused it');
 		$this->assertTrue(strpos($fault, 'Is rTorrent running') === false,
 			'and still does not blame rtorrent');
+	}
+
+	private function call($method, $params = [])
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>' . $method
+			. '</methodName><params>';
+		foreach($params as $p) {
+			$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
+				. '</string></value></param>'; }
+		$xml .= '</params></methodCall>';
+		return XMLRPCProxy::decide($xml, 'sanitize', $this->safe, false, $this->opts);
 	}
 }

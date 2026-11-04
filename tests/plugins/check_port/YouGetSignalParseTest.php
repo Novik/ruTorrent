@@ -15,25 +15,6 @@ require_once(__DIR__ . '/../../../plugins/check_port/parse.php');
  */
 class YouGetSignalParseTest extends TestCase
 {
-	private function body($state, $kind = 'success')
-	{
-		return json_encode(array('data' => array('networkToolRunPortCheck' => array(
-			'output' => array(
-				'toolType' => 'PortCheck',
-				'parsed' => array(
-					'kind' => $kind,
-					'nmapVersion' => '7.93',
-					'hostIpAddress' => '8.8.8.8',
-					'port' => array(
-						'number' => 80,
-						'state' => $state,
-						'protocol' => 'tcp',
-						'service' => 'http',
-					),
-				),
-			),
-		))));
-	}
 
 	public function testAnOpenPortIsOpen()
 	{
@@ -89,5 +70,24 @@ class YouGetSignalParseTest extends TestCase
 			'an empty body is unknown');
 		$this->assertEquals(0, check_port_parse_yougetsignal('error code: 522'),
 			'an edge error is unknown');
+	}
+	private function body($state, $kind = 'success')
+	{
+		return json_encode(['data' => ['networkToolRunPortCheck' => [
+			'output' => [
+				'toolType' => 'PortCheck',
+				'parsed' => [
+					'kind' => $kind,
+					'nmapVersion' => '7.93',
+					'hostIpAddress' => '8.8.8.8',
+					'port' => [
+						'number' => 80,
+						'state' => $state,
+						'protocol' => 'tcp',
+						'service' => 'http',
+					],
+				],
+			],
+		]]]);
 	}
 }

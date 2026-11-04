@@ -8,16 +8,16 @@ require_once(__DIR__ . '/../../../plugins/loginmgr/accounts.php');
 
 function saveAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 function saveRemoveTree($path)
 {
     if (!is_dir($path) || is_link($path)) {
-        if (file_exists($path) || is_link($path)) unlink($path);
+        if (file_exists($path) || is_link($path)) { unlink($path); }
         return;
     }
-    foreach (array_diff(scandir($path), array('.', '..')) as $name) saveRemoveTree($path . '/' . $name);
+    foreach (array_diff(scandir($path), ['.', '..']) as $name) { saveRemoveTree($path . '/' . $name); }
     rmdir($path);
 }
 
@@ -26,7 +26,7 @@ function saveRemoveTree($path)
 class SaveFailureManager extends accountManager
 {
     public $handlerCalls = 0;
-    public $persistedAtForget = array();
+    public $persistedAtForget = [];
 
     public function setHandlers() { ++$this->handlerCalls; }
 
@@ -42,10 +42,10 @@ class SaveFailureManager extends accountManager
 function saveManager($class = 'SaveFailureManager')
 {
     $manager = new $class();
-    foreach (array('Alpha', 'Beta') as $name) {
-        $manager->accounts[$name] = array('name' => $name, 'login' => 'old-' . $name,
+    foreach (['Alpha', 'Beta'] as $name) {
+        $manager->accounts[$name] = ['name' => $name, 'login' => 'old-' . $name,
             'password' => 'saved-value', 'enabled' => 1, 'auto' => 0,
-            'path' => __FILE__, 'object' => 'UnusedAccount');
+            'path' => __FILE__, 'object' => 'UnusedAccount'];
     }
     return $manager;
 }
@@ -57,14 +57,14 @@ function saveSeed()
     mkdir($directory, 0700);
     $manager = saveManager();
     saveAssert($manager->store() === true, 'The initial credentials are saved through the real cache');
-    $sessions = array();
+    $sessions = [];
     foreach (array_keys($manager->accounts) as $name) {
         $session = new privateData($name);
-        $session->cookies = array('sid' => 'session-' . $name);
+        $session->cookies = ['sid' => 'session-' . $name];
         saveAssert((new rCache('/accounts'))->set($session) === true, 'The initial session is saved');
         $sessions[$name] = file_get_contents($directory . '/accounts/' . $name . '.dat');
     }
-    return array($manager, file_get_contents($directory . '/loginmgr.dat'), $sessions);
+    return [$manager, file_get_contents($directory . '/loginmgr.dat'), $sessions];
 }
 
 function saveBlockWrite()
@@ -85,10 +85,10 @@ function saveAction($blocked, $check)
     file_put_contents($directory . '/profile/settings/loginmgr.dat', serialize($manager));
     foreach (array_keys($manager->accounts) as $name) {
         $session = new privateData($name);
-        $session->cookies = array('sid' => 'session-' . $name);
+        $session->cookies = ['sid' => 'session-' . $name];
         file_put_contents($directory . '/profile/settings/accounts/' . $name . '.dat', serialize($session));
     }
-    if ($blocked) mkdir($directory . '/profile/settings/loginmgr.dat.lock', 0700);
+    if ($blocked) { mkdir($directory . '/profile/settings/loginmgr.dat.lock', 0700); }
     $router = '<?php $_ENV["RU_PROFILE_PATH"] = ' . var_export($directory . '/profile', true)
         . '; $_ENV["RU_LOG_FILE"] = ' . var_export($directory . '/application.log', true)
         . '; require ' . var_export($root . '/plugins/loginmgr/accounts.php', true) . ';'
@@ -100,17 +100,17 @@ function saveAction($blocked, $check)
     saveAssert($listener !== false, 'The HTTP fixture reserves an address: ' . $error);
     $address = stream_socket_get_name($listener, false);
     fclose($listener);
-    $process = proc_open(array(PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
-        $directory . '/router.php'), array(0 => array('file', '/dev/null', 'r'),
-        1 => array('file', $directory . '/server.log', 'a'),
-        2 => array('file', $directory . '/server.log', 'a')), $pipes, $root . '/plugins/loginmgr');
+    $process = proc_open([PHP_BINARY, '-c', $root . '/tests/php-test.ini', '-S', $address,
+        $directory . '/router.php'], [0 => ['file', '/dev/null', 'r'],
+        1 => ['file', $directory . '/server.log', 'a'],
+        2 => ['file', $directory . '/server.log', 'a']], $pipes, $root . '/plugins/loginmgr');
     saveAssert(is_resource($process), 'The HTTP fixture starts without a shell');
     try {
         $ready = false;
         for ($attempt = 0; $attempt < 100; ++$attempt) {
             $peer = @stream_socket_client('tcp://' . $address, $errno, $error, 0.05);
             if ($peer !== false) { fclose($peer); $ready = true; break; }
-            if (!proc_get_status($process)['running']) break;
+            if (!proc_get_status($process)['running']) { break; }
             usleep(10000);
         }
         saveAssert($ready, 'The HTTP fixture is ready: ' . file_get_contents($directory . '/server.log'));
@@ -118,7 +118,7 @@ function saveAction($blocked, $check)
         saveAssert($peer !== false, 'The settings request connects');
         try {
             stream_set_timeout($peer, 3);
-            $form = http_build_query(array('mode' => 'set', 'Alpha_login' => 'new-user'));
+            $form = http_build_query(['mode' => 'set', 'Alpha_login' => 'new-user']);
             fwrite($peer, "POST / HTTP/1.0\r\nHost: localhost\r\nContent-Type: application/x-www-form-urlencoded\r\n"
                 . 'Content-Length: ' . strlen($form) . "\r\nConnection: close\r\n\r\n" . $form);
             $response = stream_get_contents($peer);
@@ -135,11 +135,11 @@ function saveAction($blocked, $check)
     }
 }
 
-$tests = array(
+$tests = [
     'a refused cache write retains the saved credentials and sessions' => function () {
         list($manager, $stored, $sessions) = saveSeed();
         saveBlockWrite();
-        $_REQUEST = array('Alpha_login' => 'new-user');
+        $_REQUEST = ['Alpha_login' => 'new-user'];
         // Failure to open this deliberately blocked cache lock is expected.
         @$manager->set();
         $directory = FileUtil::getSettingsPath();
@@ -148,13 +148,13 @@ $tests = array(
             $path = $directory . '/accounts/' . $name . '.dat';
             saveAssert(is_file($path) && file_get_contents($path) === $bytes, 'The prior session survives for ' . $name);
         }
-        saveAssert($manager->handlerCalls === 0 && $manager->persistedAtForget === array(), 'No session or schedule side effect runs');
+        saveAssert($manager->handlerCalls === 0 && $manager->persistedAtForget === [], 'No session or schedule side effect runs');
     },
     'a refused write restores the live manager and can be retried' => function () {
         list($manager) = saveSeed();
         $previous = $manager->accounts;
         saveBlockWrite();
-        $_REQUEST = array('Alpha_login' => 'new-user');
+        $_REQUEST = ['Alpha_login' => 'new-user'];
         $saved = @$manager->set();
         saveAssert($manager->accounts === $previous, 'The same object retains its prior account values');
         saveAssert($saved === false, 'A refused write returns false');
@@ -165,10 +165,10 @@ $tests = array(
     },
     'a successful save commits before retiring all old sessions' => function () {
         list($manager) = saveSeed();
-        $_REQUEST = array('Alpha_login' => 'new-user');
+        $_REQUEST = ['Alpha_login' => 'new-user'];
         $saved = $manager->set();
         $expected = $manager->accounts;
-        saveAssert($manager->persistedAtForget === array('Alpha' => $expected, 'Beta' => $expected),
+        saveAssert($manager->persistedAtForget === ['Alpha' => $expected, 'Beta' => $expected],
             'Every session is retired only after the complete new credentials are readable');
         saveAssert($saved === true && $manager->handlerCalls === 1, 'Success is explicit and updates handlers once');
         saveAssert($expected['Alpha']['login'] === 'new-user' && $expected['Alpha']['password'] === 'saved-value'
@@ -199,7 +199,7 @@ $tests = array(
             saveAssert(!file_exists($directory . '/accounts/Alpha.dat'), 'Success retires the old session');
         });
     },
-);
+];
 
 $failures = 0;
 try {
@@ -211,7 +211,7 @@ try {
             ++$failures;
             echo 'not ok - ', $name, ': ', $error->getMessage(), "\n";
         } finally {
-            $_REQUEST = array();
+            $_REQUEST = [];
         }
     }
 } finally {

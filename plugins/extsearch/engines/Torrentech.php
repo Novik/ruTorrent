@@ -1,7 +1,7 @@
 <?php
 class TorrentechEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "auth"=>1 );
+	public $defaults = [ "public"=>false, "page_size"=>25, "auth"=>1 ];
 
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -11,8 +11,8 @@ class TorrentechEngine extends commonEngine
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/index.php?forums=all&act=search&CODE=01&search_in=titles&result_type=topics&torrents-only=1&keywords='.$what.'&st='.($pg*25) );
-			if($cli==false || (strpos($cli->results, ' type="password"')!==false))
-				break;
+			if($cli==false || (strpos($cli->results, ' type="password"')!==false)) {
+				break; }
 
 			$res = preg_match_all("`preview_it\((?P<id>\d+), event\)' onmouseout='preview_hide\(\)'>(?P<name>.*)</a>.*".
 					        '<span class="desc">(?P<subname>.*)<.*'.
@@ -23,8 +23,8 @@ class TorrentechEngine extends commonEngine
 			{
 
 				$myhash = '';
-				if( preg_match( "`hash'>(?P<authkey>.*)</div>`",$cli->results, $matches1 ) )
-					$myhash = $matches1["authkey"];
+				if( preg_match( "`hash'>(?P<authkey>.*)</div>`",$cli->results, $matches1 ) ) {
+					$myhash = $matches1["authkey"]; }
 
 				for($i=0; $i<$res; $i++)
 				{
@@ -40,13 +40,13 @@ class TorrentechEngine extends commonEngine
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
 						$added++;
-						if($added>=$limit)
-							return;
+						if($added>=$limit) {
+							return; }
 					}
 				}
 			}
-			else
-				break;
+			else {
+				break; }
 		}
 	}
 }

@@ -5,6 +5,14 @@
 class tolokaAccount extends commonAccount
 {
 	public $url = "https://toloka.to";
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/toloka.to/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
+	public function test($url)
+	{
+		return(self::urlAddresses($url,["toloka.to"]));
+	}
 
 	protected function isOK($client)
 	{
@@ -24,13 +32,5 @@ class tolokaAccount extends commonAccount
 			return(true);
 		}
 		return(false);
-	}
-	// Matched against the URL's host, not against the URL string: the pattern
-	// this replaced also accepted https://evil.test/path/toloka.to/x, whose
-	// host is the attacker's, and loginmgr would then have sent this account's
-	// cookies there.
-	public function test($url)
-	{
-		return(self::urlAddresses($url,array("toloka.to")));
 	}
 }

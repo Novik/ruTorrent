@@ -33,8 +33,8 @@ class PendingQueueTest extends TestCase
 		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/pending.php';
 		$target = $this->tree . '/plugins/erasedata/pending.php';
 		copy($source, $target);
-		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
-			throw new Exception('could not copy pending.php');
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target)) {
+			throw new Exception('could not copy pending.php'); }
 
 		// Everything below the queue's own boundary.
 		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
@@ -77,8 +77,8 @@ class PendingQueueTest extends TestCase
 			}
 		');
 		PendingProbe::$listPath = $this->listPath;
-		PendingProbe::$erasable = array();
-		PendingProbe::$erased = array();
+		PendingProbe::$erasable = [];
+		PendingProbe::$erased = [];
 		// erasedataDrainQueue() loads these itself once it wins the lock; the
 		// cases below call erasedataDrainOnce() directly, so they are loaded here.
 		require_once($this->tree . '/php/xmlrpc.php');
@@ -90,35 +90,6 @@ class PendingQueueTest extends TestCase
 	{
 		$this->wipe();
 	}
-
-	private function wipe($dir = null)
-	{
-		$dir = is_null($dir) ? $this->tree : $dir;
-		if (!is_dir($dir)) return;
-		foreach (array_diff(scandir($dir), array('.', '..')) as $e) {
-			$p = $dir . '/' . $e;
-			is_dir($p) ? $this->wipe($p) : unlink($p);
-		}
-		rmdir($dir);
-	}
-
-	/**
-	 * setUp() runs once for the whole file, not once per test, so a case that
-	 * counts what is in the queue has to start from an empty one.
-	 */
-	private function fresh()
-	{
-		foreach (glob($this->listPath . '/*') as $f) unlink($f);
-		foreach (glob($this->tree . '/*.pending') as $f) unlink($f);
-		// The doubles are static, so they outlive a test as well.
-		rXMLRPCRequest::$live = array();
-		rXMLRPCRequest::$reachable = true;
-		PendingProbe::$erasable = array();
-		PendingProbe::$erased = array();
-	}
-
-	private function hash($c) { return str_repeat($c, 40); }
-	private function marker($h) { return $this->listPath . '/' . $h . '.pending'; }
 
 	public function testAFiringRecordsOneMarker()
 	{
@@ -150,7 +121,7 @@ class PendingQueueTest extends TestCase
 			'a name that is not a hash is refused');
 		$this->assertTrue(!is_file($this->listPath . '/' . $escape . '.pending'),
 			'and nothing was written outside the queue directory');
-		$this->assertEquals(array(), glob($this->listPath . '/*'), 'nor inside it');
+		$this->assertEquals([], glob($this->listPath . '/*'), 'nor inside it');
 
 		$this->assertTrue(erasedataQueueRequest($this->listPath, '../../etc/passwd', "1") === false,
 			'and neither is a path');
@@ -167,9 +138,9 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('3');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array($h);
-		PendingProbe::$erasable = array();
-		erasedataDrainOnce($this->listPath, array($h => "1"), 10);
+		rXMLRPCRequest::$live = [$h];
+		PendingProbe::$erasable = [];
+		erasedataDrainOnce($this->listPath, [$h => "1"], 10);
 		$this->assertEquals("1\n1\n", file_get_contents($this->marker($h)), 'one attempt is recorded');
 
 		erasedataQueueRequest($this->listPath, $h, "1");
@@ -192,7 +163,7 @@ class PendingQueueTest extends TestCase
 		$h = $this->hash('d');
 		erasedataQueueRequest($this->listPath, $h, "1");
 		file_put_contents($this->listPath . '/' . $h . '.list2', 'x');
-		$pending = erasedataPendingHashes($this->listPath, array());
+		$pending = erasedataPendingHashes($this->listPath, []);
 		$this->assertTrue(!array_key_exists($h, $pending), 'it is not queued again');
 		$this->assertTrue(!is_file($this->marker($h)), 'and its marker is gone');
 	}
@@ -201,7 +172,7 @@ class PendingQueueTest extends TestCase
 	{
 		$this->fresh();
 		file_put_contents($this->listPath . '/notahash.pending', "1\n0\n");
-		erasedataPendingHashes($this->listPath, array());
+		erasedataPendingHashes($this->listPath, []);
 		$this->assertTrue(!is_file($this->listPath . '/notahash.pending'),
 			'a marker nobody could have written is removed');
 	}
@@ -211,11 +182,11 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('e');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array();          // the web UI removed it meanwhile
-		erasedataDrainOnce($this->listPath, array($h => "1"), 10);
+		rXMLRPCRequest::$live = [];          // the web UI removed it meanwhile
+		erasedataDrainOnce($this->listPath, [$h => "1"], 10);
 		$this->assertTrue(!is_file($this->marker($h)),
 			'the marker goes rather than counting against the give-up limit');
-		$this->assertEquals(array(), PendingProbe::$erased, 'and rtorrent is not asked to erase it');
+		$this->assertEquals([], PendingProbe::$erased, 'and rtorrent is not asked to erase it');
 	}
 
 	public function testAFailedEraseIsCountedAndRetriedLater()
@@ -223,9 +194,9 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('f');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array($h);
-		PendingProbe::$erasable = array();         // the erase does not take
-		erasedataDrainOnce($this->listPath, array($h => "1"), 10);
+		rXMLRPCRequest::$live = [$h];
+		PendingProbe::$erasable = [];         // the erase does not take
+		erasedataDrainOnce($this->listPath, [$h => "1"], 10);
 		$this->assertTrue(is_file($this->marker($h)), 'the request stays queued');
 		$this->assertEquals("1\n1\n", file_get_contents($this->marker($h)), 'with one attempt against it');
 	}
@@ -235,9 +206,9 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('0');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array($h);
-		PendingProbe::$erasable = array($h);
-		erasedataDrainOnce($this->listPath, array($h => "1"), 10);
+		rXMLRPCRequest::$live = [$h];
+		PendingProbe::$erasable = [$h];
+		erasedataDrainOnce($this->listPath, [$h => "1"], 10);
 		$this->assertTrue(!is_file($this->marker($h)), 'the marker is cleared');
 		$this->assertTrue(is_file($this->listPath . '/' . $h . '.list2'),
 			'and the file list the collector consumes is there');
@@ -248,10 +219,10 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('1');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array($h);
-		PendingProbe::$erasable = array();
-		for ($i = 0; $i < 3; $i++)
-			erasedataDrainOnce($this->listPath, array($h => "1"), 3);
+		rXMLRPCRequest::$live = [$h];
+		PendingProbe::$erasable = [];
+		for ($i = 0; $i < 3; $i++) {
+			erasedataDrainOnce($this->listPath, [$h => "1"], 3); }
 		$this->assertTrue(!is_file($this->marker($h)),
 			'the third attempt reaches the limit and the request is abandoned');
 		$this->assertTrue(!is_file($this->listPath . '/' . $h . '.list2'),
@@ -263,10 +234,10 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('2');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		rXMLRPCRequest::$live = array($h);
-		PendingProbe::$erasable = array();
-		for ($i = 0; $i < 5; $i++)
-			erasedataDrainOnce($this->listPath, array($h => "1"), 0);
+		rXMLRPCRequest::$live = [$h];
+		PendingProbe::$erasable = [];
+		for ($i = 0; $i < 5; $i++) {
+			erasedataDrainOnce($this->listPath, [$h => "1"], 0); }
 		$this->assertTrue(is_file($this->marker($h)), 'the request is still queued');
 		$this->assertEquals("1\n5\n", file_get_contents($this->marker($h)), 'and still counting');
 	}
@@ -279,9 +250,9 @@ class PendingQueueTest extends TestCase
 		$holder = proc_open('exec ' . escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg(
 			'$f = fopen(' . var_export($lockPath, true) . ', "c"); flock($f, LOCK_EX);'
 			. ' echo "held\n"; flush(); sleep(20);'),
-			array(1 => array('pipe', 'w')), $pipes);
-		if (!is_resource($holder))
-			throw new Exception('could not start the competing drainer');
+			[1 => ['pipe', 'w']], $pipes);
+		if (!is_resource($holder)) {
+			throw new Exception('could not start the competing drainer'); }
 		fgets($pipes[1]);
 
 		$began = microtime(true);
@@ -291,7 +262,7 @@ class PendingQueueTest extends TestCase
 		proc_terminate($holder, 9);
 		for ($i = 0; $i < 100; $i++) {
 			$s = proc_get_status($holder);
-			if (!$s['running']) break;
+			if (!$s['running']) { break; }
 			usleep(50000);
 		}
 		proc_close($holder);
@@ -299,11 +270,40 @@ class PendingQueueTest extends TestCase
 		$this->assertEquals(-1, $ret, 'the second drainer reports that someone else holds the queue');
 		$this->assertTrue($took < 1.0, 'and returns at once rather than waiting: took ' . round($took, 2) . 's');
 	}
+
+	private function wipe($dir = null)
+	{
+		$dir = is_null($dir) ? $this->tree : $dir;
+		if (!is_dir($dir)) { return; }
+		foreach (array_diff(scandir($dir), ['.', '..']) as $e) {
+			$p = $dir . '/' . $e;
+			is_dir($p) ? $this->wipe($p) : unlink($p);
+		}
+		rmdir($dir);
+	}
+
+	/**
+	 * setUp() runs once for the whole file, not once per test, so a case that
+	 * counts what is in the queue has to start from an empty one.
+	 */
+	private function fresh()
+	{
+		foreach (glob($this->listPath . '/*') as $f) { unlink($f); }
+		foreach (glob($this->tree . '/*.pending') as $f) { unlink($f); }
+		// The doubles are static, so they outlive a test as well.
+		rXMLRPCRequest::$live = [];
+		rXMLRPCRequest::$reachable = true;
+		PendingProbe::$erasable = [];
+		PendingProbe::$erased = [];
+	}
+
+	private function hash($c) { return str_repeat($c, 40); }
+	private function marker($h) { return $this->listPath . '/' . $h . '.pending'; }
 }
 
 class PendingProbe
 {
 	public static $listPath = null;
-	public static $erasable = array();
-	public static $erased = array();
+	public static $erasable = [];
+	public static $erased = [];
 }

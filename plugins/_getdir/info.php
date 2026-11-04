@@ -5,14 +5,14 @@ eval(FileUtil::getPluginConf("_getdir"));
 
 function compareEntries( $a, $b )
 {
-	if($a=='.')
-		return( -1 );
-	if($b=='.')
-		return( 1 );
-	if($a=='..')
-		return( -1 );
-	if($b=='..')
-		return( 1 );
+	if($a=='.') {
+		return( -1 ); }
+	if($b=='.') {
+		return( 1 ); }
+	if($a=='..') {
+		return( -1 ); }
+	if($b=='..') {
+		return( 1 ); }
 	return( function_exists("mb_strtolower") ?
 		strcmp(mb_strtolower($a), mb_strtolower($b)) :
 		strcmp(strtolower($a), strtolower($b)) );
@@ -20,20 +20,20 @@ function compareEntries( $a, $b )
 
 if(isset($_REQUEST['mode']))
 {
-	$output = array();
+	$output = [];
 	$modes = explode(';',$_REQUEST['mode']);
 	$theSettings = rTorrentSettings::get();
 	if(in_array("labels",$modes))
 	{
-		$req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall", array("",getCmd("d.get_custom1="))) );
-		$labels = array();
+		$req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall", ["",getCmd("d.get_custom1=")]) );
+		$labels = [];
 		if($req->run() && !$req->fault)
 		{
 			for($i=0; $i<count($req->val); $i++)
 			{
 				$val = trim(rawurldecode($req->val[$i]));
-				if( $val!='' )
-					$labels[$val] = true;
+				if( $val!='' ) {
+					$labels[$val] = true; }
 			}
 			$output["labels"] = array_keys($labels);
 			natcasesort($output["labels"]);
@@ -63,19 +63,19 @@ if(isset($_REQUEST['mode']))
 		if(!$dh)
 		{
 			$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
-			if(strpos(FileUtil::addslash($dir),$topDirectory)!==0)
-				$dir = $topDirectory;
+			if(strpos(FileUtil::addslash($dir),$topDirectory)!==0) {
+				$dir = $topDirectory; }
 			$dh = @opendir($dir);
 		}
 		if($dh)
 		{
-			$files = array();
+			$files = [];
 			$dir = FileUtil::addslash($dir);
 			while(false !== ($file = readdir($dh)))
 		        {
 				$path = FileUtil::fullpath($dir . $file);
-				if(($file=="..") && ($dir==$topDirectory))
-					continue;
+				if(($file=="..") && ($dir==$topDirectory)) {
+					continue; }
 				if(is_dir($path) && is_readable($path) &&
 					(strpos(FileUtil::addslash($path),$topDirectory)===0) &&
 					( $theSettings->uid<0 || !$checkUserPermissions || Permission::doesUserHave($theSettings->uid,$theSettings->gid,$path,0x0007) )
@@ -94,18 +94,18 @@ if(isset($_REQUEST['mode']))
 	{
 		require_once( '../throttle/throttle.php' );
 		$trt = rThrottle::load();
-		$tnames = array();
-		foreach( $trt->thr as $thr )
-			$tnames[] = $thr["name"];
+		$tnames = [];
+		foreach( $trt->thr as $thr ) {
+			$tnames[] = $thr["name"]; }
 		$output["channels"]  = $tnames;
 	}
 	if(in_array("ratios",$modes) && $theSettings->isPluginRegistered('ratio'))
 	{
 		require_once( '../ratio/ratio.php' );
 		$rat = rRatio::load();
-		$rnames = array();
-		foreach( $rat->rat as $r )
-			$rnames[] = $r["name"];
+		$rnames = [];
+		foreach( $rat->rat as $r ) {
+			$rnames[] = $r["name"]; }
 		$output["ratios"] = $rnames;
 	}
 }

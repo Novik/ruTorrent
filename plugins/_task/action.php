@@ -2,7 +2,7 @@
 
 require_once( "task.php" );
 
-$ret = array();
+$ret = [];
 
 switch($_REQUEST['cmd'])
 {
@@ -24,9 +24,9 @@ switch($_REQUEST['cmd'])
 	}
 	case "remove":
 	{
-		$list = array();
-		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		$list = [];
+		if(!isset($HTTP_RAW_POST_DATA)) {
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
@@ -36,8 +36,8 @@ switch($_REQUEST['cmd'])
 				if($parts[0]=="no")
 				{
 					$value = trim(rawurldecode($parts[1]));
-					if(strlen($value))
-						$list[] = $value;
+					if(strlen($value)) {
+						$list[] = $value; }
 				}
 			}
 		}

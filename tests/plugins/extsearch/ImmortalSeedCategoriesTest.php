@@ -20,8 +20,8 @@ require_once(__DIR__ . '/../rutracker_check/TestLib.php');
 
 class commonEngine
 {
-    public $defaults = array('public' => true, 'page_size' => 100);
-    public $categories = array('All' => '');
+    public $defaults = ['public' => true, 'page_size' => 100];
+    public $categories = ['All' => ''];
 
     public function makeClient($url)
     {
@@ -39,14 +39,14 @@ require_once(testFindRepoRoot() . '/plugins/extsearch/engines/ImmortalSeed.php')
 function extsearchDuplicateArrayKeys($file)
 {
     $tokens = token_get_all(file_get_contents($file));
-    $stack = array(array());
-    $duplicates = array();
+    $stack = [[]];
+    $duplicates = [];
     $total = count($tokens);
     for ($i = 0; $i < $total; $i++) {
         $token = $tokens[$i];
         if (!is_array($token)) {
             if ($token === '(' || $token === '[' || $token === '{') {
-                $stack[] = array();
+                $stack[] = [];
                 continue;
             }
             if ($token === ')' || $token === ']' || $token === '}') {
@@ -63,7 +63,7 @@ function extsearchDuplicateArrayKeys($file)
         // The next significant token decides whether this string is a key.
         for ($j = $i + 1; $j < $total; $j++) {
             $next = $tokens[$j];
-            if (is_array($next) && in_array($next[0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+            if (is_array($next) && in_array($next[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
                 continue;
             }
             if (is_array($next) && $next[0] === T_DOUBLE_ARROW) {
@@ -88,7 +88,7 @@ function extsearchNextSignificant($tokens, $k)
 {
     for ($total = count($tokens); $k < $total; $k++) {
         if (!is_array($tokens[$k]) || !in_array($tokens[$k][0],
-            array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+            [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
             return $k;
         }
     }
@@ -124,7 +124,7 @@ function extsearchDeclaredKeys($file, $property)
             continue;
         }
 
-        $keys = array();
+        $keys = [];
         $depth = 0;
         for ($k = $j; $k < $total; $k++) {
             $token = $tokens[$k];
@@ -151,7 +151,7 @@ function extsearchDeclaredKeys($file, $property)
         }
         return $keys;
     }
-    return array();
+    return [];
 }
 
 $suite = new StrictTestSuite();
@@ -160,12 +160,12 @@ $suite->test('every ImmortalSeed movie sub-category is reachable', function () {
     $engine = new ImmortalSeedEngine();
     $categories = $engine->categories;
     // One "Non-English" per Movies parent, with the site's own category id.
-    $expected = array(
+    $expected = [
         'Movies-4k' => '&selectedcats2=60',
         'Movies-HD' => '&selectedcats2=18',
         'Movies-Low Def' => '&selectedcats2=34',
         'Movies-SD' => '&selectedcats2=33',
-    );
+    ];
     foreach ($expected as $parent => $query) {
         strictAssertTrue(array_key_exists($parent, $categories),
             'the parent category ' . $parent . ' is gone');
@@ -192,7 +192,7 @@ $suite->test('the ImmortalSeed map keeps every entry its source declares', funct
     $source = testFindRepoRoot() . '/plugins/extsearch/engines/ImmortalSeed.php';
     $declared = extsearchDeclaredKeys($source, 'categories');
     strictAssertTrue(count($declared) > 1, 'no category entries found in ' . $source);
-    $repeated = array();
+    $repeated = [];
     foreach (array_count_values($declared) as $label => $times) {
         if ($times > 1) {
             $repeated[] = $label;
@@ -210,7 +210,7 @@ $suite->test('no search engine hides a category behind a repeated label', functi
     strictAssertTrue(count($engines) > 0, 'no engine files found');
     foreach ($engines as $engine) {
         $duplicates = extsearchDuplicateArrayKeys($engine);
-        strictAssertSame(array(), $duplicates,
+        strictAssertSame([], $duplicates,
             basename($engine) . ' repeats array key(s) ' . implode(', ', $duplicates)
             . ' -- every entry but the last is dropped');
     }

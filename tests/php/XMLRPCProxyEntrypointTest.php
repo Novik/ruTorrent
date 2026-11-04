@@ -17,8 +17,8 @@ class XMLRPCProxyEntrypointTest extends TestCase
 	public function setUp()
 	{
 		$this->sourceRoot = realpath(__DIR__ . '/../..');
-		if($this->sourceRoot === false)
-			throw new Exception('could not locate the production source root');
+		if($this->sourceRoot === false) {
+			throw new Exception('could not locate the production source root'); }
 	}
 
 	public function testHttprpcUnreadableInputReturnsClassified400()
@@ -27,7 +27,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		$this->assertHttp($result, '400 Bad Request', 'text/html; charset=UTF-8',
 			'Could not read XMLRPC request.');
 		$this->assertState($result['state'], 0, 1,
-			array('xmlrpc-proxy: could not read request body'));
+			['xmlrpc-proxy: could not read request body']);
 	}
 
 	public function testHttprpcEmptyInputReturnsClassified400()
@@ -35,7 +35,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		$result = $this->runEntrypoint('action', '', true);
 		$this->assertHttp($result, '400 Bad Request', 'text/html; charset=UTF-8', 'Empty XMLRPC request.');
 		$this->assertState($result['state'], 0, 1,
-			array('xmlrpc-proxy: empty request body'));
+			['xmlrpc-proxy: empty request body']);
 	}
 
 	public function testHttprpcInputFailuresDoNotLogWhenDisabled()
@@ -43,11 +43,11 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		$unreadable = $this->runEntrypoint('action', 'unreadable', false);
 		$this->assertHttp($unreadable, '400 Bad Request', 'text/html; charset=UTF-8',
 			'Could not read XMLRPC request.');
-		$this->assertState($unreadable['state'], 0, 1, array());
+		$this->assertState($unreadable['state'], 0, 1, []);
 
 		$empty = $this->runEntrypoint('action', '', false);
 		$this->assertHttp($empty, '400 Bad Request', 'text/html; charset=UTF-8', 'Empty XMLRPC request.');
-		$this->assertState($empty['state'], 0, 1, array());
+		$this->assertState($empty['state'], 0, 1, []);
 	}
 
 	public function testHttprpcRefusalReturnsNamed403AndStops()
@@ -178,29 +178,29 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		$server = null;
 		try
 		{
-			if(!mkdir($tree, 0700, true) && !is_dir($tree))
-				throw new Exception('could not create entrypoint fixture tree');
+			if(!mkdir($tree, 0700, true) && !is_dir($tree)) {
+				throw new Exception('could not create entrypoint fixture tree'); }
 			$this->copyProductionTree($tree, $policy);
 			$state = $tree . '/state.json';
-			file_put_contents($state, json_encode(array(
-				'sends' => 0, 'responses' => 0, 'logs' => array(),
+			file_put_contents($state, json_encode([
+				'sends' => 0, 'responses' => 0, 'logs' => [],
 				'payload' => null, 'trusted' => null, 'responseMode' => null,
-			)));
+			]));
 			$this->writeStubs($tree);
 
-			$environment = array(
+			$environment = [
 				'XMLRPC_ENTRYPOINT_STATE' => $state,
 				'XMLRPC_ENTRYPOINT_LOGGING' => $logging ? '1' : '0',
 				'XMLRPC_ENTRYPOINT_SEND' => $send,
 				'XMLRPC_ENTRYPOINT_UNREADABLE' => ($body === 'unreadable') ? '1' : '0',
-			);
-			$server = TestHttpServer::start($tree, $environment, array(
-				'-d', 'auto_prepend_file=' . $tree . '/prepend.php', '-d', 'display_errors=0'));
+			];
+			$server = TestHttpServer::start($tree, $environment, [
+				'-d', 'auto_prepend_file=' . $tree . '/prepend.php', '-d', 'display_errors=0']);
 			$response = TestHttpServer::rawPost($server->port(), ($door === 'action')
 				? '/plugins/httprpc/action.php' : '/rpc2.php', ($body === 'unreadable') ? '' : $body);
 			$decoded = json_decode(file_get_contents($state), true);
-			if(!is_array($decoded))
-				throw new Exception('copied entrypoint did not write readable state');
+			if(!is_array($decoded)) {
+				throw new Exception('copied entrypoint did not write readable state'); }
 			$response['state'] = $decoded;
 			$response['rpc2logs'] = is_file($tree . '/rpc2.log')
 				? file_get_contents($tree . '/rpc2.log') : '';
@@ -208,20 +208,20 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		}
 		finally
 		{
-			if($server !== null)
-				$server->close();
+			if($server !== null) {
+				$server->close(); }
 			TestTree::remove($tree);
 		}
 	}
 
 	private function copyProductionTree($tree, $policy = 'shipped')
 	{
-		$files = array(
+		$files = [
 			'plugins/httprpc/action.php',
 			'php/xmlrpc_proxy.php',
 			'php/scgitransport.php',
 			'rpc2.php',
-		);
+		];
 		// The shipped policy files, so that what a door decides here is what it
 		// decides on an install rather than what this fixture invented. "none"
 		// copies neither, which is a tree missing its configuration.
@@ -234,17 +234,17 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		{
 			$source = $this->sourceRoot . '/' . $relative;
 			$target = $tree . '/' . $relative;
-			if(!is_dir(dirname($target)) && !mkdir(dirname($target), 0700, true))
-				throw new Exception('could not create copied source directory for ' . $relative);
-			if(!copy($source, $target) || (hash_file('sha256', $source) !== hash_file('sha256', $target)))
-				throw new Exception('could not byte-copy production source ' . $relative);
+			if(!is_dir(dirname($target)) && !mkdir(dirname($target), 0700, true)) {
+				throw new Exception('could not create copied source directory for ' . $relative); }
+			if(!copy($source, $target) || (hash_file('sha256', $source) !== hash_file('sha256', $target))) {
+				throw new Exception('could not byte-copy production source ' . $relative); }
 		}
 	}
 
 	private function writeStubs($tree)
 	{
-		if(!is_dir($tree . '/conf'))
-			mkdir($tree . '/conf', 0700, true);
+		if(!is_dir($tree . '/conf')) {
+			mkdir($tree . '/conf', 0700, true); }
 		file_put_contents($tree . '/php/xmlrpc.php', <<<'PHP'
 <?php
 require_once(dirname(__FILE__) . '/scgitransport.php');
@@ -345,8 +345,8 @@ PHP
 			'HTTP status is ' . $status);
 		$this->assertEquals($type, isset($result['headers']['content-type'])
 			? $result['headers']['content-type'] : null, 'HTTP content type is ' . $type);
-		if($body !== null)
-			$this->assertEquals($body, $result['body'], 'HTTP body is exact');
+		if($body !== null) {
+			$this->assertEquals($body, $result['body'], 'HTTP body is exact'); }
 	}
 
 	private function assertState($state, $sends, $responses, $logs)

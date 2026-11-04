@@ -46,90 +46,90 @@ class Snoopy
 	// to send, or a reply it could not take. Below 100 like the -100 of a read
 	// timeout, so callers that already treat a status under 100 as "nothing
 	// arrived" need no new case; the reason is in $error.
-	const RESPONSE_BODY_FAILED = -101;
-	const SOCKET_CONNECT_FAILED = -102;
+	public const RESPONSE_BODY_FAILED = -101;
+	public const SOCKET_CONNECT_FAILED = -102;
 	// Provisional (1xx) blocks one answer may carry before its final response.
 	// A server sends one or two; each block is discarded when it ends, so only
 	// this count stops a peer that streams them without end.
-	const MAX_INTERIM_RESPONSES = 5;
+	public const MAX_INTERIM_RESPONSES = 5;
 
 	// Response cookies keep their scope separately from caller-supplied cookies.
-	const MAX_RESPONSE_COOKIES = 300;
-	const MAX_DOMAIN_COOKIES = 50;
-	const MAX_COOKIE_BYTES = 4096;
-	const MAX_COOKIE_HEADERS = 100;
-	const MAX_COOKIE_HEADER_BYTES = 8192;
-	private $responseCookieJar = array();
-	private $responseCookieSequence = 0;
-	private $flattenedResponseCookies = array();
-	private $lastResponseURL = null;
-	private $lastResponseAt = null;
-	private $responseCookiesCaptured = false;
-	private $responseCookieActions = array();
-	private $redirectCookieKeys = array();
+	public const MAX_RESPONSE_COOKIES = 300;
+	public const MAX_DOMAIN_COOKIES = 50;
+	public const MAX_COOKIE_BYTES = 4096;
+	public const MAX_COOKIE_HEADERS = 100;
+	public const MAX_COOKIE_HEADER_BYTES = 8192;
 
 	/**** Public variables ****/
 
 	/* user definable vars */
 
-	var $host		=	"www.php.net";		// host name we are connecting to
-	var $port		=	80;			// port we are connecting to
-        var $proxy_proto	=       "http";			// http or https
-	var $proxy_host		=	"";			// proxy host to use
-	var $proxy_port		=	"";			// proxy port to use
-	var $agent		=	"Snoopy v1.0";		// agent we masquerade as
-	var $referer		=	"";			// referer info to pass
-	var $cookies		=	array();		// array of cookies to pass
+	public $host		=	"www.php.net";		// host name we are connecting to
+	public $port		=	80;			// port we are connecting to
+        public $proxy_proto	=       "http";			// http or https
+	public $proxy_host		=	"";			// proxy host to use
+	public $proxy_port		=	"";			// proxy port to use
+	public $agent		=	"Snoopy v1.0";		// agent we masquerade as
+	public $referer		=	"";			// referer info to pass
+	public $cookies		=	[];		// array of cookies to pass
 								// $cookies["username"]="joe";
-	var $rawheaders		=	array();		// array of raw headers to send
+	public $rawheaders		=	[];		// array of raw headers to send
 								// $rawheaders["Content-type"]="text/html";
 
-	var $maxredirs		=	5;			// http redirection depth maximum. 0 = disallow
-	var $lastredirectaddr	=	"";			// contains address of last redirected address
-	var $passcookies	=	true;			// pass set cookies back through redirects
+	public $maxredirs		=	5;			// http redirection depth maximum. 0 = disallow
+	public $lastredirectaddr	=	"";			// contains address of last redirected address
+	public $passcookies	=	true;			// pass set cookies back through redirects
 
-	var $user		=	"";			// user for http authentication
-	var $pass		=	"";			// password for http authentication
+	public $user		=	"";			// user for http authentication
+	public $pass		=	"";			// password for http authentication
 
 	// http accept types
-	var $accept		=	"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*";
+	public $accept		=	"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*";
 
-	var $results		=	"";			// where the content is put
+	public $results		=	"";			// where the content is put
 
-	var $error		=	"";			// error messages sent here
-	var $response_code	=	"";			// response code returned from server
-	var $headers		=	array();		// headers returned from server sent here
-	var $maxlength		=	4194304;		// max return data length (body), see $httpMaxResponseLength
-	var $read_timeout	=	0;			// timeout on read operations, in seconds
+	public $error		=	"";			// error messages sent here
+	public $response_code	=	"";			// response code returned from server
+	public $headers		=	[];		// headers returned from server sent here
+	public $maxlength		=	4194304;		// max return data length (body), see $httpMaxResponseLength
+	public $read_timeout	=	0;			// timeout on read operations, in seconds
 
-	var $timed_out		=	false;			// if a read operation timed out
-	var $status		=	0;			// http request status
+	public $timed_out		=	false;			// if a read operation timed out
+	public $status		=	0;			// http request status
 
 	// send Accept-encoding: gzip?
-	var $use_gzip		=	true;
-	var $IP			=	null;
-	var $useIpv4		=	false;
+	public $use_gzip		=	true;
+	public $IP			=	null;
+	public $useIpv4		=	false;
 
 	// refuse targets that resolve to a private or otherwise non-routable address
-	var $block_private	=	false;
+	public $block_private	=	false;
 	// hosts exempt from the check above, matched against the URL host verbatim
-	var $private_allowlist	=	array();
+	public $private_allowlist	=	[];
 
 	// check the certificate an HTTPS server presents
-	var $verify_certificates =	true;
+	public $verify_certificates =	true;
 
 	/**** Private variables ****/
 
-	var $_maxlinelen	=	4096;			// max line length (headers)
+	public $_maxlinelen	=	4096;			// max line length (headers)
 
-	var $_httpversion	=	"HTTP/1.0";		// default http request version
-	var $_mime_boundary	=	"";			// MIME boundary for multipart/form-data submit type
-	var $_redirectaddr	=	false;			// will be set if page fetched is a redirect
-	var $_redirectdepth	=	0;			// increments on an http redirect
+	public $_httpversion	=	"HTTP/1.0";		// default http request version
+	public $_mime_boundary	=	"";			// MIME boundary for multipart/form-data submit type
+	public $_redirectaddr	=	false;			// will be set if page fetched is a redirect
+	public $_redirectdepth	=	0;			// increments on an http redirect
 
-	var $_isproxy		=	false;			// set if using a proxy server
-	var $_fp_timeout	=	30;			// timeout for socket connection
-	var $_pinnedaddr	=	false;			// address the guard validated, connected to verbatim
+	public $_isproxy		=	false;			// set if using a proxy server
+	public $_fp_timeout	=	30;			// timeout for socket connection
+	public $_pinnedaddr	=	false;			// address the guard validated, connected to verbatim
+	private $responseCookieJar = [];
+	private $responseCookieSequence = 0;
+	private $flattenedResponseCookies = [];
+	private $lastResponseURL = null;
+	private $lastResponseAt = null;
+	private $responseCookiesCaptured = false;
+	private $responseCookieActions = [];
+	private $redirectCookieKeys = [];
 
 	public function __construct()
 	{
@@ -143,8 +143,8 @@ class Snoopy
 		global $httpPrivateNetworkAllowlist;
 		global $httpVerifyCertificates;
 
-		if(isset($httpUserAgent))
-			$this->agent = $httpUserAgent;
+		if(isset($httpUserAgent)) {
+			$this->agent = $httpUserAgent; }
 		if(isset($httpTimeOut))
 		{
 			$this->_fp_timeout = $httpTimeOut;
@@ -156,31 +156,31 @@ class Snoopy
 			$this->proxy_host = $httpProxy['host'];
 			$this->proxy_port = $httpProxy['port'];
 		}
-		if (isset($httpUseGzip))
-			$this->use_gzip = $httpUseGzip;
+		if (isset($httpUseGzip)) {
+			$this->use_gzip = $httpUseGzip; }
 		// Anything that is not a positive byte count would refuse every fetch,
 		// which is not what an operator who wrote it meant; the bound the class
 		// ships with stands instead.
-		if (isset($httpMaxResponseLength) && (int)$httpMaxResponseLength > 0)
-			$this->maxlength = (int)$httpMaxResponseLength;
-		if(isset($httpBlockPrivateNetworks))
-			$this->block_private = $httpBlockPrivateNetworks;
-		if(isset($httpPrivateNetworkAllowlist) && is_array($httpPrivateNetworkAllowlist))
-			$this->private_allowlist = $httpPrivateNetworkAllowlist;
-		if(isset($httpVerifyCertificates))
-			$this->verify_certificates = (bool)$httpVerifyCertificates;
-		if(isset($httpIP))
-			$this->IP = $httpIP;
+		if (isset($httpMaxResponseLength) && (int)$httpMaxResponseLength > 0) {
+			$this->maxlength = (int)$httpMaxResponseLength; }
+		if(isset($httpBlockPrivateNetworks)) {
+			$this->block_private = $httpBlockPrivateNetworks; }
+		if(isset($httpPrivateNetworkAllowlist) && is_array($httpPrivateNetworkAllowlist)) {
+			$this->private_allowlist = $httpPrivateNetworkAllowlist; }
+		if(isset($httpVerifyCertificates)) {
+			$this->verify_certificates = (bool)$httpVerifyCertificates; }
+		if(isset($httpIP)) {
+			$this->IP = $httpIP; }
 	}
 
-	static public function linkencode($p_url)
+	public static function linkencode($p_url)
 	{
-		if(preg_match("/\%([0-9,A-F]{2})/i",$p_url)==1)
-			return($p_url);
+		if(preg_match("/\%([0-9,A-F]{2})/i",$p_url)==1) {
+			return($p_url); }
 		$p_url = str_replace("\t","%09",$p_url);
 		$uparts = @parse_url($p_url);
-		if(!is_array($uparts))
-			return($p_url);
+		if(!is_array($uparts)) {
+			return($p_url); }
 		$scheme = array_key_exists('scheme',$uparts) ? $uparts['scheme'] : "";
 		$pass = array_key_exists('pass',$uparts) ? $uparts['pass']  : "";
 		$user = array_key_exists('user',$uparts) ? $uparts['user']  : "";
@@ -190,19 +190,19 @@ class Snoopy
 		$query = array_key_exists('query',$uparts) ? $uparts['query']  : "";
 		$fragment = array_key_exists('fragment',$uparts) ? $uparts['fragment']  : "";
 
-		if(!empty($scheme))
-			$scheme .= '://';
+		if(!empty($scheme)) {
+			$scheme .= '://'; }
 
 		if(!empty($pass) && !empty($user))
 		{
 			$user = rawurlencode($user).':';
 			$pass = rawurlencode($pass).'@';
 		}
-		elseif(!empty($user))
-			$user .= '@';
+		elseif(!empty($user)) {
+			$user .= '@'; }
 
-		if(!empty($port) && !empty($host))
-			$host = ''.$host.':';
+		if(!empty($port) && !empty($host)) {
+			$host = ''.$host.':'; }
 
 		if(!empty($path))
 		{
@@ -224,8 +224,8 @@ class Snoopy
 			// legacy patch for servers that need a literal /~username
 			$path = str_replace("/%7E","/~",$path);
 		}
-		else
-		    $path="/";
+		else {
+		    $path="/"; }
 
 		if(!empty($query))
 		{
@@ -245,14 +245,14 @@ class Snoopy
 				}
 			}
 		}
-		if(!empty($fragment))
-			$fragment = '#'.urlencode($fragment);
-		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
+		if(!empty($fragment)) {
+			$fragment = '#'.urlencode($fragment); }
+		return implode('', [$scheme, $user, $pass, $host, $port, $path, $query, $fragment]);
 	}
 
-	static public function getURLCookies(&$url)
+	public static function getURLCookies(&$url)
 	{
-		$cookies = array();
+		$cookies = [];
 		$pos = strpos($url,':COOKIE:');
 		if($pos!==false)
 		{
@@ -271,8 +271,8 @@ class Snoopy
 	{
 		$urlCookies = self::getURLCookies($URI);
 		$parts = parse_url($URI);
-		if(!is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]))
-			return($this->fetch($URI,$method,$content_type,$body));
+		if(!is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"])) {
+			return($this->fetch($URI,$method,$content_type,$body)); }
 		$this->host = $parts["host"];
 		if(rTorrentSettings::get()->isPluginRegistered('cookies') && !empty($this->host))
 		{
@@ -293,8 +293,8 @@ class Snoopy
 				$am->obtain();
 			}
 			$acc = $am->getAccount($URI);
-			if($acc)
-				return($am->fetch( $acc, $this, $URI, $method, $content_type, $body ));
+			if($acc) {
+				return($am->fetch( $acc, $this, $URI, $method, $content_type, $body )); }
 		}
 		return($this->fetch($URI,$method,$content_type,$body));
 	}
@@ -323,415 +323,104 @@ class Snoopy
 		}
 	}
 
-	private function fetchRequest($URI,$method,$content_type,$body)
-	{
-		$this->pruneResponseCookieFacade();
-		if($this->_redirectdepth === 0)
-		{
-			// A request a caller makes is the start of its own chain: it has
-			// followed no redirect yet, and it inherits none from the chain
-			// before it, which may have stopped at its depth cap with a
-			// target still named.
-			$this->redirectCookieKeys = array();
-			$this->lastredirectaddr = '';
-			$this->_redirectaddr = false;
-		}
-		$this->lastResponseURL = null;
-		$this->lastResponseAt = null;
-		$this->responseCookiesCaptured = false;
-		$this->responseCookieActions = array();
-		$parts = parse_url($URI);
-		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
-			return($this->refuseRequest("invalid-url"));
-		rTorrentSettings::get()->pushEvent( "HostConnect", array
-		(
-			"client" => &$this,
-			"uri" => &$URI,
-			"method" => &$method,
-			"content_type" => &$content_type,
-			"body" => &$body
-		) );
-		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
-		// Keep the URI override after HostConnect, including empty userinfo.
-		if(isset($parts['user']))
-		{
-			$this->user = $parts['user'];
-			$this->pass = isset($parts['pass']) ? $parts['pass'] : '';
-		}
-		$this->host = $parts["host"];
-		$this->_isproxy = (!empty($this->proxy_host) && !empty($this->proxy_port));
-		$this->_pinnedaddr = false;
-		// checkTarget() names in $error the rule that turned the host down.
-		if($this->block_private && ($parts["scheme"]=="http" || $parts["scheme"]=="https") && !$this->checkTarget($this->host))
-			return($this->refuseRequest());
-		$ret = true;
-		switch($parts["scheme"])
-		{
-			case "dummy":
-			{
-				break;
-			}
-			case "http":
-			{
-				if($this->proxy_proto!='https')
-				{
-					if(($fp = $this->connect())!==false)
-					{
-						$path = (isset($parts["path"]) ? $parts["path"] : "/").(isset($parts["query"]) ? "?".$parts["query"] : "");
-						$ret = ( $this->_isproxy ?
-							$this->_httprequest($URI,$fp,$URI,$method,$content_type,$body) :
-							$this->_httprequest($path,$fp,$URI,$method,$content_type,$body) );
-						fclose($fp);
-					}
-					else
-						$ret = false;
-					break;
-				}
-			}
-			case "https":
-			{
-				$ret = $this->_httpsrequest($URI,$content_type,$body,$method);
-				break;
-			}
-			default:
-			{
-				$ret = $this->refuseRequest('invalid-protocol "'.$parts["scheme"].'"');
-				break;
-			}
-		}
-		if($ret)
-		{
-			$this->lastResponseURL = $URI;
-			$this->lastResponseAt = time();
-			if($this->passcookies)
-			{
-				$this->captureResponseCookies($URI);
-				$this->responseCookiesCaptured = true;
-			}
-			rTorrentSettings::get()->pushEvent( "URLFetched", array
-			(
-				"client" => $this,
-				"uri" => $URI,
-				"method" => $method,
-				"content_type" => $content_type,
-				"body" => $body
-			) );
-			if($this->_redirectaddr)
-			{
-				/* url was redirected, check if we've hit the max depth */
-				if($this->maxredirs > $this->_redirectdepth)
-				{
-					// Existing login adapters save cookies received along the
-					// redirect chain after the final response has completed.
-					if($this->passcookies)
-						$this->setcookies();
-					$this->_redirectdepth++;
-					$this->lastredirectaddr=$this->_redirectaddr;
-					if($this->redirectLeavesOrigin($parts,$this->_redirectaddr))
-						$this->dropCredentials();
-					try
-					{
-						$ret = $this->fetch($this->_redirectaddr);
-					}
-					finally
-					{
-						$this->_redirectdepth--;
-					}
-				}
-			}
-		}
-		return($ret);
-	}
-
-	// The redirect target a response names, or false for a response that
-	// names none this client can write. The target becomes the next request's
-	// target and its Host header, and Snoopy writes both by hand: a request
-	// target carries no whitespace and no control character, and neither does
-	// a host name. A space ends the target as far as a server's parser is
-	// concerned, so a request line carrying one has a part too many and is
-	// refused; parse_url() turns a control character into "_" but keeps
-	// whatever followed it, spaces included. Bounding the capture at the byte
-	// rather than dropping the target would send the request to whatever came
-	// before it, which is a different resource and not a refusal.
-	protected function redirectTargetFrom($matches)
-	{
-		if(!isset($matches[2]) || $matches[2] === '')
-			return(false);
-		return(preg_match("/[[:space:][:cntrl:]]/",$matches[2]) ? false : $matches[2]);
-	}
-
-	// Whether following this redirect hands the request to somewhere the
-	// credentials were not meant for. What they were meant for is an origin:
-	// the scheme, the host and the port together, each port carrying its
-	// scheme's default when the url does not name one. A different port on the
-	// same name is a different service -- often somebody else's, on a host
-	// that hands ports out -- so it is as much a move as a different name is,
-	// and it is what curl treats as a new origin for custom headers too.
-	//
-	// One move keeps them, and is the only one: the same host answering on
-	// https where it was asked on http, both on their default ports. Trackers
-	// answer exactly that, and an upgrade takes nothing away. Every other
-	// crossing drops them, https -> http included, where the credential would
-	// otherwise go out in clear.
-	protected function redirectLeavesOrigin($parts,$redirect)
-	{
-		$to = parse_url($redirect);
-		if(!is_array($to) || !isset($to["host"]))
-			return(false);
-		$fromScheme = isset($parts["scheme"]) ? strtolower($parts["scheme"]) : "";
-		$toScheme = isset($to["scheme"]) ? strtolower($to["scheme"]) : $fromScheme;
-		$fromHost = strtolower(isset($parts["host"]) ? $parts["host"] : "");
-		$toHost = strtolower($to["host"]);
-		$fromPort = self::effectivePort($parts,$fromScheme);
-		$toPort = self::effectivePort($to,$toScheme);
-		if(($fromScheme===$toScheme) && ($fromHost===$toHost) && ($fromPort===$toPort))
-			return(false);
-		return(!(($fromHost===$toHost) &&
-			($fromScheme==="http") && ($fromPort===80) &&
-			($toScheme==="https") && ($toPort===443)));
-	}
-
-	// The port this url is addressed on, named or implied by its scheme.
-	static protected function effectivePort($parts,$scheme)
-	{
-		if(isset($parts["port"]) && ($parts["port"]!==''))
-			return(intval($parts["port"]));
-		if($scheme==="https")
-			return(443);
-		if($scheme==="ftp")
-			return(21);
-		return(80);
-	}
-
-	// What was collected for the host that was asked, and only for it: the
-	// basic credentials parsed out of the url, the cookie jar (loaded for that
-	// host by fetchComplex, then added to by its Set-Cookie headers) and an
-	// Authorization header a caller put in rawheaders.
-	protected function dropCredentials()
-	{
-		$this->user = "";
-		$this->pass = "";
-		$this->cookies = array();
-		// Keep the existing origin-crossing policy even when a Domain cookie
-		// could match the new host or a different service on the same host.
-		$this->redirectCookieKeys = array_fill_keys(array_keys($this->responseCookieJar), true);
-		foreach(array_keys($this->rawheaders) as $name)
-			if(strcasecmp($name,"Authorization")===0)
-				unset($this->rawheaders[$name]);
-	}
-
-	protected function checkTarget($host)
-	{
-		if(in_array($host,$this->private_allowlist,true))
-			return(true);
-		$literal = filter_var(trim($host,"[]"),FILTER_VALIDATE_IP)!==false;
-		$addresses = static::resolveHost($host);
-		if(empty($addresses))
-		{
-			$this->error = 'Refusing to fetch: cannot resolve host "'.$host.'".';
-			return(false);
-		}
-		foreach($addresses as $address)
-			if(!self::isPublicAddress($address))
-			{
-				$this->error = 'Refusing to fetch: host "'.$host.'" resolves to the non-public address '.$address.'.';
-				return(false);
-			}
-		// A second lookup at connect time could answer differently, so the
-		// address that passed the check is the one the request goes to.
-		if(!$literal && !$this->_isproxy)
-			$this->_pinnedaddr = $addresses[0];
-		return(true);
-	}
-
-	static public function resolveHost($host)
+	public static function resolveHost($host)
 	{
 		$host = trim($host,"[]");
-		if(filter_var($host,FILTER_VALIDATE_IP)!==false)
-			return(array($host));
-		$addresses = array();
+		if(filter_var($host,FILTER_VALIDATE_IP)!==false) {
+			return([$host]); }
+		$addresses = [];
 		$records = @dns_get_record($host,DNS_A|DNS_AAAA);
-		if(is_array($records))
+		if(is_array($records)) {
 			foreach($records as $record)
 			{
-				if(isset($record["ip"]))
-					$addresses[] = $record["ip"];
-				if(isset($record["ipv6"]))
-					$addresses[] = $record["ipv6"];
-			}
+				if(isset($record["ip"])) {
+					$addresses[] = $record["ip"]; }
+				if(isset($record["ipv6"])) {
+					$addresses[] = $record["ipv6"]; }
+			} }
 		if(empty($addresses))
 		{
 			$byname = @gethostbynamel($host);
-			if(is_array($byname))
-				$addresses = $byname;
+			if(is_array($byname)) {
+				$addresses = $byname; }
 		}
 		return(array_values(array_unique($addresses)));
 	}
 
-	static public function isPublicAddress($address)
+	public static function isPublicAddress($address)
 	{
-		if(filter_var($address,FILTER_VALIDATE_IP,FILTER_FLAG_NO_PRIV_RANGE|FILTER_FLAG_NO_RES_RANGE)===false)
-			return(false);
+		if(filter_var($address,FILTER_VALIDATE_IP,FILTER_FLAG_NO_PRIV_RANGE|FILTER_FLAG_NO_RES_RANGE)===false) {
+			return(false); }
 		// Ranges filter_var accepts but that are not reachable on the public internet
-		foreach(array("100.64.0.0/10","192.0.0.0/24","192.88.99.0/24","198.18.0.0/15") as $cidr)
-			if(self::addressInCIDR($address,$cidr))
-				return(false);
+		foreach(["100.64.0.0/10","192.0.0.0/24","192.88.99.0/24","198.18.0.0/15"] as $cidr) {
+			if(self::addressInCIDR($address,$cidr)) {
+				return(false); } }
 		return(true);
 	}
 
-	static protected function addressInCIDR($address,$cidr)
+	public function get_header( $name )
 	{
-		$ip = ip2long($address);
-		list($network,$bits) = explode("/",$cidr);
-		$network = ip2long($network);
-		if($ip===false || $network===false)
-			return(false);
-		$mask = -1 << (32-intval($bits));
-		return(($ip & $mask)===($network & $mask));
-	}
-
-	function get_header( $name )
-	{
-		foreach( $this->headers as $i=>$header )
-			if(preg_match_all("/^$name:\s*(.*)/i",$header,$matches))
-				return( $matches[1][0] );
+		foreach( $this->headers as $i=>$header ) {
+			if(preg_match_all("/^$name:\s*(.*)/i",$header,$matches)) {
+				return( $matches[1][0] ); } }
 		return(false);
 	}
 
-	function get_filename()
+	public function get_filename()
 	{
-		foreach( $this->headers as $i=>$header )
-			if(preg_match_all("/^Content-Disposition:.*(\s|;)filename=\"(.*)\.torrent\"/i",$header,$matches) && (count($matches)>2))
-				return( str_replace( '/', '_', rawurldecode($matches[2][0]).".torrent" ) );
+		foreach( $this->headers as $i=>$header ) {
+			if(preg_match_all("/^Content-Disposition:.*(\s|;)filename=\"(.*)\.torrent\"/i",$header,$matches) && (count($matches)>2)) {
+				return( str_replace( '/', '_', rawurldecode($matches[2][0]).".torrent" ) ); } }
 		return(false);
 	}
 
-	function get_modified()
+	public function get_modified()
 	{
 		$value = $this->get_header( 'Last-Modified' );
 		return( $value ? strtotime($value) : false );
 	}
 
-	// A refused request has to replace the whole response and not only its
-	// body: $status, $results, the headers and the redirect target otherwise
-	// still describe whatever the client last fetched, and a caller reusing
-	// one client reads those rather than the return value. Called without a
-	// $reason, the one in $error stands.
-	protected function refuseRequest($reason = null)
+	public function _httprequest($url,$fp,$URI,$http_method,$content_type="",$body="")
 	{
 		$this->discardResponse();
-		$this->status = self::RESPONSE_BODY_FAILED;
-		if($reason !== null)
-			$this->error = $reason;
-		return false;
-	}
-
-	// A reply the client could not take is not a response: none of it answers
-	// for the request it arrived on, and none of it is a source of cookies for
-	// the request after that one. $status is left to the caller, which says in
-	// its own terms what did not arrive.
-	protected function discardResponse()
-	{
-		$this->headers = array();
-		$this->response_code = "";
-		$this->results = "";
-		$this->_redirectaddr = false;
-	}
-
-	// $maxlength as a byte count, which is what both paths bound against.
-	// $httpMaxResponseLength sets it; a caller may assign it directly.
-	protected function responseLimit()
-	{
-		return max(0, (int)$this->maxlength);
-	}
-
-	// Inflates a gzip body to no more than $maxlength bytes. Both paths stop
-	// reading just past that many compressed bytes, but zeros compress about
-	// 1000:1, so 64 KiB from a hostile or broken server inflate to 64 MiB, and
-	// the only thing that used to stop that was memory_limit, with a fatal
-	// error.
-	// Returns false for a body that is malformed or inflates past the bound.
-	// An empty or absent body is an empty body: a 304 or 204 may carry the
-	// header with no member behind it. gzinflate() skips the 10-byte header
-	// and never checked the trailer, so on that branch an answer the read cut
-	// short still decodes when its deflate stream came through whole; the
-	// external gzip refuses a truncated member.
-	protected function decodeGzipBody($encoded)
-	{
-		if($encoded === '' || $encoded === false)
-			return '';
-		if(!is_string($encoded))
-			return false;
-		$limit = $this->responseLimit();
-		if(function_exists("gzinflate"))
-		{
-			// max_length is not an exact cap: zlib stops growing its buffer
-			// there and the last round overshoots it, so the length is checked
-			// below. The one byte of slack is insurance only; on PHP 7.4, 8.1
-			// and 8.5 an exact max_length already decodes a body of exactly
-			// that length.
-			$decoded = @gzinflate(substr($encoded, 10), $limit + 1);
-		}
-		else
-		{
-			$randName = FileUtil::getTempFilename('answer');
-			file_put_contents($randName.".gz",$encoded);
-			exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$output,$return);
-			$decoded = false;
-			if(is_file($randName))
-			{
-				// One byte past the bound is read, which is how an oversized
-				// file is told from one of exactly $maxlength bytes.
-				$decoded = @file_get_contents($randName, false, null, 0, $limit + 1);
-				unlink($randName);
-			}
-			else
-				unlink($randName.".gz");
-		}
-		return (is_string($decoded) && strlen($decoded) <= $limit) ? $decoded : false;
-	}
-
-	function _httprequest($url,$fp,$URI,$http_method,$content_type="",$body="")
-	{
-		$this->discardResponse();
-		if(empty($url))
-			$url = "/";
+		if(empty($url)) {
+			$url = "/"; }
 		$headers = $http_method." ".$url." ".$this->_httpversion."\r\n";
-		if(!empty($this->agent))
-			$headers .= "User-Agent: ".$this->agent."\r\n";
-		if(!empty($this->host) && !isset($this->rawheaders['Host']))
-			$headers .= "Host: ".$this->host.($this->port == 80 ? "" : ":".$this->port)."\r\n";
-		if(!empty($this->accept))
-			$headers .= "Accept: ".$this->accept."\r\n";
-		if($this->use_gzip && function_exists("gzinflate"))
-			$headers .= "Accept-encoding: gzip\r\n";
-		if(!empty($this->referer))
-			$headers .= "Referer: ".$this->referer."\r\n";
+		if(!empty($this->agent)) {
+			$headers .= "User-Agent: ".$this->agent."\r\n"; }
+		if(!empty($this->host) && !isset($this->rawheaders['Host'])) {
+			$headers .= "Host: ".$this->host.($this->port == 80 ? "" : ":".$this->port)."\r\n"; }
+		if(!empty($this->accept)) {
+			$headers .= "Accept: ".$this->accept."\r\n"; }
+		if($this->use_gzip && function_exists("gzinflate")) {
+			$headers .= "Accept-encoding: gzip\r\n"; }
+		if(!empty($this->referer)) {
+			$headers .= "Referer: ".$this->referer."\r\n"; }
 		$cookieHeader = $this->cookieHeaderForRequest($URI);
-		if($cookieHeader !== '')
-			$headers .= $cookieHeader . "\r\n";
-		foreach( $this->rawheaders as $headerKey => $headerVal )
-			if(strcasecmp((string) $headerKey, 'Cookie') !== 0)
-				$headers .= $headerKey.": ".$headerVal."\r\n";
+		if($cookieHeader !== '') {
+			$headers .= $cookieHeader . "\r\n"; }
+		foreach( $this->rawheaders as $headerKey => $headerVal ) {
+			if(strcasecmp((string) $headerKey, 'Cookie') !== 0) {
+				$headers .= $headerKey.": ".$headerVal."\r\n"; } }
 		if(!empty($content_type))
 		{
 			$headers .= "Content-type: $content_type";
-			if ($content_type == "multipart/form-data")
-				$headers .= "; boundary=".$this->_mime_boundary;
+			if ($content_type == "multipart/form-data") {
+				$headers .= "; boundary=".$this->_mime_boundary; }
 			$headers .= "\r\n";
 		}
-		if(strlen((string)$body) > 0)
-			$headers .= "Content-length: ".strlen($body)."\r\n";
-		if(!empty($this->user) || !empty($this->pass))
-			$headers .= "Authorization: Basic ".base64_encode($this->user.":".$this->pass)."\r\n";
+		if(strlen((string)$body) > 0) {
+			$headers .= "Content-length: ".strlen($body)."\r\n"; }
+		if(!empty($this->user) || !empty($this->pass)) {
+			$headers .= "Authorization: Basic ".base64_encode($this->user.":".$this->pass)."\r\n"; }
 
 		$headers .= "\r\n";
 
 		// set the read timeout if needed
-		if ($this->read_timeout > 0)
+		if ($this->read_timeout > 0) {
 			// socket_set_timeout() is the same function under a name PHP 8.5
 			// deprecates; stream_set_timeout() has existed since PHP 4.3.
-			stream_set_timeout($fp, $this->read_timeout);
+			stream_set_timeout($fp, $this->read_timeout); }
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
 		$is_gzipped = false;
@@ -753,8 +442,8 @@ class Snoopy
 				{
 					// A provisional block owns neither the final metadata nor
 					// its body. 101 switches protocols rather than preceding it.
-					if(++$interimResponses > self::MAX_INTERIM_RESPONSES)
-						return $this->refuseRequest('too-many-interim-responses');
+					if(++$interimResponses > self::MAX_INTERIM_RESPONSES) {
+						return $this->refuseRequest('too-many-interim-responses'); }
 					$this->discardResponse();
 					$this->status = 0;
 					$is_gzipped = false;
@@ -767,8 +456,8 @@ class Snoopy
 			if(preg_match("/^(Location:|URI:|Refresh:)/i",$currentHeader))
 			{
 				// get URL portion of the redirect
-				if(!preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches))
-					preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($currentHeader),$matches);
+				if(!preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches)) {
+					preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($currentHeader),$matches); }
 				$target = $this->redirectTargetFrom($matches);
 				if($target !== false)
 				{
@@ -777,21 +466,21 @@ class Snoopy
 					// inherits only the scheme. Resolved against the requested
 					// host it would become http://old.host:80//new.host/path,
 					// which redirects again until maxredirs runs out.
-					if(preg_match("|^//|",$target))
-						$this->_redirectaddr = "http:".$target;
+					if(preg_match("|^//|",$target)) {
+						$this->_redirectaddr = "http:".$target; }
 					// look for :// in the Location header to see if hostname is included
-					else if(!preg_match("|\:\/\/|",$target))
+					elseif(!preg_match("|\:\/\/|",$target))
 					{
 						$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
 						$this->_redirectaddr = "http://".$host.":".$this->port;
 						// eliminate double slash
-						if(!preg_match("|^/|",$target))
-							$this->_redirectaddr .= "/".$target;
-						else
-							$this->_redirectaddr .= $target;
+						if(!preg_match("|^/|",$target)) {
+							$this->_redirectaddr .= "/".$target; }
+						else {
+							$this->_redirectaddr .= $target; }
 					}
-					else
-						$this->_redirectaddr = $target;
+					else {
+						$this->_redirectaddr = $target; }
 				}
 			}
 			if(preg_match("|^HTTP/|",$currentHeader))
@@ -803,8 +492,8 @@ class Snoopy
 				$this->response_code = $currentHeader;
 			}
 
-			if (preg_match("/Content-Encoding: gzip/i", $currentHeader) )
-				$is_gzipped = true;
+			if (preg_match("/Content-Encoding: gzip/i", $currentHeader) ) {
+				$is_gzipped = true; }
 
 			$this->headers[] = $currentHeader;
 		}
@@ -817,8 +506,8 @@ class Snoopy
 			return false;
 		}
 		if(($interimResponses > 0 && $this->response_code === '')
-			|| ((int)$this->status >= 100 && (int)$this->status < 200 && (int)$this->status !== 101))
-			return $this->refuseRequest('missing-final-response');
+			|| ((int)$this->status >= 100 && (int)$this->status < 200 && (int)$this->status !== 101)) {
+			return $this->refuseRequest('missing-final-response'); }
 
 		$results = "";
 		$limit = $this->responseLimit();
@@ -826,11 +515,11 @@ class Snoopy
 		{
 			// PHP 7.4/8.1 can return partial bytes with a timeout already set.
 			// Keep that flag for the failure path below before another read clears it.
-			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
-				break;
+			if ($this->read_timeout > 0 && $this->_check_timeout($fp)) {
+				break; }
 			$results .= $data;
-			if( strlen($results) > $limit )
-			        break;
+			if( strlen($results) > $limit ) {
+			        break; }
 		}
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
@@ -844,58 +533,58 @@ class Snoopy
 		// arrived, under the response's own 200, would leave a caller unable
 		// to tell a cut-off document from a whole one, so it is refused on the
 		// same terms as a body that inflates past the bound.
-		if( strlen($results) > $limit )
-			return $this->refuseRequest('oversized-response-body');
+		if( strlen($results) > $limit ) {
+			return $this->refuseRequest('oversized-response-body'); }
 
 		// gunzip
 		if ( $is_gzipped )
 		{
 			$results = $this->decodeGzipBody($results);
-			if($results === false)
-				return $this->refuseRequest('invalid-or-oversized-gzip');
+			if($results === false) {
+				return $this->refuseRequest('invalid-or-oversized-gzip'); }
 		}
 
 		$this->results = $results;
 		return true;
 	}
 
-	function _httpsrequest($url,$content_type="",$body="",$http_method="GET")
+	public function _httpsrequest($url,$content_type="",$body="",$http_method="GET")
 	{
 		$this->discardResponse();
-		$headers = array();
-		if(!empty($this->agent))
-			$headers[] = "User-Agent: ".$this->agent;
-		if(!empty($this->host) && !isset($this->rawheaders['Host']))
-			$headers[] = "Host: ".$this->host.($this->port == 443 ? "" : ":".$this->port);
-		if(!empty($this->accept))
-			$headers[] = "Accept: ".$this->accept;
-		if(!empty($this->referer))
-			$headers[] = "Referer: ".$this->referer;
+		$headers = [];
+		if(!empty($this->agent)) {
+			$headers[] = "User-Agent: ".$this->agent; }
+		if(!empty($this->host) && !isset($this->rawheaders['Host'])) {
+			$headers[] = "Host: ".$this->host.($this->port == 443 ? "" : ":".$this->port); }
+		if(!empty($this->accept)) {
+			$headers[] = "Accept: ".$this->accept; }
+		if(!empty($this->referer)) {
+			$headers[] = "Referer: ".$this->referer; }
 		$cookieHeader = $this->cookieHeaderForRequest($url);
-		if($cookieHeader !== '')
-			$headers[] = $cookieHeader;
-		foreach( $this->rawheaders as $headerKey => $headerVal )
-			if(strcasecmp((string) $headerKey, 'Cookie') !== 0)
-				$headers[] = $headerKey.": ".$headerVal;
+		if($cookieHeader !== '') {
+			$headers[] = $cookieHeader; }
+		foreach( $this->rawheaders as $headerKey => $headerVal ) {
+			if(strcasecmp((string) $headerKey, 'Cookie') !== 0) {
+				$headers[] = $headerKey.": ".$headerVal; } }
 		if(!empty($content_type))
 		{
-			if ($content_type == "multipart/form-data")
-				$headers[] = "Content-type: $content_type; boundary=".$this->_mime_boundary;
-			else
-				$headers[] = "Content-type: $content_type";
+			if ($content_type == "multipart/form-data") {
+				$headers[] = "Content-type: $content_type; boundary=".$this->_mime_boundary; }
+			else {
+				$headers[] = "Content-type: $content_type"; }
 		}
-		if(strlen((string)$body) > 0)
-			$headers[] = "Content-length: ".strlen($body);
-		if(!empty($this->user) || !empty($this->pass))
-			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass);
+		if(strlen((string)$body) > 0) {
+			$headers[] = "Content-length: ".strlen($body); }
+		if(!empty($this->user) || !empty($this->pass)) {
+			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass); }
 
 		$cmdline_params = '';
 		// Legacy 3-arg callers keep curl's own method choice; explicit callers
 		// (fetch with any method) get the method forwarded verbatim.
-		if(func_num_args() >= 4)
-			$cmdline_params .= " -X ".escapeshellarg(strtoupper($http_method));
-		foreach( $headers as $header )
-			$cmdline_params .= " -H ".escapeshellarg($header);
+		if(func_num_args() >= 4) {
+			$cmdline_params .= " -X ".escapeshellarg(strtoupper($http_method)); }
+		foreach( $headers as $header ) {
+			$cmdline_params .= " -H ".escapeshellarg($header); }
 
 		$bodyfile = null;
 		if(strlen((string)$body) > 0)
@@ -922,14 +611,14 @@ class Snoopy
 			$cmdline_params .= " --data-binary ".escapeshellarg("@".$bodyfile);
 		}
 
-		if($this->read_timeout > 0)
-			$cmdline_params .= " -m ".$this->read_timeout;
+		if($this->read_timeout > 0) {
+			$cmdline_params .= " -m ".$this->read_timeout; }
 
-		if(!is_null($this->IP))
-			$cmdline_params .= " --interface ".$this->IP;
+		if(!is_null($this->IP)) {
+			$cmdline_params .= " --interface ".$this->IP; }
 
-		if($this->useIpv4)
-			$cmdline_params .= " --ipv4";
+		if($this->useIpv4) {
+			$cmdline_params .= " --ipv4"; }
 
 		if($this->_pinnedaddr!==false)
 		{
@@ -940,16 +629,16 @@ class Snoopy
 
 		if($this->_isproxy)
 		{
-			if(!$this->verify_certificates)
-				$cmdline_params .= " --proxy-insecure";
+			if(!$this->verify_certificates) {
+				$cmdline_params .= " --proxy-insecure"; }
 			$cmdline_params .= " --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
 		}
 
 		$headerfile = FileUtil::getTempFilename('https-header');
 		$contfile = FileUtil::getTempFilename('https-body');
 
-		if(!$this->verify_certificates)
-			$cmdline_params .= " -k";
+		if(!$this->verify_certificates) {
+			$cmdline_params .= " -k"; }
 		$cmdline_params .= " -s ";
 
 		// escapeshellarg() keeps only the bytes that form a character in the
@@ -965,15 +654,15 @@ class Snoopy
 		$authority = ($authority === false) ? 0 : $authority + 3;
 		$target = $authority + strcspn($url, '/?#', $authority);
 		$encoded = '';
-		for($at = $target, $end = strlen($url); $at < $end; $at++)
-			$encoded .= (ord($url[$at]) < 0x80) ? $url[$at] : sprintf('%%%02X', ord($url[$at]));
+		for($at = $target, $end = strlen($url); $at < $end; $at++) {
+			$encoded .= (ord($url[$at]) < 0x80) ? $url[$at] : sprintf('%%%02X', ord($url[$at])); }
 		$url = substr($url, 0, $target).$encoded;
 
 		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		// curl has read the body by now, and nothing below this line needs it,
 		// so the one copy of it on disk goes away before any return path.
-		if($bodyfile !== null)
-			@unlink($bodyfile);
+		if($bodyfile !== null) {
+			@unlink($bodyfile); }
 		$this->status = $return;
 		$is_gzipped = false;
 		if($return)
@@ -997,7 +686,7 @@ class Snoopy
 			// fetched from, which through a proxy may have presented no
 			// certificate at all, so it is named as one of the two rather than
 			// as the answer.
-			if($this->verify_certificates && in_array($return,array(51,60,77),true))
+			if($this->verify_certificates && in_array($return,[51,60,77],true))
 			{
 				$whose = $this->_isproxy
 					? "\"".$this->host."\", or of the proxy it was reached through,"
@@ -1005,8 +694,8 @@ class Snoopy
 				$this->error = "Error: cURL could not verify the certificate of ".$whose." (error $return). "
 					."Install the certificate authority that signed it, or set \$httpVerifyCertificates to false in conf/config.php to stop checking.";
 			}
-			else
-				$this->error = "Error: cURL could not retrieve the document, error $return.";
+			else {
+				$this->error = "Error: cURL could not retrieve the document, error $return."; }
 		}
 		else
 		{
@@ -1022,8 +711,8 @@ class Snoopy
 				if(preg_match("/^(Location:|URI:|Refresh:)/i",$header))
 				{
 					// get URL portion of the redirect
-					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($header),$matches))
-						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($header),$matches);
+					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($header),$matches)) {
+						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($header),$matches); }
 
 					$target = $this->redirectTargetFrom($matches);
 					if($target !== false)
@@ -1034,38 +723,38 @@ class Snoopy
 						// requested host it would become
 						// https://old.host:443//new.host/path, which redirects
 						// again until maxredirs runs out.
-						if(preg_match("|^//|",$target))
-							$this->_redirectaddr = "https:".$target;
+						if(preg_match("|^//|",$target)) {
+							$this->_redirectaddr = "https:".$target; }
 						// look for :// in the Location header to see if hostname is included
-						else if(!preg_match("|\:\/\/|",$target))
+						elseif(!preg_match("|\:\/\/|",$target))
 						{
 							// no host in the path, so prepend
 							$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
 							$this->_redirectaddr = "https://".$host.":".$this->port;
 							// eliminate double slash
-							if(!preg_match("|^/|",$target))
-								$this->_redirectaddr .= "/".$target;
-							else
-								$this->_redirectaddr .= $target;
+							if(!preg_match("|^/|",$target)) {
+								$this->_redirectaddr .= "/".$target; }
+							else {
+								$this->_redirectaddr .= $target; }
 						}
-						else
-							$this->_redirectaddr = $target;
+						else {
+							$this->_redirectaddr = $target; }
 					}
 				}
 				if(preg_match("|^HTTP/|",$header))
 				{
 					// curl -D includes CONNECT and provisional responses before
 					// the origin's final block. None of their metadata survives it.
-					$this->headers = array();
+					$this->headers = [];
 					$this->_redirectaddr = false;
 					$this->status = 0;
 					$is_gzipped = false;
 					$this->response_code = $header;
-					if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match))
-						$this->status= $match[1];
+					if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match)) {
+						$this->status= $match[1]; }
 				}
-				if (preg_match("/Content-Encoding: gzip/i", $header) )
-					$is_gzipped = true;
+				if (preg_match("/Content-Encoding: gzip/i", $header) ) {
+					$is_gzipped = true; }
 				$this->headers[] = $header;
 			}
 			if((int)$this->status >= 100 && (int)$this->status < 200 && (int)$this->status !== 101)
@@ -1098,35 +787,467 @@ class Snoopy
 		return(!$return);
 	}
 
+	public function setcookies()
+	{
+		$this->pruneResponseCookieFacade();
+		if($this->lastResponseURL === null)
+		{
+			// Header-only legacy callers supplied no source URL to validate.
+			foreach($this->headers as $header) {
+				if(preg_match("/^set-cookie:[\s]+([^;=[:cntrl:]]+)=([^;[:cntrl:]]+)/i", $header, $match))
+				{
+					unset($this->flattenedResponseCookies[$match[1]]);
+					if($match[2] === 'deleted') {
+						unset($this->cookies[$match[1]]); }
+					else {
+						$this->cookies[$match[1]] = $match[2]; }
+				} }
+			return;
+		}
+		if(!$this->responseCookiesCaptured)
+		{
+			$this->captureResponseCookies($this->lastResponseURL);
+			$this->responseCookiesCaptured = true;
+		}
+		$this->pruneResponseCookieFacade();
+		// Keep loginmgr's flat schema, but export only the accepted actions of
+		// the same parser that owns the jar. Refused/expired values cannot be
+		// resurrected by saving that facade and loading it into a fresh client.
+		foreach($this->responseCookieActions as $action)
+		{
+			$name = $action['name'];
+			if($action['delete'])
+			{
+				// A flat facade can name only one tuple. Deleting another Path,
+				// host-only flag or Domain must not erase its still-live source.
+				if(!isset($this->flattenedResponseCookies[$name])
+					|| $this->flattenedResponseCookies[$name]['key'] === $action['key']) {
+					unset($this->cookies[$name], $this->flattenedResponseCookies[$name]); }
+				continue;
+			}
+			if(!isset($this->responseCookieJar[$action['key']])
+				|| $this->responseCookieJar[$action['key']]['value'] !== $action['value']) {
+				continue; }
+			$value = $action['value'];
+			$manualSame = array_key_exists($name, $this->cookies) && $this->cookies[$name] === $value
+				&& (!isset($this->flattenedResponseCookies[$name]) || $this->flattenedResponseCookies[$name]['manual']);
+			$this->cookies[$name] = $value;
+			$this->flattenedResponseCookies[$name] = ['value' => $value, 'key' => $action['key'], 'manual' => $manualSame];
+		}
+	}
+
+	public function _check_timeout($fp)
+	{
+		if ($this->read_timeout > 0)
+		{
+			$fp_status = socket_get_status($fp);
+			if ($fp_status["timed_out"])
+			{
+				$this->timed_out = true;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function connect()
+	{
+		$fp = false;
+		if($this->_isproxy)
+		{
+			$host = $this->proxy_host;
+			$port = $this->proxy_port;
+		}
+		else
+		{
+			$host = ($this->_pinnedaddr===false) ? $this->host : $this->_pinnedaddr;
+			$port = $this->port;
+		}
+		if(filter_var(trim($host,"[]"),FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)!==false) {
+			$host = "[".trim($host,"[]")."]"; }
+		$this->status = 0;
+		if(function_exists("stream_socket_client") && !is_null($this->IP))
+		{
+			$opts = ['socket' => ['bindto' => $this->IP.':0']];
+			$context = stream_context_create($opts);
+			$fp = stream_socket_client("tcp://".$host.":".$port, $errno, $errstr, $this->_fp_timeout, STREAM_CLIENT_CONNECT, $context);
+		}
+		else {
+			$fp = fsockopen($host,$port,$errno,$errstr,$this->_fp_timeout); }
+		if(!$fp)
+		{
+			// A request whose socket never opened has no response of its own,
+			// and the one still in place describes whatever the client last
+			// fetched. Callers reuse a client for a sequence of fetches and
+			// read $results and $headers rather than the return value.
+			$this->discardResponse();
+			// Positive OS errno values overlap HTTP statuses. Keep the errno in
+			// the message and use a distinct transport status, not -100 or -101.
+			$this->status = $errno > 0 ? self::SOCKET_CONNECT_FAILED : $errno;
+			// PHP can report DNS failure with errno 0; do not expose its raw text.
+			if($errno === 0 && strpos((string)$errstr, "php_network_getaddresses:") === 0)
+			{
+				$this->error = "dns lookup failure (0)";
+				return(false);
+			}
+			switch($errno)
+			{
+				case -3:
+					$this->error="socket creation failed (-3)";
+					break;
+				case -4:
+					$this->error="dns lookup failure (-4)";
+					break;
+				case -5:
+					$this->error="connection refused or timed out (-5)";
+					break;
+				default:
+					$this->error="connection failed (".$errno.")";
+			}
+		}
+		return($fp);
+	}
+
+	// The redirect target a response names, or false for a response that
+	// names none this client can write. The target becomes the next request's
+	// target and its Host header, and Snoopy writes both by hand: a request
+	// target carries no whitespace and no control character, and neither does
+	// a host name. A space ends the target as far as a server's parser is
+	// concerned, so a request line carrying one has a part too many and is
+	// refused; parse_url() turns a control character into "_" but keeps
+	// whatever followed it, spaces included. Bounding the capture at the byte
+	// rather than dropping the target would send the request to whatever came
+	// before it, which is a different resource and not a refusal.
+	protected function redirectTargetFrom($matches)
+	{
+		if(!isset($matches[2]) || $matches[2] === '') {
+			return(false); }
+		return(preg_match("/[[:space:][:cntrl:]]/",$matches[2]) ? false : $matches[2]);
+	}
+
+	// Whether following this redirect hands the request to somewhere the
+	// credentials were not meant for. What they were meant for is an origin:
+	// the scheme, the host and the port together, each port carrying its
+	// scheme's default when the url does not name one. A different port on the
+	// same name is a different service -- often somebody else's, on a host
+	// that hands ports out -- so it is as much a move as a different name is,
+	// and it is what curl treats as a new origin for custom headers too.
+	//
+	// One move keeps them, and is the only one: the same host answering on
+	// https where it was asked on http, both on their default ports. Trackers
+	// answer exactly that, and an upgrade takes nothing away. Every other
+	// crossing drops them, https -> http included, where the credential would
+	// otherwise go out in clear.
+	protected function redirectLeavesOrigin($parts,$redirect)
+	{
+		$to = parse_url($redirect);
+		if(!is_array($to) || !isset($to["host"])) {
+			return(false); }
+		$fromScheme = isset($parts["scheme"]) ? strtolower($parts["scheme"]) : "";
+		$toScheme = isset($to["scheme"]) ? strtolower($to["scheme"]) : $fromScheme;
+		$fromHost = strtolower(isset($parts["host"]) ? $parts["host"] : "");
+		$toHost = strtolower($to["host"]);
+		$fromPort = self::effectivePort($parts,$fromScheme);
+		$toPort = self::effectivePort($to,$toScheme);
+		if(($fromScheme===$toScheme) && ($fromHost===$toHost) && ($fromPort===$toPort)) {
+			return(false); }
+		return(!(($fromHost===$toHost) &&
+			($fromScheme==="http") && ($fromPort===80) &&
+			($toScheme==="https") && ($toPort===443)));
+	}
+
+	// The port this url is addressed on, named or implied by its scheme.
+	protected static function effectivePort($parts,$scheme)
+	{
+		if(isset($parts["port"]) && ($parts["port"]!=='')) {
+			return(intval($parts["port"])); }
+		if($scheme==="https") {
+			return(443); }
+		if($scheme==="ftp") {
+			return(21); }
+		return(80);
+	}
+
+	// What was collected for the host that was asked, and only for it: the
+	// basic credentials parsed out of the url, the cookie jar (loaded for that
+	// host by fetchComplex, then added to by its Set-Cookie headers) and an
+	// Authorization header a caller put in rawheaders.
+	protected function dropCredentials()
+	{
+		$this->user = "";
+		$this->pass = "";
+		$this->cookies = [];
+		// Keep the existing origin-crossing policy even when a Domain cookie
+		// could match the new host or a different service on the same host.
+		$this->redirectCookieKeys = array_fill_keys(array_keys($this->responseCookieJar), true);
+		foreach(array_keys($this->rawheaders) as $name) {
+			if(strcasecmp($name,"Authorization")===0) {
+				unset($this->rawheaders[$name]); } }
+	}
+
+	protected function checkTarget($host)
+	{
+		if(in_array($host,$this->private_allowlist,true)) {
+			return(true); }
+		$literal = filter_var(trim($host,"[]"),FILTER_VALIDATE_IP)!==false;
+		$addresses = static::resolveHost($host);
+		if(empty($addresses))
+		{
+			$this->error = 'Refusing to fetch: cannot resolve host "'.$host.'".';
+			return(false);
+		}
+		foreach($addresses as $address) {
+			if(!self::isPublicAddress($address))
+			{
+				$this->error = 'Refusing to fetch: host "'.$host.'" resolves to the non-public address '.$address.'.';
+				return(false);
+			} }
+		// A second lookup at connect time could answer differently, so the
+		// address that passed the check is the one the request goes to.
+		if(!$literal && !$this->_isproxy) {
+			$this->_pinnedaddr = $addresses[0]; }
+		return(true);
+	}
+
+	protected static function addressInCIDR($address,$cidr)
+	{
+		$ip = ip2long($address);
+		list($network,$bits) = explode("/",$cidr);
+		$network = ip2long($network);
+		if($ip===false || $network===false) {
+			return(false); }
+		$mask = -1 << (32-intval($bits));
+		return(($ip & $mask)===($network & $mask));
+	}
+
+	// A refused request has to replace the whole response and not only its
+	// body: $status, $results, the headers and the redirect target otherwise
+	// still describe whatever the client last fetched, and a caller reusing
+	// one client reads those rather than the return value. Called without a
+	// $reason, the one in $error stands.
+	protected function refuseRequest($reason = null)
+	{
+		$this->discardResponse();
+		$this->status = self::RESPONSE_BODY_FAILED;
+		if($reason !== null) {
+			$this->error = $reason; }
+		return false;
+	}
+
+	// A reply the client could not take is not a response: none of it answers
+	// for the request it arrived on, and none of it is a source of cookies for
+	// the request after that one. $status is left to the caller, which says in
+	// its own terms what did not arrive.
+	protected function discardResponse()
+	{
+		$this->headers = [];
+		$this->response_code = "";
+		$this->results = "";
+		$this->_redirectaddr = false;
+	}
+
+	// $maxlength as a byte count, which is what both paths bound against.
+	// $httpMaxResponseLength sets it; a caller may assign it directly.
+	protected function responseLimit()
+	{
+		return max(0, (int)$this->maxlength);
+	}
+
+	// Inflates a gzip body to no more than $maxlength bytes. Both paths stop
+	// reading just past that many compressed bytes, but zeros compress about
+	// 1000:1, so 64 KiB from a hostile or broken server inflate to 64 MiB, and
+	// the only thing that used to stop that was memory_limit, with a fatal
+	// error.
+	// Returns false for a body that is malformed or inflates past the bound.
+	// An empty or absent body is an empty body: a 304 or 204 may carry the
+	// header with no member behind it. gzinflate() skips the 10-byte header
+	// and never checked the trailer, so on that branch an answer the read cut
+	// short still decodes when its deflate stream came through whole; the
+	// external gzip refuses a truncated member.
+	protected function decodeGzipBody($encoded)
+	{
+		if($encoded === '' || $encoded === false) {
+			return ''; }
+		if(!is_string($encoded)) {
+			return false; }
+		$limit = $this->responseLimit();
+		if(function_exists("gzinflate"))
+		{
+			// max_length is not an exact cap: zlib stops growing its buffer
+			// there and the last round overshoots it, so the length is checked
+			// below. The one byte of slack is insurance only; on PHP 7.4, 8.1
+			// and 8.5 an exact max_length already decodes a body of exactly
+			// that length.
+			$decoded = @gzinflate(substr($encoded, 10), $limit + 1);
+		}
+		else
+		{
+			$randName = FileUtil::getTempFilename('answer');
+			file_put_contents($randName.".gz",$encoded);
+			exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$output,$return);
+			$decoded = false;
+			if(is_file($randName))
+			{
+				// One byte past the bound is read, which is how an oversized
+				// file is told from one of exactly $maxlength bytes.
+				$decoded = @file_get_contents($randName, false, null, 0, $limit + 1);
+				unlink($randName);
+			}
+			else {
+				unlink($randName.".gz"); }
+		}
+		return (is_string($decoded) && strlen($decoded) <= $limit) ? $decoded : false;
+	}
+
+	private function fetchRequest($URI,$method,$content_type,$body)
+	{
+		$this->pruneResponseCookieFacade();
+		if($this->_redirectdepth === 0)
+		{
+			// A request a caller makes is the start of its own chain: it has
+			// followed no redirect yet, and it inherits none from the chain
+			// before it, which may have stopped at its depth cap with a
+			// target still named.
+			$this->redirectCookieKeys = [];
+			$this->lastredirectaddr = '';
+			$this->_redirectaddr = false;
+		}
+		$this->lastResponseURL = null;
+		$this->lastResponseAt = null;
+		$this->responseCookiesCaptured = false;
+		$this->responseCookieActions = [];
+		$parts = parse_url($URI);
+		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) ) {
+			return($this->refuseRequest("invalid-url")); }
+		rTorrentSettings::get()->pushEvent( "HostConnect", 
+		[
+			"client" => &$this,
+			"uri" => &$URI,
+			"method" => &$method,
+			"content_type" => &$content_type,
+			"body" => &$body,
+		] );
+		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
+		// Keep the URI override after HostConnect, including empty userinfo.
+		if(isset($parts['user']))
+		{
+			$this->user = $parts['user'];
+			$this->pass = isset($parts['pass']) ? $parts['pass'] : '';
+		}
+		$this->host = $parts["host"];
+		$this->_isproxy = (!empty($this->proxy_host) && !empty($this->proxy_port));
+		$this->_pinnedaddr = false;
+		// checkTarget() names in $error the rule that turned the host down.
+		if($this->block_private && ($parts["scheme"]=="http" || $parts["scheme"]=="https") && !$this->checkTarget($this->host)) {
+			return($this->refuseRequest()); }
+		$ret = true;
+		switch($parts["scheme"])
+		{
+			case "dummy":
+			{
+				break;
+			}
+			case "http":
+			{
+				if($this->proxy_proto!='https')
+				{
+					if(($fp = $this->connect())!==false)
+					{
+						$path = (isset($parts["path"]) ? $parts["path"] : "/").(isset($parts["query"]) ? "?".$parts["query"] : "");
+						$ret = ( $this->_isproxy ?
+							$this->_httprequest($URI,$fp,$URI,$method,$content_type,$body) :
+							$this->_httprequest($path,$fp,$URI,$method,$content_type,$body) );
+						fclose($fp);
+					}
+					else {
+						$ret = false; }
+					break;
+				}
+			}
+			case "https":
+			{
+				$ret = $this->_httpsrequest($URI,$content_type,$body,$method);
+				break;
+			}
+			default:
+			{
+				$ret = $this->refuseRequest('invalid-protocol "'.$parts["scheme"].'"');
+				break;
+			}
+		}
+		if($ret)
+		{
+			$this->lastResponseURL = $URI;
+			$this->lastResponseAt = time();
+			if($this->passcookies)
+			{
+				$this->captureResponseCookies($URI);
+				$this->responseCookiesCaptured = true;
+			}
+			rTorrentSettings::get()->pushEvent( "URLFetched", 
+			[
+				"client" => $this,
+				"uri" => $URI,
+				"method" => $method,
+				"content_type" => $content_type,
+				"body" => $body,
+			] );
+			if($this->_redirectaddr)
+			{
+				/* url was redirected, check if we've hit the max depth */
+				if($this->maxredirs > $this->_redirectdepth)
+				{
+					// Existing login adapters save cookies received along the
+					// redirect chain after the final response has completed.
+					if($this->passcookies) {
+						$this->setcookies(); }
+					$this->_redirectdepth++;
+					$this->lastredirectaddr=$this->_redirectaddr;
+					if($this->redirectLeavesOrigin($parts,$this->_redirectaddr)) {
+						$this->dropCredentials(); }
+					try
+					{
+						$ret = $this->fetch($this->_redirectaddr);
+					}
+					finally
+					{
+						$this->_redirectdepth--;
+					}
+				}
+			}
+		}
+		return($ret);
+	}
+
 	/** Public caller cookies stay flat; response cookies retain their wire scope. */
 	private function cookiePairsForRequest($url)
 	{
 		$flat = $this->cookies;
-		foreach($flat as $name => $value)
+		foreach($flat as $name => $value) {
 			if(isset($this->flattenedResponseCookies[$name])
 				&& !$this->flattenedResponseCookies[$name]['manual']
-				&& $this->flattenedResponseCookies[$name]['value'] === $value)
-				unset($flat[$name]);
-		$pairs = array();
-		foreach($flat as $name => $value)
-			$pairs[] = array('name' => $name, 'value' => $value);
+				&& $this->flattenedResponseCookies[$name]['value'] === $value) {
+				unset($flat[$name]); } }
+		$pairs = [];
+		foreach($flat as $name => $value) {
+			$pairs[] = ['name' => $name, 'value' => $value]; }
 		$host = UrlHost::of($url);
 		$scheme = strtolower((string) @parse_url($url, PHP_URL_SCHEME));
 		$path = (string) @parse_url($url, PHP_URL_PATH);
-		if($path === '' || $path[0] !== '/')
-			$path = '/';
+		if($path === '' || $path[0] !== '/') {
+			$path = '/'; }
 		$this->purgeResponseCookies();
-		$matching = array();
+		$matching = [];
 		foreach($this->responseCookieJar as $key => $entry)
 		{
 			if((isset($this->redirectCookieKeys[$key]) && $this->_redirectdepth > 0)
 				|| array_key_exists($entry['name'], $flat)
-				|| !($entry['hostOnly'] ? UrlHost::isExactlyOneOf($host, array($entry['domain']))
-					: UrlHost::isOneOf($host, array($entry['domain'])))
-				|| !self::cookiePathMatches($path, $entry['path']))
-				continue;
-			if($entry['secure'] && $scheme !== 'https')
-				continue;
+				|| !($entry['hostOnly'] ? UrlHost::isExactlyOneOf($host, [$entry['domain']])
+					: UrlHost::isOneOf($host, [$entry['domain']]))
+				|| !self::cookiePathMatches($path, $entry['path'])) {
+				continue; }
+			if($entry['secure'] && $scheme !== 'https') {
+				continue; }
 			$this->responseCookieJar[$key]['lastUsed'] = ++$this->responseCookieSequence;
 			$matching[] = $entry;
 		}
@@ -1134,8 +1255,8 @@ class Snoopy
 			$length = strlen($b['path']) - strlen($a['path']);
 			return $length ?: $a['created'] - $b['created'];
 		});
-		foreach($matching as $entry)
-			$pairs[] = array('name' => $entry['name'], 'value' => $entry['value']);
+		foreach($matching as $entry) {
+			$pairs[] = ['name' => $entry['name'], 'value' => $entry['value']]; }
 		return $pairs;
 	}
 
@@ -1151,31 +1272,31 @@ class Snoopy
 
 	private static function cookiePathMatches($requestPath, $cookiePath)
 	{
-		if(strncmp($requestPath, $cookiePath, strlen($cookiePath)) !== 0)
-			return false;
+		if(strncmp($requestPath, $cookiePath, strlen($cookiePath)) !== 0) {
+			return false; }
 		return $requestPath === $cookiePath || substr($cookiePath, -1) === '/'
 			|| substr($requestPath, strlen($cookiePath), 1) === '/';
 	}
 
 	private function cookieHeaderForRequest($url)
 	{
-		foreach($this->rawheaders as $name => $value)
-			if(strcasecmp((string) $name, 'Cookie') === 0)
-				return 'Cookie: ' . $value;
+		foreach($this->rawheaders as $name => $value) {
+			if(strcasecmp((string) $name, 'Cookie') === 0) {
+				return 'Cookie: ' . $value; } }
 		$pairs = $this->cookiePairsForRequest($url);
-		$values = array();
-		foreach($pairs as $pair)
-			$values[] = $pair['name'] . '=' . $pair['value'];
+		$values = [];
+		foreach($pairs as $pair) {
+			$values[] = $pair['name'] . '=' . $pair['value']; }
 		return $values ? 'Cookie: ' . implode('; ', $values) : '';
 	}
 
 	/** Capture against the URL that answered, before another redirect changes headers. */
 	private function captureResponseCookies($url)
 	{
-		$this->responseCookieActions = array();
+		$this->responseCookieActions = [];
 		$host = UrlHost::of($url);
-		if($host === null)
-			return;
+		if($host === null) {
+			return; }
 		$sourceScheme = strtolower((string) @parse_url($url, PHP_URL_SCHEME));
 		$path = (string) @parse_url($url, PHP_URL_PATH);
 		$lastSlash = strrpos($path, '/');
@@ -1187,8 +1308,8 @@ class Snoopy
 		$seen = 0;
 		foreach($this->headers as $header)
 		{
-			if(!preg_match('/^Set-Cookie:[ \t]*(.*)$/i', trim($header), $match))
-				continue;
+			if(!preg_match('/^Set-Cookie:[ \t]*(.*)$/i', trim($header), $match)) {
+				continue; }
 			if(++$seen > self::MAX_COOKIE_HEADERS)
 			{
 				self::logCookieRefusal('header-limit');
@@ -1217,13 +1338,13 @@ class Snoopy
 				self::logCookieRefusal('invalid-name-or-value');
 				continue;
 			}
-			$attributes = array();
+			$attributes = [];
 			foreach($parts as $part)
 			{
 				$equal = strpos($part, '=');
 				$key = strtolower(trim($equal === false ? $part : substr($part, 0, $equal)));
-				if($key !== '')
-					$attributes[$key] = $equal === false ? '' : trim(substr($part, $equal + 1));
+				if($key !== '') {
+					$attributes[$key] = $equal === false ? '' : trim(substr($part, $equal + 1)); }
 			}
 			if(isset($attributes['secure']) && $sourceScheme !== 'https')
 			{
@@ -1235,16 +1356,16 @@ class Snoopy
 			if(isset($attributes['domain']))
 			{
 				$domain = strtolower($attributes['domain']);
-				if(substr($domain, 0, 1) === '.')
-					$domain = substr($domain, 1);
+				if(substr($domain, 0, 1) === '.') {
+					$domain = substr($domain, 1); }
 				try
 				{
-					if(!function_exists('filter_var'))
-						throw new RuntimeException('Cookie IP validator is unavailable');
+					if(!function_exists('filter_var')) {
+						throw new RuntimeException('Cookie IP validator is unavailable'); }
 					$valid = filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) === false
 						&& !PublicSuffix::isPublicSuffix($host)
 						&& !PublicSuffix::isPublicSuffix($domain)
-						&& UrlHost::isOneOf($host, array($domain));
+						&& UrlHost::isOneOf($host, [$domain]);
 				}
 				catch(InvalidArgumentException $e)
 				{
@@ -1279,8 +1400,8 @@ class Snoopy
 			{
 				try
 				{
-					if(!function_exists('strtotime'))
-						throw new RuntimeException('Cookie expiry parser is unavailable');
+					if(!function_exists('strtotime')) {
+						throw new RuntimeException('Cookie expiry parser is unavailable'); }
 					$parsed = strtotime($attributes['expires']);
 				}
 				catch(Throwable $e)
@@ -1288,8 +1409,8 @@ class Snoopy
 					self::logCookieRefusal('expiry-unavailable');
 					continue;
 				}
-				if(is_int($parsed))
-					$expires = $parsed;
+				if(is_int($parsed)) {
+					$expires = $parsed; }
 			}
 			if($maxAge)
 			{
@@ -1308,12 +1429,12 @@ class Snoopy
 			if(($expires !== null && $expires <= time()) || $value === 'deleted')
 			{
 				unset($this->responseCookieJar[$key]);
-				$this->responseCookieActions[] = array('name' => $name, 'key' => $key, 'delete' => true);
+				$this->responseCookieActions[] = ['name' => $name, 'key' => $key, 'delete' => true];
 				continue;
 			}
 			$this->rememberResponseCookie($name, $value, $domain, $hostOnly,
 				$cookiePath, isset($attributes['secure']), $expires);
-			$this->responseCookieActions[] = array('name' => $name, 'value' => $value, 'key' => $key, 'delete' => false);
+			$this->responseCookieActions[] = ['name' => $name, 'value' => $value, 'key' => $key, 'delete' => false];
 		}
 	}
 
@@ -1322,24 +1443,24 @@ class Snoopy
 		$key = self::responseCookieKey($domain, $hostOnly, $path, $name);
 		$created = isset($this->responseCookieJar[$key])
 			? $this->responseCookieJar[$key]['created'] : ++$this->responseCookieSequence;
-		$this->responseCookieJar[$key] = array(
+		$this->responseCookieJar[$key] = [
 			'name' => $name, 'value' => $value,
 			'domain' => $domain, 'hostOnly' => $hostOnly, 'path' => $path,
 			'secure' => $secure, 'expires' => $expires,
 			'created' => $created, 'lastUsed' => ++$this->responseCookieSequence,
-		);
+		];
 		unset($this->redirectCookieKeys[$key]);
 		$this->enforceCookieLimits($domain);
 	}
 
 	private function overwritesSecureCookie($name, $domain, $path)
 	{
-		foreach($this->responseCookieJar as $entry)
+		foreach($this->responseCookieJar as $entry) {
 			if($entry['name'] === $name && $entry['secure']
-				&& (UrlHost::isOneOf($domain, array($entry['domain']))
-					|| UrlHost::isOneOf($entry['domain'], array($domain)))
-				&& self::cookiePathMatches($path, $entry['path']))
-				return true;
+				&& (UrlHost::isOneOf($domain, [$entry['domain']])
+					|| UrlHost::isOneOf($entry['domain'], [$domain]))
+				&& self::cookiePathMatches($path, $entry['path'])) {
+				return true; } }
 		return false;
 	}
 
@@ -1354,9 +1475,9 @@ class Snoopy
 	private function purgeResponseCookies()
 	{
 		$now = time();
-		foreach($this->responseCookieJar as $key => $entry)
-			if($entry['expires'] !== null && $entry['expires'] <= $now)
-				unset($this->responseCookieJar[$key]);
+		foreach($this->responseCookieJar as $key => $entry) {
+			if($entry['expires'] !== null && $entry['expires'] <= $now) {
+				unset($this->responseCookieJar[$key]); } }
 	}
 
 	private function enforceCookieLimits($domain)
@@ -1370,8 +1491,8 @@ class Snoopy
 			$oldestPriority = PHP_INT_MAX;
 			foreach($this->responseCookieJar as $key => $entry)
 			{
-				if($domainOver && $entry['domain'] !== $domain)
-					continue;
+				if($domainOver && $entry['domain'] !== $domain) {
+					continue; }
 				$priority = $entry['secure'] ? 1 : 0;
 				if($priority < $oldestPriority
 					|| ($priority === $oldestPriority && $entry['lastUsed'] < $oldestUse))
@@ -1381,8 +1502,8 @@ class Snoopy
 					$oldestPriority = $priority;
 				}
 			}
-			if($oldestKey === null)
-				break;
+			if($oldestKey === null) {
+				break; }
 			unset($this->responseCookieJar[$oldestKey]);
 			self::logCookieRefusal('capacity-evicted');
 		}
@@ -1391,9 +1512,9 @@ class Snoopy
 	private function countDomainCookies($domain)
 	{
 		$count = 0;
-		foreach($this->responseCookieJar as $entry)
-			if($entry['domain'] === $domain)
-				$count++;
+		foreach($this->responseCookieJar as $entry) {
+			if($entry['domain'] === $domain) {
+				$count++; } }
 		return $count;
 	}
 
@@ -1412,131 +1533,10 @@ class Snoopy
 			if(!isset($this->responseCookieJar[$source['key']])
 				|| $this->responseCookieJar[$source['key']]['value'] !== $source['value'])
 			{
-				if(!$source['manual'])
-					unset($this->cookies[$name]);
+				if(!$source['manual']) {
+					unset($this->cookies[$name]); }
 				unset($this->flattenedResponseCookies[$name]);
 			}
 		}
-	}
-
-	function setcookies()
-	{
-		$this->pruneResponseCookieFacade();
-		if($this->lastResponseURL === null)
-		{
-			// Header-only legacy callers supplied no source URL to validate.
-			foreach($this->headers as $header)
-				if(preg_match("/^set-cookie:[\s]+([^;=[:cntrl:]]+)=([^;[:cntrl:]]+)/i", $header, $match))
-				{
-					unset($this->flattenedResponseCookies[$match[1]]);
-					if($match[2] === 'deleted')
-						unset($this->cookies[$match[1]]);
-					else
-						$this->cookies[$match[1]] = $match[2];
-				}
-			return;
-		}
-		if(!$this->responseCookiesCaptured)
-		{
-			$this->captureResponseCookies($this->lastResponseURL);
-			$this->responseCookiesCaptured = true;
-		}
-		$this->pruneResponseCookieFacade();
-		// Keep loginmgr's flat schema, but export only the accepted actions of
-		// the same parser that owns the jar. Refused/expired values cannot be
-		// resurrected by saving that facade and loading it into a fresh client.
-		foreach($this->responseCookieActions as $action)
-		{
-			$name = $action['name'];
-			if($action['delete'])
-			{
-				// A flat facade can name only one tuple. Deleting another Path,
-				// host-only flag or Domain must not erase its still-live source.
-				if(!isset($this->flattenedResponseCookies[$name])
-					|| $this->flattenedResponseCookies[$name]['key'] === $action['key'])
-					unset($this->cookies[$name], $this->flattenedResponseCookies[$name]);
-				continue;
-			}
-			if(!isset($this->responseCookieJar[$action['key']])
-				|| $this->responseCookieJar[$action['key']]['value'] !== $action['value'])
-				continue;
-			$value = $action['value'];
-			$manualSame = array_key_exists($name, $this->cookies) && $this->cookies[$name] === $value
-				&& (!isset($this->flattenedResponseCookies[$name]) || $this->flattenedResponseCookies[$name]['manual']);
-			$this->cookies[$name] = $value;
-			$this->flattenedResponseCookies[$name] = array('value' => $value, 'key' => $action['key'], 'manual' => $manualSame);
-		}
-	}
-
-	function _check_timeout($fp)
-	{
-		if ($this->read_timeout > 0)
-		{
-			$fp_status = socket_get_status($fp);
-			if ($fp_status["timed_out"])
-			{
-				$this->timed_out = true;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	function connect()
-	{
-		$fp = false;
-		if($this->_isproxy)
-		{
-			$host = $this->proxy_host;
-			$port = $this->proxy_port;
-		}
-		else
-		{
-			$host = ($this->_pinnedaddr===false) ? $this->host : $this->_pinnedaddr;
-			$port = $this->port;
-		}
-		if(filter_var(trim($host,"[]"),FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)!==false)
-			$host = "[".trim($host,"[]")."]";
-		$this->status = 0;
-		if(function_exists("stream_socket_client") && !is_null($this->IP))
-		{
-			$opts = array('socket' => array('bindto' => $this->IP.':0'));
-			$context = stream_context_create($opts);
-			$fp = stream_socket_client("tcp://".$host.":".$port, $errno, $errstr, $this->_fp_timeout, STREAM_CLIENT_CONNECT, $context);
-		}
-		else
-			$fp = fsockopen($host,$port,$errno,$errstr,$this->_fp_timeout);
-		if(!$fp)
-		{
-			// A request whose socket never opened has no response of its own,
-			// and the one still in place describes whatever the client last
-			// fetched. Callers reuse a client for a sequence of fetches and
-			// read $results and $headers rather than the return value.
-			$this->discardResponse();
-			// Positive OS errno values overlap HTTP statuses. Keep the errno in
-			// the message and use a distinct transport status, not -100 or -101.
-			$this->status = $errno > 0 ? self::SOCKET_CONNECT_FAILED : $errno;
-			// PHP can report DNS failure with errno 0; do not expose its raw text.
-			if($errno === 0 && strpos((string)$errstr, "php_network_getaddresses:") === 0)
-			{
-				$this->error = "dns lookup failure (0)";
-				return(false);
-			}
-			switch($errno)
-			{
-				case -3:
-					$this->error="socket creation failed (-3)";
-					break;
-				case -4:
-					$this->error="dns lookup failure (-4)";
-					break;
-				case -5:
-					$this->error="connection refused or timed out (-5)";
-					break;
-				default:
-					$this->error="connection failed (".$errno.")";
-			}
-		}
-		return($fp);
 	}
 }

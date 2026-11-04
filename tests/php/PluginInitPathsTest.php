@@ -27,11 +27,121 @@ require_once(__DIR__ . '/TestCase.php');
  */
 class PluginInitPathsTest extends TestCase
 {
+
+	/**
+	 * Stands in for a variable part of a path built at runtime.
+	 */
+	public const HOLE = "\0";
 	private $root;
 
 	public function setUp()
 	{
 		$this->root = realpath(__DIR__ . '/../..');
+	}
+
+	/**
+	 * The state of the world in a running ruTorrent. Nothing here may regress:
+	 * a path that stops resolving under php/ is a plugin that stops loading.
+	 */
+	public function testEveryInitRequireResolvesUnderTheLoaderWorkingDirectory()
+	{
+		$this->checkAll($this->root . '/php', 'from the loader working directory php/');
+	}
+
+	/**
+	 * And away from it, which is what a static reader sees. A path that only
+	 * resolves from php/ is one nobody can check without running the loader.
+	 */
+	public function testEveryInitRequireResolvesWithoutTheLoaderWorkingDirectory()
+	{
+		// An empty directory of our own, so nothing that happens to sit in the
+		// system temp directory can answer for a path that does not resolve.
+		$elsewhere = sys_get_temp_dir() . '/rutorrent-initpaths-' . getmypid();
+		@mkdir($elsewhere);
+		$this->checkAll($elsewhere, 'with an unrelated working directory');
+		@rmdir($elsewhere);
+	}
+
+	/**
+	 * The premise of the first test. initplugins.php runs from cron and from
+	 * rTorrent's execute= with an arbitrary working directory, so the chdir is
+	 * what puts every unanchored plugin path on php/.
+	 */
+	public function testTheLoaderStillMovesToThePhpDirectory()
+	{
+		$loader = file_get_contents($this->root . '/php/initplugins.php');
+		$this->assertTrue(
+			preg_match('/chdir\(\s*dirname\(\s*__FILE__\s*\)\s*\)/', $loader) === 1,
+			'php/initplugins.php still chdir()s to its own directory before loading plugins');
+	}
+
+	/**
+	 * A template with its hole spelled out, for a failure message.
+	 */
+	public function readable($template)
+	{
+		return str_replace(self::HOLE, '<plugin>', $template);
+	}
+
+	/**
+	 * What each loader does with that working directory, rather than how the
+	 * line is written. The path a loader builds for a plugin must reach every
+	 * plugin in the tree from php/; must reach none of them from anywhere else,
+	 * which is the dependency the first test rests on; and must be the same
+	 * path in both loaders, so that a plugin cannot be loaded from one place by
+	 * one loader and from another by the other.
+	 */
+	public function testBothLoadersBuildTheSameCwdRelativePluginInitPath()
+	{
+		// An empty directory of our own, so nothing that happens to sit in the
+		// system temp directory can answer for a path that does not resolve.
+		$elsewhere = sys_get_temp_dir() . '/rutorrent-initpaths-loaders-' . getmypid();
+		@mkdir($elsewhere);
+
+		$built = [];
+		foreach (['initplugins.php', 'getplugins.php'] as $name) {
+			$loader = $this->root . '/php/' . $name;
+			$reaching = [];
+			foreach ($this->stringTemplatesIn($loader) as $tpl) {
+				if ($tpl['holes'] === 1 && substr($tpl['template'], -9) === '/init.php') {
+					$reaching[$tpl['template']] = true;
+				}
+			}
+			$this->assertTrue(count($reaching) === 1,
+				'php/' . $name . ' builds one plugin init.php path out of the'
+				. ' plugin name (' . count($reaching) . ': '
+				. implode(', ', array_map([$this, 'readable'],
+					array_keys($reaching))) . ')');
+			if (count($reaching) !== 1) {
+				continue;
+			}
+			$template = key($reaching);
+
+			$checked = 0;
+			foreach ($this->initFiles() as $init) {
+				$plugin = basename(dirname($init));
+				$path = str_replace(self::HOLE, $plugin, $template);
+				$this->assertTrue(
+					$this->resolveAsPhpWould($loader, $path, $this->root . '/php')
+						=== realpath($init),
+					'php/' . $name . ' reaches plugins/' . $plugin
+						. '/init.php from the loader working directory php/');
+				$this->assertTrue(
+					$this->resolveAsPhpWould($loader, $path, $elsewhere) === false,
+					'php/' . $name . ' reaches plugins/' . $plugin
+						. '/init.php only from php/, so it is the working'
+						. ' directory that places it');
+				$checked++;
+			}
+			$this->assertTrue($checked > 0,
+				'found plugins for php/' . $name . ' to be checked against');
+			$built[$name] = $template;
+		}
+		@rmdir($elsewhere);
+
+		$this->assertTrue(count($built) === 2 && count(array_unique($built)) === 1,
+			'both loaders build the same path ('
+			. implode(' vs ', array_map([$this, 'readable'], $built)) . ')');
 	}
 
 	private function initFiles()
@@ -53,8 +163,8 @@ class PluginInitPathsTest extends TestCase
 	private function requiresIn($file)
 	{
 		$tokens = token_get_all(file_get_contents($file));
-		$wanted = array(T_REQUIRE, T_REQUIRE_ONCE, T_INCLUDE, T_INCLUDE_ONCE);
-		$found = array();
+		$wanted = [T_REQUIRE, T_REQUIRE_ONCE, T_INCLUDE, T_INCLUDE_ONCE];
+		$found = [];
 		for ($i = 0; $i < count($tokens); $i++) {
 			if (!is_array($tokens[$i]) || !in_array($tokens[$i][0], $wanted)) {
 				continue;
@@ -113,11 +223,11 @@ class PluginInitPathsTest extends TestCase
 				}
 			}
 			if ($constant && $path !== '') {
-				$found[] = array(
+				$found[] = [
 					'line' => $line,
 					'expr' => trim($expr),
 					'path' => $path,
-				);
+				];
 			}
 		}
 		return $found;
@@ -134,7 +244,7 @@ class PluginInitPathsTest extends TestCase
 	 */
 	private function resolveAsPhpWould($includingFile, $path, $cwd)
 	{
-		$candidates = array();
+		$candidates = [];
 		if (substr($path, 0, 1) === '/') {
 			$candidates[] = $path;
 		} elseif (substr($path, 0, 2) === './' || substr($path, 0, 3) === '../') {
@@ -173,47 +283,6 @@ class PluginInitPathsTest extends TestCase
 	}
 
 	/**
-	 * The state of the world in a running ruTorrent. Nothing here may regress:
-	 * a path that stops resolving under php/ is a plugin that stops loading.
-	 */
-	public function testEveryInitRequireResolvesUnderTheLoaderWorkingDirectory()
-	{
-		$this->checkAll($this->root . '/php', 'from the loader working directory php/');
-	}
-
-	/**
-	 * And away from it, which is what a static reader sees. A path that only
-	 * resolves from php/ is one nobody can check without running the loader.
-	 */
-	public function testEveryInitRequireResolvesWithoutTheLoaderWorkingDirectory()
-	{
-		// An empty directory of our own, so nothing that happens to sit in the
-		// system temp directory can answer for a path that does not resolve.
-		$elsewhere = sys_get_temp_dir() . '/rutorrent-initpaths-' . getmypid();
-		@mkdir($elsewhere);
-		$this->checkAll($elsewhere, 'with an unrelated working directory');
-		@rmdir($elsewhere);
-	}
-
-	/**
-	 * The premise of the first test. initplugins.php runs from cron and from
-	 * rTorrent's execute= with an arbitrary working directory, so the chdir is
-	 * what puts every unanchored plugin path on php/.
-	 */
-	public function testTheLoaderStillMovesToThePhpDirectory()
-	{
-		$loader = file_get_contents($this->root . '/php/initplugins.php');
-		$this->assertTrue(
-			preg_match('/chdir\(\s*dirname\(\s*__FILE__\s*\)\s*\)/', $loader) === 1,
-			'php/initplugins.php still chdir()s to its own directory before loading plugins');
-	}
-
-	/**
-	 * Stands in for a variable part of a path built at runtime.
-	 */
-	const HOLE = "\0";
-
-	/**
 	 * The index of the next token that carries meaning, skipping whitespace and
 	 * comments, or null at the end of the file.
 	 */
@@ -221,7 +290,7 @@ class PluginInitPathsTest extends TestCase
 	{
 		for ($total = count($tokens); $k < $total; $k++) {
 			if (!is_array($tokens[$k]) || !in_array($tokens[$k][0],
-				array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+				[T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
 				return $k;
 			}
 		}
@@ -248,7 +317,7 @@ class PluginInitPathsTest extends TestCase
 	{
 		$tokens = token_get_all(file_get_contents($file));
 		$total = count($tokens);
-		$found = array();
+		$found = [];
 		$template = '';
 		$holes = 0;
 		$line = 0;
@@ -305,86 +374,17 @@ class PluginInitPathsTest extends TestCase
 
 			// Anything else ends the run.
 			if ($template !== '' && $usable) {
-				$found[] = array('line' => $line, 'template' => $template,
-					'holes' => $holes);
+				$found[] = ['line' => $line, 'template' => $template,
+					'holes' => $holes];
 			}
 			$template = '';
 			$holes = 0;
 			$usable = true;
 		}
 		if ($template !== '' && $usable) {
-			$found[] = array('line' => $line, 'template' => $template,
-				'holes' => $holes);
+			$found[] = ['line' => $line, 'template' => $template,
+				'holes' => $holes];
 		}
 		return $found;
-	}
-
-	/**
-	 * A template with its hole spelled out, for a failure message.
-	 */
-	public function readable($template)
-	{
-		return str_replace(self::HOLE, '<plugin>', $template);
-	}
-
-	/**
-	 * What each loader does with that working directory, rather than how the
-	 * line is written. The path a loader builds for a plugin must reach every
-	 * plugin in the tree from php/; must reach none of them from anywhere else,
-	 * which is the dependency the first test rests on; and must be the same
-	 * path in both loaders, so that a plugin cannot be loaded from one place by
-	 * one loader and from another by the other.
-	 */
-	public function testBothLoadersBuildTheSameCwdRelativePluginInitPath()
-	{
-		// An empty directory of our own, so nothing that happens to sit in the
-		// system temp directory can answer for a path that does not resolve.
-		$elsewhere = sys_get_temp_dir() . '/rutorrent-initpaths-loaders-' . getmypid();
-		@mkdir($elsewhere);
-
-		$built = array();
-		foreach (array('initplugins.php', 'getplugins.php') as $name) {
-			$loader = $this->root . '/php/' . $name;
-			$reaching = array();
-			foreach ($this->stringTemplatesIn($loader) as $tpl) {
-				if ($tpl['holes'] === 1 && substr($tpl['template'], -9) === '/init.php') {
-					$reaching[$tpl['template']] = true;
-				}
-			}
-			$this->assertTrue(count($reaching) === 1,
-				'php/' . $name . ' builds one plugin init.php path out of the'
-				. ' plugin name (' . count($reaching) . ': '
-				. implode(', ', array_map(array($this, 'readable'),
-					array_keys($reaching))) . ')');
-			if (count($reaching) !== 1) {
-				continue;
-			}
-			$template = key($reaching);
-
-			$checked = 0;
-			foreach ($this->initFiles() as $init) {
-				$plugin = basename(dirname($init));
-				$path = str_replace(self::HOLE, $plugin, $template);
-				$this->assertTrue(
-					$this->resolveAsPhpWould($loader, $path, $this->root . '/php')
-						=== realpath($init),
-					'php/' . $name . ' reaches plugins/' . $plugin
-						. '/init.php from the loader working directory php/');
-				$this->assertTrue(
-					$this->resolveAsPhpWould($loader, $path, $elsewhere) === false,
-					'php/' . $name . ' reaches plugins/' . $plugin
-						. '/init.php only from php/, so it is the working'
-						. ' directory that places it');
-				$checked++;
-			}
-			$this->assertTrue($checked > 0,
-				'found plugins for php/' . $name . ' to be checked against');
-			$built[$name] = $template;
-		}
-		@rmdir($elsewhere);
-
-		$this->assertTrue(count($built) === 2 && count(array_unique($built)) === 1,
-			'both loaders build the same path ('
-			. implode(' vs ', array_map(array($this, 'readable'), $built)) . ')');
 	}
 }

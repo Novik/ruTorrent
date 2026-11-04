@@ -25,88 +25,19 @@ require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
  */
 class HttprpcDaemonStateHeaderTest extends TestCase
 {
-	const HASH = 'C0FFEE0123456789C0FFEE0123456789C0FFEE01';
-	const OUTAGE = 'Could not reach rTorrent over XMLRPC. Is rTorrent running?';
-	const HEADER = 'x-rtorrent-state';
+	public const HASH = 'C0FFEE0123456789C0FFEE0123456789C0FFEE01';
+	public const OUTAGE = 'Could not reach rTorrent over XMLRPC. Is rTorrent running?';
+	public const HEADER = 'x-rtorrent-state';
 
-	private $trees = array();
+	private $trees = [];
 	private $daemon;
 
 	public function tearDown()
 	{
 		$this->stopDaemon();
-		foreach($this->trees as $tree)
-			TestTree::remove($tree);
-		$this->trees = array();
-	}
-
-	private function stopDaemon()
-	{
-		if($this->daemon !== null)
-		{
-			$this->daemon->stop();
-			$this->daemon = null;
-		}
-	}
-
-	private function repoRoot()
-	{
-		$root = realpath(__DIR__ . '/../../..');
-		if($root === false)
-			throw new Exception('could not locate the production source root');
-		return $root;
-	}
-
-	/** A port nothing is listening on: reserved to learn a free number, then released. */
-	private function closedPort()
-	{
-		$listener = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
-		if($listener === false)
-			throw new Exception('could not reserve a port: ' . $error);
-		$address = stream_socket_get_name($listener, false);
-		fclose($listener);
-		return (int)substr($address, strrpos($address, ':') + 1);
-	}
-
-	/**
-	 * Runs plugins/httprpc/action.php over HTTP against $scgiPort and returns
-	 * the status line, the headers and the body the client received.
-	 */
-	private function post($body, $scgiPort)
-	{
-		$root = $this->repoRoot();
-		$tree = sys_get_temp_dir() . '/rutorrent-daemon-state-' . uniqid('', true);
-		if(!mkdir($tree, 0700, true) && !is_dir($tree))
-			throw new Exception('could not create the fixture tree');
-		$this->trees[] = $tree;
-		$profile = $tree . '/profile';
-		if(!mkdir($profile . '/settings', 0700, true))
-			throw new Exception('could not create the fixture profile');
-
-		$router = $tree . '/router.php';
-		file_put_contents($router, "<?php\n"
-			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($profile, true) . ";\n"
-			. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
-			. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$scgiPort, true) . ";\n"
-			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
-			. '$rpcTimeOut = 5;' . "\n"
-			. '$rpcLogCalls = false;' . "\n"
-			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
-			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
-
-		$server = null;
-		try
-		{
-			$server = TestHttpServer::start($tree, array(),
-				array('-d', 'display_errors=0'), $router);
-			return TestHttpServer::rawPost($server->port(), '/action.php', $body,
-				'application/x-www-form-urlencoded');
-		}
-		finally
-		{
-			if($server !== null)
-				$server->close();
-		}
+		foreach($this->trees as $tree) {
+			TestTree::remove($tree); }
+		$this->trees = [];
 	}
 
 	public function testTheUnreachableAnswerNamesItselfInAHeader()
@@ -158,8 +89,8 @@ class HttprpcDaemonStateHeaderTest extends TestCase
 		$this->daemon = new FakeRtorrentDaemon(function($body)
 		{
 			$names = RtorrentProbeFixture::methodNames($body);
-			if((count($names) === 1) && ($names[0] === 'd.multicall'))
-				return FakeRtorrentDaemon::fault('The daemon raised this fault.');
+			if((count($names) === 1) && ($names[0] === 'd.multicall')) {
+				return FakeRtorrentDaemon::fault('The daemon raised this fault.'); }
 			$responder = RtorrentProbeFixture::responder();
 			return $responder($body);
 		}, $log);
@@ -199,5 +130,74 @@ class HttprpcDaemonStateHeaderTest extends TestCase
 		$this->assertTrue(!isset($result['headers'][self::HEADER]),
 			'and a daemon that answered is not reported unreachable: '
 				. json_encode($result['headers']));
+	}
+
+	private function stopDaemon()
+	{
+		if($this->daemon !== null)
+		{
+			$this->daemon->stop();
+			$this->daemon = null;
+		}
+	}
+
+	private function repoRoot()
+	{
+		$root = realpath(__DIR__ . '/../../..');
+		if($root === false) {
+			throw new Exception('could not locate the production source root'); }
+		return $root;
+	}
+
+	/** A port nothing is listening on: reserved to learn a free number, then released. */
+	private function closedPort()
+	{
+		$listener = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
+		if($listener === false) {
+			throw new Exception('could not reserve a port: ' . $error); }
+		$address = stream_socket_get_name($listener, false);
+		fclose($listener);
+		return (int)substr($address, strrpos($address, ':') + 1);
+	}
+
+	/**
+	 * Runs plugins/httprpc/action.php over HTTP against $scgiPort and returns
+	 * the status line, the headers and the body the client received.
+	 */
+	private function post($body, $scgiPort)
+	{
+		$root = $this->repoRoot();
+		$tree = sys_get_temp_dir() . '/rutorrent-daemon-state-' . uniqid('', true);
+		if(!mkdir($tree, 0700, true) && !is_dir($tree)) {
+			throw new Exception('could not create the fixture tree'); }
+		$this->trees[] = $tree;
+		$profile = $tree . '/profile';
+		if(!mkdir($profile . '/settings', 0700, true)) {
+			throw new Exception('could not create the fixture profile'); }
+
+		$router = $tree . '/router.php';
+		file_put_contents($router, "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($profile, true) . ";\n"
+			. '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
+			. '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string)$scgiPort, true) . ";\n"
+			. 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
+			. '$rpcTimeOut = 5;' . "\n"
+			. '$rpcLogCalls = false;' . "\n"
+			. 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
+			. 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
+
+		$server = null;
+		try
+		{
+			$server = TestHttpServer::start($tree, [],
+				['-d', 'display_errors=0'], $router);
+			return TestHttpServer::rawPost($server->port(), '/action.php', $body,
+				'application/x-www-form-urlencoded');
+		}
+		finally
+		{
+			if($server !== null) {
+				$server->close(); }
+		}
 	}
 }

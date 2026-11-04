@@ -25,7 +25,7 @@ define('TT_PASS', 'fakepass');
 
 function ttAssert($condition, $message)
 {
-    if (!$condition) throw new RuntimeException($message);
+    if (!$condition) { throw new RuntimeException($message); }
 }
 
 function ttRequestLine($wire)
@@ -67,9 +67,9 @@ while (true) {
 fclose($server);
 echo json_encode($requests), "\n";
 PHP;
-    $process = proc_open(array(PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
-        base64_encode(json_encode($responses))),
-        array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+    $process = proc_open([PHP_BINARY, '-c', __DIR__ . '/../../php-test.ini', '-r', $worker,
+        base64_encode(json_encode($responses))],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     ttAssert(is_resource($process), 'The local HTTP peer starts');
     try {
         stream_set_timeout($pipes[1], 8);
@@ -79,12 +79,12 @@ PHP;
         $check = $body((int) $match[1]);
         fwrite($pipes[0], "done\n");
         $json = '';
-        while (($line = fgets($pipes[1])) !== false) $json .= $line;
+        while (($line = fgets($pipes[1])) !== false) { $json .= $line; }
         $requests = json_decode(trim($json), true);
         ttAssert(is_array($requests), 'The peer reports the requests it received');
         $check(array_map('base64_decode', $requests));
     } finally {
-        foreach ($pipes as $pipe) if (is_resource($pipe)) fclose($pipe);
+        foreach ($pipes as $pipe) { if (is_resource($pipe)) { fclose($pipe); } }
         proc_close($process);
     }
 }
@@ -97,7 +97,7 @@ function ttLogin($sessionId, callable $check)
     $form = '<form action="http://127.0.0.1:{PORT}/index.php?s=' . $sessionId
         . '&amp;act=Login&amp;CODE=01&amp;CookieDate=1" method="post">';
     $front = base64_encode("HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n" . $form);
-    ttPeer(array($front), function ($port) use ($check) {
+    ttPeer([$front], function ($port) use ($check) {
         $account = new TorrentechAccount();
         $account->url = 'http://127.0.0.1:' . $port;
         $client = new Snoopy();
@@ -108,10 +108,10 @@ function ttLogin($sessionId, callable $check)
         $client->_fp_timeout = 3;
         $client->use_gzip = false;
         $method = new ReflectionMethod('TorrentechAccount', 'login');
-        if (PHP_VERSION_ID < 80100) $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) { $method->setAccessible(true); }
         $url = $verb = $type = $body = $fetched = null;
-        $method->invokeArgs($account, array($client, TT_USER, TT_PASS,
-            &$url, &$verb, &$type, &$body, &$fetched));
+        $method->invokeArgs($account, [$client, TT_USER, TT_PASS,
+            &$url, &$verb, &$type, &$body, &$fetched]);
         return $check;
     });
 }
@@ -129,7 +129,7 @@ function ttEveryRequestWellFormed($requests)
     }
 }
 
-$tests = array(
+$tests = [
     // The control: a session id of the shape the forum really issues is
     // spliced in as it stands, and the credentials are posted to it.
     'a clean session id is posted to exactly the named target' => function () {
@@ -146,9 +146,9 @@ $tests = array(
     'a space in the session id reaches no request line' => function () {
         ttLogin('3f6a HTTP/1.0', function ($requests) {
             ttEveryRequestWellFormed($requests);
-            foreach ($requests as $wire)
+            foreach ($requests as $wire) {
                 ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name');
+                    'No credentials are posted to a target the form did not name'); }
         });
     },
     // parse_url() replaces a control character in the target with "_" and
@@ -156,17 +156,17 @@ $tests = array(
     'a carriage return in the session id reaches no request line' => function () {
         ttLogin("3f6a\rX-Injected: yes", function ($requests) {
             ttEveryRequestWellFormed($requests);
-            foreach ($requests as $wire)
+            foreach ($requests as $wire) {
                 ttAssert(strpos($wire, 'X-Injected') === false,
-                    'Nothing behind the carriage return reaches the wire');
+                    'Nothing behind the carriage return reaches the wire'); }
         });
     },
     'a tab in the session id reaches no request line' => function () {
         ttLogin("3f6a\tmore", function ($requests) {
             ttEveryRequestWellFormed($requests);
-            foreach ($requests as $wire)
+            foreach ($requests as $wire) {
                 ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name');
+                    'No credentials are posted to a target the form did not name'); }
         });
     },
     // A control character that is not whitespace leaves the request line
@@ -188,9 +188,9 @@ $tests = array(
     'a DEL byte in the session id posts no credentials' => function () {
         ttLogin("3f6a\x7ftail", function ($requests) {
             ttEveryRequestWellFormed($requests);
-            foreach ($requests as $wire)
+            foreach ($requests as $wire) {
                 ttAssert(strpos($wire, 'UserName=') === false,
-                    'No credentials are posted to a target the form did not name');
+                    'No credentials are posted to a target the form did not name'); }
         });
     },
     // A path written in UTF-8 is a target servers accept today, and the bound
@@ -203,7 +203,7 @@ $tests = array(
                 'The high bytes reach the target as the form named them');
         });
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $test) {

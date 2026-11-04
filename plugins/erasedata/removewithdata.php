@@ -18,48 +18,48 @@ if(!function_exists('erasedataCollectPaths'))
 		// rXMLRPCRequest flattens every returned value into ->val, so query one
 		// torrent per request, and keep the variable-length f.multicall last:
 		// val[0] = directory, val[1] = is_multi, val[2..] = each file path.
-		$frozen = new rXMLRPCRequest( array(
+		$frozen = new rXMLRPCRequest( [
 			new rXMLRPCCommand( getCmd("d.get_base_path"), $hash ),
 			new rXMLRPCCommand( getCmd("d.is_multi_file"), $hash ),
-			new rXMLRPCCommand( getCmd("f.multicall"), array($hash, "", getCmd("f.get_frozen_path")."=") )
-		) );
+			new rXMLRPCCommand( getCmd("f.multicall"), [$hash, "", getCmd("f.get_frozen_path")."="] ),
+		] );
 		if($frozen->success() && count($frozen->val) >= 3)
 		{
-			$files = array();
-			foreach(array_slice($frozen->val, 2) as $path)
-				if(strlen($path))
-					$files[] = $path;
-			if(count($files))
-				return( array(
+			$files = [];
+			foreach(array_slice($frozen->val, 2) as $path) {
+				if(strlen($path)) {
+					$files[] = $path; } }
+			if(count($files)) {
+				return( [
 					"base"  => $frozen->val[0],
 					"multi" => $frozen->val[1] ? "1" : "0",
-					"files" => $files ) );
+					"files" => $files ] ); }
 		}
 
-		$stored = new rXMLRPCRequest( array(
+		$stored = new rXMLRPCRequest( [
 			new rXMLRPCCommand( getCmd("d.get_directory"), $hash ),
 			new rXMLRPCCommand( getCmd("d.is_multi_file"), $hash ),
-			new rXMLRPCCommand( getCmd("f.multicall"), array($hash, "", getCmd("f.get_path")."=") )
-		) );
-		if(!$stored->success() || count($stored->val) < 3)
-			return(false);
+			new rXMLRPCCommand( getCmd("f.multicall"), [$hash, "", getCmd("f.get_path")."="] ),
+		] );
+		if(!$stored->success() || count($stored->val) < 3) {
+			return(false); }
 		$dir = rtrim($stored->val[0], '/');
-		if(!strlen($dir))
-			return(false);
+		if(!strlen($dir)) {
+			return(false); }
 		$isMulti = $stored->val[1] ? "1" : "0";
-		$files = array();
-		foreach(array_slice($stored->val, 2) as $path)
-			if(strlen($path))
-				$files[] = $dir.'/'.$path;
-		if(!count($files))
-			return(false);
+		$files = [];
+		foreach(array_slice($stored->val, 2) as $path) {
+			if(strlen($path)) {
+				$files[] = $dir.'/'.$path; } }
+		if(!count($files)) {
+			return(false); }
 		// d.directory is the download's root directory, which for a single-file
 		// torrent is the directory holding the file, not the file itself --
 		// d.base_path returns the file. Mirror that here.
-		return( array(
+		return( [
 			"base"  => $isMulti=="1" ? $dir : $files[0],
 			"multi" => $isMulti,
-			"files" => $files ) );
+			"files" => $files ] );
 	}
 }
 if(!function_exists('erasedataStageList'))
@@ -79,14 +79,14 @@ if(!function_exists('erasedataStageList'))
 	{
 		$tmp = $listPath."/".$hash.".list2.".getmypid().".".uniqid('', true).".tmp";
 		$fp = @fopen($tmp, "wb");
-		if($fp===false)
-			return(false);
+		if($fp===false) {
+			return(false); }
 		$written = @fwrite($fp, $contents);
 		$ok = ($written === strlen($contents)) && @fflush($fp);
-		if(@fclose($fp)===false)
-			$ok = false;
-		if($ok)
-			return($tmp);
+		if(@fclose($fp)===false) {
+			$ok = false; }
+		if($ok) {
+			return($tmp); }
 		@unlink($tmp);
 		return(false);
 	}
@@ -108,8 +108,8 @@ if(!function_exists('erasedataPublishList'))
 	// tells the two apart by that name alone.
 	function erasedataPublishList($listPath, $hash, $staged)
 	{
-		if(@rename($staged, $listPath."/".$hash.".list2"))
-			return(true);
+		if(@rename($staged, $listPath."/".$hash.".list2")) {
+			return(true); }
 		@unlink($staged);
 		return(false);
 	}
@@ -120,7 +120,7 @@ if(!function_exists('erasedataRemoveWithData'))
 	{
 		$listPath = FileUtil::getSettingsPath()."/erasedata";
 		@FileUtil::makeDirectory($listPath);
-		$result = array();
+		$result = [];
 		$erased = 0;
 		$failed = false;
 		foreach($hashes as $h)
@@ -161,9 +161,9 @@ if(!function_exists('erasedataRemoveWithData'))
 			// does above. Escaping would have to be understood by a collector
 			// that may still be the previous one during an upgrade.
 			$broken = false;
-			foreach($lines as $line)
-				if(strpbrk($line, "\r\n") !== false)
-					$broken = true;
+			foreach($lines as $line) {
+				if(strpbrk($line, "\r\n") !== false) {
+					$broken = true; } }
 			if($broken)
 			{
 				FileUtil::toLog("erasedata: a path of ".$h." contains a line break, torrent not erased");
@@ -186,10 +186,10 @@ if(!function_exists('erasedataRemoveWithData'))
 			// download's erase and no other's: rXMLRPCRequest reads a reply as
 			// one flat list of values and stops at the first fault, so a batch
 			// could only ever be confirmed whole.
-			$req = new rXMLRPCRequest( array(
-				new rXMLRPCCommand( getCmd("d.set_custom5"), array($h, "") ),
+			$req = new rXMLRPCRequest( [
+				new rXMLRPCCommand( getCmd("d.set_custom5"), [$h, ""] ),
 				new rXMLRPCCommand( getCmd("d.delete_tied"), $h ),
-				new rXMLRPCCommand( getCmd("d.erase"), $h ) ) );
+				new rXMLRPCCommand( getCmd("d.erase"), $h ) ] );
 			if(!$req->success())
 			{
 				// No reply, or a fault. rtorrent may still hold the download,

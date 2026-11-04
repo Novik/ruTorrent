@@ -34,9 +34,9 @@ require_once(__DIR__ . '/../../php/PhpProcess.php');
  */
 class AutoMoveDestinationTest extends TestCase
 {
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
-	const USER = 'tester';
-	const PAYLOAD = "\x00\xffpartial\r\n";
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const USER = 'tester';
+	public const PAYLOAD = "\x00\xffpartial\r\n";
 
 	private $base;
 
@@ -50,12 +50,155 @@ class AutoMoveDestinationTest extends TestCase
 		$this->removeTree($this->base);
 	}
 
+	/**
+	 * The control. With nothing in the way the pair works, and the assertion
+	 * below is therefore about the collision and not about the fixture.
+	 */
+	public function testAFinishedDownloadIsMovedToTheDirectoryItIsPointedAt()
+	{
+		$r = $this->runTheFinishedHook([]);
+
+		$this->assertTrue($r['named'] !== '',
+			'check.php names a directory for the finished download; it printed: '
+			. var_export($r['check']['printed'], true));
+		$this->assertEquals([true, true], $r['at_named'],
+			'and both files of the download are in it afterwards: ' . $r['named']);
+		$this->assertEquals([false, false], $r['at_source'],
+			'and none is left where the download ran');
+	}
+
+	/**
+	 * The whole point: a destination name that move.php will refuse must not
+	 * be the one rtorrent is given, because rtorrent is given it first. The
+	 * download must end up at the directory it was pointed at, whichever
+	 * directory the pair settles on.
+	 */
+	public function testTheDownloadIsAtTheDirectoryItWasPointedAtWhenTheMoveIsRefused()
+	{
+		$r = $this->runTheFinishedHook(['2.bin']);
+
+		$this->assertTrue($r['named'] !== '',
+			'check.php names a directory even when the destination is taken; it printed: '
+			. var_export($r['check']['printed'], true));
+		$this->assertEquals(['already there'], $r['occupants'],
+			'the file that was already at the destination survives');
+		$this->assertEquals([true, true], $r['at_named'],
+			'and the download is at the directory rtorrent was pointed at (' . $r['named']
+			. '), rather than pointed at a directory its data never reached');
+	}
+
+	/**
+	 * The same run seen from the source. A refused move leaves the download
+	 * whole where it is, so it is still seedable; a move that half happened
+	 * is not.
+	 */
+	public function testARefusedMoveLeavesTheDownloadWholeInOnePlace()
+	{
+		$r = $this->runTheFinishedHook(['2.bin']);
+
+		$whole = ($r['at_source'] === [true, true]) || ($r['at_named'] === [true, true]);
+		$this->assertTrue($whole,
+			'after a refused automove the download is whole in one directory; at the '
+			. 'source: ' . json_encode($r['at_source']) . ', at ' . $r['named'] . ': '
+			. json_encode($r['at_named']));
+	}
+
+	/**
+	 * A destination that does not exist yet is created by move.php. Its name
+	 * must not depend on the locale: in a non-UTF-8 locale such as C, which
+	 * is what the scripts have when rtorrent runs without LANG, PHP 7.4's
+	 * basename() drops the non-ASCII bytes of a path element.
+	 */
+	public function testANonAsciiDownloadIsMovedToTheDirectoryItIsPointedAt()
+	{
+		$r = $this->runTheFinishedHook([], 'Сериал');
+
+		$this->assertEquals($this->base . '/fin/Сериал', $r['named'],
+			'check.php names the download\'s own directory');
+		$this->assertEquals([true, true], $r['at_named'],
+			'and both files of the download are in it afterwards');
+		$this->assertEquals([false, false], $r['at_source'],
+			'and none is left where the download ran');
+	}
+
+	/**
+	 * move.php leaves a download where it is when skip_move_for_files matches
+	 * the path of one of its files below the download's own directory, so
+	 * check.php must name that directory too.
+	 */
+	public function testAFilteredMultiFileDownloadStaysWithItsData()
+	{
+		$this->assertSkipFilter(['1.bin', 'extras/cover.rar'], '/\.rar$/', true);
+		$this->assertSkipFilter(['1.bin', 'extras/notes.txt'], '/^extras\//', true);
+	}
+
+	public function testAFilteredSingleFileDownloadStaysWithItsData()
+	{
+		$this->assertSkipFilter('Film.rar', '/\.rar$/', true);
+		// The filter is matched as UTF-8, so "\xd0\xb6" is one character.
+		$this->assertSkipFilter("\xd0\xb6.rar", '/^.\.rar$/', true);
+	}
+
+	public function testADownloadTheFilterDoesNotMatchIsMoved()
+	{
+		$this->assertSkipFilter(['1.bin', 'extras/cover.rar'], '/\.zip$/', false);
+		$this->assertSkipFilter('Film.mkv', '/\.rar$/', false);
+		$this->assertSkipFilter('Film.rar', '', false);
+	}
+
+	public function testUnchangedBasenameStillWorksForEveryOperation()
+	{
+		foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op) {
+			$this->assertTransferred($op, 'episode.bin', 'episode.bin'); }
+	}
+
+	/**
+	 * A single file is carried into the label's directory itself, so that
+	 * directory is the last element of the destination.
+	 */
+	public function testASingleFileUnderANonAsciiLabelIsMovedIntoTheLabelDirectory()
+	{
+		list($out, $source, $target) = $this->runTheSingleFileHook('Move', 'episode.bin', 'episode.bin',
+			false, '', 'Метка');
+		$this->assertEquals($this->base . '/fin/Метка/', $out, 'Move reports the label\'s directory');
+		$this->assertTrue(@file_get_contents($target) === self::PAYLOAD, 'and the file is in it');
+		$this->assertTrue(!file_exists($source), 'and not left at the source');
+	}
+
+	public function testDaemonBasenameSelectsOnlyTheActualPartialFile()
+	{
+		foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op) {
+			$this->assertTransferred($op, 'Серия/01.bin', 'Серия_01.bin'); }
+	}
+
+	public function testOccupiedActualBasenameRefusesEveryOperation()
+	{
+		foreach (['Move', 'Copy', 'HardLink', 'SoftLink'] as $op)
+		{
+			list($out, $source, $target) = $this->runTheSingleFileHook($op, 'season/episode.bin',
+				'season_episode.bin', true);
+			$this->assertTrue($out === '', $op . ' refuses an occupied destination');
+			$this->assertTrue(file_get_contents($source) === self::PAYLOAD, $op . ' leaves the selected source unchanged');
+			$this->assertTrue(file_get_contents($target) === 'existing destination',
+				$op . ' preserves the occupied destination');
+		}
+	}
+
+	public function testSkipFilterUsesTheActualBasename()
+	{
+		list($out, $source, $target) = $this->runTheSingleFileHook('Move', 'season/episode.bin',
+			'season_episode.bin', false, '/^season_episode[.]bin$/');
+		$this->assertTrue($out === '', 'a matching physical basename is skipped');
+		$this->assertTrue(file_get_contents($source) === self::PAYLOAD, 'the skipped file stays at the source');
+		$this->assertTrue(!file_exists($target), 'and nothing is made at the destination');
+	}
+
 	private function removeTree($path)
 	{
 		if (is_link($path)) { @unlink($path); return; }
 		if (!is_dir($path)) { @unlink($path); return; }
-		foreach (glob($path . '/*') as $entry)
-			$this->removeTree($entry);
+		foreach (glob($path . '/*') as $entry) {
+			$this->removeTree($entry); }
 		@rmdir($path);
 	}
 
@@ -68,17 +211,17 @@ class AutoMoveDestinationTest extends TestCase
 	{
 		$mask = umask(0);
 		try {
-			if (!is_dir($dir) && !mkdir($dir, 0700, true))
-				throw new RuntimeException('Could not create fixture directory ' . $dir);
-			if (!chmod($dir, 0700))
-				throw new RuntimeException('Could not set the mode of fixture directory ' . $dir);
+			if (!is_dir($dir) && !mkdir($dir, 0700, true)) {
+				throw new RuntimeException('Could not create fixture directory ' . $dir); }
+			if (!chmod($dir, 0700)) {
+				throw new RuntimeException('Could not set the mode of fixture directory ' . $dir); }
 		} finally {
 			umask($mask);
 		}
 		clearstatcache(true, $dir);
 		$actual = fileperms($dir) & 07777;
-		if ($actual !== 0700)
-			throw new RuntimeException('Fixture directory ' . $dir . ' is mode ' . decoct($actual) . ', not 700');
+		if ($actual !== 0700) {
+			throw new RuntimeException('Fixture directory ' . $dir . ' is mode ' . decoct($actual) . ', not 700'); }
 	}
 
 	private function repoRoot()
@@ -101,14 +244,14 @@ class AutoMoveDestinationTest extends TestCase
 		if (is_array($names))
 		{
 			$files = '';
-			foreach ($names as $n)
+			foreach ($names as $n) {
 				$files .= 'd' . $this->bstr('length') . 'i12e'
-					. $this->bstr('path') . 'l' . implode('', array_map(array($this, 'bstr'), explode('/', $n))) . 'e' . 'e';
+					. $this->bstr('path') . 'l' . implode('', array_map([$this, 'bstr'], explode('/', $n))) . 'e' . 'e'; }
 			$layout = $this->bstr('files') . 'l' . $files . 'e'
 				. $this->bstr('name') . $this->bstr($root);
 		}
-		else
-			$layout = $this->bstr('length') . 'i12e' . $this->bstr('name') . $this->bstr($names);
+		else {
+			$layout = $this->bstr('length') . 'i12e' . $this->bstr('name') . $this->bstr($names); }
 		$info = 'd' . $layout
 			. $this->bstr('piece length') . 'i32768e'
 			. $this->bstr('pieces') . $this->bstr(str_repeat("\x01", 20))
@@ -139,18 +282,18 @@ class AutoMoveDestinationTest extends TestCase
 	 * So is the locale: C, which is what they get from an rtorrent started
 	 * without LANG, and the one where PHP 7.4 mishandles non-ASCII names.
 	 */
-	private function runPhp($file, $args = array())
+	private function runPhp($file, $args = [])
 	{
 		$mask = umask(022);
 		try {
 			$run = PhpProcess::run(array_merge(PhpProcess::sameIni(),
-				array('-d', 'display_errors=stderr', $file), $args),
-				array('env' => array('LC_ALL' => 'C')));
+				['-d', 'display_errors=stderr', $file], $args),
+				['env' => ['LC_ALL' => 'C']]);
 		} finally {
 			umask($mask);
 		}
-		return array('exit' => $run['timedOut'] ? 'timed out' : $run['code'],
-			'printed' => $run['out'], 'errors' => $run['err']);
+		return ['exit' => $run['timedOut'] ? 'timed out' : $run['code'],
+			'printed' => $run['out'], 'errors' => $run['err']];
 	}
 
 	/**
@@ -162,13 +305,13 @@ class AutoMoveDestinationTest extends TestCase
 	 * $files are its files, or, as a string, the name of a single-file
 	 * download, as torrentBytes() takes them. $skip is the skip filter.
 	 */
-	private function runTheFinishedHook($occupy, $root = 'mytorrent', $files = array('1.bin', '2.bin'), $skip = '')
+	private function runTheFinishedHook($occupy, $root = 'mytorrent', $files = ['1.bin', '2.bin'], $skip = '')
 	{
 		$this->removeTree($this->base);
 		$multi = is_array($files);
-		$names = $multi ? $files : array($files);
-		if (!$multi)
-			$root = $files;   // a single file is the download, in the download directory itself
+		$names = $multi ? $files : [$files];
+		if (!$multi) {
+			$root = $files; }   // a single file is the download, in the download directory itself
 		$source = $this->base . '/dl' . ($multi ? '/' . $root : '');
 		$destination = $this->base . '/fin' . ($multi ? '/' . $root : '');
 		$this->makeDir($this->base . '/profile/settings');
@@ -192,13 +335,13 @@ class AutoMoveDestinationTest extends TestCase
 		$basePath = $this->base . '/dl/' . $root;   // d.get_base_path
 		// d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
 		$check = $this->runScript('check',
-			array($basePath, $root, $multi ? '1' : '0', '', $root, self::USER));
+			[$basePath, $root, $multi ? '1' : '0', '', $root, self::USER]);
 		// and then, with the hash in front, the same five
 		$move = $this->runScript('move',
-			array(self::HASH, $basePath, $root, $multi ? '1' : '0', '', $root, self::USER));
+			[self::HASH, $basePath, $root, $multi ? '1' : '0', '', $root, self::USER]);
 
 		$named = rtrim($check['printed'], '/');
-		return array(
+		return [
 			'check' => $check,
 			'move' => $move,
 			'named' => $named,
@@ -212,7 +355,7 @@ class AutoMoveDestinationTest extends TestCase
 			'occupants' => array_map(function($n) use ($destination) {
 				return @file_get_contents($destination . '/' . $n);
 			}, $occupy),
-		);
+		];
 	}
 
 	/** Stores the plugin settings check.php and move.php read. */
@@ -233,9 +376,9 @@ class AutoMoveDestinationTest extends TestCase
 			. '$at->skip_move_for_files = ' . var_export($skip, true) . '; $at->store();' . "\n"
 			. 'echo rAutoTools::load()->path_to_finished;' . "\n");
 		$seeded = $this->runPhp($seed);
-		if ($seeded['printed'] !== $this->base . '/fin')
+		if ($seeded['printed'] !== $this->base . '/fin') {
 			throw new Exception('the plugin settings did not take (exit ' . var_export($seeded['exit'], true)
-				. '): ' . $seeded['printed'] . $seeded['errors']);
+				. '): ' . $seeded['printed'] . $seeded['errors']); }
 	}
 
 	/**
@@ -252,102 +395,6 @@ class AutoMoveDestinationTest extends TestCase
 	}
 
 	/**
-	 * The control. With nothing in the way the pair works, and the assertion
-	 * below is therefore about the collision and not about the fixture.
-	 */
-	public function testAFinishedDownloadIsMovedToTheDirectoryItIsPointedAt()
-	{
-		$r = $this->runTheFinishedHook(array());
-
-		$this->assertTrue($r['named'] !== '',
-			'check.php names a directory for the finished download; it printed: '
-			. var_export($r['check']['printed'], true));
-		$this->assertEquals(array(true, true), $r['at_named'],
-			'and both files of the download are in it afterwards: ' . $r['named']);
-		$this->assertEquals(array(false, false), $r['at_source'],
-			'and none is left where the download ran');
-	}
-
-	/**
-	 * The whole point: a destination name that move.php will refuse must not
-	 * be the one rtorrent is given, because rtorrent is given it first. The
-	 * download must end up at the directory it was pointed at, whichever
-	 * directory the pair settles on.
-	 */
-	public function testTheDownloadIsAtTheDirectoryItWasPointedAtWhenTheMoveIsRefused()
-	{
-		$r = $this->runTheFinishedHook(array('2.bin'));
-
-		$this->assertTrue($r['named'] !== '',
-			'check.php names a directory even when the destination is taken; it printed: '
-			. var_export($r['check']['printed'], true));
-		$this->assertEquals(array('already there'), $r['occupants'],
-			'the file that was already at the destination survives');
-		$this->assertEquals(array(true, true), $r['at_named'],
-			'and the download is at the directory rtorrent was pointed at (' . $r['named']
-			. '), rather than pointed at a directory its data never reached');
-	}
-
-	/**
-	 * The same run seen from the source. A refused move leaves the download
-	 * whole where it is, so it is still seedable; a move that half happened
-	 * is not.
-	 */
-	public function testARefusedMoveLeavesTheDownloadWholeInOnePlace()
-	{
-		$r = $this->runTheFinishedHook(array('2.bin'));
-
-		$whole = ($r['at_source'] === array(true, true)) || ($r['at_named'] === array(true, true));
-		$this->assertTrue($whole,
-			'after a refused automove the download is whole in one directory; at the '
-			. 'source: ' . json_encode($r['at_source']) . ', at ' . $r['named'] . ': '
-			. json_encode($r['at_named']));
-	}
-
-	/**
-	 * A destination that does not exist yet is created by move.php. Its name
-	 * must not depend on the locale: in a non-UTF-8 locale such as C, which
-	 * is what the scripts have when rtorrent runs without LANG, PHP 7.4's
-	 * basename() drops the non-ASCII bytes of a path element.
-	 */
-	public function testANonAsciiDownloadIsMovedToTheDirectoryItIsPointedAt()
-	{
-		$r = $this->runTheFinishedHook(array(), 'Сериал');
-
-		$this->assertEquals($this->base . '/fin/Сериал', $r['named'],
-			'check.php names the download\'s own directory');
-		$this->assertEquals(array(true, true), $r['at_named'],
-			'and both files of the download are in it afterwards');
-		$this->assertEquals(array(false, false), $r['at_source'],
-			'and none is left where the download ran');
-	}
-
-	/**
-	 * move.php leaves a download where it is when skip_move_for_files matches
-	 * the path of one of its files below the download's own directory, so
-	 * check.php must name that directory too.
-	 */
-	public function testAFilteredMultiFileDownloadStaysWithItsData()
-	{
-		$this->assertSkipFilter(array('1.bin', 'extras/cover.rar'), '/\.rar$/', true);
-		$this->assertSkipFilter(array('1.bin', 'extras/notes.txt'), '/^extras\//', true);
-	}
-
-	public function testAFilteredSingleFileDownloadStaysWithItsData()
-	{
-		$this->assertSkipFilter('Film.rar', '/\.rar$/', true);
-		// The filter is matched as UTF-8, so "\xd0\xb6" is one character.
-		$this->assertSkipFilter("\xd0\xb6.rar", '/^.\.rar$/', true);
-	}
-
-	public function testADownloadTheFilterDoesNotMatchIsMoved()
-	{
-		$this->assertSkipFilter(array('1.bin', 'extras/cover.rar'), '/\.zip$/', false);
-		$this->assertSkipFilter('Film.mkv', '/\.rar$/', false);
-		$this->assertSkipFilter('Film.rar', '', false);
-	}
-
-	/**
 	 * Finishes a download of $files, as runTheFinishedHook() takes them, with
 	 * $skip as the skip filter. Whichever directory check.php names, the files
 	 * are there afterwards; they were left where the download ran when
@@ -355,7 +402,7 @@ class AutoMoveDestinationTest extends TestCase
 	 */
 	private function assertSkipFilter($files, $skip, $skipped)
 	{
-		$r = $this->runTheFinishedHook(array(), 'mytorrent', $files, $skip);
+		$r = $this->runTheFinishedHook([], 'mytorrent', $files, $skip);
 		$what = 'filter ' . var_export($skip, true) . ', ' . json_encode($files) . ': ';
 		$this->assertEquals(array_fill(0, count($r['at_named']), true), $r['at_named'],
 			$what . 'the files are at the directory check.php named (' . $r['named'] . ')');
@@ -377,8 +424,8 @@ class AutoMoveDestinationTest extends TestCase
 	private function runTheSingleFileHook($operation, $name, $basename, $occupied = false, $skip = '', $label = '')
 	{
 		$this->removeTree($this->base);
-		foreach (array('profile/settings', 'session', 'dl/keep', 'fin') as $dir)
-			$this->makeDir($this->base . '/' . $dir);
+		foreach (['profile/settings', 'session', 'dl/keep', 'fin'] as $dir) {
+			$this->makeDir($this->base . '/' . $dir); }
 		$source = $this->base . '/dl/' . $basename;
 		$target = $this->base . '/fin/' . ($label !== '' ? $label . '/' : '') . $basename;
 		file_put_contents($source, self::PAYLOAD);
@@ -388,15 +435,15 @@ class AutoMoveDestinationTest extends TestCase
 			$this->makeDir(dirname($this->base . '/dl/' . $name));
 			file_put_contents($this->base . '/dl/' . $name, 'unrelated neighbor');
 		}
-		if ($occupied)
-			file_put_contents($target, 'existing destination');
+		if ($occupied) {
+			file_put_contents($target, 'existing destination'); }
 		$metafile = $this->base . '/session/' . self::HASH . '.torrent';
 		$metadata = $this->torrentBytes($name);
 		file_put_contents($metafile, $metadata);
 		$this->seed($operation, $skip, $label !== '');
 
 		// d.get_hash, d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
-		$move = $this->runScript('move', array(self::HASH, $source, $basename, '0', rawurlencode($label), $name, self::USER));
+		$move = $this->runScript('move', [self::HASH, $source, $basename, '0', rawurlencode($label), $name, self::USER]);
 		$this->assertTrue($move['exit'] === 0, $operation . ' hook completed (exit '
 			. var_export($move['exit'], true) . '): ' . $move['printed'] . $move['errors']);
 		clearstatcache();
@@ -411,32 +458,7 @@ class AutoMoveDestinationTest extends TestCase
 			$this->assertTrue(!file_exists($this->base . '/fin/' . $name),
 				'and nothing is made at the metainfo name in the destination');
 		}
-		return array($move['printed'], $source, $target);
-	}
-
-	public function testUnchangedBasenameStillWorksForEveryOperation()
-	{
-		foreach (array('Move', 'Copy', 'HardLink', 'SoftLink') as $op)
-			$this->assertTransferred($op, 'episode.bin', 'episode.bin');
-	}
-
-	/**
-	 * A single file is carried into the label's directory itself, so that
-	 * directory is the last element of the destination.
-	 */
-	public function testASingleFileUnderANonAsciiLabelIsMovedIntoTheLabelDirectory()
-	{
-		list($out, $source, $target) = $this->runTheSingleFileHook('Move', 'episode.bin', 'episode.bin',
-			false, '', 'Метка');
-		$this->assertEquals($this->base . '/fin/Метка/', $out, 'Move reports the label\'s directory');
-		$this->assertTrue(@file_get_contents($target) === self::PAYLOAD, 'and the file is in it');
-		$this->assertTrue(!file_exists($source), 'and not left at the source');
-	}
-
-	public function testDaemonBasenameSelectsOnlyTheActualPartialFile()
-	{
-		foreach (array('Move', 'Copy', 'HardLink', 'SoftLink') as $op)
-			$this->assertTransferred($op, 'Серия/01.bin', 'Серия_01.bin');
+		return [$move['printed'], $source, $target];
 	}
 
 	private function assertTransferred($op, $name, $basename)
@@ -452,27 +474,5 @@ class AutoMoveDestinationTest extends TestCase
 			$inode = @fileinode($source);
 			$this->assertTrue($inode !== false && @fileinode($target) === $inode, 'HardLink shares the source inode');
 		}
-	}
-
-	public function testOccupiedActualBasenameRefusesEveryOperation()
-	{
-		foreach (array('Move', 'Copy', 'HardLink', 'SoftLink') as $op)
-		{
-			list($out, $source, $target) = $this->runTheSingleFileHook($op, 'season/episode.bin',
-				'season_episode.bin', true);
-			$this->assertTrue($out === '', $op . ' refuses an occupied destination');
-			$this->assertTrue(file_get_contents($source) === self::PAYLOAD, $op . ' leaves the selected source unchanged');
-			$this->assertTrue(file_get_contents($target) === 'existing destination',
-				$op . ' preserves the occupied destination');
-		}
-	}
-
-	public function testSkipFilterUsesTheActualBasename()
-	{
-		list($out, $source, $target) = $this->runTheSingleFileHook('Move', 'season/episode.bin',
-			'season_episode.bin', false, '/^season_episode[.]bin$/');
-		$this->assertTrue($out === '', 'a matching physical basename is skipped');
-		$this->assertTrue(file_get_contents($source) === self::PAYLOAD, 'the skipped file stays at the source');
-		$this->assertTrue(!file_exists($target), 'and nothing is made at the destination');
 	}
 }

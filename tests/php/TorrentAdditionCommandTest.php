@@ -63,7 +63,7 @@ class TorrentAdditionCommandTest extends TestCase
 	use TorrentSequenceFixtures;
 
 	/** A 40 character info hash, as a magnet carries one. */
-	const MAGNET = 'magnet:?xt=urn:btih:0123456789ABCDEF0123456789ABCDEF01234567';
+	public const MAGNET = 'magnet:?xt=urn:btih:0123456789ABCDEF0123456789ABCDEF01234567';
 
 	private $base;
 	private $logFile;
@@ -82,7 +82,7 @@ class TorrentAdditionCommandTest extends TestCase
 		$settings = $reflection->newInstanceWithoutConstructor();
 		$settings->iVersion = 0x904;
 		$settings->apiVersion = 0;
-		$settings->aliases = array();
+		$settings->aliases = [];
 		$settings->directory = $this->base;
 
 		$property = new ReflectionProperty('rTorrentSettings', 'theSettings');
@@ -115,30 +115,6 @@ class TorrentAdditionCommandTest extends TestCase
 		@rmdir($this->base);
 	}
 
-	/** Everything php/xmlrpc.php logged since the last call to this. */
-	private function takeLog()
-	{
-		$log = file_exists($this->logFile) ? file_get_contents($this->logFile) : '';
-		@unlink($this->logFile);
-		return $log;
-	}
-
-	/** Run one add and return what it would have sent. */
-	private function addTorrentWith($addition, $directory = null, $isNew = true)
-	{
-		$this->takeLog();
-		rTorrent::sendTorrent(new Torrent($this->torrentFile), true, true,
-			$directory, null, true, false, $isNew, $addition);
-		return $this->takeLog();
-	}
-
-	private function addMagnetWith($addition, $directory = null)
-	{
-		$this->takeLog();
-		rTorrent::sendMagnet(self::MAGNET, true, true, $directory, null, $addition);
-		return $this->takeLog();
-	}
-
 	// ---- the mechanism ---------------------------------------------------
 
 	/**
@@ -165,7 +141,7 @@ class TorrentAdditionCommandTest extends TestCase
 
 	public function testAnExecuteAdditionNeverReachesThePayload()
 	{
-		$payload = $this->addTorrentWith(array('execute=/bin/sh,-c,id > /tmp/pwned'));
+		$payload = $this->addTorrentWith(['execute=/bin/sh,-c,id > /tmp/pwned']);
 
 		$this->assertTrue(strpos($payload, 'execute=') === false,
 			'an execute addition is not sent');
@@ -175,7 +151,7 @@ class TorrentAdditionCommandTest extends TestCase
 
 	public function testAnExecuteThrowAdditionNeverReachesThePayload()
 	{
-		$payload = $this->addTorrentWith(array('execute.throw=/bin/sh,-c,id'));
+		$payload = $this->addTorrentWith(['execute.throw=/bin/sh,-c,id']);
 
 		$this->assertTrue($payload === '', 'execute.throw is refused too');
 	}
@@ -187,7 +163,7 @@ class TorrentAdditionCommandTest extends TestCase
 	 */
 	public function testAnAdditionCannotReplaceTheApprovedDirectory()
 	{
-		$payload = $this->addTorrentWith(array('d.set_directory=/etc'),
+		$payload = $this->addTorrentWith(['d.set_directory=/etc'],
 			'/downloads/approved');
 
 		$this->assertTrue(strpos($payload, 'd.set_directory=/etc') === false,
@@ -197,13 +173,13 @@ class TorrentAdditionCommandTest extends TestCase
 
 	public function testAnImportAdditionNeverReachesThePayload()
 	{
-		$this->assertTrue($this->addTorrentWith(array('import=/tmp/rc')) === '',
+		$this->assertTrue($this->addTorrentWith(['import=/tmp/rc']) === '',
 			'import is refused');
 	}
 
 	public function testAMagnetAdditionIsHeldToTheSameSet()
 	{
-		$payload = $this->addMagnetWith(array('execute=/bin/sh,-c,id'));
+		$payload = $this->addMagnetWith(['execute=/bin/sh,-c,id']);
 
 		$this->assertTrue($payload === '',
 			'sendMagnet refuses the same addition sendTorrent refuses');
@@ -212,10 +188,10 @@ class TorrentAdditionCommandTest extends TestCase
 	/** One bad entry refuses the batch, not just itself. */
 	public function testOneRefusedAdditionStopsTheWholeAdd()
 	{
-		$payload = $this->addTorrentWith(array(
+		$payload = $this->addTorrentWith([
 			getCmd('d.set_throttle_name=') . 'slow',
 			'execute=/bin/sh,-c,id',
-		));
+		]);
 
 		$this->assertTrue($payload === '',
 			'a list holding one refused addition sends none of itself');
@@ -223,13 +199,13 @@ class TorrentAdditionCommandTest extends TestCase
 
 	public function testAnAdditionThatNamesNoCommandIsRefused()
 	{
-		$this->assertTrue($this->addTorrentWith(array('d.set_throttle_name')) === '',
+		$this->assertTrue($this->addTorrentWith(['d.set_throttle_name']) === '',
 			'an addition with no = names no command and is refused');
 	}
 
 	public function testANonStringAdditionIsRefused()
 	{
-		$this->assertTrue($this->addTorrentWith(array(array('execute=id'))) === '',
+		$this->assertTrue($this->addTorrentWith([['execute=id']]) === '',
 			'an addition that is not a string is refused');
 	}
 
@@ -238,7 +214,7 @@ class TorrentAdditionCommandTest extends TestCase
 	/** plugins/rss/rss.php and plugins/rutracker_check/check.php. */
 	public function testTheThrottleAdditionIsSent()
 	{
-		$payload = $this->addTorrentWith(array(getCmd('d.set_throttle_name=') . 'slow'));
+		$payload = $this->addTorrentWith([getCmd('d.set_throttle_name=') . 'slow']);
 
 		$this->assertTrue(strpos($payload, 'throttle_name') !== false,
 			'the throttle addition the rss plugin builds still reaches the payload');
@@ -247,7 +223,7 @@ class TorrentAdditionCommandTest extends TestCase
 	/** plugins/rss/rss.php and plugins/rutracker_check/check.php. */
 	public function testTheRatioViewAdditionIsSent()
 	{
-		$payload = $this->addTorrentWith(array(getCmd('view.set_visible=') . 'rat_1'));
+		$payload = $this->addTorrentWith([getCmd('view.set_visible=') . 'rat_1']);
 
 		$this->assertTrue(strpos($payload, 'view.set_visible=rat_1') !== false,
 			'the ratio view addition still reaches the payload');
@@ -256,7 +232,7 @@ class TorrentAdditionCommandTest extends TestCase
 	/** plugins/rutracker_check/check.php. */
 	public function testThePushBackUniqueAdditionIsSent()
 	{
-		$payload = $this->addTorrentWith(array(getCmd('d.views.push_back_unique=') . 'rat_1'));
+		$payload = $this->addTorrentWith([getCmd('d.views.push_back_unique=') . 'rat_1']);
 
 		$this->assertTrue(strpos($payload, 'd.views.push_back_unique=rat_1') !== false,
 			'the view membership addition still reaches the payload');
@@ -265,7 +241,7 @@ class TorrentAdditionCommandTest extends TestCase
 	/** plugins/datadir/util_setdir.php. */
 	public function testTheConnectionSeedAdditionIsSent()
 	{
-		$payload = $this->addTorrentWith(array(getCmd('d.set_connection_seed=') . 'seed'));
+		$payload = $this->addTorrentWith([getCmd('d.set_connection_seed=') . 'seed']);
 
 		$this->assertTrue(strpos($payload, 'connection_seed') !== false ||
 			strpos($payload, 'connection.seed') !== false,
@@ -275,10 +251,10 @@ class TorrentAdditionCommandTest extends TestCase
 	/** plugins/rss/rss.php builds both at once. */
 	public function testTheRssPluginsPairIsSent()
 	{
-		$payload = $this->addMagnetWith(array(
+		$payload = $this->addMagnetWith([
 			getCmd('d.set_throttle_name=') . 'slow',
 			getCmd('view.set_visible=') . 'rat_1',
-		));
+		]);
 
 		$this->assertTrue(strpos($payload, 'throttle_name') !== false &&
 			strpos($payload, 'view.set_visible=rat_1') !== false,
@@ -290,6 +266,54 @@ class TorrentAdditionCommandTest extends TestCase
 	{
 		$this->assertTrue($this->addTorrentWith(null) !== '',
 			'an add that passes no addition still builds a payload');
+	}
+
+	/**
+	 * The reported vector end to end: addition[] in the query string of a
+	 * request to php/addtorrent.php.
+	 */
+	public function testTheScriptDoesNotTakeAnAdditionFromTheRequest()
+	{
+		$payload = $this->runAddTorrentScript('url=' . rawurlencode(self::MAGNET) .
+			'&addition[]=' . rawurlencode('execute=/bin/sh,-c,id > /tmp/pwned'));
+
+		$this->assertTrue(strpos($payload, 'execute=') === false,
+			'an addition given in the request does not reach the payload');
+		$this->assertTrue(strpos($payload, 'load') !== false,
+			'and the magnet itself is still added');
+	}
+
+	/** The positive control for the test above: the script does send a payload. */
+	public function testTheScriptStillAddsAMagnet()
+	{
+		$payload = $this->runAddTorrentScript('url=' . rawurlencode(self::MAGNET));
+
+		$this->assertTrue(strpos($payload, self::MAGNET) !== false,
+			'the magnet reaches the payload when no addition is given');
+	}
+
+	/** Everything php/xmlrpc.php logged since the last call to this. */
+	private function takeLog()
+	{
+		$log = file_exists($this->logFile) ? file_get_contents($this->logFile) : '';
+		@unlink($this->logFile);
+		return $log;
+	}
+
+	/** Run one add and return what it would have sent. */
+	private function addTorrentWith($addition, $directory = null, $isNew = true)
+	{
+		$this->takeLog();
+		rTorrent::sendTorrent(new Torrent($this->torrentFile), true, true,
+			$directory, null, true, false, $isNew, $addition);
+		return $this->takeLog();
+	}
+
+	private function addMagnetWith($addition, $directory = null)
+	{
+		$this->takeLog();
+		rTorrent::sendMagnet(self::MAGNET, true, true, $directory, null, $addition);
+		return $this->takeLog();
 	}
 
 	// ---- the request ------------------------------------------------------
@@ -325,29 +349,5 @@ class TorrentAdditionCommandTest extends TestCase
 			escapeshellarg($driver) . ' 2>&1', $ignored);
 		@unlink($driver);
 		return $this->takeLog();
-	}
-
-	/**
-	 * The reported vector end to end: addition[] in the query string of a
-	 * request to php/addtorrent.php.
-	 */
-	public function testTheScriptDoesNotTakeAnAdditionFromTheRequest()
-	{
-		$payload = $this->runAddTorrentScript('url=' . rawurlencode(self::MAGNET) .
-			'&addition[]=' . rawurlencode('execute=/bin/sh,-c,id > /tmp/pwned'));
-
-		$this->assertTrue(strpos($payload, 'execute=') === false,
-			'an addition given in the request does not reach the payload');
-		$this->assertTrue(strpos($payload, 'load') !== false,
-			'and the magnet itself is still added');
-	}
-
-	/** The positive control for the test above: the script does send a payload. */
-	public function testTheScriptStillAddsAMagnet()
-	{
-		$payload = $this->runAddTorrentScript('url=' . rawurlencode(self::MAGNET));
-
-		$this->assertTrue(strpos($payload, self::MAGNET) !== false,
-			'the magnet reaches the payload when no addition is given');
 	}
 }

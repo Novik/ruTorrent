@@ -2,19 +2,19 @@
 
 $pushBulletEndpoint = "https://api.pushbullet.com/v2/pushes";
 
-$pushBulletNotifications = array
-(
-	"addition" => array
-	(
+$pushBulletNotifications = 
+[
+	"addition" => 
+	[
 		"title" => "Torrent added",
 		"body" => "Name: {name}\n".
 			  "Label: {label}\n".
 			  "Size: {size}\n".
 			  "Time: {added}\n".
 			  "Tracker: {tracker}",
-	),
-	"deletion" => array
-	(
+	],
+	"deletion" => 
+	[
 		"title" => "Torrent deleted",
 		"body" => "Name: {name}\n".
 			  "Label: {label}\n".
@@ -26,9 +26,9 @@ $pushBulletNotifications = array
 			  "Added: {added}\n".
 			  "Finished: {finished}\n".
 			  "Tracker: {tracker}",
-	),
-	"finish" => array
-	(
+	],
+	"finish" => 
+	[
 		"title" => "Torrent finished",
 		"body" => "Name: {name}\n".
 			  "Label: {label}\n".
@@ -40,5 +40,5 @@ $pushBulletNotifications = array
 			  "Added: {added}\n".
 			  "Finished: {finished}\n".
 			  "Tracker: {tracker}",
-	),
-);
+	],
+];

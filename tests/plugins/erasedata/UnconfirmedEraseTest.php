@@ -30,9 +30,9 @@ require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
  */
 class UnconfirmedEraseTest extends TestCase
 {
-	const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+	public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
 	/** Another download the daemon may hold; never the one being erased. */
-	const OTHER = '89ABCDEF0123456789ABCDEF0123456789ABCDEF';
+	public const OTHER = '89ABCDEF0123456789ABCDEF0123456789ABCDEF';
 
 	private $base;
 	private $daemon;
@@ -51,6 +51,271 @@ class UnconfirmedEraseTest extends TestCase
 		$this->removeTree($this->base);
 	}
 
+	// -- the erase never reached the daemon -----------------------------------
+
+	public function testNothingIsPublishedForAnEraseTheDaemonNeverAnswered()
+	{
+		$this->fresh();
+		$download = $this->download();
+		// One reply: the paths. The daemon's worker then closes its listener
+		// and exits, so the erase request meets a refused connection -- a
+		// daemon that stopped between the two requests. No timeout is
+		// reached. To the writer, the download is still loaded.
+		$this->startDaemon([$this->pathsReply($download)]);
+
+		$verdict = $this->removeWithData(2);
+
+		$this->assertTrue($verdict === 'refused',
+			'the writer tells the caller the removal did not happen: ' . $verdict);
+		$this->assertTrue(!$this->daemon->received('d.erase'),
+			'and the daemon never saw the erase');
+		$this->assertTrue(!$this->listPublished(),
+			'so no list authorises deleting the files');
+		$this->assertTrue($this->listed() === [],
+			'and nothing staged is left behind: ' . implode(' ', $this->listed()));
+		$this->assertTrue(strpos($this->logged(), 'did not confirm the erase of ' . self::HASH) !== false,
+			'the log says the erase was not confirmed, and where the data is: ' . $this->logged());
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		foreach ($download['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'a file of a download the daemon still holds is still there: ' . basename($file));
+		}
+	}
+
+	// -- the daemon refused the erase -----------------------------------------
+
+	public function testNothingIsPublishedForAnEraseTheDaemonRefused()
+	{
+		$this->fresh();
+		$download = $this->download();
+		// A fault makes the writer report failure. It cannot tell which of
+		// the three calls ran; here none did. The third reply is for a
+		// collector that asks about hashes; one with nothing to apply does
+		// not ask, and the reply stays unconsumed.
+		$this->startDaemon([
+			$this->pathsReply($download),
+			FakeRtorrentDaemon::fault('Could not erase download.'),
+			[self::HASH],
+		]);
+
+		$verdict = $this->removeWithData();
+
+		$this->assertTrue($verdict === 'refused',
+			'the writer tells the caller the removal did not happen: ' . $verdict);
+		$this->assertTrue($this->daemon->received('d.erase'),
+			'the daemon saw the erase and answered it with a fault');
+		$this->assertTrue(!$this->listPublished(),
+			'so no list authorises deleting the files');
+		$this->assertTrue($this->listed() === [],
+			'and nothing staged is left behind: ' . implode(' ', $this->listed()));
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue(!$this->daemon->received('d.multicall'),
+			'with nothing to apply, the collector does not ask the daemon');
+		foreach ($download['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'a file of a download the daemon still holds is still there: ' . basename($file));
+		}
+	}
+
+	// -- the same hash is loaded again before the collector's pass -------------
+
+	public function testAListWhoseHashIsLoadedAgainIsWithdrawnAndTheDataKept()
+	{
+		$this->fresh();
+		$download = $this->download();
+		// The erase succeeds and the list is published. Before the collector's
+		// next pass -- up to $garbageCheckInterval seconds later, longer when
+		// a pass is skipped as busy -- the torrent is added again to the same
+		// directory: a removal noticed as a mistake, a watch directory, an
+		// RSS rule. rtorrent finds the files on disk and lists the hash
+		// again; the third reply is what it tells the collector.
+		$this->startDaemon([
+			$this->pathsReply($download),
+			$this->eraseReply(),
+			[self::OTHER, self::HASH],
+		]);
+
+		$verdict = $this->removeWithData();
+
+		$this->assertTrue($verdict === 'erased',
+			'the writer tells the caller the removal happened: ' . $verdict);
+		$this->assertTrue($this->daemon->received('d.erase'), 'the daemon erased the download');
+		$this->assertTrue($this->listPublished(), 'and the list is published');
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue($this->daemon->received('d.multicall'),
+			'the collector asked the daemon which hashes it holds');
+		$this->assertTrue(!$this->listPublished(), 'and withdrew the list');
+		foreach ($download['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'a file of a download the daemon holds again is still there: ' . basename($file));
+		}
+		$this->assertTrue(strpos($this->logged(),
+			'erasedata: ' . self::HASH . ' is loaded again; list withdrawn, data kept') !== false,
+			'and the log says so: ' . $this->logged());
+	}
+
+	// -- the daemon does not answer the collector ------------------------------
+
+	public function testNothingIsDeletedWhenTheDaemonDoesNotAnswerTheCollector()
+	{
+		$this->fresh();
+		$download = $this->download();
+		$this->startDaemon([$this->pathsReply($download), $this->eraseReply()]);
+
+		$verdict = $this->removeWithData();
+
+		$this->assertTrue($verdict === 'erased',
+			'the writer tells the caller the removal happened: ' . $verdict);
+		$this->assertTrue($this->listPublished(), 'and the list is published');
+		// rtorrent is down when the collector's pass comes: restarting,
+		// crashed, its socket refused. Whether the download has been loaded
+		// again is unknown, and the collector may not guess.
+		$this->stopDaemon();
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue($this->listPublished(),
+			'the list is kept for a pass the daemon answers');
+		foreach ($download['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'and nothing is deleted on an unknown answer: ' . basename($file));
+		}
+		$this->assertTrue(strpos($this->logged(), 'rtorrent did not answer, 1 list(s) kept') !== false,
+			'and the log says the pass was skipped: ' . $this->logged());
+	}
+
+	public function testNothingIsDeletedWhenTheDaemonRefusesTheCollectorsQuestion()
+	{
+		$this->fresh();
+		$download = $this->download();
+		// rtorrent answers the collector's question with a fault -- what a
+		// daemon that does not know the command as spelled does -- which is
+		// as unknown an answer as none, and is told apart in the log so that
+		// a line every pass can be read for what it is.
+		$this->startDaemon([
+			$this->pathsReply($download),
+			$this->eraseReply(),
+			FakeRtorrentDaemon::fault('Unsupported target type found.'),
+		]);
+
+		$verdict = $this->removeWithData();
+
+		$this->assertTrue($verdict === 'erased',
+			'the writer tells the caller the removal happened: ' . $verdict);
+		$this->assertTrue($this->listPublished(), 'and the list is published');
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue($this->listPublished(), 'the list is kept for a pass the daemon answers');
+		foreach ($download['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'and nothing is deleted on an unknown answer: ' . basename($file));
+		}
+		$this->assertTrue(strpos($this->logged(), 'rtorrent answered with a fault, 1 list(s) kept') !== false,
+			'and the log says the question was refused: ' . $this->logged());
+	}
+
+	// -- a hash is loaded again in the middle of a pass -------------------------
+
+	public function testAHashLoadedAgainBetweenTwoListsOfOnePassIsSeen()
+	{
+		$this->fresh();
+		$first = $this->download('First');
+		$second = $this->download('Second');
+		// Two downloads erased, two lists. rtorrent is asked before each list,
+		// not once per pass: it holds nothing when asked the first time, and
+		// both hashes when asked the second time. The order the collector
+		// reads the directory in is the filesystem's, so what is pinned is
+		// that exactly one list is applied and the other withdrawn, and that
+		// the withdrawn one is the download whose files are still there.
+		$this->startDaemon([
+			$this->pathsReply($first),
+			$this->eraseReply(),
+			$this->pathsReply($second),
+			$this->eraseReply(),
+			[],
+			[self::HASH, self::OTHER],
+		]);
+
+		$this->assertTrue($this->removeWithData(60, self::HASH) === 'erased', 'the first removal happened');
+		$this->assertTrue($this->removeWithData(60, self::OTHER) === 'erased', 'and the second');
+		$this->assertTrue($this->listPublished(self::HASH) && $this->listPublished(self::OTHER),
+			'and both lists are published');
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		$this->assertTrue(count(array_keys($this->daemon->calls(), 'd.multicall', true)) === 2,
+			'the collector asked the daemon once per list: ' . implode(' ', $this->daemon->calls()));
+		$this->assertTrue(!$this->listPublished(self::HASH) && !$this->listPublished(self::OTHER),
+			'both lists are gone');
+		$withdrawn = [];
+		if (preg_match_all('/erasedata: ([0-9A-F]{40}) is loaded again; list withdrawn, data kept/',
+				$this->logged(), $m)) {
+			$withdrawn = $m[1];
+		}
+		$this->assertTrue(count($withdrawn) === 1,
+			'exactly one list was withdrawn: ' . $this->logged());
+		$kept = ($withdrawn === [self::OTHER]) ? $second : $first;
+		$deleted = ($withdrawn === [self::OTHER]) ? $first : $second;
+		foreach ($kept['files'] as $file) {
+			$this->assertTrue($this->isFile($file),
+				'the download loaded again in the middle of the pass keeps its files: ' . basename($file));
+		}
+		foreach ($deleted['files'] as $file) {
+			$this->assertTrue(!$this->isFile($file),
+				'and the one applied before the answer changed is deleted: ' . basename($file));
+		}
+	}
+
+	// -- the erase is confirmed and the hash stays gone -------------------------
+
+	public function testAConfirmedEraseIsCollectedOnceTheHashIsGone()
+	{
+		$this->fresh();
+		$download = $this->download();
+		// At the collector's pass the daemon holds another download, not
+		// this one.
+		$this->startDaemon([
+			$this->pathsReply($download),
+			$this->eraseReply(),
+			[self::OTHER],
+		]);
+
+		$verdict = $this->removeWithData();
+
+		$this->assertTrue($verdict === 'erased',
+			'the writer tells the caller the removal happened: ' . $verdict);
+		$this->assertTrue($this->daemon->calls() === [
+			'd.get_base_path', 'd.is_multi_file', 'f.multicall',
+			'd.set_custom5', 'd.delete_tied', 'd.erase'],
+			'the paths are read first, then the download is erased in one request: '
+			. implode(' ', $this->daemon->calls()));
+		$this->assertTrue($this->listPublished(), 'and the list is published');
+
+		$out = $this->collect();
+
+		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+		foreach ($download['files'] as $file) {
+			$this->assertTrue(!$this->isFile($file),
+				'a file of the erased download is deleted: ' . basename($file));
+		}
+		$this->assertTrue(!$this->isDir($download['base']), 'and so is its directory');
+		$this->assertTrue(!$this->listPublished(), 'and the list is consumed');
+		$this->assertTrue($this->logged() === '', 'with nothing to report: ' . $this->logged());
+	}
+
 	private function stopDaemon()
 	{
 		if ($this->daemon !== null) {
@@ -64,7 +329,7 @@ class UnconfirmedEraseTest extends TestCase
 		if (!is_dir($path)) {
 			return;
 		}
-		foreach (array_diff(scandir($path), array('.', '..')) as $name) {
+		foreach (array_diff(scandir($path), ['.', '..']) as $name) {
 			$entry = $path . '/' . $name;
 			is_dir($entry) && !is_link($entry) ? $this->removeTree($entry) : @unlink($entry);
 		}
@@ -102,10 +367,10 @@ class UnconfirmedEraseTest extends TestCase
 		@mkdir($base . '/sub', 0700, true);
 		file_put_contents($base . '/one.bin', 'one');
 		file_put_contents($base . '/sub/two.bin', 'two');
-		return array(
+		return [
 			'base' => $base,
-			'files' => array($base . '/one.bin', $base . '/sub/two.bin'),
-		);
+			'files' => [$base . '/one.bin', $base . '/sub/two.bin'],
+		];
 	}
 
 	/**
@@ -114,13 +379,13 @@ class UnconfirmedEraseTest extends TestCase
 	 */
 	private function pathsReply($download)
 	{
-		return array_merge(array($download['base'], 1), $download['files']);
+		return array_merge([$download['base'], 1], $download['files']);
 	}
 
 	/** What the daemon answers the erase request: one value per command. */
 	private function eraseReply()
 	{
-		return array(0, 0, 0);
+		return [0, 0, 0];
 	}
 
 	private function startDaemon($replies)
@@ -162,7 +427,7 @@ class UnconfirmedEraseTest extends TestCase
 
 	private function run_($driver, $options = '')
 	{
-		$output = array();
+		$output = [];
 		exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=1 ' . $options . ' '
 			. escapeshellarg($driver) . ' 2>&1', $output);
 		return implode("\n", $output);
@@ -226,7 +491,7 @@ class UnconfirmedEraseTest extends TestCase
 	/** Every file in the list directory, by name. */
 	private function listed()
 	{
-		$names = array();
+		$names = [];
 		foreach ((array)glob($this->listPath() . '/*') as $entry) {
 			$names[] = basename($entry);
 		}
@@ -237,270 +502,5 @@ class UnconfirmedEraseTest extends TestCase
 	{
 		$log = $this->base . '/app.log';
 		return $this->isFile($log) ? file_get_contents($log) : '';
-	}
-
-	// -- the erase never reached the daemon -----------------------------------
-
-	public function testNothingIsPublishedForAnEraseTheDaemonNeverAnswered()
-	{
-		$this->fresh();
-		$download = $this->download();
-		// One reply: the paths. The daemon's worker then closes its listener
-		// and exits, so the erase request meets a refused connection -- a
-		// daemon that stopped between the two requests. No timeout is
-		// reached. To the writer, the download is still loaded.
-		$this->startDaemon(array($this->pathsReply($download)));
-
-		$verdict = $this->removeWithData(2);
-
-		$this->assertTrue($verdict === 'refused',
-			'the writer tells the caller the removal did not happen: ' . $verdict);
-		$this->assertTrue(!$this->daemon->received('d.erase'),
-			'and the daemon never saw the erase');
-		$this->assertTrue(!$this->listPublished(),
-			'so no list authorises deleting the files');
-		$this->assertTrue($this->listed() === array(),
-			'and nothing staged is left behind: ' . implode(' ', $this->listed()));
-		$this->assertTrue(strpos($this->logged(), 'did not confirm the erase of ' . self::HASH) !== false,
-			'the log says the erase was not confirmed, and where the data is: ' . $this->logged());
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		foreach ($download['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'a file of a download the daemon still holds is still there: ' . basename($file));
-		}
-	}
-
-	// -- the daemon refused the erase -----------------------------------------
-
-	public function testNothingIsPublishedForAnEraseTheDaemonRefused()
-	{
-		$this->fresh();
-		$download = $this->download();
-		// A fault makes the writer report failure. It cannot tell which of
-		// the three calls ran; here none did. The third reply is for a
-		// collector that asks about hashes; one with nothing to apply does
-		// not ask, and the reply stays unconsumed.
-		$this->startDaemon(array(
-			$this->pathsReply($download),
-			FakeRtorrentDaemon::fault('Could not erase download.'),
-			array(self::HASH),
-		));
-
-		$verdict = $this->removeWithData();
-
-		$this->assertTrue($verdict === 'refused',
-			'the writer tells the caller the removal did not happen: ' . $verdict);
-		$this->assertTrue($this->daemon->received('d.erase'),
-			'the daemon saw the erase and answered it with a fault');
-		$this->assertTrue(!$this->listPublished(),
-			'so no list authorises deleting the files');
-		$this->assertTrue($this->listed() === array(),
-			'and nothing staged is left behind: ' . implode(' ', $this->listed()));
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue(!$this->daemon->received('d.multicall'),
-			'with nothing to apply, the collector does not ask the daemon');
-		foreach ($download['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'a file of a download the daemon still holds is still there: ' . basename($file));
-		}
-	}
-
-	// -- the same hash is loaded again before the collector's pass -------------
-
-	public function testAListWhoseHashIsLoadedAgainIsWithdrawnAndTheDataKept()
-	{
-		$this->fresh();
-		$download = $this->download();
-		// The erase succeeds and the list is published. Before the collector's
-		// next pass -- up to $garbageCheckInterval seconds later, longer when
-		// a pass is skipped as busy -- the torrent is added again to the same
-		// directory: a removal noticed as a mistake, a watch directory, an
-		// RSS rule. rtorrent finds the files on disk and lists the hash
-		// again; the third reply is what it tells the collector.
-		$this->startDaemon(array(
-			$this->pathsReply($download),
-			$this->eraseReply(),
-			array(self::OTHER, self::HASH),
-		));
-
-		$verdict = $this->removeWithData();
-
-		$this->assertTrue($verdict === 'erased',
-			'the writer tells the caller the removal happened: ' . $verdict);
-		$this->assertTrue($this->daemon->received('d.erase'), 'the daemon erased the download');
-		$this->assertTrue($this->listPublished(), 'and the list is published');
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue($this->daemon->received('d.multicall'),
-			'the collector asked the daemon which hashes it holds');
-		$this->assertTrue(!$this->listPublished(), 'and withdrew the list');
-		foreach ($download['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'a file of a download the daemon holds again is still there: ' . basename($file));
-		}
-		$this->assertTrue(strpos($this->logged(),
-			'erasedata: ' . self::HASH . ' is loaded again; list withdrawn, data kept') !== false,
-			'and the log says so: ' . $this->logged());
-	}
-
-	// -- the daemon does not answer the collector ------------------------------
-
-	public function testNothingIsDeletedWhenTheDaemonDoesNotAnswerTheCollector()
-	{
-		$this->fresh();
-		$download = $this->download();
-		$this->startDaemon(array($this->pathsReply($download), $this->eraseReply()));
-
-		$verdict = $this->removeWithData();
-
-		$this->assertTrue($verdict === 'erased',
-			'the writer tells the caller the removal happened: ' . $verdict);
-		$this->assertTrue($this->listPublished(), 'and the list is published');
-		// rtorrent is down when the collector's pass comes: restarting,
-		// crashed, its socket refused. Whether the download has been loaded
-		// again is unknown, and the collector may not guess.
-		$this->stopDaemon();
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue($this->listPublished(),
-			'the list is kept for a pass the daemon answers');
-		foreach ($download['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'and nothing is deleted on an unknown answer: ' . basename($file));
-		}
-		$this->assertTrue(strpos($this->logged(), 'rtorrent did not answer, 1 list(s) kept') !== false,
-			'and the log says the pass was skipped: ' . $this->logged());
-	}
-
-	public function testNothingIsDeletedWhenTheDaemonRefusesTheCollectorsQuestion()
-	{
-		$this->fresh();
-		$download = $this->download();
-		// rtorrent answers the collector's question with a fault -- what a
-		// daemon that does not know the command as spelled does -- which is
-		// as unknown an answer as none, and is told apart in the log so that
-		// a line every pass can be read for what it is.
-		$this->startDaemon(array(
-			$this->pathsReply($download),
-			$this->eraseReply(),
-			FakeRtorrentDaemon::fault('Unsupported target type found.'),
-		));
-
-		$verdict = $this->removeWithData();
-
-		$this->assertTrue($verdict === 'erased',
-			'the writer tells the caller the removal happened: ' . $verdict);
-		$this->assertTrue($this->listPublished(), 'and the list is published');
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue($this->listPublished(), 'the list is kept for a pass the daemon answers');
-		foreach ($download['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'and nothing is deleted on an unknown answer: ' . basename($file));
-		}
-		$this->assertTrue(strpos($this->logged(), 'rtorrent answered with a fault, 1 list(s) kept') !== false,
-			'and the log says the question was refused: ' . $this->logged());
-	}
-
-	// -- a hash is loaded again in the middle of a pass -------------------------
-
-	public function testAHashLoadedAgainBetweenTwoListsOfOnePassIsSeen()
-	{
-		$this->fresh();
-		$first = $this->download('First');
-		$second = $this->download('Second');
-		// Two downloads erased, two lists. rtorrent is asked before each list,
-		// not once per pass: it holds nothing when asked the first time, and
-		// both hashes when asked the second time. The order the collector
-		// reads the directory in is the filesystem's, so what is pinned is
-		// that exactly one list is applied and the other withdrawn, and that
-		// the withdrawn one is the download whose files are still there.
-		$this->startDaemon(array(
-			$this->pathsReply($first),
-			$this->eraseReply(),
-			$this->pathsReply($second),
-			$this->eraseReply(),
-			array(),
-			array(self::HASH, self::OTHER),
-		));
-
-		$this->assertTrue($this->removeWithData(60, self::HASH) === 'erased', 'the first removal happened');
-		$this->assertTrue($this->removeWithData(60, self::OTHER) === 'erased', 'and the second');
-		$this->assertTrue($this->listPublished(self::HASH) && $this->listPublished(self::OTHER),
-			'and both lists are published');
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		$this->assertTrue(count(array_keys($this->daemon->calls(), 'd.multicall', true)) === 2,
-			'the collector asked the daemon once per list: ' . implode(' ', $this->daemon->calls()));
-		$this->assertTrue(!$this->listPublished(self::HASH) && !$this->listPublished(self::OTHER),
-			'both lists are gone');
-		$withdrawn = array();
-		if (preg_match_all('/erasedata: ([0-9A-F]{40}) is loaded again; list withdrawn, data kept/',
-				$this->logged(), $m)) {
-			$withdrawn = $m[1];
-		}
-		$this->assertTrue(count($withdrawn) === 1,
-			'exactly one list was withdrawn: ' . $this->logged());
-		$kept = ($withdrawn === array(self::OTHER)) ? $second : $first;
-		$deleted = ($withdrawn === array(self::OTHER)) ? $first : $second;
-		foreach ($kept['files'] as $file) {
-			$this->assertTrue($this->isFile($file),
-				'the download loaded again in the middle of the pass keeps its files: ' . basename($file));
-		}
-		foreach ($deleted['files'] as $file) {
-			$this->assertTrue(!$this->isFile($file),
-				'and the one applied before the answer changed is deleted: ' . basename($file));
-		}
-	}
-
-	// -- the erase is confirmed and the hash stays gone -------------------------
-
-	public function testAConfirmedEraseIsCollectedOnceTheHashIsGone()
-	{
-		$this->fresh();
-		$download = $this->download();
-		// At the collector's pass the daemon holds another download, not
-		// this one.
-		$this->startDaemon(array(
-			$this->pathsReply($download),
-			$this->eraseReply(),
-			array(self::OTHER),
-		));
-
-		$verdict = $this->removeWithData();
-
-		$this->assertTrue($verdict === 'erased',
-			'the writer tells the caller the removal happened: ' . $verdict);
-		$this->assertTrue($this->daemon->calls() === array(
-			'd.get_base_path', 'd.is_multi_file', 'f.multicall',
-			'd.set_custom5', 'd.delete_tied', 'd.erase'),
-			'the paths are read first, then the download is erased in one request: '
-			. implode(' ', $this->daemon->calls()));
-		$this->assertTrue($this->listPublished(), 'and the list is published');
-
-		$out = $this->collect();
-
-		$this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
-		foreach ($download['files'] as $file) {
-			$this->assertTrue(!$this->isFile($file),
-				'a file of the erased download is deleted: ' . basename($file));
-		}
-		$this->assertTrue(!$this->isDir($download['base']), 'and so is its directory');
-		$this->assertTrue(!$this->listPublished(), 'and the list is consumed');
-		$this->assertTrue($this->logged() === '', 'with nothing to report: ' . $this->logged());
 	}
 }

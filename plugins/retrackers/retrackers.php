@@ -5,18 +5,18 @@ class rRetrackers
 {
 	public $hash = "retrackers.dat";
 	public $modified = false;
-	public $list = array();
-	public $todelete = array();
+	public $list = [];
+	public $todelete = [];
 	public $dontAddPrivate = 1;
 	public $addToBegin = 0;
 
-	static public function load()
+	public static function load()
 	{
 		$cache = new rCache();
 		$rt = new rRetrackers();
 		$cache->get($rt);
-		if(!isset($rt->todelete))
-			$rt->todelete = array();
+		if(!isset($rt->todelete)) {
+			$rt->todelete = []; }
 		return($rt);
 	}
 	public function store()
@@ -26,44 +26,41 @@ class rRetrackers
 	}
 	public function set()
 	{
-		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		if(!isset($HTTP_RAW_POST_DATA)) {
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input"); }
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
-			$this->list = array();
-			$this->todelete = array();
+			$this->list = [];
+			$this->todelete = [];
 			$this->dontAddPrivate = 0;
-			$trackers = array();
+			$trackers = [];
 			foreach($vars as $var)
 			{
 				$parts = explode("=",$var);
-				if($parts[0]=="dont_private")
-					$this->dontAddPrivate = $parts[1];
-				else
-				if($parts[0]=="add_begin")
-					$this->addToBegin = $parts[1];
-				else
-				if($parts[0]=="todelete")
-					$this->todelete[] = trim(rawurldecode($parts[1]));
-				else
-				if($parts[0]=="tracker")
+				if($parts[0]=="dont_private") {
+					$this->dontAddPrivate = $parts[1]; }
+				elseif($parts[0]=="add_begin") {
+					$this->addToBegin = $parts[1]; }
+				elseif($parts[0]=="todelete") {
+					$this->todelete[] = trim(rawurldecode($parts[1])); }
+				elseif($parts[0]=="tracker")
 				{
 					$value = trim(rawurldecode($parts[1]));
-					if(strlen($value))
-						$trackers[] = $value;
+					if(strlen($value)) {
+						$trackers[] = $value; }
 					else
 					{
 						if(count($trackers)>0)
 						{
 							$this->list[] = $trackers;
-							$trackers = array();
+							$trackers = [];
 						}
 					}
 				}
 			}
-			if(count($trackers)>0)
-				$this->list[] = $trackers;
+			if(count($trackers)>0) {
+				$this->list[] = $trackers; }
 		}
 		$this->store();
 	}

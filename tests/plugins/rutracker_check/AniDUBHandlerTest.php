@@ -60,7 +60,7 @@ function anidubTorrent($name = 'Anime_[720p]_ep01.mkv')
     $raw = strictTorrentRaw($name, 'http://tr.anidub.com/ann?uk=0000', anidubCommentUrl());
     $torrent = @new Torrent($raw);
     strictAssertTrue(!$torrent->errors(), 'torrent fixture must parse');
-    return array($raw, strtoupper((string) $torrent->hash_info()), $torrent);
+    return [$raw, strtoupper((string) $torrent->hash_info()), $torrent];
 }
 
 $suite = new StrictTestSuite();
@@ -76,12 +76,12 @@ $suite->test('the topic is read on the site the account names', function () {
 
     strictAssertSame(ruTrackerChecker::STE_UPTODATE, $result, 'the topic answered for this torrent');
     strictAssertSame(
-        array(
-            array('fetchComplex', anidubTopicUrl()),
-            array('fetchComplex', anidubDownloadUrl()),
-        ),
+        [
+            ['fetchComplex', anidubTopicUrl()],
+            ['fetchComplex', anidubDownloadUrl()],
+        ],
         Snoopy::$requests,
-        'both the topic and the torrent are asked for over https'
+        'both the topic and the torrent are asked for over https',
     );
     strictAssertSame(1, ruTrackerChecker::$createCalls, 'the answer became a torrent');
 });
@@ -126,7 +126,7 @@ $suite->test('the topic the comment url names is the topic read', function () {
 
     AniDUBCheckImpl::download_torrent(anidubCommentUrl(7), $hash, $torrent);
 
-    strictAssertSame(array('fetchComplex', anidubTopicUrl(7)), Snoopy::$requests[0],
+    strictAssertSame(['fetchComplex', anidubTopicUrl(7)], Snoopy::$requests[0],
         'the news id of the comment url is the one asked for');
 });
 
@@ -138,7 +138,7 @@ $suite->test('a torrent with no quality tag is not looked up at all', function (
 
     strictAssertSame(ruTrackerChecker::STE_NOT_NEED, $result,
         'the handler has no way to pick a torrent without one');
-    strictAssertSame(array(), Snoopy::$requests, 'and asks for nothing');
+    strictAssertSame([], Snoopy::$requests, 'and asks for nothing');
 });
 
 $suite->test('a url on another host is not this handler\'s', function () {
@@ -149,7 +149,7 @@ $suite->test('a url on another host is not this handler\'s', function () {
         $hash, $torrent);
 
     strictAssertSame(ruTrackerChecker::STE_NOT_NEED, $result, 'the handler declines it');
-    strictAssertSame(array(), Snoopy::$requests, 'and asks nobody about it');
+    strictAssertSame([], Snoopy::$requests, 'and asks nobody about it');
 });
 
 exit($suite->run());

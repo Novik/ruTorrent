@@ -1,14 +1,14 @@
 <?php
 class YTSEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>75 );
-	public $categories = array(
+	public $defaults = [ "public"=>true, "page_size"=>75 ];
+	public $categories = [
 		"All" => "All",
 		"720p" => "720p",
 		"1080p" => "1080p",
 		"2160p" => "2160p",
 		"3D" => "3D",
-	);
+	];
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -36,8 +36,8 @@ class YTSEngine extends commonEngine
 							$item["peers"] = $torrent->peers;
 							$ret[$torrent->url] = $item;
 							$added++;
-							if($added >= $limit)
-								return;
+							if($added >= $limit) {
+								return; }
 						}
 					}
 				}

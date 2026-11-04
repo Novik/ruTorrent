@@ -15,25 +15,6 @@ require_once(__DIR__ . '/../../plugins/check_port/parse.php');
  */
 class GlobalpingParseTest extends TestCase
 {
-	/** 8.8.8.8:53, a port that answers. */
-	private function replied()
-	{
-		return "PING dns.google (8.8.8.8) on port 53.\n"
-			. "Reply from dns.google (8.8.8.8) on port 53: tcp_conn=1 time=1.01 ms\n"
-			. "Reply from dns.google (8.8.8.8) on port 53: tcp_conn=2 time=1.13 ms\n"
-			. "\n--- dns.google (8.8.8.8) ping statistics ---\n"
-			. "3 packets transmitted, 3 received, 0% packet loss, time 1002 ms\n";
-	}
-
-	/** 8.8.8.8:81, a port that is filtered rather than refused. */
-	private function silent()
-	{
-		return "PING dns.google (8.8.8.8) on port 81.\n"
-			. "No reply from dns.google (8.8.8.8) on port 81: tcp_conn=1\n"
-			. "No reply from dns.google (8.8.8.8) on port 81: tcp_conn=2\n"
-			. "\n--- dns.google (8.8.8.8) ping statistics ---\n"
-			. "3 packets transmitted, 0 received, 100% packet loss, time 2003 ms\n";
-	}
 
 	public function testAPortThatRepliesIsOpen()
 	{
@@ -96,5 +77,24 @@ class GlobalpingParseTest extends TestCase
 			. "No reply from no-Reply from tcp_conn=1 (192.0.2.1) on port 81: tcp_conn=1\n";
 		$this->assertEquals(0, check_port_parse_globalping($raw),
 			'the phrase appearing mid-line is not a reply');
+	}
+	/** 8.8.8.8:53, a port that answers. */
+	private function replied()
+	{
+		return "PING dns.google (8.8.8.8) on port 53.\n"
+			. "Reply from dns.google (8.8.8.8) on port 53: tcp_conn=1 time=1.01 ms\n"
+			. "Reply from dns.google (8.8.8.8) on port 53: tcp_conn=2 time=1.13 ms\n"
+			. "\n--- dns.google (8.8.8.8) ping statistics ---\n"
+			. "3 packets transmitted, 3 received, 0% packet loss, time 1002 ms\n";
+	}
+
+	/** 8.8.8.8:81, a port that is filtered rather than refused. */
+	private function silent()
+	{
+		return "PING dns.google (8.8.8.8) on port 81.\n"
+			. "No reply from dns.google (8.8.8.8) on port 81: tcp_conn=1\n"
+			. "No reply from dns.google (8.8.8.8) on port 81: tcp_conn=2\n"
+			. "\n--- dns.google (8.8.8.8) ping statistics ---\n"
+			. "3 packets transmitted, 0 received, 100% packet loss, time 2003 ms\n";
 	}
 }

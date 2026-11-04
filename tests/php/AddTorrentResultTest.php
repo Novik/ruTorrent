@@ -17,8 +17,8 @@ class AddTorrentResultTest extends TestCase
 	public function setUp()
 	{
 		$this->sourceRoot = realpath(__DIR__ . '/../..');
-		if($this->sourceRoot === false)
-			throw new Exception('could not locate the production source root');
+		if($this->sourceRoot === false) {
+			throw new Exception('could not locate the production source root'); }
 	}
 
 	// ---- what the response may not contain -------------------------------
@@ -166,7 +166,7 @@ class AddTorrentResultTest extends TestCase
 	public function testJsonBranchReportsTheResult()
 	{
 		$result = $this->get('?json=1&result[]=Success');
-		$this->assertEquals(array('result' => 'Success'), json_decode($result['body'], true),
+		$this->assertEquals(['result' => 'Success'], json_decode($result['body'], true),
 			'the json branch reports the result: ' . $result['body']);
 	}
 
@@ -213,8 +213,8 @@ class AddTorrentResultTest extends TestCase
 	{
 		$marker = '"addTorrent"+';
 		$start = strpos($body, $marker);
-		if($start === false)
-			return '';
+		if($start === false) {
+			return ''; }
 		$start += strlen($marker);
 		$end = strpos($body, ']', $start);
 		return $end === false ? '' : substr($body, $start, $end - $start);
@@ -243,24 +243,24 @@ class AddTorrentResultTest extends TestCase
 		$process = null;
 		try
 		{
-			if(!mkdir($tree . '/php/utility', 0700, true) && !is_dir($tree . '/php/utility'))
-				throw new Exception('could not create addtorrent fixture tree');
-			foreach(array('php/addtorrent.php', 'php/utility/cachedecho.php', 'php/utility/utf.php') as $relative)
+			if(!mkdir($tree . '/php/utility', 0700, true) && !is_dir($tree . '/php/utility')) {
+				throw new Exception('could not create addtorrent fixture tree'); }
+			foreach(['php/addtorrent.php', 'php/utility/cachedecho.php', 'php/utility/utf.php'] as $relative)
 			{
 				$source = $this->sourceRoot . '/' . $relative;
 				$target = $tree . '/' . $relative;
-				if(!copy($source, $target) || (hash_file('sha256', $source) !== hash_file('sha256', $target)))
-					throw new Exception('could not byte-copy production source ' . $relative);
+				if(!copy($source, $target) || (hash_file('sha256', $source) !== hash_file('sha256', $target))) {
+					throw new Exception('could not byte-copy production source ' . $relative); }
 			}
 			$this->writeStubs($tree);
 
-			$process = TestHttpServer::start($tree, array(),
-				array_merge(PhpProcess::sameIni(), array('-d', 'zlib.output_compression=0')));
+			$process = TestHttpServer::start($tree, [],
+				array_merge(PhpProcess::sameIni(), ['-d', 'zlib.output_compression=0']));
 			return TestHttpServer::rawGet($process->port(), '/php/addtorrent.php' . $query);
 		}
 		finally
 		{
-			if($process !== null) $process->close();
+			if($process !== null) { $process->close(); }
 			TestTree::remove($tree);
 		}
 	}

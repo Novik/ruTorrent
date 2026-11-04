@@ -67,16 +67,16 @@ function rssNormalizeXMLDocumentEncoding($data)
 			return $parts[1] . $parts[2] . 'UTF-8' . $parts[2];
 		},
 		$converted,
-		1
+		1,
 	);
 	return $normalized === null ? $data : $normalized;
 }
 
 class RegexRSSReader
 {
+	public $errors = [];
 	private $encoding = 'utf-8';
 	private $data = null;
-	public $errors = [];
 
 
 	public function __construct($data)
@@ -85,53 +85,6 @@ class RegexRSSReader
 		$this->data = $data;
 		$enc = $this->searchText('/?xml/@encoding');
 		$this->encoding = empty($enc) ? 'utf-8' : strtolower($enc);
-	}
-
-	private function match($regex, $offset)
-	{
-		$match = preg_match($regex, $this->data, $matches, PREG_OFFSET_CAPTURE, $offset);
-		if ($match) {
-			foreach (['value', 'value2'] as $v) {
-				if (array_key_exists($v, $matches) && $matches[$v][1] !== -1) {
-					return $matches[$v];
-				}
-			}
-		}
-		return null;
-	}
-
-	private function nextNode($name, $ctx = null)
-	{
-		$offset = $ctx ? $ctx['offset'] : 0;
-		$parentName = $ctx ? preg_quote($ctx['name']) : null;
-		if ($parentName && Utility::str_starts_with($name, 'text()')) {
-			// find text of node
-			$regex = '<' . $parentName . '.*?>\s*((?P<value><!\[CDATA\[.*?\]\]>)|(?P<value2>.*?))<\/' . $parentName . '>';
-		} elseif ($parentName && Utility::str_starts_with($name, '@')) {
-			// find attr of node
-			$attrib = substr($name, 1);
-			$regex = '<' . $parentName . '\s+([a-z0-9:_]+?\s*=\s*((".*?")|(\'.*?\'))?\s*)*?'
-				. preg_quote($attrib) . '\s*=\s*(("(?P<value>.*?)")|(\'(?P<value2>.*?)\')).*?>';
-		} else {
-			// find child of node (or next root)
-			if ($ctx && Utility::str_ends_with($ctx['value'], '/>')) {
-				// self closing tag
-				return null;
-			}
-			$offset = $ctx ? $ctx['offset'] + strlen($ctx['value']) : 0;
-			$regex = '((<!\[CDATA\[.*?\]\]>|<!--.*?-->)|.*?)*?('
-				. ($parentName ? '(?P<value><\/' . $parentName . '>)|' : '')
-				. '(?P<value2><' . preg_quote($name) . '.*?>))';
-		}
-		if (($m = $this->match('/' . $regex . '/si', $offset)) !== null) {
-			return [
-				'name' => $name,
-				'value' => $m[0],
-				'offset' => $m[1],
-				'close' => $parentName && $m[0] == '</' . $ctx['name'] . '>'
-			];
-		}
-		return null;
 	}
 
 	public function searchNodes($path, $ctx = null)
@@ -175,16 +128,63 @@ class RegexRSSReader
 			}
 			if ($this->encoding != 'utf-8') {
 				$converted = rssConvertToUTF8($text, $this->encoding);
-				if ($converted !== false)
-					$text = $converted;
-				else
-					$text = UTF::win2utf($text);
+				if ($converted !== false) {
+					$text = $converted; }
+				else {
+					$text = UTF::win2utf($text); }
 			}
 			if (Utility::str_starts_with($text, '<![CDATA[')) {
 				return substr($text, 9, strlen($text) - (1 + 9 + 2));
 			}
 			return html_entity_decode(strip_tags($text), ENT_QUOTES, 'utf-8');
 		}
+	}
+
+	private function match($regex, $offset)
+	{
+		$match = preg_match($regex, $this->data, $matches, PREG_OFFSET_CAPTURE, $offset);
+		if ($match) {
+			foreach (['value', 'value2'] as $v) {
+				if (array_key_exists($v, $matches) && $matches[$v][1] !== -1) {
+					return $matches[$v];
+				}
+			}
+		}
+		return null;
+	}
+
+	private function nextNode($name, $ctx = null)
+	{
+		$offset = $ctx ? $ctx['offset'] : 0;
+		$parentName = $ctx ? preg_quote($ctx['name']) : null;
+		if ($parentName && Utility::str_starts_with($name, 'text()')) {
+			// find text of node
+			$regex = '<' . $parentName . '.*?>\s*((?P<value><!\[CDATA\[.*?\]\]>)|(?P<value2>.*?))<\/' . $parentName . '>';
+		} elseif ($parentName && Utility::str_starts_with($name, '@')) {
+			// find attr of node
+			$attrib = substr($name, 1);
+			$regex = '<' . $parentName . '\s+([a-z0-9:_]+?\s*=\s*((".*?")|(\'.*?\'))?\s*)*?'
+				. preg_quote($attrib) . '\s*=\s*(("(?P<value>.*?)")|(\'(?P<value2>.*?)\')).*?>';
+		} else {
+			// find child of node (or next root)
+			if ($ctx && Utility::str_ends_with($ctx['value'], '/>')) {
+				// self closing tag
+				return null;
+			}
+			$offset = $ctx ? $ctx['offset'] + strlen($ctx['value']) : 0;
+			$regex = '((<!\[CDATA\[.*?\]\]>|<!--.*?-->)|.*?)*?('
+				. ($parentName ? '(?P<value><\/' . $parentName . '>)|' : '')
+				. '(?P<value2><' . preg_quote($name) . '.*?>))';
+		}
+		if (($m = $this->match('/' . $regex . '/si', $offset)) !== null) {
+			return [
+				'name' => $name,
+				'value' => $m[0],
+				'offset' => $m[1],
+				'close' => $parentName && $m[0] == '</' . $ctx['name'] . '>',
+			];
+		}
+		return null;
 	}
 }
 
@@ -245,8 +245,8 @@ function rssXpath($data)
 			return '';
 		};
 		$xIter = function ($expr, &$ctx = null) use (&$regxSearch) {
-			foreach (explode('|', $expr) as $e)
-				yield from $regxSearch->searchNodes($e, $ctx);
+			foreach (explode('|', $expr) as $e) {
+				yield from $regxSearch->searchNodes($e, $ctx); }
 		};
 		$errors = function () use (&$regxSearch) {
 			return $regxSearch->errors;
