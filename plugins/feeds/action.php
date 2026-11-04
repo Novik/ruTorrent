@@ -103,8 +103,8 @@ function formatItemDescription($torrent)
         $desc .= '<strong>' . $theUILang["Peers"] . ": </strong>" . $torrent["peers"] . "<br>";
     }
     $desc .= "</fieldset>";
-    if (!empty($torrent["mesage"])) {
-        $desc .= '<fieldset><legend>' . $theUILang["Track_status"] . '</legend>' . htmlspecialchars($torrent["mesage"], ENT_COMPAT, "UTF-8") . '</fieldset>';
+    if (!empty($torrent["message"])) {
+        $desc .= '<fieldset><legend>' . $theUILang["Track_status"] . '</legend>' . htmlspecialchars($torrent["message"], ENT_COMPAT | ENT_SUBSTITUTE, "UTF-8") . '</fieldset>';
     }
     if (!empty($torrent["comment"])) {
         $desc .= '<fieldset><legend>' . $theUILang["Comment"] . '</legend>' . htmlspecialchars($torrent["comment"], ENT_COMPAT, "UTF-8") . '</fieldset>';
@@ -132,7 +132,9 @@ if ($url === false) {
     die('Unable to determine the public feed URL. Configure RU_PUBLIC_URL or publicURL.');
 }
 $xmlURL = htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-$server = explode(':', rTorrentSettings::get()->server);
+// The settings probe read the name through rXMLRPCRequest, which escapes
+// backslashes and double quotes, so it is unescaped first.
+$server = explode(':', rXMLRPCRequest::unescapeValue(rTorrentSettings::get()->server));
 // The daemon's name and versions are text it was configured with, so they
 // are written as text and cannot close an element of the document.
 $xmlServer = htmlspecialchars($server[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -200,8 +202,11 @@ if ($req->success()) {
     for ($i = 0; $i < count($req->val); $i += $fields) {
         $item = [
             "guid" => $req->val[$i],
-            "title" => $req->val[$i + 1],
-            "category" => rawurldecode($req->val[$i + 5]),
+            // rXMLRPCRequest escapes backslashes and double quotes in the
+            // strings it hands back; the name, the label and, below, the
+            // tracker message are printed, so they are unescaped first.
+            "title" => rXMLRPCRequest::unescapeValue($req->val[$i + 1]),
+            "category" => rawurldecode(rXMLRPCRequest::unescapeValue($req->val[$i + 5])),
             "pubDate" => floatval($req->val[$i + 6]) ];
         if (rTorrentSettings::get()->isPluginRegistered('data')) {
             $item["link"] = $url . 'plugins/data/action.php?hash=' . $req->val[$i] . '&no=0&readable=1';
@@ -241,7 +246,7 @@ if ($req->success()) {
                 "hash" => $req->val[$i],
                 "peers" => $req->val[$i + 19] . " (" . $get_peers_all . ")",
                 "seeds" => $req->val[$i + 20] . " (" . $get_peers_all . ")",
-                "message" => $req->val[$i + 2],
+                "message" => rXMLRPCRequest::unescapeValue($req->val[$i + 2]),
             ];
             $torrent["eta"] = ($torrent["dl"] > 0) ? floor(($get_size_chunks - $get_completed_chunks) * $get_chunk_size / $torrent["dl"]) : -1;
             $item["description"] = formatItemDescription($torrent);

@@ -21,7 +21,8 @@ class FeedsPubDateTest extends TestCase
     private $base;
     private $daemon;
 
-    // hash, name, seedingtime, comment
+    // hash, name, seedingtime, comment, and optionally the label and the
+    // tracker message
     private $torrents = [
         ['1111111111111111111111111111111111111111', 'no comment', '1700000000', ''],
         ['2222222222222222222222222222222222222222', 'with comment', '1710000000', 'VRS24mrkera%20comment'],
@@ -198,6 +199,108 @@ class FeedsPubDateTest extends TestCase
     }
 
     /**
+     * rTorrent sends a backslash or a double quote in a name or a label as it
+     * is, and the feed prints both as rTorrent has them, once: a backslash
+     * already in front of a quote stays. A label the interface set is
+     * URL-encoded and is decoded only after that, so %5C%22 in it is still a
+     * backslash and a quote.
+     */
+    public function testANameOrALabelWithABackslashOrAQuoteReadsBackAsItIs()
+    {
+        $torrents = $this->torrents;
+        $this->torrents = [
+            ['4444444444444444444444444444444444444444', 'say "hi" \\ to C:\\dir\\', '1700000000', '', 'tv \\"uhd\\" \\ x'],
+            ['5555555555555555555555555555555555555555', 'ends with \\"', '1710000000', '', 'a%5C%22b'],
+        ];
+        try {
+            list(, $output) = $this->feed(false);
+        } finally {
+            $this->torrents = $torrents;
+        }
+        $xml = @simplexml_load_string($output);
+        $this->assertTrue($xml !== false, 'the feed is well-formed XML: ' . substr($output, 0, 300));
+        if ($xml === false) {
+            throw new Exception('The feed could not be parsed');
+        }
+        $read = [];
+        foreach ($xml->channel->item as $item) {
+            $read[(string) $item->guid] = [(string) $item->title, (string) $item->category];
+        }
+        ksort($read);
+        $this->assertEquals(
+            [
+                '4444444444444444444444444444444444444444' => ['say "hi" \\ to C:\\dir\\', 'tv \\"uhd\\" \\ x'],
+                '5555555555555555555555555555555555555555' => ['ends with \\"', 'a\\"b'],
+            ],
+            $read,
+            'each name and label reads back as rTorrent has it: ' . json_encode($read),
+        );
+    }
+
+    /**
+     * The settings probe reads the session name through rXMLRPCRequest, which
+     * escapes a backslash or a double quote in it. The channel header prints
+     * the name rTorrent reports.
+     */
+    public function testASessionNameWithABackslashOrAQuoteReadsBackAsItIs()
+    {
+        $name = 'box "q" \\ x';
+        list(, $output, $status) = $this->feed(false, [], null, null, null, 'all', false, $name);
+        $this->assertEquals(200, $status, 'the feed is served');
+        $this->assertEquals(
+            $name . ': All torrents',
+            $this->channelTitle($output),
+            'the channel title reads back the session name as rTorrent reports it',
+        );
+    }
+
+    /**
+     * With item descriptions on, a torrent's tracker message is shown in a
+     * fieldset of its own, as rTorrent has it. A byte that is not UTF-8 shows
+     * as U+FFFD rather than emptying the message, and a torrent without a
+     * message has no such fieldset.
+     */
+    public function testATrackerMessageIsShownInTheDescriptionAsItIs()
+    {
+        $torrents = $this->torrents;
+        $this->torrents = [
+            ['6666666666666666666666666666666666666666', 'refused', '1700000000', '', '', 'Failure reason "unregistered" \\ x'],
+            ['7777777777777777777777777777777777777777', 'no message', '1700000000', '', '', ''],
+            ['8888888888888888888888888888888888888888', 'not UTF-8', '1700000000', '', '', "Failure reason \xff x"],
+        ];
+        try {
+            list(, $output) = $this->feed(true);
+        } finally {
+            $this->torrents = $torrents;
+        }
+        $xml = @simplexml_load_string($output);
+        $this->assertTrue($xml !== false, 'the feed is well-formed XML: ' . substr($output, 0, 300));
+        if ($xml === false) {
+            throw new Exception('The feed could not be parsed');
+        }
+        $descriptions = [];
+        foreach ($xml->channel->item as $item) {
+            $descriptions[(string) $item->guid] = (string) $item->description;
+        }
+        $shown = [
+            '6666666666666666666666666666666666666666' => 'Failure reason &quot;unregistered&quot; \\ x',
+            '8888888888888888888888888888888888888888' => "Failure reason \u{FFFD} x",
+        ];
+        foreach ($shown as $hash => $message) {
+            $description = $descriptions[$hash] ?? '';
+            $this->assertTrue(
+                strpos($description, '<legend>Tracker Status</legend>' . $message . '</fieldset>') !== false,
+                'the description shows the tracker message: ' . $description,
+            );
+        }
+        $description = $descriptions['7777777777777777777777777777777777777777'] ?? '';
+        $this->assertTrue(
+            strpos($description, '</fieldset>') !== false && strpos($description, 'Tracker Status') === false,
+            'a torrent without a tracker message has a description and no Tracker Status fieldset: ' . $description,
+        );
+    }
+
+    /**
      * mode arrives in the request and titles the channel out of the language
      * file, so an unknown key reads no string: the diagnostic that produces
      * is printed before the document the script is still building, and the
@@ -341,7 +444,9 @@ class FeedsPubDateTest extends TestCase
     private function row($torrent, $descriptions)
     {
         list($hash, $name, $seedingtime, $comment) = $torrent;
-        $row = [$hash, $name, '', '0', '0', '', $seedingtime];
+        $label = isset($torrent[4]) ? $torrent[4] : '';
+        $message = isset($torrent[5]) ? $torrent[5] : '';
+        $row = [$hash, $name, $message, '0', '0', $label, $seedingtime];
         if ($descriptions) {
             $row = array_merge($row, [$comment, '4', '4', '65536', '65536', '0', '0',
                 '0', '0', '16384', '0', '0', '0', '0']);
@@ -351,7 +456,8 @@ class FeedsPubDateTest extends TestCase
 
     /**
      * Runs action.php and returns [title => pubDate or null] for every item
-     * in the feed it prints.
+     * in the feed it prints. $sessionName replaces the session name in the
+     * settings; null keeps $probedName, the name the settings probe was told.
      */
     private function feed(
         $descriptions,
@@ -360,7 +466,8 @@ class FeedsPubDateTest extends TestCase
         $environment = null,
         $sessionName = 'fake',
         $mode = 'all',
-        $reportErrors = false
+        $reportErrors = false,
+        $probedName = ''
     ) {
         $root = realpath(__DIR__ . '/../../..');
         $tree = $this->base . '/tree-' . ($descriptions ? 'on' : 'off');
@@ -391,7 +498,7 @@ class FeedsPubDateTest extends TestCase
         // An install whose interface has been opened has a settings cache.
         // This script is driven against a profile of its own, so leave one
         // there rather than have it probe and spend the replies below.
-        RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
+        RtorrentProbeFixture::warmSettingsCache($this->base . '/profile', $probedName);
         $this->daemon = new FakeRtorrentDaemon([$values], $this->base . '/calls.log');
 
         $driver = $this->base . '/drive-feeds.php';
@@ -417,7 +524,7 @@ class FeedsPubDateTest extends TestCase
             . '$settings->linkExist = true;' . "\n"
             . '$settings->iVersion = 0x1018;' . "\n"
             . '$settings->version = $settings->libVersion = \'0.16.24\';' . "\n"
-            . '$settings->server = ' . var_export($sessionName, true) . ";\n"
+            . (($sessionName === null) ? '' : '$settings->server = ' . var_export($sessionName, true) . ";\n")
             . '$settings->registerPlugin(\'data\');' . "\n"
             . 'require(' . var_export($tree . '/plugins/feeds/action.php', true) . ");\n");
 
