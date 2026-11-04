@@ -287,6 +287,66 @@ describe("mobile plugin: desktop or mobile UI", () => {
         jest.useRealTimers();
       }
     });
+
+    // The desktop UI keeps the lock for good after a save of unknown
+    // outcome, with an alert asking for a manual reload. The next load is
+    // on a device that would start the other UI without the stored choice.
+    it.each([
+      ["mobile", { url: "/rtorrent/" }, "mobile", false, "mobile"],
+      ["desktop", { url: "/rtorrent/" }, "desktop", true, "desktop"],
+      ["", { url: "/rtorrent/?mobile=0", coarse: true }, null, true, "mobile"],
+    ])("stays while the save holds its lock; the next load applies %j", (choice, page, kept, coarse, ui) => {
+      jest.useFakeTimers();
+      try {
+        boot(page);
+        const select = openSettings();
+        select.value = choice;
+        window.theWebUI.settingsSavePending = true;
+        window.theWebUI.setSettings();
+        jest.advanceTimersByTime(60000);
+        expect(navigated).toEqual([]);
+        expect(stored()).toBe(kept);
+      } finally {
+        jest.useRealTimers();
+      }
+      expect(boot({ url: "/rtorrent/", coarse }).ui).toBe(ui);
+    });
+
+    it("leaves the page when a slow save releases its lock", () => {
+      jest.useFakeTimers();
+      try {
+        boot({ url: "/rtorrent/" });
+        const select = openSettings();
+        select.value = "mobile";
+        window.theWebUI.settingsSavePending = true;
+        window.theWebUI.setSettings();
+        jest.advanceTimersByTime(8000);
+        expect(navigated).toEqual([]);
+        window.theWebUI.settingsSavePending = false;
+        jest.advanceTimersByTime(100);
+        expect(navigated).toEqual([window.location.origin + "/rtorrent/"]);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it("waits at most 5 seconds for other requests", () => {
+      jest.useFakeTimers();
+      try {
+        boot({ url: "/rtorrent/" });
+        const select = openSettings();
+        select.value = "mobile";
+        $.active = 1;
+        window.theWebUI.setSettings();
+        jest.advanceTimersByTime(4900);
+        expect(navigated).toEqual([]);
+        jest.advanceTimersByTime(100);
+        expect(navigated.length).toBe(1);
+      } finally {
+        $.active = 0;
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe("translations", () => {

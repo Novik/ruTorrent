@@ -2278,6 +2278,9 @@ plugin.addUIModeSetting = function() {
       var mode = $(select).val();
       mode = plugin.isUIMode(mode) ? mode : null;
       if (mode !== plugin.storedUIMode()) {
+        // Stored at once: after a save of unknown outcome the page stays,
+        // and the reload its alert asks for applies the choice
+        plugin.storeUIMode(mode);
         plugin.whenIdle(function() {
           plugin.switchUI(mode);
         });
@@ -2287,11 +2290,13 @@ plugin.addUIModeSetting = function() {
 };
 
 // Wait for the settings save started alongside a switch, so leaving the
-// page does not cancel it
+// page does not cancel it. Other requests get at most 5 seconds, counted
+// from Save; the save gets as long as it holds its lock, which a save of
+// unknown outcome keeps until the page is reloaded.
 plugin.whenIdle = function(func) {
   var deadline = Date.now() + 5000;
   var wait = function() {
-    if ((($.active > 0) || theWebUI.settingsSavePending) && (Date.now() < deadline)) {
+    if (theWebUI.settingsSavePending || (($.active > 0) && (Date.now() < deadline))) {
       setTimeout(wait, 100);
     } else {
       func();
