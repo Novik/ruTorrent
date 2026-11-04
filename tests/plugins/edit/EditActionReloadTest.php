@@ -4,6 +4,7 @@ require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/TorrentSequenceFixtures.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
+require_once(__DIR__ . '/../../php/TestTree.php');
 
 /**
  * plugins/edit/action.php erases the torrent before it reloads it.
@@ -38,7 +39,6 @@ class EditActionReloadTest extends TestCase
     public function setUp()
     {
         $this->base = sys_get_temp_dir() . '/rutorrent-edit-reload-' . getmypid();
-        @mkdir($this->base . '/session', 0700, true);
         @mkdir($this->base . '/profile/settings', 0700, true);
     }
 
@@ -48,7 +48,7 @@ class EditActionReloadTest extends TestCase
             $this->daemon->stop();
             $this->daemon = null;
         }
-        $this->removeTree($this->base);
+        TestTree::remove($this->base);
     }
 
     /**
@@ -124,15 +124,38 @@ class EditActionReloadTest extends TestCase
         );
     }
 
-    private function removeTree($path)
+    /**
+     * rXMLRPCRequest hands back every string with its backslashes doubled and
+     * a backslash put before each double quote. The session directory and
+     * the tied file are paths on disk, so they are looked for in their own
+     * bytes. Read as they arrive, the session copy is not found: the edit is
+     * refused with theUILang.cantFindTorrent, or, when the download has a
+     * readable tied file, made from that file, which sendTorrent() then
+     * deletes as the file it loaded from.
+     */
+    public function testTheTorrentIsFoundWhenItsPathHoldsAQuoteOrABackslash()
     {
-        if (!is_dir($path)) {
-            return;
-        }
-        foreach (glob($path . '/*') as $entry) {
-            is_dir($entry) ? $this->removeTree($entry) : @unlink($entry);
-        }
-        @rmdir($path);
+        // A backslash before a quote also shows a second decoding.
+        $name = 'x\\"y';
+        $post = 'hash=' . self::HASH . '&set_comment=1&comment=x';
+
+        $printed = $this->saveAnEdit($post, $name . '/');
+        $this->assertTrue(
+            $this->loadCallIndex() >= 0 && strpos($printed, 'cantFindTorrent') === false,
+            'the session copy is found; printed: ' . $printed,
+        );
+
+        $printed = $this->saveAnEdit($post, '', $name . '.torrent');
+        $this->assertTrue(
+            $this->loadCallIndex() >= 0 && strpos($printed, 'cantFindTorrent') === false,
+            'with no session directory the tied file is found; printed: ' . $printed,
+        );
+
+        $printed = $this->saveAnEdit($post, $name . '/', 'tied.torrent');
+        $this->assertTrue(
+            $this->loadCallIndex() >= 0 && is_file($this->base . '/tied.torrent'),
+            'the session copy is read and the tied file beside it is left alone; printed: ' . $printed,
+        );
     }
 
     private function repoRoot()
@@ -148,25 +171,33 @@ class EditActionReloadTest extends TestCase
      * d.get_complete. d.get_complete is 0 so the reload does not take the
      * fast resume branch, and the directory is empty so the add does not need
      * a directory to be approved.
+     *
+     * The torrent is put in $session, a directory under the case's own, and
+     * in the file $tied names there; '' leaves either out.
      */
-    private function saveAnEdit($post)
+    private function saveAnEdit($post, $session = 'session/', $tied = '')
     {
         $root = $this->repoRoot();
         if ($this->daemon !== null) {
             $this->daemon->stop();
         }
         // sendTorrent() is called with saveTorrent false, so it unlinks the
-        // session copy it loaded from; each run gets a fresh one.
-        file_put_contents(
-            $this->base . '/session/' . self::HASH . '.torrent',
-            $this->announceOnlyTorrent(),
-        );
+        // file it loaded from; each run gets a fresh one.
+        $sessionPath = ($session === '') ? '' : $this->base . '/' . $session;
+        $tiedPath = ($tied === '') ? '' : $this->base . '/' . $tied;
+        if ($sessionPath !== '') {
+            @mkdir($sessionPath, 0700);
+            file_put_contents($sessionPath . self::HASH . '.torrent', $this->announceOnlyTorrent());
+        }
+        if ($tiedPath !== '') {
+            file_put_contents($tiedPath, $this->announceOnlyTorrent());
+        }
         // An install whose interface has been opened has a settings cache.
         // This script is driven against a profile of its own, so leave one
         // there rather than have it probe and spend the replies below.
         RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
         $this->daemon = new FakeRtorrentDaemon([
-            [$this->base . '/session/', 1, 1, 1, '', '', '', 'seed', 0],
+            [$sessionPath, 1, 1, 1, $tiedPath, '', '', 'seed', 0],
             [0],
             [0],
             [0],

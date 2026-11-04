@@ -68,14 +68,10 @@ if (isset($HTTP_RAW_POST_DATA)) {
             }
             if ($req->run() && !$req->fault) {
                 $isStart = (($req->val[1] != 0) && ($req->val[2] != 0) && ($req->val[3] != 0));
-                $fname = $req->val[0] . $hash . ".torrent";
-                if (empty($req->val[0]) || !is_readable($fname)) {
-                    if (strlen($req->val[4]) && is_readable($req->val[4])) {
-                        $fname = $req->val[4];
-                    } else {
-                        $fname = null;
-                    }
-                }
+                $fname = rTorrent::getSourceFile(
+                    $hash,
+                    array_map(['rXMLRPCRequest', 'unescapeValue'], [$req->val[0], $req->val[4]]),
+                );
                 if ($fname) {
                     $torrent = new Torrent($fname);
                     if (!$torrent->errors()) {
