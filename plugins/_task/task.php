@@ -233,7 +233,7 @@ class rTask
                 // init, and pgrep -P 1 would list every child of init.
                 $pid = intval(trim(file_get_contents($dir . '/pid')));
                 if ($pid > 1) {
-                    self::run("sh " . escapeshellarg(dirname(__FILE__) . '/killtree.sh') . " " . escapeshellarg(Utility::getExternal("pgrep")) . " " . $pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD);
+                    self::run("sh " . escapeshellarg(dirname(__FILE__) . '/killtree.sh') . " " . escapeshellarg(Utility::getExternal("pgrep")) . " " . $pid . " " . Utility::escapeShellArg($dir . '/start.sh'), ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD);
                     self::notify($dir, "TaskKill");
                 }
             }
