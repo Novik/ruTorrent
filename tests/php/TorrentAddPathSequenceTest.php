@@ -374,6 +374,70 @@ class TorrentAddPathSequenceTest extends TestCase
         }
     }
 
+    /**
+     * Fast resume reads the info dictionary and certifies each file of a
+     * multi-file torrent at its path, a list of components in a dictionary.
+     * An info that is not a dictionary, a file list that is not an array, or
+     * an entry whose path is missing or not an array gives it nothing to
+     * certify, so it says no and the torrent is added without resume data.
+     * rtorrent refuses most of these torrents itself, but loads one whose
+     * entry has a path.utf-8 list and no path, or a string path beside one.
+     * Read anyway, such an info or entry threw a TypeError on PHP 8, and on
+     * PHP 7 the download directory itself could be certified as the file.
+     */
+    public function testFastResumeRefusesAnInfoOrAFileListItCannotRead()
+    {
+        $info = function ($files) {
+            return $this->bdict([
+                'files' => $files,
+                'name' => $this->bstr('payload'),
+                'piece length' => $this->bint(16384),
+                'pieces' => $this->bstr($this->pieces()),
+            ]);
+        };
+        $one = $this->blist([$this->bstr('one.data')]);
+        $two = $this->bdict([
+            'length' => $this->bint(400),
+            'path' => $this->blist([$this->bstr('sub'), $this->bstr('two.data')]),
+        ]);
+        $infos = [
+            'an info that is a string' => $this->bstr('payload'),
+            'a file list that is not a list' => $info($this->bstr('one.data')),
+            'an entry that is a string' => $info($this->blist([$this->bstr('one.data'), $two])),
+            'an entry that is a number' => $info($this->blist([$this->bint(600), $two])),
+            'an entry whose path is a string' => $info($this->blist([
+                $this->bdict(['length' => $this->bint(600), 'path' => $this->bstr('one.data')]),
+                $two,
+            ])),
+            'an entry with no path' => $info($this->blist([$this->bdict(['length' => $this->bint(600)]), $two])),
+            'an entry with only path.utf-8' => $info($this->blist([
+                $this->bdict(['length' => $this->bint(600), 'path.utf-8' => $one]),
+                $two,
+            ])),
+            'an entry whose path is a string beside a path.utf-8 list' => $info($this->blist([
+                $this->bdict(['length' => $this->bint(600), 'path' => $this->bstr('one.data'), 'path.utf-8' => $one]),
+                $two,
+            ])),
+        ];
+        foreach ($infos as $what => $encoded) {
+            $torrent = new Torrent($this->bdict([
+                'announce' => $this->bstr('http://one.test/announce'),
+                'info' => $encoded,
+            ]));
+            $this->assertTrue($torrent->errors() === false, 'a torrent with ' . $what . ' is read, as the add path reads it');
+            try {
+                $result = rTorrent::fastResume($torrent, $this->base, true);
+            } catch (Throwable $e) {
+                $result = get_class($e) . ': ' . $e->getMessage();
+            }
+            $this->assertTrue(
+                $result === false,
+                'a torrent with ' . $what . ' is not resumed: '
+                . (is_object($result) ? 'resume data was written' : var_export($result, true)),
+            );
+        }
+    }
+
     public function testFastResumePreservesTheExactDirectoryInsteadOfStattingItsTrimmedTwin()
     {
         $base = $this->base . ' ';

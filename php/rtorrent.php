@@ -386,6 +386,11 @@ class rTorrent
     {
         $files = [];
         $info = $torrent->info;
+        // An info that is not an array leaves nothing to certify; a string
+        // read as one throws on PHP 8.
+        if (!is_array($info)) {
+            return(false);
+        }
         $psize = intval($info['piece length']);
         if ($base == '') {
             $base = rTorrentSettings::get()->directory;
@@ -398,10 +403,21 @@ class rTorrent
             $root = [$info['name']];
             $rootAlias = (isset($info['name.utf-8']) && is_string($info['name.utf-8'])) ? [$info['name.utf-8']] : $root;
             if (isset($info['files'])) {
+                // Fast resume certifies each file at its path, a list of
+                // components. A file list that is not an array, or an entry
+                // whose path is missing or not an array, leaves nothing to
+                // certify; read anyway, such an entry throws on PHP 8.
+                if (!is_array($info['files'])) {
+                    return(false);
+                }
                 if (!$add_path) {
                     $root = $rootAlias = [];
                 }
                 foreach ($info['files'] as $key => $file) {
+                    // An entry that is not a dictionary has no path either.
+                    if (!is_array($file['path'] ?? null)) {
+                        return(false);
+                    }
                     $tsize += floatval($file['length']);
                     $alias = $file['path'];
                     if (isset($file['path.utf-8']) && is_array($file['path.utf-8'])
