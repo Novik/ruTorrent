@@ -326,7 +326,14 @@ class rTorrent
         return($hashes);
     }
 
-    public static function getSource($hash, $knownPaths = null)
+    // The file getSource() reads: the torrent's copy in the session
+    // directory, else the file the download is tied to; null when neither is
+    // readable, the request fails or $knownPaths is not a pair. Given paths
+    // must be in their own bytes, as getSourcePaths() returns them: a value
+    // read through rXMLRPCRequest goes through unescapeValue() exactly once.
+    // For a caller that needs the whole file: getSource() drops its
+    // libtorrent_resume and rtorrent keys.
+    public static function getSourceFile($hash, $knownPaths = null)
     {
         // Batched readers pass the paths they already hold; false means none.
         // The reply reader escapes backslashes and double quotes.
@@ -338,7 +345,7 @@ class rTorrent
                 ? array_map(['rXMLRPCRequest', 'unescapeValue'], $req->val) : false;
         }
         if (!is_array($knownPaths) || !isset($knownPaths[0], $knownPaths[1])) {
-            return(false);
+            return(null);
         }
         $fname = $knownPaths[0] . $hash . ".torrent";
         if (empty($knownPaths[0]) || !is_readable($fname)) {
@@ -348,6 +355,12 @@ class rTorrent
                 $fname = null;
             }
         }
+        return($fname);
+    }
+
+    public static function getSource($hash, $knownPaths = null)
+    {
+        $fname = self::getSourceFile($hash, $knownPaths);
         if ($fname) {
             $torrent = new Torrent($fname);
             if (!$torrent->errors()) {
