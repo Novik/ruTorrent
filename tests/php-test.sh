@@ -3,6 +3,11 @@
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)" || exit 1
 cd -- "$script_dir" || exit 1
 
+# A umask that masks the owner's own bits, such as 0177, leaves every directory
+# a fixture creates with mkdir() unusable to the test that created it. Clear
+# only those bits; the group and other bits of the caller's umask are kept.
+umask u=rwx
+
 # Exit non-zero if any test file fails, so the suite can gate CI. Two failure
 # signals are honoured: a non-zero exit and failure output, including child
 # PHP diagnostics. A positive completed result is also required in each file.

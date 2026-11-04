@@ -19,6 +19,10 @@ summary. Standalone suites must print at least one `ok - ` case and a positive
 `N tests, 0 failures` or `N passed, 0 failed` summary and exit successfully. Child fatal/parse diagnostics
 also fail the containing file.
 
+The runner clears the owner's bits of the umask it is started with
+(`umask u=rwx`), so fixture directories made with a plain `mkdir()` stay usable
+under a umask such as 0177. The group and other bits are kept.
+
 An unfinished TestCase reports its refusal through STDERR before later shutdown
 cleanup runs. If that diagnostic cannot be written, the process exits immediately.
 
