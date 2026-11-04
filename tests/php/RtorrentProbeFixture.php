@@ -19,6 +19,7 @@ class RtorrentProbeFixture
 {
     public const VERSION = '0.16.20';
     public const INVALID_TARGET = 'invalid parameters: invalid target';
+    private const HASH = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
     /** The method names one request asks for, in order. */
     public static function methodNames($body)
@@ -69,19 +70,20 @@ class RtorrentProbeFixture
      * For a test whose daemon answers from a fixed reply list and whose
      * subject is what the script asks rtorrent for, not how it learned to
      * ask. The file is produced by running the real probe once rather than
-     * written out here, so it holds whatever that probe produces.
+     * written out here, so it holds whatever that probe produces. $name is
+     * the session name the daemon reports.
      */
-    public static function warmSettingsCache($profilePath)
+    public static function warmSettingsCache($profilePath, $name = '')
     {
-        static $cache = null;
-        if ($cache === null) {
-            $cache = self::probeForCache();
+        static $caches = [];
+        if (!array_key_exists($name, $caches)) {
+            $caches[$name] = self::probeForCache($name);
         }
-        if ($cache === false) {
+        if ($caches[$name] === false) {
             return false;
         }
         @mkdir($profilePath . '/settings', 0700, true);
-        return file_put_contents($profilePath . '/settings/rtorrent.dat', $cache) !== false;
+        return file_put_contents($profilePath . '/settings/rtorrent.dat', $caches[$name]) !== false;
     }
 
     /**
@@ -93,19 +95,19 @@ class RtorrentProbeFixture
         return [__FILE__];
     }
 
-    public static function responder($hash = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    public static function responder($hash = self::HASH, $name = '')
     {
-        return new RtorrentProbeResponder($hash);
+        return new RtorrentProbeResponder($hash, $name);
     }
 
-    private static function probeForCache()
+    private static function probeForCache($name)
     {
         $base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
         $daemon = null;
         try {
             @mkdir($base . '/settings', 0700, true);
             $daemon = new FakeRtorrentDaemon(
-                self::responder(),
+                self::responder(self::HASH, $name),
                 $base . '/calls.log',
                 false,
                 self::replyClassFiles(),
@@ -143,10 +145,12 @@ class RtorrentProbeFixture
 class RtorrentProbeResponder
 {
     private $hash;
+    private $name;
 
-    public function __construct($hash)
+    public function __construct($hash, $name = '')
     {
         $this->hash = $hash;
+        $this->name = $name;
     }
 
     public function __invoke($body)
@@ -176,11 +180,12 @@ class RtorrentProbeResponder
         }
         // The settings batch: directory, session, library version, name,
         // port range, bind address, local address. Every one of these but
-        // the library version is answered with the value the class carries
-        // unprobed, so that warmSettingsCache() changes what a script knows
-        // about the daemon's commands and nothing else.
+        // the library version and a name the test gave is answered with the
+        // value the class carries unprobed, so that warmSettingsCache()
+        // changes what a script knows about the daemon's commands and
+        // nothing else.
         if (count($names) === 7) {
-            return ['/tmp', '', RtorrentProbeFixture::VERSION, '',
+            return ['/tmp', '', RtorrentProbeFixture::VERSION, $this->name,
                 '6890-6999', '0.0.0.0', '0.0.0.0'];
         }
         return array_fill(0, max(1, count($names)), '0');
