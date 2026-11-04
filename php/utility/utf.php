@@ -203,10 +203,13 @@ class UTF
         if (($second < $minimum) || ($second > $maximum)) {
             return(0);
         }
-        for ($part = 2; $part < $length; $part++) {
-            if ((($text[$offset + $part] ?? '') < "\x80") || ($text[$offset + $part] > "\xBF")) {
-                return(0);
-            }
+        // Two checks rather than a loop: under PHP 8.1's tracing JIT
+        // (opcache.jit=1235) the loop here sometimes rejected a valid character.
+        if (($length > 2) && ((($text[$offset + 2] ?? '') < "\x80") || ($text[$offset + 2] > "\xBF"))) {
+            return(0);
+        }
+        if (($length > 3) && ((($text[$offset + 3] ?? '') < "\x80") || ($text[$offset + 3] > "\xBF"))) {
+            return(0);
         }
         return($length);
     }

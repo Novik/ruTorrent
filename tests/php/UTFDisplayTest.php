@@ -87,7 +87,7 @@ class UTFDisplayTest extends TestCase
         foreach ([0xDF, 0xE0, 0xE1, 0xEC, 0xED, 0xEE, 0xEF, 0xF0, 0xF1, 0xF3, 0xF4, 0xF5] as $first) {
             foreach ([0x7F, 0x80, 0x8F, 0x90, 0x9F, 0xA0, 0xBF, 0xC0] as $second) {
                 foreach ([0x7F, 0x80, 0xBF, 0xC0] as $last) {
-                    foreach (['', "\x80"] as $fourth) {
+                    foreach (['', "\x7F", "\x80", "\xBF", "\xC0"] as $fourth) {
                         if (self::walkMismatch(chr($first) . chr($second) . chr($last) . $fourth)) {
                             $mismatches++;
                         }
