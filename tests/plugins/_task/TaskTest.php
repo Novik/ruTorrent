@@ -213,6 +213,34 @@ class TaskTest extends TestCase
         }
     }
 
+    // The start.sh that start() writes finds its directory from $0, so it
+    // has to take a path with shell syntax as it is too. By default the
+    // tasks directory is below the install directory, whose path it shares.
+    public function testATaskStartedInADirectoryWhosePathHoldsShellSyntaxRuns()
+    {
+        $link = $this->linkWithShellSyntax(FileUtil::getProfilePath());
+        $previousPath = self::swapProfilePath($link);
+        $previous = self::swapSettings($this->newSettings());
+        $dir = null;
+        try {
+            $task = new rTask(['arg' => 'x', 'requester' => 'test', 'name' => 'test']);
+            $ret = $task->start(['sleep 43'], rTask::FLG_DEFAULT | rTask::FLG_RUN_AS_WEB);
+            $dir = rTask::formatPath($ret['no']);
+            sleep(1);
+            $pid = intval(@file_get_contents($dir . '/pid'));
+            $this->assertEquals(true, $this->running($pid), 'The task under ' . $link . ' runs and wrote its pid');
+            $this->assertKillStops($ret['no'], [$pid]);
+        } finally {
+            self::swapSettings($previous);
+            self::swapProfilePath($previousPath);
+            unlink($link);
+            // A finished kill has removed it already.
+            if (!is_null($dir) && is_dir(rTask::formatPath(basename($dir)))) {
+                rTask::clean(rTask::formatPath(basename($dir)));
+            }
+        }
+    }
+
     // Through rtorrent, a task that is waited for, as mediainfo and dump
     // start theirs, runs as part of the command line given to sh -c, so its
     // path is quoted there as well. The daemon here is a stand-in: the
@@ -639,6 +667,15 @@ class TaskTest extends TestCase
         $GLOBALS['rpcTransferTimeOut'] = 5;
         $GLOBALS['rpcLogCalls'] = false;
         $GLOBALS['rpcLogFaults'] = false;
+    }
+
+    private static function swapProfilePath($path)
+    {
+        return Closure::bind(function ($path) {
+            $previous = FileUtil::$profilePathInstance;
+            FileUtil::$profilePathInstance = $path;
+            return $previous;
+        }, null, 'FileUtil')->__invoke($path);
     }
 
     private static function swapSettings($settings)
