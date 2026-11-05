@@ -186,16 +186,14 @@ class rTask
         if (!($flags & self::FLG_WAIT)) {
             $params .= " &";
         }
+        $line = ($flags & self::FLG_RUN_AS_CMD) ? $cmd : 'sh ' . Utility::escapeShellArg($cmd);
         if ($flags & self::FLG_RUN_AS_WEB) {
-            if (self::FLG_RUN_AS_CMD) {
-                $cmd = '-c "' . $cmd . '"';
-            }
-            exec('sh ' . $cmd . $params, $output, $ret);
+            exec($line . $params, $output, $ret);
         } else {
             $req = new rXMLRPCRequest(
                 ((rTorrentSettings::get()->iVersion >= 0x900) && !($flags & self::FLG_WAIT))
                     ? new rXMLRPCCommand("execute.nothrow", ["","sh","-c",'"$0" "$1" </dev/null >/dev/null 2>&1 &',"sh",$cmd])
-                    : new rXMLRPCCommand("execute_nothrow", ["sh","-c",$cmd . $params]),
+                    : new rXMLRPCCommand("execute_nothrow", ["sh","-c",$line . $params]),
             );
             if ($req->success() && count($req->val)) {
                 $ret = intval($req->val[0]);
@@ -233,7 +231,15 @@ class rTask
                 // init, and pgrep -P 1 would list every child of init.
                 $pid = intval(trim(file_get_contents($dir . '/pid')));
                 if ($pid > 1) {
-                    self::run("sh " . escapeshellarg(dirname(__FILE__) . '/killtree.sh') . " " . escapeshellarg(Utility::getExternal("pgrep")) . " " . $pid . " " . Utility::escapeShellArg($dir . '/start.sh'), ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD);
+                    $status = self::run("sh " . Utility::escapeShellArg(dirname(__FILE__) . '/killtree.sh') . " " . Utility::escapeShellArg(Utility::getExternal("pgrep")) . " " . $pid . " " . Utility::escapeShellArg($dir . '/start.sh'), ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD);
+                    if (!($flags & self::FLG_RUN_AS_WEB) && ($status > 0)) {
+                        // rtorrent answers with the wait status of sh.
+                        $status = ($status & 0x7f) ? 128 + ($status & 0x7f) : $status >> 8;
+                    }
+                    if ($status != 0) {
+                        FileUtil::toLog("_task: kill of task " . self::formatId($taskNo) . " did not finish (status " . $status . "), the task is kept");
+                        return(true);
+                    }
                     self::notify($dir, "TaskKill");
                 }
             }
