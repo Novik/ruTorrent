@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../php/TorrentSequenceFixtures.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 require_once(__DIR__ . '/../../php/TestTree.php');
+require_once(__DIR__ . '/../../../php/Torrent.php');
 
 /**
  * plugins/edit/action.php erases the torrent before it reloads it.
@@ -22,8 +23,9 @@ require_once(__DIR__ . '/../../php/TestTree.php');
  *
  * action.php is a top level script that reads php://input, so it is driven
  * where it lives, in a process of its own, with FakeRtorrentDaemon on the
- * other end of its SCGI socket. Everything asserted here is what that daemon
- * was actually asked for. tests/plugins/edit/EditActionSequenceTest.php covers
+ * other end of its SCGI socket. What is asserted is what the script printed,
+ * what that daemon was asked for, and whether the tied file is still on disk
+ * afterwards. tests/plugins/edit/EditActionSequenceTest.php covers
  * the bencoding the script produces, against a transcription of it; this
  * covers the call sequence, against the script itself.
  */
@@ -130,8 +132,7 @@ class EditActionReloadTest extends TestCase
      * the tied file are paths on disk, so they are looked for in their own
      * bytes. Read as they arrive, the session copy is not found: the edit is
      * refused with theUILang.cantFindTorrent, or, when the download has a
-     * readable tied file, made from that file, which sendTorrent() then
-     * deletes as the file it loaded from.
+     * readable tied file, made from that file instead.
      */
     public function testTheTorrentIsFoundWhenItsPathHoldsAQuoteOrABackslash()
     {
@@ -152,10 +153,34 @@ class EditActionReloadTest extends TestCase
         );
 
         $printed = $this->saveAnEdit($post, $name . '/', 'tied.torrent');
+        $reloaded = $this->reloadedTorrent();
         $this->assertTrue(
-            $this->loadCallIndex() >= 0 && is_file($this->base . '/tied.torrent'),
-            'the session copy is read and the tied file beside it is left alone; printed: ' . $printed,
+            ($reloaded !== null) && ($reloaded->announce() === 'http://one.test/announce'),
+            'the session copy is read, not the tied file beside it; printed: ' . $printed,
         );
+    }
+
+    /**
+     * With no session copy to read, the edit is made from the file the
+     * download is tied to: the user's own .torrent, typically in a watch
+     * directory. The reload sends the edited bytes, and ruTorrent itself
+     * does not delete that file. FakeRtorrentDaemon runs no erase handlers;
+     * rtorrent's default one, ~_delete_tied, still deletes it on d.erase.
+     */
+    public function testTheTiedFileIsKept()
+    {
+        $post = 'hash=' . self::HASH . '&set_comment=1&comment=x';
+        foreach (['xy.torrent', 'x\\"y.torrent'] as $tied) {
+            $printed = $this->saveAnEdit($post, '', $tied);
+            $this->assertTrue(
+                $this->loadCallIndex() >= 0,
+                'the edit of ' . $tied . ' is reloaded; printed: ' . $printed,
+            );
+            $this->assertTrue(
+                @file_get_contents($this->base . '/' . $tied) === $this->trackerlessTorrent(),
+                'and ' . $tied . ' is still there, unchanged',
+            );
+        }
     }
 
     private function repoRoot()
@@ -173,7 +198,9 @@ class EditActionReloadTest extends TestCase
      * a directory to be approved.
      *
      * The torrent is put in $session, a directory under the case's own, and
-     * in the file $tied names there; '' leaves either out.
+     * in the file $tied names there; '' leaves either out. The two hold
+     * different torrents -- the tied one has no tracker -- so the reloaded
+     * bytes tell which was read.
      */
     private function saveAnEdit($post, $session = 'session/', $tied = '')
     {
@@ -181,8 +208,6 @@ class EditActionReloadTest extends TestCase
         if ($this->daemon !== null) {
             $this->daemon->stop();
         }
-        // sendTorrent() is called with saveTorrent false, so it unlinks the
-        // file it loaded from; each run gets a fresh one.
         $sessionPath = ($session === '') ? '' : $this->base . '/' . $session;
         $tiedPath = ($tied === '') ? '' : $this->base . '/' . $tied;
         if ($sessionPath !== '') {
@@ -190,7 +215,7 @@ class EditActionReloadTest extends TestCase
             file_put_contents($sessionPath . self::HASH . '.torrent', $this->announceOnlyTorrent());
         }
         if ($tiedPath !== '') {
-            file_put_contents($tiedPath, $this->announceOnlyTorrent());
+            file_put_contents($tiedPath, $this->trackerlessTorrent());
         }
         // An install whose interface has been opened has a settings cache.
         // This script is driven against a profile of its own, so leave one
@@ -220,6 +245,17 @@ class EditActionReloadTest extends TestCase
         exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return implode("\n", $output);
+    }
+
+    /** The torrent the reload sent, or null: the load is the only call with a base64 value. */
+    private function reloadedTorrent()
+    {
+        foreach ($this->daemon->bodies() as $body) {
+            if (preg_match('`<base64>([^<]*)</base64>`', $body, $match)) {
+                return new Torrent(base64_decode($match[1]));
+            }
+        }
+        return null;
     }
 
     /** The index of the first call to $method, or -1. */

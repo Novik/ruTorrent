@@ -130,7 +130,7 @@ if (isset($HTTP_RAW_POST_DATA)) {
                                     false,
                                     rXMLRPCRequest::unescapeValue($req->val[6]),
                                     $label,
-                                    false,
+                                    true,
                                     ($req->val[8] == 1),
                                     false,
                                     $addition,

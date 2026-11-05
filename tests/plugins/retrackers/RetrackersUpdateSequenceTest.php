@@ -18,12 +18,12 @@ require_once(__DIR__ . '/../../../plugins/retrackers/update.php');
 /**
  * What plugins/retrackers/update.php does to a torrent.
  *
- * The script itself cannot be called from a test -- it takes a hash on the
- * command line, asks rtorrent for the session path, and hands the result to
- * rTorrent::sendTorrent() over SCGI. What it does in between is a fixed
- * sequence of calls on a Torrent, and that sequence is replayed here against
- * the class, with the script's own clearTracker() and deleteTrackers() driving
- * it.
+ * The script itself takes a hash on the command line, asks rtorrent for the
+ * session path, and hands the result to rTorrent::sendTorrent() over SCGI;
+ * RetrackersUpdateReloadTest drives it that way, against FakeRtorrentDaemon.
+ * What it does in between is a fixed sequence of calls on a Torrent, and that
+ * sequence is replayed here against the class, with the script's own
+ * clearTracker() and deleteTrackers() driving it.
  *
  * The limitation that carries: this pins the transcription, not the script. An
  * edit to update.php will not fail these tests. They are here for Torrent --
