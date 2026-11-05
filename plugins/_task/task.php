@@ -64,7 +64,7 @@ class rTask
             $dir = $this->makeDirectory();
             if (($sh = fopen($dir . "/start.sh", "w")) !== false) {
                 fputs($sh, '#!/bin/sh' . "\n");
-                fputs($sh, 'dir="$(dirname $0)"' . "\n");
+                fputs($sh, 'dir="$(dirname "$0")"' . "\n");
                 fputs($sh, 'echo $$ > "${dir}"/pid' . "\n");
                 fputs($sh, 'chmod a+rw "${dir}"/pid' . "\n");
                 file_put_contents($dir . "/flags", $flags);
