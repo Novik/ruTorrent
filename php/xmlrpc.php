@@ -298,7 +298,11 @@ class rXMLRPCRequest
                     }
                 }
                 if ($ret) {
-                    if (strstr($answer, "faultCode") !== false) {
+                    // A fault is a struct with a faultCode member, as the whole
+                    // answer or as one call of a system.multicall. A value, a
+                    // file name say, can hold the word but not the markup:
+                    // rtorrent escapes "<" in every string it sends.
+                    if (strstr($answer, "<name>faultCode</name>") !== false) {
                         $this->fault = true;
                         $this->faultString = self::parseFaultString($answer);
                         global $rpcLogFaults;
