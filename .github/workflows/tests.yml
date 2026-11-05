@@ -21,6 +21,29 @@ jobs:
         run: bash php-test.sh
         working-directory: tests
 
+  php-32bit:
+    # PHP_INT_MAX is 2^31 - 1 on a 32-bit build, so a length past 2 GiB is
+    # read as a float; the 64-bit runners above never take that path.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bencoded integers past 2 GiB
+        working-directory: tests
+        run: |
+          set +e
+          out=$(docker run --rm --user "$(id -u)" -e RUTORRENT_PHP_TEST_RUNNER=1 -v "$PWD/..:/w" -w /w/tests i386/php:7.4-cli \
+            php -c php-test.ini -d auto_append_file=/w/tests/php/TestCaseRunner.php \
+            -f php/TorrentIntegerWordSizeTest.php 2>&1)
+          code=$?
+          printf '%s\n' "$out"
+          [ "$code" -eq 0 ] && ! grep -q '^Failed' <<<"$out" && grep -q '^Passed: ' <<<"$out"
+      - name: PHP test suite (advisory until it passes on 32-bit)
+        # Values a 32-bit build cannot hold still fail elsewhere in the suite;
+        # this step is to become blocking once they are dealt with.
+        continue-on-error: true
+        working-directory: tests
+        run: docker run --rm --user "$(id -u)" -v "$PWD/..:/w" -w /w/tests i386/php:7.4-cli bash php-test.sh
+
   jest:
     runs-on: ubuntu-latest
     steps:
