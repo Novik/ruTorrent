@@ -27,6 +27,10 @@ require_once(__DIR__ . '/../../php/Torrent.php');
  * distinguishable, and from 1e16 up PHP writes a double as 1.0E+16, which
  * is not a bencoded integer and which a client reading the output would
  * refuse outright.
+ *
+ * A 32-bit build has a float past 2^31 - 1. It writes back what prints as
+ * the digits read, which the precision setting decides up to 2^53, and
+ * reports the rest; TorrentIntegerWordSizeTest covers the sizes it holds.
  */
 class TorrentIntegerRoundTripTest extends TestCase
 {
@@ -55,13 +59,14 @@ class TorrentIntegerRoundTripTest extends TestCase
      */
     public function testIntegersAroundTwoToTheFiftyThreeAreWrittenBack()
     {
+        $wide = (PHP_INT_SIZE >= 8);
         foreach ([
-            '2^53 - 1' => '9007199254740991',
-            '2^53' => '9007199254740992',
-            '2^53 + 1' => '9007199254740993',
-            '2^53 + 3' => '9007199254740995',
-        ] as $what => $digits) {
-            $this->assertIntegerEverywhere($what, $digits, 'written back');
+            '2^53 - 1' => ['9007199254740991', $wide ? 'written back' : 'either'],
+            '2^53' => ['9007199254740992', $wide ? 'written back' : 'either'],
+            '2^53 + 1' => ['9007199254740993', $wide ? 'written back' : 'reported'],
+            '2^53 + 3' => ['9007199254740995', $wide ? 'written back' : 'reported'],
+        ] as $what => list($digits, $expected)) {
+            $this->assertIntegerEverywhere($what, $digits, $expected);
         }
     }
 
@@ -80,7 +85,7 @@ class TorrentIntegerRoundTripTest extends TestCase
             'PHP_INT_MAX' => '9223372036854775807',
             'PHP_INT_MIN' => '-9223372036854775808',
         ] as $what => $digits) {
-            $this->assertIntegerEverywhere($what, $digits, 'written back');
+            $this->assertIntegerEverywhere($what, $digits, (PHP_INT_SIZE >= 8) ? 'written back' : 'reported');
         }
     }
 
@@ -143,7 +148,10 @@ class TorrentIntegerRoundTripTest extends TestCase
      */
     public function testTheWrittenValueIsTheValueRead()
     {
-        foreach (['9007199254740993', '9223372036854775807', '-9223372036854775808'] as $digits) {
+        $values = (PHP_INT_SIZE >= 8)
+            ? ['9007199254740993', '9223372036854775807', '-9223372036854775808']
+            : ['3221225472', '99999999999999', '-2147483649'];
+        foreach ($values as $digits) {
             $written = (string) (new Torrent($this->metainfoWithInteger($digits, 'info')));
             $this->assertTrue(
                 strpos($written, '6:lengthi' . $digits . 'e') !== false,
@@ -162,7 +170,9 @@ class TorrentIntegerRoundTripTest extends TestCase
     public function testTheWrittenValueDoesNotDependOnThePrecisionSetting()
     {
         $was = ini_get('precision');
-        $bytes = $this->metainfoWithInteger('9007199254740993', 'info');
+        // Fourteen digits is what a 32-bit build's float prints back at
+        // every one of these settings.
+        $bytes = $this->metainfoWithInteger((PHP_INT_SIZE >= 8) ? '9007199254740993' : '99999999999999', 'info');
         foreach (['14', '17', '-1'] as $precision) {
             ini_set('precision', $precision);
             $written = (string) (new Torrent($bytes));
@@ -308,6 +318,11 @@ class TorrentIntegerRoundTripTest extends TestCase
             $what . ': it is written back unchanged or reported, never silently changed'
             . ($identical ? '' : ' (read ' . $this->printable($bytes) . ', wrote ' . $this->printable($written) . ')'),
         );
+
+        // Either branch, as long as it is one of them: the invariant above.
+        if ($expected === 'either') {
+            return;
+        }
 
         if ($expected === 'written back') {
             $this->assertTrue($errors === false, $what . ': nothing is reported'

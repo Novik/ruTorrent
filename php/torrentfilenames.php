@@ -252,7 +252,10 @@ class TorrentFileNames
     private static function attested($files, $index, $path, $size, $encoding)
     {
         $file = $files[$index] ?? null;
-        if ((($file['path'] ?? null) !== $path) || !is_int($file['length'] ?? null) || ((string) $file['length'] !== (string) $size)) {
+        // A length past PHP_INT_MAX of a 32-bit build is decoded as a float,
+        // and only when it prints back as the digits it was read as.
+        $length = $file['length'] ?? null;
+        if ((($file['path'] ?? null) !== $path) || !(is_int($length) || is_float($length)) || ((string) $length !== (string) $size)) {
             return([false, null]);
         }
         return([isset($file['path.utf-8']) ? self::alias($file['path.utf-8'], count($path)) : false, $encoding]);
