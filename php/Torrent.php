@@ -699,14 +699,16 @@ class Torrent
         $value = intval($integer);
         if (strval($value) === $integer) {
             return($value);
-	}
-	// on 32-bit systems intval() gives us only 2GB, and we do a second check with floatval(), before throwing error
-	$value = (floatval($integer));
-	if(strval($value) === $integer)
-		return($value);
-
-	$this->notify_err('Cannot write back this integer unchanged: '.$integer);
-	return $value;
+        }
+        // Past PHP_INT_MAX, as on a 32-bit build, a float carries the value
+        // when it prints back as the same digits: up to 14 of them at the
+        // default precision.
+        $value = floatval($integer);
+        if (preg_match('/^-?[0-9]+$/', $integer) && (strval($value) === $integer)) {
+            return($value);
+        }
+        $this->notify_err('Cannot write back this integer unchanged: ' . $integer);
+        return($value);
     }
 
     private function isOfType($type)
