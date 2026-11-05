@@ -107,7 +107,7 @@ function formatItemDescription($torrent)
         $desc .= '<fieldset><legend>' . $theUILang["Track_status"] . '</legend>' . htmlspecialchars($torrent["message"], ENT_COMPAT | ENT_SUBSTITUTE, "UTF-8") . '</fieldset>';
     }
     if (!empty($torrent["comment"])) {
-        $desc .= '<fieldset><legend>' . $theUILang["Comment"] . '</legend>' . htmlspecialchars($torrent["comment"], ENT_COMPAT, "UTF-8") . '</fieldset>';
+        $desc .= '<fieldset><legend>' . $theUILang["Comment"] . '</legend>' . htmlspecialchars($torrent["comment"], ENT_COMPAT | ENT_SUBSTITUTE, "UTF-8") . '</fieldset>';
     }
     return($desc);
 }
@@ -267,7 +267,7 @@ if ($req->success()) {
             } elseif ($key == "description") {
                 $ret .= "\r\n\t<description><![CDATA[" . $val . ']]></description>';
             } else {
-                $ret .= "\r\n\t<" . $key . '>' . htmlspecialchars($val, ENT_COMPAT, "UTF-8") . '</' . $key . '>';
+                $ret .= "\r\n\t<" . $key . '>' . htmlspecialchars($val, ENT_COMPAT | ENT_SUBSTITUTE, "UTF-8") . '</' . $key . '>';
             }
         }
         $ret .= "\r\n</item>";
