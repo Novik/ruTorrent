@@ -12,6 +12,14 @@ require_once(__DIR__ . '/../../../php/Torrent.php');
  * the session directory, or else from the file the download is tied to, then
  * erases the download and loads the changed torrent in its place.
  *
+ * rXMLRPCRequest hands back every string with its backslashes doubled and a
+ * backslash put before each double quote. Both paths are paths on disk, so
+ * they are looked for in their own bytes. Read as they arrive, the session
+ * copy is not found: the download gets no tracker and nothing is logged --
+ * it is started again if it was added started, and otherwise stays stopped
+ * -- or, when it has a readable tied file, the trackers are added to that
+ * file's torrent instead.
+ *
  * The tied file is the user's own .torrent, typically in a watch directory.
  * The reload sends the changed bytes, and ruTorrent itself does not delete
  * that file. FakeRtorrentDaemon runs no erase handlers; rtorrent's default
@@ -48,6 +56,34 @@ class RetrackersUpdateReloadTest extends TestCase
         TestTree::remove($this->base);
     }
 
+    public function testTheTorrentIsFoundWhenItsPathHoldsAQuoteOrABackslash()
+    {
+        // A backslash before a quote also shows a second decoding.
+        $name = 'x\\"y';
+        $fromSession = [['http://one.test/announce'], ['http://added.test/announce']];
+
+        $printed = $this->addTrackers('', $name . '/');
+        $this->assertTrue(
+            $this->reloaded($fromSession),
+            'the session copy is found and reloaded with the tracker; calls: '
+            . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
+        );
+
+        $printed = $this->addTrackers($name . '.torrent');
+        $this->assertTrue(
+            $this->reloaded([['http://added.test/announce']]),
+            'with no session directory the tied file is found; calls: '
+            . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
+        );
+
+        $printed = $this->addTrackers('tied.torrent', $name . '/');
+        $this->assertTrue(
+            $this->reloaded($fromSession),
+            'the session copy is read, not the tied file beside it; calls: '
+            . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
+        );
+    }
+
     public function testTheTiedFileIsKept()
     {
         $printed = $this->addTrackers('xy.torrent');
@@ -73,20 +109,32 @@ class RetrackersUpdateReloadTest extends TestCase
      * d.get_custom4 (1: start the download), d.get_tied_to_file,
      * d.get_custom1, d.get_directory_base, d.is_private and d.get_name.
      *
-     * rtorrent has no session directory, and the download is tied to $tied,
-     * a file under the case's directory that holds a torrent with no tracker.
+     * The download is tied to $tied, a file under the case's directory that
+     * holds a torrent with no tracker, and rtorrent's session directory is
+     * $session there, with a copy that has one; '' leaves either out. The
+     * reloaded bytes tell which of the two was read.
      */
-    private function addTrackers($tied)
+    private function addTrackers($tied, $session = '')
     {
         $root = $this->repoRoot();
-        $tiedPath = $this->base . '/' . $tied;
-        file_put_contents($tiedPath, $this->trackerlessTorrent());
+        if ($this->daemon !== null) {
+            $this->daemon->stop();
+        }
+        $sessionPath = ($session === '') ? '' : $this->base . '/' . $session;
+        $tiedPath = ($tied === '') ? '' : $this->base . '/' . $tied;
+        if ($sessionPath !== '') {
+            @mkdir($sessionPath, 0700);
+            file_put_contents($sessionPath . self::HASH . '.torrent', $this->announceOnlyTorrent());
+        }
+        if ($tiedPath !== '') {
+            file_put_contents($tiedPath, $this->trackerlessTorrent());
+        }
         // An install whose interface has been opened has a settings cache.
         // This script is driven against a profile of its own, so leave one
         // there rather than have it probe and spend the replies below.
         RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
         $this->daemon = new FakeRtorrentDaemon([
-            ['', '1', $tiedPath, '', '', 0, 'name'],
+            [$sessionPath, '1', $tiedPath, '', '', 0, 'name'],
             [0],
             [0],
             [0],

@@ -59,14 +59,10 @@ if (count($argv) > 1) {
         $isStart = ($req->val[1] != 0);
         if ((count($trks->list) || count($trks->todelete)) && !($req->val[5] && $trks->dontAddPrivate)
             && ($req->val[6] != $hash . ".meta")) {
-            $fname = $req->val[0] . $hash . ".torrent";
-            if (empty($req->val[0]) || !is_readable($fname)) {
-                if (strlen($req->val[2]) && is_readable($req->val[2])) {
-                    $fname = $req->val[2];
-                } else {
-                    $fname = null;
-                }
-            }
+            $fname = rTorrent::getSourceFile(
+                $hash,
+                array_map(['rXMLRPCRequest', 'unescapeValue'], [$req->val[0], $req->val[2]]),
+            );
             if ($fname) {
                 $torrent = new Torrent($fname);
                 if (!$torrent->errors()) {
