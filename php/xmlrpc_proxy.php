@@ -1449,7 +1449,9 @@ class XMLRPCProxy
      *
      * The answer is the integer, not the text, so that what this side validated
      * is what it goes on to emit — a ceiling compared against the value and
-     * then written out as the caller's spelling is no ceiling.
+     * then written out as the caller's spelling is no ceiling. An <i8> holds
+     * more than the int of a 32-bit build, so there a value past PHP_INT_MAX
+     * is answered as its canonical digits instead.
      */
     private static function integerValue($text)
     {
@@ -1463,11 +1465,20 @@ class XMLRPCProxy
         }
 
         // (int) saturates at PHP_INT_MAX instead of failing, so the round trip
-        // is the range test: a value the platform's integer cannot hold comes
-        // back as a different number and is refused rather than clamped to one.
+        // tells whether the platform's integer holds the value.
         $canonical = (($match[1] === '-') ? '-' : '') . $digits;
         $number = (int) $canonical;
-        return ((string) $number === $canonical) ? $number : null;
+        if ((string) $number === $canonical) {
+            return $number;
+        }
+
+        // Past what an <i8> holds is refused rather than clamped to a number.
+        $limit = ($match[1] === '-') ? '9223372036854775808' : '9223372036854775807';
+        if ((strlen($digits) > strlen($limit))
+            || ((strlen($digits) === strlen($limit)) && (strcmp($digits, $limit) > 0))) {
+            return null;
+        }
+        return $canonical;
     }
 
     /**

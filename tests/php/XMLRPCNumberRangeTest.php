@@ -143,8 +143,6 @@ class XMLRPCNumberRangeTest extends TestCase
             [-1, null, '<i4>-1</i4>'],
             [0, null, '<i4>0</i4>'],
             [2147483647, null, '<i4>2147483647</i4>'],
-            // An int beyond i4 has always been sent as a string; not this change.
-            [3000000000, null, '<string>3000000000</string>'],
             [100.0, null, '<i8>100</i8>'],
             [1024.0 * 1024 * 1024 * 1024, null, '<i8>1099511627776</i8>'],
             [1.5, null, '<i8>2</i8>'],
@@ -161,6 +159,11 @@ class XMLRPCNumberRangeTest extends TestCase
             ['abc', null, '<string>abc</string>'],
             ['inf', null, '<string>inf</string>'],
         ];
+        // An int beyond i4 has always been sent as a string; not this change.
+        // On a 32-bit build the literal is a float, and goes as <i8> above.
+        if (PHP_INT_SIZE >= 8) {
+            $cases[] = [3000000000, null, '<string>3000000000</string>'];
+        }
         foreach ($cases as $case) {
             list($value, $type, $expected) = $case;
             $this->assertEquals(

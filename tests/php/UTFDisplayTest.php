@@ -108,7 +108,9 @@ class UTFDisplayTest extends TestCase
             $raw = "\xFF";
             $expected = '\\xFF';
             for ($part = 0; $part < 40; $part++) {
-                $seed = ($seed * 16807) % 2147483647;
+                // fmod(): the product passes a 32-bit int, and stays exact
+                // as a float well below 2^53.
+                $seed = (int) fmod($seed * 16807, 2147483647);
                 $index = $seed % count($parts);
                 $raw .= $parts[$index];
                 $expected .= $shown[$index];
