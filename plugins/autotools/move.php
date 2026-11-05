@@ -125,7 +125,7 @@ if ($at->enable_move && (@preg_match($at->automove_filter . 'u', $label) == 1)) 
                     }
                     $dest_path = rtAddTailSlash($path_to_finished . $rel_path);
                     // last condition avoids appending duplicate path from combining folder and label (eg autowatch and autolabel)
-                    if ($at->addLabel && ($label != '') && ($label != trim($rel_path, '/'))) {
+                    if ($at->addLabel && ($label != '') && (trim($label, '/') !== trim($rel_path, '/'))) {
                         $dest_path .= FileUtil::addslash($label);
                     }
                     if ($at->addName && ($name != '')) {

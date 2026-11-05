@@ -189,6 +189,22 @@ class AutoMoveDestinationTest extends TestCase
         // rtorrent keeps a d.directory typed with // after the default directory
         $this->assertLabelled(['1.bin', '2.bin'], '/Movies', 'Movies', true, 'fin//Movies/mytorrent');
         $this->assertLabelled('Film.mkv', '/Movies', 'Movies', true, 'fin//Movies');
+        // and autolabel's {DIR} labels such a download "/Movies"
+        $this->assertLabelled(['1.bin', '2.bin'], '/Movies', '/Movies', true, 'fin//Movies/mytorrent');
+        $this->assertLabelled('Film.mkv', '/Movies', '/Movies', true, 'fin//Movies');
+        // a label typed with a slash at its end names the same directory
+        $this->assertLabelled(['1.bin', '2.bin'], 'Movies', 'Movies/', true, 'fin/Movies/mytorrent');
+    }
+
+    /**
+     * The label and that directory are compared as strings: PHP's == finds
+     * the label "1" equal to the directories "01", "1.0" and "1e0".
+     */
+    public function testALabelIsComparedWithTheDownloadsDirectoryAsAString()
+    {
+        $this->assertLabelled(['1.bin', '2.bin'], '01', '1', true, 'fin/01/1/mytorrent');
+        $this->assertLabelled(['1.bin', '2.bin'], '1.0', '1', true, 'fin/1.0/1/mytorrent');
+        $this->assertLabelled('Film.mkv', '1e0', '1', true, 'fin/1e0/1');
     }
 
     public function testAnyOtherLabelIsAddedOnlyWhenAddLabelIsOn()
@@ -198,6 +214,26 @@ class AutoMoveDestinationTest extends TestCase
         $this->assertLabelled('Film.mkv', 'Movies', 'HD', true, 'fin/Movies/HD');
         $this->assertLabelled(['1.bin', '2.bin'], 'TV/Shows', 'Shows', true, 'fin/TV/Shows/Shows/mytorrent');
         $this->assertLabelled(['1.bin', '2.bin'], '', 'Movies', false, 'fin/mytorrent');
+    }
+
+    /**
+     * ruTorrent stores a label URL-encoded, but another client can write it
+     * to d.custom1 as it is, in an encoding other than UTF-8. move.php reads
+     * it with rawurldecode() alone, so such a label does not match the
+     * automove filter, which is matched as UTF-8, and the download stays
+     * where it is. check.php must read the label the same way.
+     */
+    public function testALabelThatIsNotUtf8LeavesTheDownloadWithItsData()
+    {
+        // "Фильмы" in Windows-1251 and "Café" in ISO-8859-1, as they are
+        $this->assertLabelled(['1.bin', '2.bin'], '', "\xd4\xe8\xeb\xfc\xec\xfb", true, 'dl/mytorrent', false);
+        $this->assertLabelled('Film.mkv', '', "Caf\xe9", false, 'dl', false);
+        // URL-encoded, the same bytes were already read the same way
+        $this->assertLabelled(['1.bin', '2.bin'], '', "\xd4\xe8\xeb\xfc\xec\xfb", true, 'dl/mytorrent');
+        // and a UTF-8 label is a label both URL-encoded, as the web UI
+        // writes it, and as it is
+        $this->assertLabelled(['1.bin', '2.bin'], '', 'Фильмы', true, 'fin/Фильмы/mytorrent');
+        $this->assertLabelled(['1.bin', '2.bin'], '', 'Фильмы', true, 'fin/Фильмы/mytorrent', false);
     }
 
     public function testUnchangedBasenameStillWorksForEveryOperation()
@@ -393,7 +429,8 @@ class AutoMoveDestinationTest extends TestCase
      * download, as torrentBytes() takes them. $skip is the skip filter.
      * $dir is the directory below the download directory the download was
      * saved in, $label its label and $addLabel the "add label" setting;
-     * $occupy is placed as if $dir and $label were ''.
+     * $occupy is placed as if $dir and $label were ''. The label is stored
+     * URL-encoded, as ruTorrent stores it, or as it is when not $encoded.
      */
     private function runTheFinishedHook(
         $occupy,
@@ -402,7 +439,8 @@ class AutoMoveDestinationTest extends TestCase
         $skip = '',
         $dir = '',
         $label = '',
-        $addLabel = false
+        $addLabel = false,
+        $encoded = true
     ) {
         $this->removeTree($this->base);
         $multi = is_array($files);
@@ -430,17 +468,18 @@ class AutoMoveDestinationTest extends TestCase
             $this->torrentBytes($files, $root),
         );
         $this->seed('Move', $skip, $addLabel);
+        $custom1 = $encoded ? rawurlencode($label) : $label;
 
         $basePath = $saved . '/' . $root;   // d.get_base_path
         // d.get_base_path, d.get_base_filename, d.is_multi_file, d.get_custom1, d.get_name
         $check = $this->runScript(
             'check',
-            [$basePath, $root, $multi ? '1' : '0', rawurlencode($label), $root, self::USER],
+            [$basePath, $root, $multi ? '1' : '0', $custom1, $root, self::USER],
         );
         // and then, with the hash in front, the same five
         $move = $this->runScript(
             'move',
-            [self::HASH, $basePath, $root, $multi ? '1' : '0', rawurlencode($label), $root, self::USER],
+            [self::HASH, $basePath, $root, $multi ? '1' : '0', $custom1, $root, self::USER],
         );
 
         $named = rtrim($check['printed'], '/');
@@ -528,16 +567,17 @@ class AutoMoveDestinationTest extends TestCase
 
     /**
      * Finishes a download of $files, as runTheFinishedHook() takes them, saved
-     * in $dir below the download directory, labelled $label and with "add
-     * label" $addLabel. check.php names $expected, below the test's base
-     * directory, and the files are there once move.php has run.
+     * in $dir below the download directory, labelled $label, stored
+     * $encoded, and with "add label" $addLabel. check.php names $expected,
+     * below the test's base directory, and the files are there once move.php
+     * has run.
      */
-    private function assertLabelled($files, $dir, $label, $addLabel, $expected)
+    private function assertLabelled($files, $dir, $label, $addLabel, $expected, $encoded = true)
     {
-        $r = $this->runTheFinishedHook([], 'mytorrent', $files, '', $dir, $label, $addLabel);
+        $r = $this->runTheFinishedHook([], 'mytorrent', $files, '', $dir, $label, $addLabel, $encoded);
         $what = json_encode(
-            ['dir' => $dir, 'label' => $label, 'add label' => $addLabel, 'files' => $files],
-            JSON_UNESCAPED_SLASHES,
+            ['dir' => $dir, 'label' => $label, 'encoded' => $encoded, 'add label' => $addLabel, 'files' => $files],
+            JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE,
         ) . ': ';
         $this->assertEquals(
             $this->base . '/' . $expected,

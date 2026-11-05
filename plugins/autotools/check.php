@@ -14,7 +14,7 @@ require_once("./autotools.php");
 $base_path = $argv[1];
 $base_name = $argv[2];
 $is_multy = $argv[3];
-$label = UTF::raw_url_decode($argv[4]);
+$label = rawurldecode($argv[4]);
 $name = $argv[5];
 
 $base_path = rtRemoveTailSlash($base_path);
@@ -41,7 +41,7 @@ if ($at->enable_move && (@preg_match($at->automove_filter . 'u', $label) == 1)) 
                     $rel_path = '';
                 }
                 $dest_path = rtAddTailSlash($path_to_finished . $rel_path);
-                if ($at->addLabel && ($label != '') && ($label != trim($rel_path, '/'))) {
+                if ($at->addLabel && ($label != '') && (trim($label, '/') !== trim($rel_path, '/'))) {
                     $dest_path .= FileUtil::addslash($label);
                 }
                 if ($at->addName && ($name != '')) {
