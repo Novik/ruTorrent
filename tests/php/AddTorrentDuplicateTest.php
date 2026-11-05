@@ -30,6 +30,7 @@ class AddTorrentDuplicateTest extends TestCase
     private $base;
     private $daemon;
     private $server;
+    private $saveUploads = true;
 
     public function setUp()
     {
@@ -88,6 +89,22 @@ class AddTorrentDuplicateTest extends TestCase
             ['one.torrent'],
             $this->kept(),
             'only the upload that was added is kept: ' . json_encode($this->kept()),
+        );
+    }
+
+    /**
+     * The uploaded copy is addtorrent.php's own file, so with
+     * $saveUploadedTorrents off sendTorrent() deletes it.
+     */
+    public function testAnAddedUploadIsNotKeptWhenUploadsAreNotSaved()
+    {
+        $this->saveUploads = false;
+        $results = $this->upload(false, ['one.torrent']);
+        $this->assertEquals(['Success'], $results, 'the upload is added: ' . json_encode($results));
+        $this->assertEquals(
+            [],
+            $this->kept(),
+            'and its uploaded copy is not kept: ' . json_encode($this->kept()),
         );
     }
 
@@ -231,7 +248,7 @@ class AddTorrentDuplicateTest extends TestCase
             . '$scgi_port = ' . $this->daemon->port() . ";\n"
             . '$rpcTimeOut = 10;' . "\n"
             . '$rpcLogCalls = false;' . "\n"
-            . '$saveUploadedTorrents = true;' . "\n"
+            . '$saveUploadedTorrents = ' . var_export($this->saveUploads, true) . ";\n"
             . 'chdir(' . var_export($root . '/php', true) . ");\n"
             . 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n"
             . "return true;\n");

@@ -123,7 +123,7 @@ if (count($argv) > 1) {
                                 false,
                                 rXMLRPCRequest::unescapeValue($req->val[4]),
                                 $label,
-                                false,
+                                true,
                                 false,
                                 false,
                                 $reloadAddition,
