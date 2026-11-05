@@ -7,7 +7,15 @@
 # A task's real work runs below its direct children (the plugin scripts
 # start their programs as children of their own), so the whole tree is
 # signalled. Each process is stopped before its children are listed: a
-# stopped process cannot start another one, so none escapes the list.
+# stopped process cannot start another one, so none escapes the list. None
+# is killed before the whole tree is stopped, and then each after its
+# descendants, the task shell last: should this script die on the way, a
+# later kill still finds the task and what is left of it.
+#
+# When the children of a process cannot be listed (pgrep is missing, say),
+# or a process that has not ended cannot be stopped, the walk ends there:
+# the processes stopped so far are resumed and the script exits with 1, so
+# that kill() keeps the task for a later kill.
 #
 # The pid file outlives the task shell: a task that ended without writing
 # its status (a restart, the OOM killer) leaves it behind, and the number
@@ -27,12 +35,31 @@ fi
 
 stop_tree()
 {
-	kill -STOP "$1" 2>/dev/null
+	if ! kill -STOP "$1" 2>/dev/null ; then
+		# No failure if it has ended: it is gone, or a zombie of another
+		# user's.
+		state=$(cat "/proc/$1/stat" 2>/dev/null) || return 0
+		state=${state##*) }
+		[ "${state%% *}" = Z ]
+		return
+	fi
 	echo "$1"
-	for child in $("$pgrep" -P "$1"); do
-		stop_tree "$child"
+	children=$("$pgrep" -P "$1")
+	# pgrep fails with 1 when there are no children, above 1 on an error.
+	[ $? -le 1 ] || return 1
+	for child in $children; do
+		stop_tree "$child" || return 1
 	done
 }
 
-kill -9 $(stop_tree "$2") 2>/dev/null
-exit 0
+if pids=$(stop_tree "$2") ; then
+	# Reversed: each process after its descendants.
+	set --
+	for pid in $pids; do
+		set -- "$pid" "$@"
+	done
+	kill -9 "$@" 2>/dev/null
+	exit 0
+fi
+kill -CONT $pids 2>/dev/null
+exit 1
