@@ -301,6 +301,40 @@ class FeedsPubDateTest extends TestCase
     }
 
     /**
+     * A torrent's name, label and comment may hold a byte that is not UTF-8.
+     * Each is printed with that byte shown as U+FFFD, as the tracker message
+     * is, rather than emptied: the item keeps its title and its category, and
+     * the description its Comment fieldset.
+     */
+    public function testANameALabelOrACommentThatIsNotUtf8IsShownRatherThanEmptied()
+    {
+        $torrents = $this->torrents;
+        $this->torrents = [
+            ['9999999999999999999999999999999999999999', "name \xff x", '1700000000', 'VRS24mrkercomment %FF x', 'label %FF x'],
+        ];
+        try {
+            list(, $output) = $this->feed(true);
+        } finally {
+            $this->torrents = $torrents;
+        }
+        $xml = @simplexml_load_string($output);
+        $this->assertTrue($xml !== false, 'the feed is well-formed XML: ' . substr($output, 0, 300));
+        if ($xml === false) {
+            throw new Exception('The feed could not be parsed');
+        }
+        $item = $xml->channel->item[0];
+        $this->assertEquals(
+            ["name \u{FFFD} x", "label \u{FFFD} x"],
+            [(string) $item->title, (string) $item->category],
+            'the title and the category show the byte as U+FFFD: ' . substr($output, 0, 600),
+        );
+        $this->assertTrue(
+            strpos((string) $item->description, "<legend>Comment</legend>comment \u{FFFD} x</fieldset>") !== false,
+            'the description shows the comment: ' . $item->description,
+        );
+    }
+
+    /**
      * mode arrives in the request and titles the channel out of the language
      * file, so an unknown key reads no string: the diagnostic that produces
      * is printed before the document the script is still building, and the
