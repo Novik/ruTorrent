@@ -6,9 +6,10 @@ if (count($argv) > 1) {
 
 require_once(dirname(__FILE__) . "/../../php/util.php");
 require_once(dirname(__FILE__) . "/../../php/xmlrpc.php");
-// For erasedataLiveHashes(): the hashes rtorrent holds, or null when it
-// will not say.
-require_once(dirname(__FILE__) . "/pending.php");
+// For erasedataLoadedDownloads(), erasedataClaimedFiles() and
+// erasedataDownloadsUnder(): the downloads rtorrent holds, which of a list's
+// files they still use, and which lie in its base path.
+require_once(dirname(__FILE__) . "/shared.php");
 eval(FileUtil::getPluginConf('erasedata'));
 
 function eLog($str)
@@ -161,7 +162,20 @@ function quarantineLegacyList($item)
     }
 }
 
-function parseOneItem($item)
+// The downloads that use the files of $claimed, as erasedataClaimedFiles()
+// answers it, hash => true.
+function usersOf($claimed)
+{
+    $users = [];
+    foreach ($claimed as $hashes) {
+        $users += $hashes;
+    }
+    return($users);
+}
+
+// False when rtorrent did not say which files are in use: nothing was
+// deleted, and the list is kept.
+function parseOneItem($item, $hash, $downloads, &$sizes, &$why)
 {
     global $enableForceDeletion;
     eLog('*** Parse item ' . $item);
@@ -210,9 +224,32 @@ function parseOneItem($item)
         return;
     }
 
+    // What another download rtorrent holds still uses is kept.
+    $kept = erasedataClaimedFiles($files, $downloads, $sizes, $why);
+    if (!is_array($kept)) {
+        return(false);
+    }
+    if (count($kept)) {
+        FileUtil::toLog('erasedata: kept ' . count($kept) . ' file(s) of ' . $hash . ' that '
+            . count(usersOf($kept)) . ' other loaded torrent(s) still use');
+    }
+    // Force deletion removes the base whole. While another download lies
+    // under the base or uses a file of it, it deletes the download's own
+    // files instead.
+    if ($force_delete && $is_multi) {
+        $users = erasedataDownloadsUnder($real_base, $base_path, $downloads) + usersOf($kept);
+        if (count($users)) {
+            $force_delete = false;
+            FileUtil::toLog('erasedata: ' . count($users) . ' other loaded torrent(s) lie in the base path of ' . $hash
+                . ' or use its files; only its own files are deleted');
+        }
+    }
+
     if (!$force_delete || !$is_multi) {
         foreach ($files as $file) {
-            if (@unlink($file)) {
+            if (isset($kept[$file])) {
+                eLog('Kept file ' . $file . ', another loaded torrent uses it');
+            } elseif (@unlink($file)) {
                 eLog('Successfully delete file ' . $file);
             } else {
                 eLog('FAIL Delete file ' . $file);
@@ -256,6 +293,21 @@ function parseOneItem($item)
 
 define('MAX_DURATION_OF_CHECK', 3600);
 
+// A fatal error -- PHP's memory_limit, say -- ends a pass with nothing in the
+// log, and its lists then wait for the lock to expire. Some PHP builds end
+// the process at memory_limit before any shutdown function runs, this one
+// included.
+function logFatalError()
+{
+    global $list, $n;
+    $error = error_get_last();
+    if (($error !== null) && ($error['type'] === E_ERROR)) {
+        FileUtil::toLog('erasedata: the collector stopped on a PHP fatal error ('
+            . ((stripos($error['message'], 'memory') !== false) ? 'memory' : 'other') . '), '
+            . (count($list) - $n) . ' list(s) kept for a pass an hour later');
+    }
+}
+
 $listPath = FileUtil::getSettingsPath() . "/erasedata";
 @FileUtil::makeDirectory($listPath);
 $lock = $listPath . '/scheduler.lock';
@@ -287,32 +339,35 @@ if (!is_file($lock) || (time() - filemtime($lock) > MAX_DURATION_OF_CHECK)) {
     // A list is published once rtorrent has confirmed the erase, but the same
     // hash can be loaded again before this pass -- by hand, from a watch
     // directory, from an RSS rule -- and rtorrent then finds the files on
-    // disk and seeds them. So before each list is applied, rtorrent is asked
-    // which hashes it holds, and a list whose hash it holds is withdrawn with
-    // its data left in place. Asked before each list rather than once per
-    // pass, because a pass over many lists on slow storage takes long enough
-    // for a hash to be loaded again in the middle of it, and the question
-    // costs milliseconds. When rtorrent does not answer, the pass stops and
-    // the remaining lists wait for the next one: nothing is deleted on an
-    // unknown answer.
+    // disk and seeds them. Another download can also hold the same files
+    // under another hash. So before each list is applied, rtorrent is asked
+    // which downloads it holds: a list whose hash it holds is withdrawn with
+    // its data left in place, and the files the others still use are kept.
+    // Asked before each list rather than once per pass, because a pass over
+    // many lists on slow storage takes long enough for a download to be
+    // loaded in the middle of it; the sizes of their files are asked for once
+    // a pass. When rtorrent does not answer, the pass stops and the
+    // remaining lists wait for the next one: nothing is deleted on an unknown
+    // answer.
     //
     // What is left is the moment between one answer and that list's unlinks;
     // only rtorrent itself could close it.
+    register_shutdown_function('logFatalError');
+    $says = ['fault' => 'answered with a fault', 'unreadable' => 'gave an answer that could not be read'];
+    $sizes = null;
     foreach ($list as $n => $item) {
-        $live = erasedataLiveHashes($why);
-        if (!is_array($live)) {
-            FileUtil::toLog('erasedata: rtorrent '
-                . (($why === 'fault') ? 'answered with a fault' : 'did not answer')
-                . ', ' . (count($list) - $n) . ' list(s) kept for the next pass');
-            break;
-        }
         $hash = basename($item, '.list2');
-        if (array_key_exists(strtoupper($hash), $live)) {
+        $downloads = erasedataLoadedDownloads($why);
+        if (is_array($downloads) && array_key_exists(strtoupper($hash), $downloads)) {
             FileUtil::toLog('erasedata: ' . $hash . ' is loaded again; list withdrawn, data kept');
             unlink($item);
             continue;
         }
-        parseOneItem($item);
+        if (!is_array($downloads) || (parseOneItem($item, $hash, $downloads, $sizes, $why) === false)) {
+            FileUtil::toLog('erasedata: rtorrent ' . ($says[$why] ?? 'did not answer')
+                . ', ' . (count($list) - $n) . ' list(s) kept for the next pass');
+            break;
+        }
         unlink($item);
     }
     unlink($lock);
