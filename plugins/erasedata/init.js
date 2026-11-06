@@ -50,27 +50,27 @@ if(plugin.canChangeMenu())
 		    }
 	    }
 	}
+}
 
-	rTorrentStub.prototype.removewithdata = function()
-	{
-		if (plugin.debug) console.log("erasedata: removewithdata called, hashes:", this.hashes, "getCommon available:", typeof this.getCommon === "function");
-		if (typeof this.getCommon === "function") {
-			if (plugin.debug) console.log("erasedata: routing through getCommon (trusted handler)");
-			this.vs[0] = (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
-			this.getCommon("removewithdata");
-		} else {
-			if (plugin.debug) console.log("erasedata: routing through plugins/erasedata/action.php");
-			// No httprpc: POST to erasedata's own endpoint, which records the
-			// delete list and erases (same shared logic httprpc uses). Setting
-			// content without queuing commands makes the stub send it as-is,
-			// like httprpc's getCommon().
-			this.contentType = "application/x-www-form-urlencoded";
-			this.mountPoint = "plugins/erasedata/action.php";
-			this.dataType = "json";
-			this.content = "mode=removewithdata";
-			for( var i = 0; i < this.hashes.length; i++ )
-				this.content += "&hash=" + this.hashes[i];
-			this.content += "&v=" + (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
-		}
+rTorrentStub.prototype.removewithdata = function()
+{
+	if (plugin.debug) console.log("erasedata: removewithdata called, hashes:", this.hashes, "getCommon available:", typeof this.getCommon === "function");
+	if (typeof this.getCommon === "function") {
+		if (plugin.debug) console.log("erasedata: routing through getCommon (trusted handler)");
+		this.vs[0] = (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
+		this.getCommon("removewithdata");
+	} else {
+		if (plugin.debug) console.log("erasedata: routing through plugins/erasedata/action.php");
+		// No httprpc: POST to erasedata's own endpoint, which records the
+		// delete list and erases (same shared logic httprpc uses). Setting
+		// content without queuing commands makes the stub send it as-is,
+		// like httprpc's getCommon().
+		this.contentType = "application/x-www-form-urlencoded";
+		this.mountPoint = "plugins/erasedata/action.php";
+		this.dataType = "json";
+		this.content = "mode=removewithdata";
+		for( var i = 0; i < this.hashes.length; i++ )
+			this.content += "&hash=" + this.hashes[i];
+		this.content += "&v=" + (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
 	}
 }

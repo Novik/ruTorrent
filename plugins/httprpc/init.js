@@ -100,12 +100,6 @@ rTorrentStub.prototype.unpause = function()
 	this.getCommon("unpause");
 }
 
-plugin.origremovewithdata = rTorrentStub.prototype.removewithdata;
-rTorrentStub.prototype.removewithdata = function()
-{
-	this.getCommon("removewithdata");
-}
-
 plugin.origupdateTracker = rTorrentStub.prototype.updateTracker;
 rTorrentStub.prototype.updateTracker = function()
 {
