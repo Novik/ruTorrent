@@ -75,9 +75,10 @@ class BackfillRequestTest extends TestCase
         // otherwise be found in any body at all.
         $this->assertTrue(
             strpos($expression, 'seedingtime') !== false
+            && strpos($expression, 'd.timestamp.finished') !== false
             && strpos($expression, 'addtime') !== false
-            && substr_count($expression, 'branch=') === 2,
-            'the pass writes a missing seedingtime from addtime: ' . $expression,
+            && substr_count($expression, 'branch=') === 3,
+            'the pass writes a missing seedingtime from the finished time or addtime: ' . $expression,
         );
 
         // The handler covers downloads completing from now on and the pass
