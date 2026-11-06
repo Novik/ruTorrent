@@ -38,6 +38,7 @@ $XMLRPCProxySafeParams = [
     'd.views.push_back_unique', // view membership, creating the view
     'view.set_visible',         // view membership, for a view that exists
     'd.delete_tied',            // delete the .torrent on remove
+    'd.check_hash',             // run a hash check
 
     // Actions a client applies across a view: "pause all", "resume all".
     'd.open', 'd.close', 'd.start', 'd.stop',

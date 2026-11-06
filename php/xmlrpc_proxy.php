@@ -183,6 +183,7 @@ class XMLRPCProxy
         'd.custom.set' => ['hash', 'text', 'text'],
         'd.priority.set' => ['hash', 'int'],
         'd.delete_tied' => ['hash'],
+        'd.check_hash' => ['hash'],
         'network.xmlrpc.size_limit.set' => ['empty', 'size'],
     ];
 
