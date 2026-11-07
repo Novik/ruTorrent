@@ -12,7 +12,7 @@
 if [ ${8} ] ; then
 	protocol="hybrid"
 else
-	protocol="v1"
+	protocol="1"
 fi
 
 "${3}" create -l ${5} -o "${7}/temp.torrent" --protocol "${protocol}" "${4}"

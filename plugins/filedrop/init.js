@@ -11,6 +11,12 @@ plugin.isEditableTarget = function(el)
 	return (tag == 'INPUT') || (tag == 'TEXTAREA') || el.isContentEditable;
 }
 
+// The notification style for a result php/addtorrent.php answers with.
+plugin.resultType = function(result)
+{
+	return (result == "Success") ? "success" : ((result == "Duplicate") ? "alert" : "error");
+}
+
 plugin.addUrls = async function(urls)
 {
 	// break URL list into chunks based on plugin configuration
@@ -52,7 +58,7 @@ plugin.addUrls = async function(urls)
 				: "Failed";
 			noty(
 				`${url} : ${theUILang['addTorrent' + result]}`,
-				(result == "Success") ? "success" : "error");
+				plugin.resultType(result));
 		}));
 	}
 }
@@ -83,8 +89,9 @@ plugin.handlePaste = function(event)
 	// *inside* a single magnet's tr= parameter
 	// (tr=http://t1,http://t2), so a comma before "http(s)://" is left
 	// alone to avoid shredding a normal link.
+	// A separator left on the end of a link is not part of it.
 	const urls = text.split(/\r\n|\n|\r|\s+|[,;]+\s*(?=magnet:)/i)
-		.map(item => item.trim())
+		.map(item => item.trim().replace(/[,;]+$/, ""))
 		.filter(item => item.length > 0);
 	if (!urls.length || !urls.every(item => (/^magnet:|^https?:\/\//i).test(item)))
 		return;
@@ -153,7 +160,7 @@ plugin.onLangLoaded = function()
 
 			uploadFinished: function(i, file, response, time)
 			{
-				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result=='Success') ? "success" : "error");
+				noty(file.name+' : '+ theUILang['addTorrent'+response.result], plugin.resultType(response.result));
 			},
 
 			beforeEach: function(file)

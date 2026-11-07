@@ -71,7 +71,7 @@ class XMPPHP_Log {
 	 * @param string  $runlevel
 	 */
 	public function __construct($printout = false, $runlevel = self::LEVEL_INFO) {
-		$this->printout = (boolean)$printout;
+		$this->printout = (bool)$printout;
 		$this->runlevel = (int)$runlevel;
 	}
 

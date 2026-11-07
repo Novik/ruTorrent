@@ -5,9 +5,48 @@ parameters:
 	paths:
 		- php
 		- plugins
+		- tests
+		# The only PHP outside php/ and plugins/, and the home of the
+		# Requirements class the tests under tests/php exercise.
+		- env_check.php
 		# Snoopy is a .php file in all but name, and PHPStan only walks
 		# .php when it scans a directory, so it is named here explicitly.
 		- php/Snoopy.class.inc
+
+	ignoreErrors:
+		# Each test file is run on its own by tests/php-test.sh, so a test
+		# stands up the collaborators it needs itself:
+		#
+		#     if(!class_exists('FileUtil')) { class FileUtil { ... } }
+		#
+		# At runtime that declaration is the only FileUtil there is. PHPStan
+		# reads the whole tree at once, finds the shipped class of the same
+		# name first, and measures the test's calls against it -- so every
+		# member the stand-in adds reads as missing. The names come from the
+		# test, not from the code under test, and no shipped class is being
+		# described, so these say nothing about either.
+		#
+		# Named class by class rather than by identifier, so a static call
+		# that is simply wrong -- on a class no test stands in for -- still
+		# fails the build, as does everything else level 0 reports about
+		# tests/: unknown classes and functions, undefined variables.
+		-
+			identifier: staticProperty.notFound
+			message: '#undefined static property (FileUtil|Snoopy|Torrent|rTorrent|ruTrackerChecker|rXMLRPCRequest)::#'
+			path: tests/*
+		-
+			identifier: staticMethod.notFound
+			message: '#undefined static method (FileUtil|Snoopy|Torrent|rTorrent|ruTrackerChecker|rXMLRPCRequest)::#'
+			path: tests/*
+
+		# SnoopyConnectTest reads php/Snoopy.class.inc and re-declares the
+		# class inside a namespace with eval(), so that the fixture's own
+		# fsockopen() is the one connect() reaches. A class that comes into
+		# existence only when the test runs cannot be seen before it does.
+		-
+			identifier: class.notFound
+			message: '#SnoopyConnectFixture.Snoopy#'
+			path: tests/php/SnoopyConnectTest.php
 
 	# GeoIp2 ships as a phar that plugins/geoip/lookup.php requires at
 	# runtime. PHPStan reads class declarations straight out of it, so the

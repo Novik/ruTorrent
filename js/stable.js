@@ -205,7 +205,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		td.mouseclick((e) => {
 			this.onRightClick(e);
 		});
-		if(!$.support.touchable)
+		if(!$.support.touchPrimary)
 			td.on('mousedown', (e) => { this.bindKeys(); });
 	}
 
@@ -228,6 +228,13 @@ dxSTable.prototype.create = function(ele, styles, aName)
 dxSTable.prototype.handleClick = function(e)
 {
 	const row = $(e.target).parents('tr')[0];
+	// clearRows() drops the data at once but leaves the old rows in the DOM
+	// until the deferred sync removes them. An event landing on one of them --
+	// on a touch device, the browser's own mousedown that follows the dblclick
+	// which just changed the listing -- must not reach the handlers with an id
+	// the table no longer holds.
+	if (!row || !(row.id in this.rowdata))
+		return;
 	if (e.type == 'dblclick') {
 		this.ondblclick(row);
 	} else if (e.which === 3 || e.which === 1) {
@@ -292,11 +299,11 @@ dxSTable.prototype.onRightClick = function(e)
         if((e.which==3) && !this.isMoving)
         {
 		theContextMenu.clear();
-		for(var i = 0; i<this.colsdata.length; i++)
+		for(let i = 0; i<this.colsdata.length; i++)
 		{
 			if(this.colOrder[i])
 			{
-				var a = [this.colsdata[i].text, "theWebUI.getTable('"+this.prefix+"').toggleColumn("+i+")"];
+				var a = [this.colsdata[i].text, () => theWebUI.getTable(this.prefix).toggleColumn(i)];
 				if(this.colsdata[i].enabled)
 					a.unshift(CMENU_SEL);
 				theContextMenu.add(a);
@@ -648,7 +655,7 @@ dxSTable.prototype.assignEvents = function()
 			currCell.style.cursor = "default";
 		}
 	});
-	if(!$.support.touchable)
+	if(!$.support.touchPrimary)
 		this.dCont.on('mousedown', function(e) { self.bindKeys(); } );
 }
 
@@ -835,7 +842,7 @@ dxSTable.prototype.keyEvents = function(e)
 
 dxSTable.prototype.selectRow = function(e, row)
 {
-	if(!$.support.touchable)
+	if(!$.support.touchPrimary)
 		this.bindKeys();
 
 	const targetId = row.id;
@@ -975,7 +982,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 			);
 		} else if (isLabel) {
 			td.append(
-				$("<div>").html((celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
+				$("<div>").html(escapeHTML(celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
 			);
 		} else {
 			td.append(

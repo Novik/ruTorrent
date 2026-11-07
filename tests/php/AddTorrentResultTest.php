@@ -1,0 +1,342 @@
+<?php
+
+require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/TestHttpServer.php');
+require_once(__DIR__ . '/TestTree.php');
+
+/**
+ * php/addtorrent.php reflects the result[] and name[] query parameters into
+ * the response it serves. These tests run the production file and the
+ * production CachedEcho byte-for-byte in a throwaway PHP server and look at
+ * the real bytes and the real headers that come back over HTTP.
+ */
+class AddTorrentResultTest extends TestCase
+{
+    private $sourceRoot;
+
+    public function setUp()
+    {
+        $this->sourceRoot = realpath(__DIR__ . '/../..');
+        if ($this->sourceRoot === false) {
+            throw new Exception('could not locate the production source root');
+        }
+    }
+
+    // ---- what the response may not contain -------------------------------
+
+    public function testResultIsNotReflectedAsMarkup()
+    {
+        $result = $this->get('?result[]=' . rawurlencode('<svg onload="alert(1)">'));
+        $this->assertNoMarkup($result, 'result[] cannot put an element in the response');
+    }
+
+    public function testJsonResultIsNotReflectedAsMarkup()
+    {
+        $result = $this->get('?json=1&result[]=' . rawurlencode('<svg onload="alert(1)">'));
+        $this->assertNoMarkup($result, 'result[] cannot put an element in the json response');
+        $this->assertTrue(
+            json_decode($result['body'], true) !== null,
+            'the json response is valid json: ' . $result['body'],
+        );
+    }
+
+    public function testNameIsNotReflectedAsMarkup()
+    {
+        $result = $this->get('?result[]=Success&name[]=' . rawurlencode('<svg onload="alert(1)">'));
+        $this->assertNoMarkup($result, 'name[] cannot put an element in the response');
+    }
+
+    /**
+     * name[] used to be run through htmlspecialchars() and then through
+     * rawurldecode(), in that order, so percent escapes that survived the
+     * escaping were turned back into the characters it had escaped.
+     */
+    public function testPercentEncodedNameIsNotDecodedBackIntoMarkup()
+    {
+        $result = $this->get('?result[]=Success&name[]=%253Csvg%2520onload%253Dalert(1)%253E');
+        $this->assertNoMarkup($result, 'a percent-encoded name[] is not decoded back into markup');
+    }
+
+    public function testResultCannotAddStatementsToTheScript()
+    {
+        $result = $this->get('?result[]=' . rawurlencode('Success"); alert(1); //'));
+        $this->assertOneCall($result, 'a result[] that tries to close the call stays one argument');
+    }
+
+    public function testNameCannotAddStatementsToTheScript()
+    {
+        $result = $this->get('?result[]=Success&name[]=' . rawurlencode('a"); alert(1); //'));
+        $this->assertOneCall($result, 'a name[] that tries to close the call stays one argument');
+    }
+
+    // ---- headers ---------------------------------------------------------
+
+    public function testResponseForbidsContentTypeSniffing()
+    {
+        $result = $this->get('?result[]=Success');
+        $this->assertEquals(
+            'nosniff',
+            isset($result['headers']['x-content-type-options'])
+            ? $result['headers']['x-content-type-options'] : null,
+            'the response carries X-Content-Type-Options: nosniff',
+        );
+    }
+
+    public function testJsonResponseForbidsContentTypeSniffing()
+    {
+        $result = $this->get('?json=1&result[]=Success');
+        $this->assertEquals(
+            'nosniff',
+            isset($result['headers']['x-content-type-options'])
+            ? $result['headers']['x-content-type-options'] : null,
+            'the json response carries X-Content-Type-Options: nosniff',
+        );
+        $this->assertEquals(
+            'application/json; charset=UTF-8',
+            isset($result['headers']['content-type']) ? $result['headers']['content-type'] : null,
+            'the json response is served as json',
+        );
+    }
+
+    // ---- what the response still has to be -------------------------------
+
+    public function testSuccessWithNameProducesTheCallTheClientEvaluates()
+    {
+        $result = $this->get('?result[]=Success&name[]=' . rawurlencode('My Torrent'));
+        $this->assertEquals(
+            'noty("My Torrent - "+theUILang["addTorrent"+"Success"],"success");',
+            $result['body'],
+            'a successful add names the torrent and picks the success wording',
+        );
+        $this->assertEquals('text/html; charset=UTF-8', isset($result['headers']['content-type'])
+            ? $result['headers']['content-type'] : null, 'the script response is served as text/html');
+    }
+
+    public function testFailureWithoutNameProducesTheErrorCall()
+    {
+        $result = $this->get('?result[]=FailedURL');
+        $this->assertEquals(
+            'noty(""+theUILang["addTorrent"+"FailedURL"],"error");',
+            $result['body'],
+            'a failure picks the matching wording and the error style',
+        );
+    }
+
+    public function testEveryResultProducesItsOwnCall()
+    {
+        $result = $this->get('?result[]=Success&result[]=Failed&name[]=' . rawurlencode('one')
+            . '&name[]=' . rawurlencode('two'));
+        $this->assertEquals(
+            'noty("one - "+theUILang["addTorrent"+"Success"],"success");'
+            . 'noty("two - "+theUILang["addTorrent"+"Failed"],"error");',
+            $result['body'],
+            'each uploaded file gets its own notification',
+        );
+    }
+
+    public function testNameKeepsItsOwnPunctuationAndAccents()
+    {
+        $result = $this->get('?result[]=Success&name[]=' . rawurlencode("Bob's 100% Fu\xc3\x9f [2024].torrent"));
+        $decoded = json_decode(substr(
+            $result['body'],
+            strlen('noty('),
+            strpos($result['body'], '+theUILang') - strlen('noty('),
+        ), true);
+        $this->assertEquals(
+            "Bob's 100% Fu\xc3\x9f [2024].torrent - ",
+            $decoded,
+            'the name reaches the client unchanged: ' . $result['body'],
+        );
+    }
+
+    // A unix filename is a string of bytes, so name[] need not be valid UTF-8.
+    // json_encode() answers false for such bytes, and false concatenates as
+    // nothing, which left the call an argument short rather than carrying a
+    // literal: noty(+theUILang[...],"success").
+    public function testNameThatIsNotValidUtf8StillProducesALiteral()
+    {
+        $result = $this->get('?result[]=Success&name[]=' . rawurlencode("bad\x80name"));
+        $this->assertTrue(
+            strpos($result['body'], 'noty("') === 0,
+            'the call still opens with a string literal: ' . $result['body'],
+        );
+        $decoded = json_decode($this->firstArgument($result['body']), true);
+        $this->assertTrue(
+            is_string($decoded),
+            'the first argument is one complete string literal: ' . $result['body'],
+        );
+        $this->assertEquals(
+            'bad\\x80name - ',
+            $decoded,
+            'the notification retains a readable representation of the original byte',
+        );
+        $this->assertTrue(
+            substr($decoded, -3) === ' - ',
+            'and it is still the name the template writes: ' . var_export($decoded, true),
+        );
+        $this->assertOneWellFormedCall($result);
+    }
+
+    // The same for result[], which is pasted inside the theUILang lookup:
+    // theUILang["addTorrent"+] is not an expression at all.
+    public function testResultThatIsNotValidUtf8StillProducesALiteral()
+    {
+        $result = $this->get('?result[]=' . rawurlencode("bad\x80result"));
+        $decoded = json_decode($this->lookupArgument($result['body']), true);
+        $this->assertTrue(
+            is_string($decoded),
+            'the wording lookup is given one complete string literal: ' . $result['body'],
+        );
+        $this->assertOneWellFormedCall($result);
+    }
+
+    public function testJsonBranchStaysJsonForBytesThatAreNotUtf8()
+    {
+        $result = $this->get('?json=1&result[]=' . rawurlencode("bad\x80result"));
+        $decoded = json_decode($result['body'], true);
+        $this->assertTrue(
+            is_array($decoded) && array_key_exists('result', $decoded)
+            && is_string($decoded['result']),
+            'the json branch still answers one json object: ' . $result['body'],
+        );
+    }
+
+    public function testJsonBranchReportsTheResult()
+    {
+        $result = $this->get('?json=1&result[]=Success');
+        $this->assertEquals(
+            ['result' => 'Success'],
+            json_decode($result['body'], true),
+            'the json branch reports the result: ' . $result['body'],
+        );
+    }
+
+    // ---- plumbing --------------------------------------------------------
+
+    /** No byte of the response may be an angle bracket a browser could parse. */
+    private function assertNoMarkup($result, $message)
+    {
+        $body = $result['body'];
+        $this->assertTrue(
+            strpos($body, '<') === false,
+            $message . ' -- no "<" in ' . $body,
+        );
+        $this->assertTrue(
+            strpos($body, '>') === false,
+            $message . ' -- no ">" in ' . $body,
+        );
+    }
+
+    /**
+     * The response is one noty() call. A payload that tries to close the
+     * argument list cannot appear as written, and the only double quotes in
+     * the body are the eight the template itself writes.
+     */
+    private function assertOneCall($result, $message)
+    {
+        $body = $result['body'];
+        $this->assertTrue(
+            strpos($body, 'alert(1)') !== false,
+            $message . ' -- the payload is present at all: ' . $body,
+        );
+        $this->assertTrue(
+            strpos($body, '"); alert(1)') === false,
+            $message . ' -- the payload cannot close an argument: ' . $body,
+        );
+        $this->assertEquals(
+            1,
+            substr_count($body, 'noty('),
+            $message . ' -- exactly one call: ' . $body,
+        );
+        $this->assertEquals(
+            8,
+            substr_count($body, '"'),
+            $message . ' -- only the eight quotes the template writes: ' . $body,
+        );
+    }
+
+    /** The text between noty( and the +theUILang that follows it. */
+    private function firstArgument($body)
+    {
+        $start = strlen('noty(');
+        $end = strpos($body, '+theUILang');
+        return $end === false ? '' : substr($body, $start, $end - $start);
+    }
+
+    /** The text between "addTorrent"+ and the ] that closes the lookup. */
+    private function lookupArgument($body)
+    {
+        $marker = '"addTorrent"+';
+        $start = strpos($body, $marker);
+        if ($start === false) {
+            return '';
+        }
+        $start += strlen($marker);
+        $end = strpos($body, ']', $start);
+        return $end === false ? '' : substr($body, $start, $end - $start);
+    }
+
+    /** One noty() call whose three arguments are all there. */
+    private function assertOneWellFormedCall($result)
+    {
+        $body = $result['body'];
+        $this->assertEquals(
+            1,
+            substr_count($body, 'noty('),
+            'exactly one call: ' . $body,
+        );
+        $this->assertTrue(
+            strpos($body, '(+') === false && strpos($body, '+]') === false
+            && strpos($body, ',)') === false && strpos($body, ',,') === false,
+            'no argument is missing from the call: ' . $body,
+        );
+    }
+
+    /**
+     * Serve the production addtorrent.php and CachedEcho from a copied tree.
+     * Only what sits below them is stubbed: addtorrent.php's result branch
+     * needs no rTorrent and no Snoopy, but the requires at the top of the file
+     * have to resolve.
+     */
+    private function get($query)
+    {
+        $tree = sys_get_temp_dir() . '/rutorrent-addtorrent-' . uniqid('', true);
+        $process = null;
+        try {
+            if (!mkdir($tree . '/php/utility', 0700, true) && !is_dir($tree . '/php/utility')) {
+                throw new Exception('could not create addtorrent fixture tree');
+            }
+            foreach (['php/addtorrent.php', 'php/utility/cachedecho.php', 'php/utility/utf.php'] as $relative) {
+                $source = $this->sourceRoot . '/' . $relative;
+                $target = $tree . '/' . $relative;
+                if (!copy($source, $target) || (hash_file('sha256', $source) !== hash_file('sha256', $target))) {
+                    throw new Exception('could not byte-copy production source ' . $relative);
+                }
+            }
+            $this->writeStubs($tree);
+
+            $process = TestHttpServer::start(
+                $tree,
+                [],
+                array_merge(PhpProcess::sameIni(), ['-d', 'zlib.output_compression=0']),
+            );
+            return TestHttpServer::rawGet($process->port(), '/php/addtorrent.php' . $query);
+        } finally {
+            if ($process !== null) {
+                $process->close();
+            }
+            TestTree::remove($tree);
+        }
+    }
+
+    private function writeStubs($tree)
+    {
+        file_put_contents($tree . '/php/Snoopy.class.inc', "<?php\nclass Snoopy {}\n");
+        file_put_contents($tree . '/php/rtorrent.php', "<?php\n"
+            . "require_once(" . var_export($tree . '/php/utility/cachedecho.php', true) . ");\n"
+            . "require_once(" . var_export($tree . '/php/utility/utf.php', true) . ");\n"
+            . "\$phpUseGzip = false;\n");
+        file_put_contents($tree . '/php/utility/fileutil.php', "<?php\nclass FileUtil {}\n");
+        file_put_contents($tree . '/php/utility/utility.php', "<?php\nclass Utility {}\n");
+    }
+}

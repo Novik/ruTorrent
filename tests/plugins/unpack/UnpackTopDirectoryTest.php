@@ -1,0 +1,315 @@
+<?php
+
+require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
+
+/**
+ * unpack extracts into a directory the archive tool writes through any
+ * symbolic link along it, so the directory it is given has to stay inside
+ * $topDirectory once its links are followed, not only as written. That is
+ * the directory in the plugin's settings with the label and name added, or
+ * the download's own directory when the setting is empty.
+ *
+ * The tree is real: a top directory with a zip in it, a directory outside
+ * it, a link out and a link that stays inside. unpack runs in dry-run mode,
+ * so what is read is whether it went as far as starting the extraction,
+ * from its own log.
+ *
+ * It runs as a user, as behind a login, and the log also has the command
+ * the task would run: its last arguments are what place.php needs.
+ */
+class UnpackTopDirectoryTest extends TestCase
+{
+    public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+    public const USER = 'unpacktest';
+    // $pathToExternals['php']: what unpack hands the unpack scripts.
+    public const PHP = '/opt/php-cli/bin/php';
+    public const STARTED = 'Start unpack operation';
+
+    private $base;
+    private $top;
+    private $daemon;
+
+    public function setUp()
+    {
+        $this->base = sys_get_temp_dir() . '/rutorrent-unpack-top-' . uniqid('', true);
+        @mkdir($this->base . '/profile/settings', 0700, true);
+        @mkdir($this->base . '/top/plain', 0777, true);
+        @mkdir($this->base . '/outside/held', 0777, true);
+        $this->base = realpath($this->base);
+        $this->top = $this->base . '/top';
+        file_put_contents($this->top . '/plain/a.zip', 'zip');
+        file_put_contents($this->base . '/outside/held/b.zip', 'zip');
+        symlink($this->base . '/outside', $this->top . '/out');
+        symlink($this->top . '/plain', $this->top . '/in');
+    }
+
+    public function tearDown()
+    {
+        if ($this->daemon !== null) {
+            $this->daemon->stop();
+            $this->daemon = null;
+        }
+        $this->removeTree($this->base);
+    }
+
+    public function testAutoUnpackThroughALinkOutIsNotStarted()
+    {
+        $r = $this->silent($this->top . '/out', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            !$this->started($r),
+            'an output directory that resolves outside the top directory is not unpacked into: ' . $r['log'],
+        );
+    }
+
+    public function testAutoUnpackIntoTheDownloadsOwnDirectoryThroughALinkOutIsNotStarted()
+    {
+        $r = $this->silent('', $this->top . '/out/held/b.zip');
+        $this->assertTrue(
+            !$this->started($r),
+            'nor is a download\'s own directory reached through a link out: ' . $r['log'],
+        );
+    }
+
+    public function testAutoUnpackThroughALinkThatStaysInsideIsStarted()
+    {
+        $r = $this->silent($this->top . '/in', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            $this->started($r),
+            'a link that resolves inside the top directory is unpacked into: ' . $r['log'],
+        );
+    }
+
+    public function testAutoUnpackIntoTheDownloadsOwnDirectoryIsStarted()
+    {
+        $r = $this->silent('', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            $this->started($r),
+            'with no output directory set, the download\'s own directory is used: ' . $r['log'],
+        );
+    }
+
+    public function testManualUnpackThroughALinkOutIsRefused()
+    {
+        $r = $this->manual($this->top . '/out', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            !$this->started($r),
+            'a manual unpack into a link out is not started: ' . $r['log'],
+        );
+        $this->assertTrue(
+            is_array($r['ret']) && count($r['ret']['errors']) > 0
+            && ($r['ret']['errors'] !== ['Dry-run operation, no real task start']),
+            'and is answered with an error of its own: ' . $r['printed'],
+        );
+    }
+
+    public function testManualUnpackIntoTheDownloadsOwnDirectoryThroughALinkOutIsRefused()
+    {
+        $r = $this->manual('', $this->top . '/out/held/b.zip');
+        $this->assertTrue(
+            !$this->started($r),
+            'nor one into a download\'s own directory reached through a link out: ' . $r['log'],
+        );
+    }
+
+    public function testManualUnpackOfAWholeDownloadThroughALinkOutIsRefused()
+    {
+        $r = $this->whole($this->top . '/out', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            !$this->started($r),
+            'a whole download unpacked into a link out is not started: ' . $r['log'],
+        );
+    }
+
+    public function testManualUnpackOfAWholeDownloadInsideIsStarted()
+    {
+        $r = $this->whole($this->top . '/plain/new', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            $this->started($r),
+            'a whole download unpacked inside the top directory is started: ' . $r['log'],
+        );
+    }
+
+    public function testManualUnpackInsideIsStarted()
+    {
+        $r = $this->manual($this->top . '/plain/new', $this->top . '/plain/a.zip');
+        $this->assertTrue(
+            $this->started($r),
+            'a manual unpack inside the top directory is started: ' . $r['log'],
+        );
+    }
+
+    /**
+     * With addLabel the label is added to the directory as written, and a
+     * label is free text. "zz" does not exist yet, so nothing the check can
+     * resolve shows where the ".." after it leads; the archive tool makes
+     * "zz" and then climbs out of it, beside the top directory.
+     */
+    public function testAutoUnpackIntoALabelThatClimbsOutIsNotStarted()
+    {
+        $r = $this->silent('', $this->top . '/plain/a.zip', 'zz/../../../outside');
+        $this->assertTrue(
+            !$this->started($r),
+            'a label that leads out of the top directory is not unpacked into: ' . $r['log'],
+        );
+    }
+
+    public function testAutoUnpackIntoANewLabelIsStarted()
+    {
+        $r = $this->silent('', $this->top . '/plain/a.zip', 'Фильмы/2026');
+        $this->assertTrue(
+            $this->started($r) && (strpos($r['log'], '/plain/Фильмы/2026/') !== false),
+            'an archive is unpacked into its label, made under the directory: ' . $r['log'],
+        );
+    }
+
+    public function testManualUnpackOfAWholeDownloadIntoALabelThatClimbsOutIsRefused()
+    {
+        $r = $this->whole('', $this->top . '/plain/a.zip', 'zz/../../../outside');
+        $this->assertTrue(
+            !$this->started($r),
+            'a whole download is not unpacked into a label that leads out: ' . $r['log'],
+        );
+        $this->assertTrue(
+            is_array($r['ret']) && count($r['ret']['errors']) > 0
+            && ($r['ret']['errors'] !== ['Dry-run operation, no real task start']),
+            'and is answered with an error of its own: ' . $r['printed'],
+        );
+    }
+
+    public function testManualUnpackOfAWholeDownloadIntoANewLabelIsStarted()
+    {
+        $r = $this->whole('', $this->top . '/plain/a.zip', 'Фильмы/2026');
+        $this->assertTrue(
+            $this->started($r) && (strpos($r['log'], '/plain/Фильмы/2026/') !== false),
+            'a whole download is unpacked into its label, made under the directory: ' . $r['log'],
+        );
+    }
+
+    public function testAutoUnpackHandsPlacePhpItsContext()
+    {
+        $this->assertPlaceArguments($this->silent('', $this->top . '/plain/a.zip'), 'automatic');
+    }
+
+    public function testManualUnpackHandsPlacePhpItsContext()
+    {
+        $this->assertPlaceArguments($this->manual($this->top . '/plain/new', $this->top . '/plain/a.zip'), 'manual');
+    }
+
+    public function testManualUnpackOfAWholeDownloadHandsPlacePhpItsContext()
+    {
+        $this->assertPlaceArguments($this->whole($this->top . '/plain/new', $this->top . '/plain/a.zip'), 'manual');
+    }
+
+    private function removeTree($path)
+    {
+        if (is_link($path) || !is_dir($path)) {
+            @unlink($path);
+            return;
+        }
+        foreach (glob($path . '/*') as $entry) {
+            $this->removeTree($entry);
+        }
+        @rmdir($path);
+    }
+
+    /**
+     * Drives $call against an rUnpack whose output directory setting is $path,
+     * with rtorrent answering f.get_frozen_path with $frozen, and the label
+     * added to that directory when $addLabel. Returns what the call returned
+     * and what unpack logged.
+     */
+    private function drive($path, $call, $frozen = '', $replies = null, $addLabel = false)
+    {
+        $root = realpath(__DIR__ . '/../../..');
+        if ($this->daemon !== null) {
+            $this->daemon->stop();
+        }
+        RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/' . self::USER);
+        $this->daemon = new FakeRtorrentDaemon(
+            ($replies === null) ? [[$frozen]] : $replies,
+            $this->base . '/calls.log',
+        );
+        $log = $this->base . '/unpack.log';
+        @unlink($log);
+
+        $driver = $this->base . '/drive-unpack.php';
+        file_put_contents($driver, "<?php\n"
+            . '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+            . '$_SERVER[\'REMOTE_USER\'] = ' . var_export(self::USER, true) . ";\n"
+            . 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
+            . '$scgi_host = "127.0.0.1"; $scgi_port = ' . $this->daemon->port() . ';'
+                . ' $rpcTimeOut = 10; $rpcLogCalls = false;' . "\n"
+            . '$pathToExternals["php"] = ' . var_export(self::PHP, true) . ";\n"
+            . '$topDirectory = ' . var_export($this->top . '/', true) . ";\n"
+            . '$log_file = ' . var_export($log, true) . ";\n"
+            . 'chdir(' . var_export($root . '/plugins/unpack', true) . ");\n"
+            . 'require_once(' . var_export($root . '/plugins/unpack/unpack.php', true) . ");\n"
+            . '$unpack_debug_enabled = "dry-run";' . "\n"
+            . '$up = new rUnpack(); $up->path = ' . var_export($path, true) . ';'
+                . ' $up->addLabel = ' . ($addLabel ? 1 : 0) . ";\n"
+            . '$ret = ' . $call . ";\n"
+            . 'echo json_encode($ret);' . "\n");
+
+        $output = [];
+        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+            . escapeshellarg($driver) . ' 2>&1', $output);
+        return [
+            'ret' => json_decode(implode("\n", $output), true),
+            'printed' => implode("\n", $output),
+            'log' => is_file($log) ? file_get_contents($log) : '',
+        ];
+    }
+
+    private function silent($path, $basename, $label = '')
+    {
+        return $this->drive($path, '$up->startSilentTask(' . var_export($basename, true)
+            . ', ' . var_export(dirname($basename), true) . ', ' . var_export($label, true)
+            . ', "a", "' . self::HASH . '")', '', null, $label !== '');
+    }
+
+    private function manual($dir, $frozen)
+    {
+        return $this->drive('', '$up->startTask("' . self::HASH . '", ' . var_export($dir, true)
+            . ', "zip", 0)', $frozen);
+    }
+
+    /**
+     * A manual unpack of the whole download: rtorrent reports its base path,
+     * label and name, then its files.
+     */
+    private function whole($dir, $basePath, $label = '')
+    {
+        return $this->drive(
+            '',
+            '$up->startTask("' . self::HASH . '", ' . var_export($dir, true)
+            . ', "", 0)',
+            '',
+            [[$basePath, rawurlencode($label), 'a'], [basename($basePath)]],
+            $label !== '',
+        );
+    }
+
+    private function started($r)
+    {
+        return strpos($r['log'], self::STARTED) !== false;
+    }
+
+    /**
+     * The unpack script the task starts gets PHP, "automatic" or "manual",
+     * the hash and the user as its arguments 7-10, for place.php.
+     */
+    private function assertPlaceArguments($r, $how)
+    {
+        preg_match('/ with arguments (\[.*\])$/m', $r['log'], $started);
+        $commands = isset($started[1]) ? json_decode($started[1], true) : null;
+        preg_match_all("~'(?:[^']|'\\\\'')*'~", (string) ($commands[0] ?? ''), $arguments);
+        $arguments = $arguments[0];
+        $this->assertTrue(
+            (count($arguments) === 11) && (array_slice($arguments, 7) === ["'" . self::PHP . "'",
+                "'" . $how . "'", "'" . self::HASH . "'", "'" . self::USER . "'"]),
+            'the script gets PHP, "' . $how . '", the hash and the user: ' . $r['log'],
+        );
+    }
+}

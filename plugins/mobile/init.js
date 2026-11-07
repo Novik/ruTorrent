@@ -25,6 +25,7 @@ plugin.lastHref = "";
 plugin.currentPage = 'torrentsList';
 plugin.scrollTop = 0;
 plugin.scrollToAddedUntil = 0; /* deadline for scrolling to a just-added torrent */
+plugin.uploadFrames = 0; /* names each upload's hidden frame */
 plugin.searchText = '';
 plugin.searchPattern = null;
 plugin.searchDebounce = 0;
@@ -215,7 +216,7 @@ plugin.showAlert = function(message,alerttype) {
   // Keep a reference to this alert instead of finding it by id later:
   // with an id lookup, a previous alert's still-pending timers would
   // grab whatever alert is showing now and hide it early
-  var alert = $('<div class="alert alert-dismissible fade show navbar-fixed-top '+ alerttype +'" role="alert">'+ escapeHTML(message) +'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+  var alert = $('<div class="alert alert-dismissible fade show '+ alerttype +'" role="alert">'+ escapeHTML(message) +'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
   $('#alert_placeholder').append(alert);
   setTimeout(function() {
     alert.removeClass('show');
@@ -225,42 +226,67 @@ plugin.showAlert = function(message,alerttype) {
   }, 5000);
 };
 
-plugin.createiFrame = function() {
-  $('#addTorrent').prepend('<iframe id="uploadFrame" name="uploadFrame" style="visibility: hidden; width: 0; height: 0; line-height: 0; font-size: 0; border: 0;"></iframe>')
-  $('#uploadFrame').on('load', function() {
-    var d = (this.contentDocument || this.contentWindow.document);
+// The alert class for a noty kind, shared by the add-torrent results and
+// the desktop engine's own notifications (see plugin.init)
+plugin.alertClass = function(kind) {
+  return (kind == 'success') ? 'alert-success' :
+    (kind == 'error') ? 'alert-danger' :
+    (kind == 'alert' || kind == 'warning') ? 'alert-warning' : 'alert-info';
+};
 
-    if(d && (d.location.href != "about:blank")) {
-      var matchedRegex = d.body.innerHTML.match(/noty\(".*"\+(.*),"(.*)"/);
-      if (matchedRegex != null) {
-        var message = '';
-        try {message = eval(matchedRegex[1]);} catch(e) { }
-        if (message != '') {
-          if(matchedRegex[2] == "success") {
-            plugin.showAlert(message,"alert-success");
-            // Clear the add forms so the next torrent can be added;
-            // on error the inputs are kept so they can be corrected
-            $('#url').val('');
-            $('#torrent_file').val('');
-            // Scroll the list to the new torrent once it shows up (a
-            // magnet or URL add can take a few polls to materialize)
-            plugin.scrollToAddedUntil = Date.now() + 30000;
-            // Return to the torrent list, unless the user already
-            // navigated elsewhere while the upload was in flight
-            if (plugin.currentPage == 'addTorrent') {
-              plugin.showList();
-            }
-          } else if (matchedRegex[2] == "error") {
-            plugin.showAlert(message,"alert-danger");
-          }
-        }
-      }
-    }
-    $('#addUrl').prop('disabled', $.trim($('#url').val()) === '');
-    $('#torrentFileSend').prop('disabled', $('#torrent_file')[0].files.length === 0);
-    $('#uploadFrame').remove();
-    plugin.update(true);
+/*** Add-torrent upload ***/
+// Every upload gets a hidden frame of its own, and its form targets that
+// frame by name. With one shared name, a second upload started while the
+// first was in flight (picking another file enables the button again)
+// could load into the first one's frame, and the first upload to finish
+// removed the other one's frame.
+plugin.createiFrame = function(form) {
+  var name = 'uploadFrame' + (++this.uploadFrames);
+  var frame = $('<iframe style="visibility: hidden; width: 0; height: 0; line-height: 0; font-size: 0; border: 0;"></iframe>').attr('name', name);
+  $('#addTorrent').prepend(frame);
+  // Bind after insertion: inserting the frame fires load for its initial
+  // blank page, which is not the answer
+  frame.on('load', function() {
+    plugin.uploadFinished(this);
   });
+  form.target = name;
+};
+
+plugin.uploadFinished = function(frame) {
+  // Report the answer, but restore the buttons and drop the frame either
+  // way: the blank page the frame is inserted with loads here too
+  var answer = uploadFrameAnswer(frame);
+  if (answer !== null) {
+    this.showUploadResults(uploadResults(answer));
+  }
+  $('#addUrl').prop('disabled', $.trim($('#url').val()) === '');
+  $('#torrentFileSend').prop('disabled', $('#torrent_file')[0].files.length === 0);
+  $(frame).remove();
+  this.update(true);
+};
+
+// One alert per item. An upload that added anything clears the add forms,
+// which would otherwise send the added items again, and returns to the
+// list; when nothing was added the inputs are kept so they can be
+// corrected.
+plugin.showUploadResults = function(results) {
+  var added = false;
+  $.each(results, function(i, result) {
+    plugin.showAlert(result.text, plugin.alertClass(result.kind));
+    added = added || (result.kind == 'success');
+  });
+  if (added) {
+    $('#url').val('');
+    $('#torrent_file').val('');
+    // Scroll the list to the new torrent once it shows up (a
+    // magnet or URL add can take a few polls to materialize)
+    this.scrollToAddedUntil = Date.now() + 30000;
+    // Return to the torrent list, unless the user already
+    // navigated elsewhere while the upload was in flight
+    if (this.currentPage == 'addTorrent') {
+      this.showList();
+    }
+  }
 };
 
 plugin.showPage = function(page) {
@@ -1204,12 +1230,12 @@ plugin.loadPeers = function() {
             var countryText = ((theUILang.country && theUILang.country[cc]) || cc) + peers[pid[i]].country.substr(2);
             flagHtml = '<img class="peer-flag" src="plugins/geoip/flags/' + cc.toLowerCase() + '.gif" alt="' + escapeHTML(cc) + '"/> ' + escapeHTML(countryText);
           }
-          peersHtml += '<tr data-pid="' + pid[i] + '" data-snubbed="' + (peers[pid[i]].snubbed ? 1 : 0) + '">' +
+          peersHtml += '<tr data-pid="' + escapeHTML(pid[i]) + '" data-snubbed="' + (peers[pid[i]].snubbed ? 1 : 0) + '">' +
           '<td class="country-cell">' + flagHtml + '</td>' +
-          '<td>' + peers[pid[i]].ip + ':' +  peers[pid[i]].port + '</td>' +
+          '<td>' + escapeHTML(peers[pid[i]].ip) + ':' + escapeHTML(peers[pid[i]].port) + '</td>' +
           '<td>' + escapeHTML(peers[pid[i]].version) + '</td>' +
           '<td>' + escapeHTML(peers[pid[i]].flags) + '</td>' +
-          '<td>' + peers[pid[i]].done + '%</td>' +
+          '<td>' + escapeHTML(peers[pid[i]].done) + '%</td>' +
           '<td>' + theConverter.bytes(peers[pid[i]].downloaded,2) + '</td>' +
           '<td>' + theConverter.bytes(peers[pid[i]].uploaded,2) + '</td>' +
           '<td>' + theConverter.speed(peers[pid[i]].dl) + '</td>' +
@@ -1443,12 +1469,12 @@ plugin.drawFiles = function(p) {
 
     var filesList = '';
     if (!vars[1].directory) {
-      filesList = vars[1].id;
+      filesList = '&v=' + vars[1].id;
     } else {
       filesList = plugin.getFilesList(vars[1].container);
     }
 
-    plugin.request('?action=setprio&hash=' + plugin.torrent.hash  + '&v=' +filesList + '&s=' + newValue);
+    plugin.request('?action=setprio&hash=' + plugin.torrent.hash + filesList + '&s=' + newValue);
   });
 }
 
@@ -1472,6 +1498,8 @@ plugin.loadFiles = function() {
     var hash = this.torrent.hash;
     $('#detailsFilesPage').html('');
     this.request('?action=getfiles&hash=' + hash, function(data) {
+      // Ignore replies for a torrent that is no longer selected.
+      if (mobile.torrent == undefined || hash !== mobile.torrent.hash) return;
       var rawFiles = data[hash];
       var files = {root: true, directory: true, priority: -1, container: {}};
 
@@ -1741,7 +1769,7 @@ plugin.loadRatio = function () {
     $('#torrentRatioGrp').change(function(){mobile.changeRatioGrp()});
     var ratioHTML = '<option value="-1">' + theUILang.mnuRatioUnlimited + '</option>'
     $.each(theWebUI.ratios, function(i, v) {
-      ratioHTML += '<option value="' + i + '">' + v.name + '</option>';
+      ratioHTML += '<option value="' + escapeHTML(i) + '">' + escapeHTML(v.name) + '</option>';
     });
     $('#torrentRatioGrp').html(ratioHTML);
     $('#ratiogrp').children('td:first').text(theUILang.ratio);
@@ -1757,7 +1785,7 @@ plugin.loadThrottle = function () {
     $('#torrentChannel').change(function(){mobile.changeChannel()});
     var throttleHTML = '<option value="-1">' + theUILang.mnuUnlimited + '</option>';
     $.each(theWebUI.throttles, function(i, v) {
-      throttleHTML += '<option value="' + i + '">' + v.name + '</option>';
+      throttleHTML += '<option value="' + escapeHTML(i) + '">' + escapeHTML(v.name) + '</option>';
     });
     $('#torrentChannel').html(throttleHTML);
     $('#throttle').children('td:first').text(theUILang.throttle);
@@ -2140,13 +2168,146 @@ plugin.update = function(singleUpdate) {
   });
 };
 
+/*** Desktop or mobile UI, as chosen on this device ***/
+
+// The choice belongs to the device, not to the user: one account is often
+// used from a phone and from a desktop, so it is kept in this browser
+// rather than in the per-user settings blob. With nothing stored, the
+// device is detected (plugin.enableAutodetect, plugin.tabletsDetect).
+plugin.uiModeKey = 'mobile-ui';
+
+plugin.isUIMode = function(mode) {
+  return (mode === 'mobile') || (mode === 'desktop');
+};
+
+plugin.storedUIMode = function() {
+  var mode = null;
+  try {
+    mode = window.localStorage.getItem(this.uiModeKey);
+  } catch (e) {
+    // Storage blocked for this page: nothing is stored
+  }
+  return this.isUIMode(mode) ? mode : null;
+};
+
+// Stores 'mobile' or 'desktop', or forgets the choice for null. Returns
+// false when the browser keeps no storage for this page.
+plugin.storeUIMode = function(mode) {
+  try {
+    if (mode) {
+      window.localStorage.setItem(this.uiModeKey, mode);
+    } else {
+      window.localStorage.removeItem(this.uiModeKey);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+// ?mobile=1 asks for the mobile UI, ?mobile=0 for the desktop UI; any
+// other value asks for nothing
+plugin.requestedUIMode = function(search) {
+  var value = new URLSearchParams(search).get('mobile');
+  return (value === '1') ? 'mobile' : ((value === '0') ? 'desktop' : null);
+};
+
+// The UI this page load starts with. An address argument wins and is
+// remembered, then the stored choice, then detection.
+plugin.startUIMode = function(search, detectedMobile) {
+  var mode = this.requestedUIMode(search);
+  if (mode) {
+    this.storeUIMode(mode);
+  } else {
+    mode = this.storedUIMode();
+  }
+  if (!mode) {
+    mode = (this.enableAutodetect && detectedMobile) ? 'mobile' : 'desktop';
+  }
+  return mode;
+};
+
+// Remember the choice ('mobile', 'desktop', or null to detect again) and
+// load the page again without the address argument, which would
+// otherwise override it. Where the browser keeps no storage, the choice
+// can only travel in the address.
+plugin.switchUI = function(mode) {
+  var url = new URL(window.location.href);
+  url.searchParams.delete('mobile');
+  url.hash = '';
+  if (!this.storeUIMode(mode) && mode) {
+    url.searchParams.set('mobile', (mode == 'mobile') ? '1' : '0');
+  }
+  this.navigate(url.href);
+};
+
+plugin.navigate = function(url) {
+  window.location.assign(url);
+};
+
+// Settings > General in the desktop UI offers the same choice, including
+// going back to detection
+plugin.addUIModeSetting = function() {
+  // Only the strings are wanted: langLoaded skips onLangLoaded while
+  // this plugin is disabled
+  this.loadLang();
+
+  theDialogManager.addHandler('stg', 'beforeShow', function() {
+    if (!$$('mobile_ui')) {
+      $($$('webui.lang')).closest('.row').append(
+        $('<div>').addClass('col-6 col-md-3').append(
+          $('<label>').attr({for: 'mobile_ui'}).text(theUILang.Mobile_interface + ': ')
+        ),
+        $('<div>').addClass('col-6 col-md-3').append(
+          $('<select>').attr({id: 'mobile_ui'}).append(
+            $('<option>').val('').text(theUILang.Mobile_auto),
+            $('<option>').val('desktop').text(theUILang.Mobile_desktop),
+            $('<option>').val('mobile').text(theUILang.Mobile_mobile)
+          )
+        )
+      );
+    }
+    $($$('mobile_ui')).val(plugin.storedUIMode() || '');
+  });
+
+  plugin.desktopSetSettings = theWebUI.setSettings;
+  theWebUI.setSettings = function() {
+    plugin.desktopSetSettings.call(this);
+    var select = $$('mobile_ui');
+    if (select) {
+      var mode = $(select).val();
+      mode = plugin.isUIMode(mode) ? mode : null;
+      if (mode !== plugin.storedUIMode()) {
+        // Stored at once: after a save of unknown outcome the page stays,
+        // and the reload its alert asks for applies the choice
+        plugin.storeUIMode(mode);
+        plugin.whenIdle(function() {
+          plugin.switchUI(mode);
+        });
+      }
+    }
+  };
+};
+
+// Wait for the settings save started alongside a switch, so leaving the
+// page does not cancel it. Other requests get at most 5 seconds, counted
+// from Save; the save gets as long as it holds its lock, which a save of
+// unknown outcome keeps until the page is reloaded.
+plugin.whenIdle = function(func) {
+  var deadline = Date.now() + 5000;
+  var wait = function() {
+    if (theWebUI.settingsSavePending || (($.active > 0) && (Date.now() < deadline))) {
+      setTimeout(wait, 100);
+    } else {
+      func();
+    }
+  };
+  wait();
+};
+
 /*** Bootstrapping: device detection, plugin takeover and initialization ***/
 plugin.disableOthers = function() {
-  var start = (window.location.href.indexOf('mobile=1') > 0);
-
-  if ((!start) && this.enableAutodetect) {
-    start = jQuery.browser.mobile;
-  }
+  var start = (this.startUIMode(window.location.search, jQuery.browser.mobile) == 'mobile');
 
   if (start) {
     dxSTable.prototype.renameColumn = function(no,name) { }
@@ -2241,6 +2402,7 @@ plugin.disableOthers = function() {
     }
   } else {
     this.disable();
+    this.addUIModeSetting();
   }
 };
 
@@ -2309,10 +2471,7 @@ plugin.init = function() {
       // otherwise be rendered into the discarded desktop layout; show
       // those messages as mobile toasts instead
       window.noty = function(msg, status) {
-        plugin.showAlert(msg,
-          (status == 'success') ? 'alert-success' :
-          (status == 'error') ? 'alert-danger' :
-          (status == 'alert') ? 'alert-warning' : 'alert-info');
+        plugin.showAlert(msg, plugin.alertClass(status));
       };
 
       // Keep the core's Bootstrap 5 stylesheet (and its JS bundle, already
@@ -2494,12 +2653,12 @@ plugin.init = function() {
           }
         }
         $('#torrentFileSend').prop('disabled', true);
-        plugin.createiFrame();
+        plugin.createiFrame(this);
         return(makeAddRequest(this));
       });
       $("#addTorrentUrl").submit(function() {
         $('#addUrl').prop('disabled', true);
-        plugin.createiFrame();
+        plugin.createiFrame(this);
         return(makeAddRequest(this));
       });
 
@@ -2613,6 +2772,7 @@ plugin.onLangLoaded = function() {
   $('#ulLimit').parent().children('label').children('h5').text(theUILang.Global_max_upl);
   $('#themeSelect').parent().children('label').children('h5').text(theUILang.Mobile_theme);
   $('#accentSelect').parent().children('label').children('h5').text(theUILang.Accent_color);
+  $('#desktopVersion').text(theUILang.Mobile_desktop);
   $('#serverInfoHeader').text(theUILang.Server);
   $('#verRutorrent td:first').text('ruTorrent');
   $('#verRtorrent td:first').text('rTorrent');

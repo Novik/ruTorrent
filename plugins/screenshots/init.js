@@ -112,7 +112,7 @@ if(plugin.canChangeMenu())
 					if($.inArray( ext.toLowerCase(), plugin.extensions )==-1)
 						fno = null;
 				}
-				theContextMenu.add( [theUILang.exFFMPEG,  (fno==null) ? null : "theWebUI.fileFFMPEG('" + theWebUI.dID + "',"+fno+")"] );
+				theContextMenu.add( [theUILang.exFFMPEG,  (fno==null) ? null : () => theWebUI.fileFFMPEG(theWebUI.dID,fno)] );
 			}
 			return(true);
 		}

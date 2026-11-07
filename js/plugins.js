@@ -319,7 +319,7 @@ rPlugin.prototype.removePageFromTabs = function(id)
 rPlugin.prototype.registerTopMenu = function(weight, name, onclick) {
 	if (this.canChangeToolbar()) {
 		if (!$$("mnu_plugins"))
-			this.addButtonToToolbar("plugins", theUILang.Plugins, "", "help", true);
+			this.addButtonToToolbar("plugins", theUILang.Plugins, null, "help", true);
 		weight = iv(weight);
 		const newItem = $("<li>").data({weight:weight}).append(
 			$("<a>")
@@ -348,7 +348,8 @@ rPlugin.prototype.registerTopMenu = function(weight, name, onclick) {
  * wrapper anchor of the button.
  * @param {string} name Name of the button, will be applied as the tooltip text
  * on desktop and description title on mobile.
- * @param {Function | string} onclick Click handler of the button.
+ * @param {?Function} onclick Click handler of the button. Anything other than
+ * a function is not run: the button gets no click handler.
  * @param {string} idBefore HTML `id` of an existing button for the new button
  * to be inserted before. If no button is found, the new button will be added
  * before the settings button.
@@ -358,10 +359,12 @@ rPlugin.prototype.registerTopMenu = function(weight, name, onclick) {
  */
 rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore, isDropDown) {
 	if (this.canChangeToolbar()) {
+		if (onclick && $type(onclick) !== "function")
+			console.warn("Toolbar button action must be a function, not a string: " + onclick);
 		let newBtn = $("<a>")
 			.attr({id:`mnu_${id}`, href:"#", title:`${name}...`})
 			.on({
-				click: $type(onclick) === "function" ? onclick : () => eval(onclick),
+				...($type(onclick) === "function" ? {click: onclick} : {}),
 				focus: (ev) => ev.target.blur(),
 			})
 			.addClass("nav-link top-menu-item")

@@ -68,7 +68,7 @@ function kinozalTorrent($name, $id)
     $raw = strictTorrentRaw($name, 'http://tr2.torrent4me.com/ann?uk=K0I5ZrJ6If1', kinozalTopicUrl($id));
     $torrent = @new Torrent($raw);
     strictAssertTrue(!$torrent->errors(), 'torrent fixture must parse');
-    return array($raw, (string) $torrent->hash_info(), $torrent);
+    return [$raw, (string) $torrent->hash_info(), $torrent];
 }
 
 $suite = new StrictTestSuite();
@@ -80,12 +80,15 @@ $suite->test('a guest answer from the details endpoint is a reachability error',
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'a login wall proves nothing about the topic');
     strictAssertSame(
-        array(array('fetchComplex', kinozalDetailsUrl(2148020))),
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'a login wall proves nothing about the topic',
+    );
+    strictAssertSame(
+        [['fetchComplex', kinozalDetailsUrl(2148020)]],
         Snoopy::$requests,
-        'the chain stops at the details request'
+        'the chain stops at the details request',
     );
     strictAssertSame(0, ruTrackerChecker::$createCalls, 'the replacement path is never entered');
 });
@@ -104,15 +107,18 @@ $suite->test('two guest answers in a row stop the rest of the cycle from asking 
 
     strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $first, 'a login wall proves nothing');
     strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $second, 'and neither does the second one');
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $third,
-        'a skipped topic keeps the same retryable verdict it would have got the hard way');
     strictAssertSame(
-        array(
-            array('fetchComplex', kinozalDetailsUrl(2148020)),
-            array('fetchComplex', kinozalDetailsUrl(2144802)),
-        ),
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $third,
+        'a skipped topic keeps the same retryable verdict it would have got the hard way',
+    );
+    strictAssertSame(
+        [
+            ['fetchComplex', kinozalDetailsUrl(2148020)],
+            ['fetchComplex', kinozalDetailsUrl(2144802)],
+        ],
         Snoopy::$requests,
-        'the third topic costs no request: the session is by then known to be gone'
+        'the third topic costs no request: the session is by then known to be gone',
     );
 });
 
@@ -123,12 +129,16 @@ $suite->test('a single guest answer is a blink and does not cost the cycle', fun
     Snoopy::queue(kinozalDetailsUrl(2148020), 200, kinozalUnauthorizedBody());
     Snoopy::queue(kinozalDetailsUrl(2144802), 200, kinozalDetailsBody($hashB));
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER,
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
         KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hashA, $torrentA),
-        'the blink itself is still unproven, so it stays retryable');
-    strictAssertSame(ruTrackerChecker::STE_UPTODATE,
+        'the blink itself is still unproven, so it stays retryable',
+    );
+    strictAssertSame(
+        ruTrackerChecker::STE_UPTODATE,
         KinozalCheckImpl::download_torrent(kinozalTopicUrl(2144802), $hashB, $torrentB),
-        'the next topic is checked for real: one answer is not proof of a lost session');
+        'the next topic is checked for real: one answer is not proof of a lost session',
+    );
     strictAssertSame(2, count(Snoopy::$requests), 'both topics were asked about');
 });
 
@@ -147,9 +157,11 @@ $suite->test('an authenticated answer between two guest ones clears the count', 
     KinozalCheckImpl::download_torrent(kinozalTopicUrl(2144802), $hashB, $torrentB);
     KinozalCheckImpl::download_torrent(kinozalTopicUrl(2144913), $hashC, $torrentC);
 
-    strictAssertSame(ruTrackerChecker::STE_UPTODATE,
+    strictAssertSame(
+        ruTrackerChecker::STE_UPTODATE,
         KinozalCheckImpl::download_torrent(kinozalTopicUrl(2130523), $hashD, $torrentD),
-        'two guest answers separated by a healthy one are two blinks, not a lost session');
+        'two guest answers separated by a healthy one are two blinks, not a lost session',
+    );
     strictAssertSame(4, count(Snoopy::$requests), 'every topic was asked about on its own merits');
 });
 
@@ -160,11 +172,16 @@ $suite->test('a live session checks every topic on its own merits', function () 
     Snoopy::queue(kinozalDetailsUrl(2148020), 200, kinozalDetailsBody($hashA));
     Snoopy::queue(kinozalDetailsUrl(2144802), 200, kinozalDetailsBody($hashB));
 
-    strictAssertSame(ruTrackerChecker::STE_UPTODATE,
-        KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hashA, $torrentA), 'first topic');
-    strictAssertSame(ruTrackerChecker::STE_UPTODATE,
+    strictAssertSame(
+        ruTrackerChecker::STE_UPTODATE,
+        KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hashA, $torrentA),
+        'first topic',
+    );
+    strictAssertSame(
+        ruTrackerChecker::STE_UPTODATE,
         KinozalCheckImpl::download_torrent(kinozalTopicUrl(2144802), $hashB, $torrentB),
-        'the latch must not trip on an authenticated answer');
+        'the latch must not trip on an authenticated answer',
+    );
     strictAssertSame(2, count(Snoopy::$requests), 'both topics were asked about');
 });
 
@@ -175,8 +192,11 @@ $suite->test('the login page served with status 200 is a reachability error', fu
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'a followed redirect that lands on login.php is not a verdict');
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'a followed redirect that lands on login.php is not a verdict',
+    );
     strictAssertSame(1, count(Snoopy::$requests), 'the chain stops at the details request');
 });
 
@@ -187,8 +207,11 @@ $suite->test('the tracker\'s own "no such torrent" is a deletion', function () {
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_DELETED, $result,
-        'an authenticated "not found" is the only authoritative deletion signal');
+    strictAssertSame(
+        ruTrackerChecker::STE_DELETED,
+        $result,
+        'an authenticated "not found" is the only authoritative deletion signal',
+    );
     strictAssertSame(1, count(Snoopy::$requests), 'a deleted topic needs no download attempt');
 });
 
@@ -199,8 +222,11 @@ $suite->test('a windows-1251 "no such torrent" answer is recognised too', functi
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_DELETED, $result,
-        'the site\'s own legacy charset must not hide the deletion signal');
+    strictAssertSame(
+        ruTrackerChecker::STE_DELETED,
+        $result,
+        'the site\'s own legacy charset must not hide the deletion signal',
+    );
 });
 
 $suite->test('a matching info hash is up to date without a download', function () {
@@ -212,9 +238,9 @@ $suite->test('a matching info hash is up to date without a download', function (
 
     strictAssertSame(ruTrackerChecker::STE_UPTODATE, $result, 'the tracker still lists our hash');
     strictAssertSame(
-        array(array('fetchComplex', kinozalDetailsUrl(2148020))),
+        [['fetchComplex', kinozalDetailsUrl(2148020)]],
         Snoopy::$requests,
-        'an up-to-date topic is never downloaded'
+        'an up-to-date topic is never downloaded',
     );
 });
 
@@ -244,13 +270,20 @@ $suite->test('a download redirected to the login page is a reachability error', 
     // What dl.kinozal.guru answers without a session, as seen when the
     // redirect chain does not end in a 200: the 302 itself, with the
     // login.php Location it carries on the live site.
-    Snoopy::queue(kinozalDownloadUrl(2148020), 302, '',
-        array('Location: //kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D2148020'));
+    Snoopy::queue(
+        kinozalDownloadUrl(2148020),
+        302,
+        '',
+        ['Location: //kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D2148020'],
+    );
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $oldHash, $oldTorrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'a redirect to the login wall is not proof of deletion');
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'a redirect to the login wall is not proof of deletion',
+    );
     strictAssertSame(0, ruTrackerChecker::$createCalls, 'createTorrent is never reached');
 });
 
@@ -264,10 +297,16 @@ $suite->test('a login page instead of a torrent is a reachability error', functi
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $oldHash, $oldTorrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'HTML where metainfo was expected is not proof of deletion');
-    strictAssertSame(0, ruTrackerChecker::$createCalls,
-        'createTorrent\'s "unparseable means deleted" contract is never invoked');
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'HTML where metainfo was expected is not proof of deletion',
+    );
+    strictAssertSame(
+        0,
+        ruTrackerChecker::$createCalls,
+        'createTorrent\'s "unparseable means deleted" contract is never invoked',
+    );
 });
 
 $suite->test('an unparseable download body is a reachability error', function () {
@@ -280,8 +319,11 @@ $suite->test('an unparseable download body is a reachability error', function ()
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $oldHash, $oldTorrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'bytes that are not metainfo are validated before the replacement');
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'bytes that are not metainfo are validated before the replacement',
+    );
     strictAssertSame(0, ruTrackerChecker::$createCalls, 'nothing is handed over');
 });
 
@@ -317,12 +359,15 @@ $suite->test('a server error on the details endpoint is a reachability error', f
 
     $result = KinozalCheckImpl::download_torrent(kinozalTopicUrl(2148020), $hash, $torrent);
 
-    strictAssertSame(ruTrackerChecker::STE_CANT_REACH_TRACKER, $result,
-        'an HTTP error is never a deletion');
+    strictAssertSame(
+        ruTrackerChecker::STE_CANT_REACH_TRACKER,
+        $result,
+        'an HTTP error is never a deletion',
+    );
 });
 
 $suite->test('every Kinozal mirror in the comment is handled', function () {
-    foreach (array('kinozal.tv', 'kinozal.me', 'kinozal.guru') as $host) {
+    foreach (['kinozal.tv', 'kinozal.me', 'kinozal.guru'] as $host) {
         kinozalReset();
         list($raw, $hash, $torrent) = kinozalTorrent('current.mkv', 2148020);
         $url = 'https://' . $host . '/details.php?id=2148020';

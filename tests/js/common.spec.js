@@ -567,3 +567,123 @@ describe("socketAllocationFits", () => {
     expect(window.socketAllocationFits(3448, "", "")).toBe(true);
   });
 });
+
+describe("theConverter.time", () => {
+  it("formats 0 as 0s", () => {
+    expect(window.theConverter.time(0, true)).toBe("0s");
+  });
+
+  it("clamps negative durations to 0s", () => {
+    expect(window.theConverter.time(-5, true)).toBe("0s");
+    expect(window.theConverter.time(-15, true)).toBe("0s");
+  });
+
+  it("formats positive durations correctly", () => {
+    expect(window.theConverter.time(65, true)).toBe("1m 5s");
+    expect(window.theConverter.time(3600, true)).toBe("1h 0s");
+  });
+});
+
+describe("openExternalURL", () => {
+  let opened;
+  const realOpen = window.open;
+
+  beforeEach(() => {
+    opened = [];
+    window.open = (...args) => {
+      opened.push(args);
+      return null;
+    };
+  });
+
+  afterEach(() => {
+    window.open = realOpen;
+  });
+
+  // Schemes a feed, a search result or a look-at template legitimately uses.
+  const ALLOWED = [
+    "http://example.com/x?y=1#z",
+    "https://example.com/",
+    "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567",
+    "ftp://example.com/pub/file",
+  ];
+
+  // Each of these is a string a browser acts on. The javascript: and data:
+  // forms run script in this origin; the rest address something that is not a
+  // web resource. The spellings with whitespace and a tab are there because
+  // the URL parser strips both before deciding the scheme, so a check on the
+  // raw text would pass them.
+  const REFUSED = [
+    "javascript:window.__ran = 'YES'",
+    "JaVaScRiPt:window.__ran = 'YES'",
+    "  \n\tjavascript:window.__ran = 'YES'",
+    "java\tscript:window.__ran = 'YES'",
+    "data:text/html,<img src=x onerror=1>",
+    "vbscript:msgbox(1)",
+    "file:///etc/passwd",
+    "",
+    null,
+    undefined,
+    42,
+    {},
+  ];
+
+  it("opens an address whose scheme is one of those", () => {
+    for (const url of ALLOWED) {
+      expect(window.openExternalURL(url)).toBe(true);
+    }
+    expect(opened.map((a) => a[0])).toEqual(ALLOWED);
+    expect(opened.every((a) => a[1] === "_blank")).toBe(true);
+  });
+
+  // window.opener is a handle on this tab, and a handle carries the right to
+  // navigate the window it names from any origin. The destination is remote --
+  // a feed item, a search result, a look-at template -- so it must not get one.
+  it("opens with noopener, so the destination cannot navigate this tab", () => {
+    for (const url of ALLOWED) {
+      expect(window.openExternalURL(url)).toBe(true);
+    }
+    expect(
+      opened.every((a) => typeof a[2] === "string" && a[2].includes("noopener"))
+    ).toBe(true);
+  });
+
+  // A browser that does not know the feature ignores it and hands back a
+  // window all the same, so the handle is cleared on whatever comes back.
+  it("clears the handle on a window a browser hands back anyway", () => {
+    const handle = { opener: window };
+    window.open = () => handle;
+    expect(window.openExternalURL("https://example.com/")).toBe(true);
+    expect(handle.opener).toBe(null);
+  });
+
+  it("does not fail when the handle refuses to be written", () => {
+    const handle = {};
+    Object.defineProperty(handle, "opener", {
+      get: () => window,
+      set: () => {
+        throw new Error("cross-origin");
+      },
+    });
+    window.open = () => handle;
+    expect(window.openExternalURL("https://example.com/")).toBe(true);
+  });
+
+  it("opens nothing for any other scheme, or for what is not a string", () => {
+    for (const url of REFUSED) {
+      expect(window.openExternalURL(url)).toBe(false);
+    }
+    expect(opened).toEqual([]);
+  });
+
+  it("hands window.open the string it was given, unrewritten", () => {
+    const url = "https://example.com/a%2Fb?q=%20&r=x+y";
+    expect(window.openExternalURL(url)).toBe(true);
+    expect(opened[0][0]).toBe(url);
+  });
+
+  it("still opens an address relative to the page, as window.open would", () => {
+    expect(window.openExternalURL("some/page.html")).toBe(true);
+    expect(opened[0][0]).toBe("some/page.html");
+  });
+});

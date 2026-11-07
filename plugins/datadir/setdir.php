@@ -1,7 +1,8 @@
 <?php
 
-if( !chdir( dirname( __FILE__) ) )
-	exit();
+if (!chdir(dirname(__FILE__))) {
+    exit();
+}
 
 # Script arguments are:
 # 0: script name
@@ -11,61 +12,75 @@ if( !chdir( dirname( __FILE__) ) )
 # 4: flag, "1" means "move datafiles"
 # 5: flag, "1" means "fast resume"
 # 6: username
-if( count( $argv ) > 6 )
-	$_SERVER['REMOTE_USER'] = $argv[6];
-
-require_once( '../../php/xmlrpc.php' );
-require_once( './util_setdir.php' );
-require_once( './util_rt.php' );
-eval( FileUtil::getPluginConf( 'datadir' ) );
-
-$DataDir_Sem = rtSemGet( fileinode( __FILE__ ) );
-rtSemLock( $DataDir_Sem );
-
-function Debug( $str )
-{
-	global $datadir_debug_enabled;
-	if( $datadir_debug_enabled ) rtDbg( "SetDir", $str );
+if (count($argv) > 6) {
+    $_SERVER['REMOTE_USER'] = $argv[6];
 }
 
-Debug( "" );
-Debug( "--- begin ---" );
+require_once('../../php/xmlrpc.php');
+require_once('./util_setdir.php');
+require_once('./util_rt.php');
+eval(FileUtil::getPluginConf('datadir'));
+
+$DataDir_Sem = rtSemGet(fileinode(__FILE__));
+rtSemLock($DataDir_Sem);
+
+function Debug($str)
+{
+    global $datadir_debug_enabled;
+    if ($datadir_debug_enabled) {
+        rtDbg("SetDir", $str);
+    }
+}
+
+Debug("");
+Debug("--- begin ---");
 
 $is_ok = true;
 
-if( count( $argv ) < 6 )
-{
-	Debug( "called without arguments (at least 5 params wanted)" );
-	$is_ok = false;
-}
-else {
-	$hash            = trim( $argv[1] );
-	$datadir         = trim( $argv[2] );
-	$move_addpath    = trim( $argv[3] );
-	$move_datafiles  = trim( $argv[4] );
-	$move_fastresume = trim( $argv[5] );
+if (count($argv) < 6) {
+    Debug("called without arguments (at least 5 params wanted)");
+    $is_ok = false;
+} else {
+    $hash = trim($argv[1]);
+    $datadir = trim($argv[2]);
+    $move_addpath = trim($argv[3]);
+    $move_datafiles = trim($argv[4]);
+    $move_fastresume = trim($argv[5]);
 }
 
-if( $is_ok && $hash && strlen( $datadir ) > 0 )
-{
-	Debug( "hash        : ".$hash );
-	Debug( "data dir    : ".$datadir );
-	Debug( "add path    : ".$move_addpath );
-	Debug( "move files  : ".$move_datafiles );
-	Debug( "fast resume : ".$move_fastresume );
-
-	if( !rtMkDir( $datadir, 0777 ) )
-	{
-		Debug( "can't create ".$datadir );
-	}
-	elseif( !rtSetDataDir( $hash, $datadir,
-		$move_addpath == '1', $move_datafiles == '1', $move_fastresume == '1',
-		$datadir_debug_enabled ) )
-	{
-		Debug( "rtSetDataDir() fail!" );
-	}
+// The hash names a download to rtorrent and is put into commands built for it.
+// action.php checks it before it starts this script; anything else that starts
+// this script has not, and the script is on disk and runnable on its own.
+if ($is_ok && !ctype_xdigit($hash)) {
+    Debug("argument 1 is not a torrent hash");
+    $is_ok = false;
 }
 
-Debug( "--- end ---" );
+if ($is_ok && $hash && strlen($datadir) > 0) {
+    Debug("hash        : " . $hash);
+    Debug("data dir    : " . $datadir);
+    Debug("add path    : " . $move_addpath);
+    Debug("move files  : " . $move_datafiles);
+    Debug("fast resume : " . $move_fastresume);
 
-rtSemUnlock( $DataDir_Sem );
+    // Checked again here: this runs detached, possibly after other moves, and
+    // a link made since action.php checked must not be followed either.
+    if (!rTorrent::isInsideTopDirectory($datadir)) {
+        Debug("outside the top directory: " . $datadir);
+    } elseif (!rtMkDir($datadir, 0777)) {
+        Debug("can't create " . $datadir);
+    } elseif (!rtSetDataDir(
+        $hash,
+        $datadir,
+        $move_addpath == '1',
+        $move_datafiles == '1',
+        $move_fastresume == '1',
+        $datadir_debug_enabled,
+    )) {
+        Debug("rtSetDataDir() fail!");
+    }
+}
+
+Debug("--- end ---");
+
+rtSemUnlock($DataDir_Sem);

@@ -1,0 +1,12 @@
+[
+  { "value": "p&ssword", "encoded": "p%26ssword", "why": "an ampersand starts another field in the body" },
+  { "value": "&", "encoded": "%26", "why": "an ampersand on its own leaves the field empty" },
+  { "value": "p=ssword", "encoded": "p%3Dssword", "why": "an equals sign ends the value at the first one" },
+  { "value": "p+ssword", "encoded": "p%2Bssword", "why": "a plus is a space to a form-urlencoded reader" },
+  { "value": "p ssword", "encoded": "p%20ssword", "why": "a space" },
+  { "value": "100%", "encoded": "100%25", "why": "a percent sign is the escape character" },
+  { "value": "a?b", "encoded": "a%3Fb", "why": "a question mark" },
+  { "value": "#hash", "encoded": "%23hash", "why": "a hash" },
+  { "value": "pässwörd", "encoded": "p%C3%A4ssw%C3%B6rd", "why": "non-ascii, which has to survive as utf-8" },
+  { "value": "tab\tsep", "encoded": "tab%09sep", "why": "a control character" }
+]

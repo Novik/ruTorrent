@@ -133,6 +133,10 @@ plugin.wasAdded = function(data)
 	{
 		noty( theUILang.addTorrentFailed + " ("+data['error']+')', "error" );
 	}
+	if(data['duplicate'])
+	{
+		noty( theUILang.bulkAddDuplicate + " ("+data['duplicate']+')', "alert" );
+	}
 	if(data['success'])
 	{
 		noty( theUILang.addTorrentSuccess + " ("+data['success']+')', "success" );

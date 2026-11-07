@@ -5,15 +5,27 @@
 # $3 - output directory with tail slash
 # $5 - archive files to delete
 # $6 - unpack temp dir
+# $7-$10 - for place.php, see stage.sh
+
+. "$(dirname "$0")/stage.sh"
 
 ret=0
 
+# unzip -d makes only the last directory of the path it is given, its last
+# argument, and a subdirectory here can be nested.
+unzip_into()
+{
+	for unzip_dest; do :; done
+	mkdir -p "$unzip_dest" && "$@"
+}
+
+# $2 - input directory with tail slash
+# $3 - its place in the output, empty or with tail slash
 process_directory()
 {
         for fn in "$2"*.zip ; do
         	if [ -f "${fn}" ] && [ -r "${fn}" ] ; then
-	        	mkdir -p "$3"
-			"$1" -o "${fn}" -d "$3"
+			unpack_extract "$3" unzip_into "$1" -o "${fn}" -d
 			last=$?
 			[ $last -ge 1 ] && ret=$last
 		fi
@@ -29,13 +41,8 @@ process_directory()
 	return $ret
 }
 
-if [ "$6" != '' ] ; then
-	process_directory "$1" "$2" "$6"
-	ret=$?
-else
-	process_directory "$1" "$2" "$3"
-	ret=$?
-fi
+process_directory "$1" "$2" ""
+ret=$?
 
 [ $ret -eq 0 ] && echo 'All OK'
 if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
@@ -46,13 +53,6 @@ if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
 		rm $file
 	done
 	IFS=$OIFS
-fi
-
-if [ "$6" != '' ] ; then
-	cd "$6"
-	find . -type d -exec mkdir -p "${3}"/\{} \;
-	find . -type f -exec mv -f \{} "${3}"/\{} \;
-	[ $? -eq 0 ] && rm -r "$6"
 fi
 
 exit $ret

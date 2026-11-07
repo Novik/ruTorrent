@@ -70,7 +70,7 @@ if(plugin.canChangeMenu())
 				var patt = new RegExp( plugin.partsToRemove, 'gi' );
 				title = title.replace( patt, '' );
 				var url = plugin.lookData[no].replace( '{title}', encodeURIComponent(title).replace(/(%20|_|\.|\[|\])/g,'+') );
-				window.open(url, "_blank");
+				openExternalURL(url);
 			}
 		}
 	}
@@ -85,8 +85,8 @@ if(plugin.canChangeMenu())
 			if( el )
 			{
 				var _c0 = [];
-				for(var i in plugin.lookData)
-					_c0.push( [i, (this.getTable("trt").selCount==1) && this.isTorrentCommandEnabled("lookat",id) ? "theWebUI.lookAt('"+addslashes(i)+"')" : null] );
+				for(const i in plugin.lookData)
+					_c0.push( [i, (this.getTable("trt").selCount==1) && this.isTorrentCommandEnabled("lookat",id) ? () => theWebUI.lookAt(i) : null] );
 				theContextMenu.add( el, [CMENU_CHILD, theUILang.lookAt, _c0] );
                         }
 		}

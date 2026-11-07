@@ -1,483 +1,504 @@
 <?php
 
-require_once(dirname(__FILE__).'/../../php/settings.php');
+require_once(dirname(__FILE__) . '/../../php/settings.php');
 
 /**
  * Per-user Telegram notification settings and rTorrent event integration.
  */
 class rTelegram
 {
-	public $hash = 'telegram.dat';
-	public $modified = false;
-	public $enabled = false;
-	public $token = '';
-	public $chatId = '';
-	public $events = array(
-		'added' => false,
-		'finished' => false,
-		'removed' => false,
-	);
-	public $templates = array(
-		'added' => "Torrent {STATE}: {TORRENT}\n{LINK}",
-		'finished' => "Torrent {STATE}: {TORRENT}\n{LINK}",
-		'removed' => "Torrent {STATE}: {TORRENT}\n{LINK}",
-	);
+    public const MAX_TEMPLATE_LENGTH = 4096;
+    public const MAX_CHAT_ID_LENGTH = 256;
+    public const WORKER_INTERVAL_SECONDS = 5;
+    // notify.php runs as the rTorrent user, which is often not the web server user (Swizzin, for example, runs
+    // PHP-FPM as www-data and rTorrent as the user, who is in the www-data group): the file must stay readable by
+    // the group, while other local users still cannot read the bot token.
+    public const STORAGE_MODE = 0640;
+    public $hash = 'telegram.dat';
+    public $modified = false;
+    public $enabled = false;
+    public $token = '';
+    public $chatId = '';
+    public $events = [
+        'added' => false,
+        'finished' => false,
+        'removed' => false,
+    ];
+    public $templates = [
+        'added' => "Torrent {STATE}: {TORRENT}\n{LINK}",
+        'finished' => "Torrent {STATE}: {TORRENT}\n{LINK}",
+        'removed' => "Torrent {STATE}: {TORRENT}\n{LINK}",
+    ];
 
-	const MAX_TEMPLATE_LENGTH = 4096;
-	const MAX_CHAT_ID_LENGTH = 256;
-	const WORKER_INTERVAL_SECONDS = 5;
-	// notify.php runs as the rTorrent user, which is often not the web server user (Swizzin, for example, runs
-	// PHP-FPM as www-data and rTorrent as the user, who is in the www-data group): the file must stay readable by
-	// the group, while other local users still cannot read the bot token.
-	const STORAGE_MODE = 0640;
+    public static function eventNames()
+    {
+        return ['added', 'finished', 'removed'];
+    }
 
-	public static function eventNames()
-	{
-		return array('added', 'finished', 'removed');
-	}
+    public static function load()
+    {
+        $cache = new rCache();
+        $config = new rTelegram();
+        $cache->get($config);
+        self::protectStorage();
+        $config->normalize();
+        return $config;
+    }
 
-	public static function load()
-	{
-		$cache = new rCache();
-		$config = new rTelegram();
-		$cache->get($config);
-		self::protectStorage();
-		$config->normalize();
-		return $config;
-	}
+    public function store()
+    {
+        $this->normalize();
+        $cache = new rCache();
+        return $cache->set($this, null, self::STORAGE_MODE);
+    }
 
-	public function store()
-	{
-		$this->normalize();
-		$cache = new rCache();
-		return $cache->set($this, null, self::STORAGE_MODE);
-	}
+    /**
+     * Update settings from the URL-encoded form used by ruTorrent.
+     * An empty token deliberately preserves the existing token: the browser
+     * never receives the secret and therefore cannot send it back unchanged.
+     */
+    public function updateFromInput($input)
+    {
+        if (!is_array($input)) {
+            $input = [];
+        }
 
-	/**
-	 * Update settings from the URL-encoded form used by ruTorrent.
-	 * An empty token deliberately preserves the existing token: the browser
-	 * never receives the secret and therefore cannot send it back unchanged.
-	 */
-	public function updateFromInput($input)
-	{
-		if(!is_array($input))
-			$input = array();
+        $this->enabled = self::truthy(isset($input['enabled']) ? $input['enabled'] : false);
+        if (array_key_exists('token_clear', $input) && self::truthy($input['token_clear'])) {
+            $this->token = '';
+        } elseif (isset($input['token']) && is_string($input['token']) && trim($input['token']) !== '') {
+            $this->token = trim($input['token']);
+        }
 
-		$this->enabled = self::truthy(isset($input['enabled']) ? $input['enabled'] : false);
-		if(array_key_exists('token_clear', $input) && self::truthy($input['token_clear']))
-			$this->token = '';
-		else if(isset($input['token']) && is_string($input['token']) && trim($input['token']) !== '')
-			$this->token = trim($input['token']);
+        if (isset($input['chat_id']) && is_scalar($input['chat_id'])) {
+            $this->chatId = self::limitString(trim((string) $input['chat_id']), self::MAX_CHAT_ID_LENGTH);
+        }
 
-		if(isset($input['chat_id']) && is_scalar($input['chat_id']))
-			$this->chatId = self::limitString(trim((string)$input['chat_id']), self::MAX_CHAT_ID_LENGTH);
+        foreach (self::eventNames() as $event) {
+            $this->events[$event] = self::truthy(
+                isset($input['event_' . $event]) ? $input['event_' . $event] : false,
+            );
+            $key = 'template_' . $event;
+            if (isset($input[$key]) && is_string($input[$key])) {
+                $this->templates[$event] = self::templateOrDefault($event, $input[$key]);
+            }
+        }
+        $this->normalize();
+    }
 
-		foreach(self::eventNames() as $event)
-		{
-			$this->events[$event] = self::truthy(
-				isset($input['event_'.$event]) ? $input['event_'.$event] : false
-			);
-			$key = 'template_'.$event;
-			if(isset($input[$key]) && is_string($input[$key]))
-				$this->templates[$event] = self::templateOrDefault($event, $input[$key]);
-		}
-		$this->normalize();
-	}
+    /** Backwards-compatible action entry point used by small third-party skins. */
+    public function set()
+    {
+        $this->updateFromInput(self::requestInput());
+        $this->store();
+        $this->setHandlers();
+    }
 
-	/** Backwards-compatible action entry point used by small third-party skins. */
-	public function set()
-	{
-		$this->updateFromInput(self::requestInput());
-		$this->store();
-		$this->setHandlers();
-	}
+    public static function requestInput()
+    {
+        if (!empty($_POST)) {
+            return $_POST;
+        }
+        $raw = file_get_contents('php://input');
+        $input = [];
+        if ($raw !== false && $raw !== '') {
+            parse_str($raw, $input);
+        }
+        return $input;
+    }
 
-	public static function requestInput()
-	{
-		if(!empty($_POST))
-			return $_POST;
-		$raw = file_get_contents('php://input');
-		$input = array();
-		if($raw !== false && $raw !== '')
-			parse_str($raw, $input);
-		return $input;
-	}
+    /** Return only non-sensitive settings to JavaScript. */
+    public function get()
+    {
+        $data = [
+            'enabled' => (bool) $this->enabled,
+            'tokenConfigured' => ($this->token !== ''),
+            'chatId' => $this->chatId,
+            'events' => $this->events,
+            'templates' => $this->templates,
+        ];
+        return 'theWebUI.telegram = ' . json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE) . ";\n";
+    }
 
-	/** Return only non-sensitive settings to JavaScript. */
-	public function get()
-	{
-		$data = array(
-			'enabled' => (bool)$this->enabled,
-			'tokenConfigured' => ($this->token !== ''),
-			'chatId' => $this->chatId,
-			'events' => $this->events,
-			'templates' => $this->templates,
-		);
-		return 'theWebUI.telegram = '.json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE).";\n";
-	}
+    public function normalize()
+    {
+        $this->enabled = (bool) $this->enabled;
+        $this->token = is_string($this->token) ? trim($this->token) : '';
+        $this->chatId = is_scalar($this->chatId) ? self::limitString(trim((string) $this->chatId), self::MAX_CHAT_ID_LENGTH) : '';
+        if (!is_array($this->events)) {
+            $this->events = [];
+        }
+        if (!is_array($this->templates)) {
+            $this->templates = [];
+        }
+        foreach (self::eventNames() as $event) {
+            $this->events[$event] = !empty($this->events[$event]);
+            $this->templates[$event] = self::templateOrDefault($event, isset($this->templates[$event]) ? $this->templates[$event] : null);
+        }
+    }
 
-	public function normalize()
-	{
-		$this->enabled = (bool)$this->enabled;
-		$this->token = is_string($this->token) ? trim($this->token) : '';
-		$this->chatId = is_scalar($this->chatId) ? self::limitString(trim((string)$this->chatId), self::MAX_CHAT_ID_LENGTH) : '';
-		if(!is_array($this->events))
-			$this->events = array();
-		if(!is_array($this->templates))
-			$this->templates = array();
-		foreach(self::eventNames() as $event)
-		{
-			$this->events[$event] = !empty($this->events[$event]);
-			$this->templates[$event] = self::templateOrDefault($event, isset($this->templates[$event]) ? $this->templates[$event] : null);
-		}
-	}
+    public static function defaultTemplate($event)
+    {
+        return "Torrent {STATE}: {TORRENT}\n{LINK}";
+    }
 
-	public static function defaultTemplate($event)
-	{
-		return "Torrent {STATE}: {TORRENT}\n{LINK}";
-	}
+    public function validationErrors($event = null)
+    {
+        $this->normalize();
+        $errors = [];
+        if ($this->token === '') {
+            $errors[] = 'bot token is not configured';
+        }
+        if ($this->chatId === '') {
+            $errors[] = 'chat ID is not configured';
+        }
+        if ($event !== null) {
+            if (!in_array($event, self::eventNames(), true)) {
+                $errors[] = 'unknown event';
+            } elseif (empty($this->events[$event])) {
+                $errors[] = 'event is disabled';
+            }
+        }
+        return $errors;
+    }
 
-	// An empty message is refused by Telegram, so a cleared template falls back to the default one.
-	private static function templateOrDefault($event, $template)
-	{
-		if(!is_string($template) || trim($template) === '')
-			return self::defaultTemplate($event);
-		return self::truncateMessage($template);
-	}
+    public function canNotify($event)
+    {
+        return $this->enabled && empty($this->validationErrors($event));
+    }
 
-	public function validationErrors($event = null)
-	{
-		$this->normalize();
-		$errors = array();
-		if($this->token === '')
-			$errors[] = 'bot token is not configured';
-		if($this->chatId === '')
-			$errors[] = 'chat ID is not configured';
-		if($event !== null)
-		{
-			if(!in_array($event, self::eventNames(), true))
-				$errors[] = 'unknown event';
-			else if(empty($this->events[$event]))
-				$errors[] = 'event is disabled';
-		}
-		return $errors;
-	}
+    /**
+     * Send the notification of an rTorrent event. notify.php runs with stderr sent to /dev/null,
+     * so a refused message goes to the ruTorrent log, where the user can see it.
+     */
+    public function notify($event, $torrent, $hash, $comment = '', $client = null)
+    {
+        if (!$this->canNotify($event)) {
+            return null;
+        }
+        return $this->sendMessage($this->render($event, $torrent, $hash, $comment), $client, $event . ' notification');
+    }
 
-	public function canNotify($event)
-	{
-		return $this->enabled && empty($this->validationErrors($event));
-	}
+    /** Send a pre-rendered message. Queued batches use this after rendering each event. */
+    public function sendMessage($message, $client = null, $context = 'notification', $logFailure = true)
+    {
+        if ($this->token === '' || $this->chatId === '') {
+            return null;
+        }
+        if ($client === null) {
+            $client = new rTelegramClient();
+        }
+        $result = $client->send($this->token, $this->chatId, $message, 'MarkdownV2');
+        if (empty($result['ok']) && $logFailure) {
+            $this->logNotificationFailure($result, $context);
+        }
+        return $result;
+    }
 
-	/**
-	 * Send the notification of an rTorrent event. notify.php runs with stderr sent to /dev/null,
-	 * so a refused message goes to the ruTorrent log, where the user can see it.
-	 */
-	public function notify($event, $torrent, $hash, $comment = '', $client = null)
-	{
-		if(!$this->canNotify($event))
-			return null;
-		return $this->sendMessage($this->render($event, $torrent, $hash, $comment), $client, $event.' notification');
-	}
+    public function logNotificationFailure($result, $context = 'notification')
+    {
+        $error = isset($result['error']) ? $result['error'] : 'Telegram request failed';
+        FileUtil::toLog('telegram: ' . $context . ' failed: ' . self::sanitizeError($error, $this->token));
+    }
 
-	/** Send a pre-rendered message. Queued batches use this after rendering each event. */
-	public function sendMessage($message, $client = null, $context = 'notification', $logFailure = true)
-	{
-		if($this->token === '' || $this->chatId === '')
-			return null;
-		if($client === null)
-			$client = new rTelegramClient();
-		$result = $client->send($this->token, $this->chatId, $message, 'MarkdownV2');
-		if(empty($result['ok']) && $logFailure)
-			$this->logNotificationFailure($result, $context);
-		return $result;
-	}
+    public function render($event, $torrent, $hash, $comment = '')
+    {
+        $template = isset($this->templates[$event]) ? $this->templates[$event] : self::defaultTemplate($event);
+        $message = $this->renderTemplate($template, $event, $torrent, $hash, $comment);
+        // A nonempty template can still render empty (for example, {LINK}
+        // without a comment). Use the default rather than strand a queue item.
+        return trim($message) === ''
+            ? $this->renderTemplate(self::defaultTemplate($event), $event, $torrent, $hash, $comment)
+            : $message;
+    }
 
-	public function logNotificationFailure($result, $context = 'notification')
-	{
-		$error = isset($result['error']) ? $result['error'] : 'Telegram request failed';
-		FileUtil::toLog('telegram: '.$context.' failed: '.self::sanitizeError($error, $this->token));
-	}
+    public static function decodeComment($comment)
+    {
+        $comment = (string) $comment;
+        $prefix = 'VRS24mrker';
+        if (strpos($comment, $prefix) === 0) {
+            return rawurldecode(substr($comment, strlen($prefix)));
+        }
+        return '';
+    }
 
-	public function render($event, $torrent, $hash, $comment = '')
-	{
-		$template = isset($this->templates[$event]) ? $this->templates[$event] : self::defaultTemplate($event);
-		$message = $this->renderTemplate($template, $event, $torrent, $hash, $comment);
-		// A nonempty template can still render empty (for example, {LINK}
-		// without a comment). Use the default rather than strand a queue item.
-		return trim($message) === ''
-			? $this->renderTemplate(self::defaultTemplate($event), $event, $torrent, $hash, $comment)
-			: $message;
-	}
+    public static function truncateMessage($message, $length = self::MAX_TEMPLATE_LENGTH)
+    {
+        $message = (string) $message;
+        if (strlen($message) <= $length) {
+            return $message;
+        }
+        $message = substr($message, 0, $length);
+        // Do not send a partial UTF-8 code point. Telegram counts characters,
+        // while this conservative byte limit also works without mbstring.
+        while ($message !== '' && preg_match('//u', $message) !== 1) {
+            $message = substr($message, 0, -1);
+        }
+        return $message;
+    }
 
-	private function renderTemplate($template, $event, $torrent, $hash, $comment)
-	{
-		$state = $event;
-		$link = self::markdownLink($comment);
-		if($link === '')
-			$template = str_replace(array("\r\n{LINK}", "\n{LINK}"), '{LINK}', $template);
-		// The template's own text is escaped too: Telegram rejects a MarkdownV2 message with any reserved character
-		// left unescaped (a "!" or a "." in a custom template). {LINK} is already MarkdownV2.
-		$values = array(
-			'{STATE}' => self::escapeMarkdown($state),
-			'{TORRENT}' => self::escapeMarkdown((string)$torrent),
-			'{HASH}' => self::escapeMarkdown((string)$hash),
-			'{LINK}' => $link,
-		);
-		$parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
-		$message = '';
-		foreach($parts as $i => $part)
-		{
-			$piece = ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
-			if(strlen($message) + strlen($piece) > self::MAX_TEMPLATE_LENGTH)
-			{
-				// Telegram refuses the whole message if the cut leaves a lone "\" or half a link:
-				// a link that does not fit is left out, and escaped text is cut before an escape.
-				if($part !== '{LINK}')
-					$message .= self::truncateEscaped($piece, self::MAX_TEMPLATE_LENGTH - strlen($message));
-				break;
-			}
-			$message .= $piece;
-		}
-		return $message;
-	}
+    public static function handlerName($event)
+    {
+        return 'telegram' . $event . User::getUser();
+    }
 
-	private static function truncateEscaped($text, $length)
-	{
-		$text = self::truncateMessage($text, $length);
-		if((strlen($text) - strlen(rtrim($text, '\\'))) % 2)
-			$text = substr($text, 0, -1);
-		return $text;
-	}
+    public function setHandlers()
+    {
+        $settings = rTorrentSettings::get();
+        $commands = [];
+        foreach (self::eventNames() as $event) {
+            $handler = self::handlerName($event);
+            $command = !empty($this->events[$event]) && $this->enabled
+                ? $this->notificationCommand($event)
+                : getCmd('cat=');
+            $commands[] = $this->eventCommand($settings, $event, [$handler, $command]);
+        }
+        $commands[] = $this->enabled && in_array(true, $this->events, true)
+            ? $settings->getAlignedScheduleCommand('telegram', self::WORKER_INTERVAL_SECONDS, $this->workerCommand())
+            : $settings->getRemoveScheduleCommand('telegram');
+        $req = new rXMLRPCRequest($commands);
+        return $req->success();
+    }
 
-	public static function decodeComment($comment)
-	{
-		$comment = (string)$comment;
-		$prefix = 'VRS24mrker';
-		if(strpos($comment, $prefix) === 0)
-			return rawurldecode(substr($comment, strlen($prefix)));
-		return '';
-	}
+    public static function removeHandlers()
+    {
+        $config = new rTelegram();
+        $settings = rTorrentSettings::get();
+        $commands = [];
+        foreach (self::eventNames() as $event) {
+            $commands[] = $config->eventCommand($settings, $event, [self::handlerName($event), getCmd('cat=')]);
+        }
+        $commands[] = $settings->getRemoveScheduleCommand('telegram');
+        return (new rXMLRPCRequest($commands))->success();
+    }
 
-	private static function markdownLink($comment)
-	{
-		$comment = self::decodeComment($comment);
-		if($comment === '' || !preg_match('`^https?://[^\s]+$`i', $comment))
-			return '';
-		$comment = str_replace(array('\\', '(', ')'), array('%5C', '%28', '%29'), $comment);
-		return "[link]({$comment})";
-	}
+    /**
+     * Synchronously enqueue through a short shell helper, not a PHP process.
+     * rTorrent serializes these writers; only the scheduled sender uses PHP.
+     * Metadata stays in separate argv entries and is never shell source.
+     */
+    public function notificationCommand($event)
+    {
+        $value = function ($command) {
+            return '(cat,(' . getCmd($command) . '))';
+        };
+        return getCmd('execute.nothrow') . '={' . self::quoteCommandArgument(Utility::getExternal('sh')) . ','
+            . self::quoteCommandArgument(dirname(__FILE__) . '/enqueue.sh') . ','
+            . self::quoteCommandArgument(FileUtil::getSettingsPath() . '/telegram') . ','
+            . self::quoteCommandArgument($event) . ',' . $value('d.get_name') . ',' . $value('d.get_hash') . ','
+            . $value('d.get_custom2') . ',' . $value('system.time_usec') . '}';
+    }
 
-	private static function escapeMarkdown($value)
-	{
-		return str_replace(
-			array('\\', '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'),
-			array('\\\\', '\_', '\*', '\[', '\]', '\(', '\)', '\~', '\`', '\>', '\#', '\+', '\-', '\=', '\|', '\{', '\}', '\.', '\!'),
-			$value
-		);
-	}
+    public function workerCommand()
+    {
+        return getCmd('execute.nothrow.bg') . '={' . self::quoteCommandArgument(Utility::getPHP()) . ','
+            . self::quoteCommandArgument(dirname(__FILE__) . '/notify.php') . ','
+            . self::quoteCommandArgument(FileUtil::getSettingsPath() . '/telegram') . ','
+            . self::quoteCommandArgument(User::getUser()) . '}';
+    }
 
-	public static function truncateMessage($message, $length = self::MAX_TEMPLATE_LENGTH)
-	{
-		$message = (string)$message;
-		if(strlen($message) <= $length)
-			return $message;
-		$message = substr($message, 0, $length);
-		// Do not send a partial UTF-8 code point. Telegram counts characters,
-		// while this conservative byte limit also works without mbstring.
-		while($message !== '' && preg_match('//u', $message) !== 1)
-			$message = substr($message, 0, -1);
-		return $message;
-	}
+    public static function sanitizeError($message, $token = '')
+    {
+        $message = str_replace(["\r", "\n"], ' ', (string) $message);
+        if ($token !== '') {
+            $message = str_replace($token, '[redacted]', $message);
+        }
+        return substr($message, 0, 1000);
+    }
 
-	public static function handlerName($event)
-	{
-		return 'telegram'.$event.User::getUser();
-	}
+    // An empty message is refused by Telegram, so a cleared template falls back to the default one.
+    private static function templateOrDefault($event, $template)
+    {
+        if (!is_string($template) || trim($template) === '') {
+            return self::defaultTemplate($event);
+        }
+        return self::truncateMessage($template);
+    }
 
-	public function setHandlers()
-	{
-		$settings = rTorrentSettings::get();
-		$commands = array();
-		foreach(self::eventNames() as $event)
-		{
-			$handler = self::handlerName($event);
-			$command = !empty($this->events[$event]) && $this->enabled
-				? $this->notificationCommand($event)
-				: getCmd('cat=');
-			$commands[] = $this->eventCommand($settings, $event, array($handler, $command));
-		}
-		$commands[] = $this->enabled && in_array(true, $this->events, true)
-			? $settings->getAlignedScheduleCommand('telegram', self::WORKER_INTERVAL_SECONDS, $this->workerCommand())
-			: $settings->getRemoveScheduleCommand('telegram');
-		$req = new rXMLRPCRequest($commands);
-		return $req->success();
-	}
+    private function renderTemplate($template, $event, $torrent, $hash, $comment)
+    {
+        $state = $event;
+        $link = self::markdownLink($comment);
+        if ($link === '') {
+            $template = str_replace(["\r\n{LINK}", "\n{LINK}"], '{LINK}', $template);
+        }
+        // The template's own text is escaped too: Telegram rejects a MarkdownV2 message with any reserved character
+        // left unescaped (a "!" or a "." in a custom template). {LINK} is already MarkdownV2.
+        $values = [
+            '{STATE}' => self::escapeMarkdown($state),
+            '{TORRENT}' => self::escapeMarkdown((string) $torrent),
+            '{HASH}' => self::escapeMarkdown((string) $hash),
+            '{LINK}' => $link,
+        ];
+        $parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $message = '';
+        foreach ($parts as $i => $part) {
+            $piece = ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
+            if (strlen($message) + strlen($piece) > self::MAX_TEMPLATE_LENGTH) {
+                // Telegram refuses the whole message if the cut leaves a lone "\" or half a link:
+                // a link that does not fit is left out, and escaped text is cut before an escape.
+                if ($part !== '{LINK}') {
+                    $message .= self::truncateEscaped($piece, self::MAX_TEMPLATE_LENGTH - strlen($message));
+                }
+                break;
+            }
+            $message .= $piece;
+        }
+        return $message;
+    }
 
-	public static function removeHandlers()
-	{
-		$config = new rTelegram();
-		$settings = rTorrentSettings::get();
-		$commands = array();
-		foreach(self::eventNames() as $event)
-			$commands[] = $config->eventCommand($settings, $event, array(self::handlerName($event), getCmd('cat=')));
-		$commands[] = $settings->getRemoveScheduleCommand('telegram');
-		return (new rXMLRPCRequest($commands))->success();
-	}
+    private static function truncateEscaped($text, $length)
+    {
+        $text = self::truncateMessage($text, $length);
+        if ((strlen($text) - strlen(rtrim($text, '\\'))) % 2) {
+            $text = substr($text, 0, -1);
+        }
+        return $text;
+    }
 
-	private function eventCommand($settings, $event, $args)
-	{
-		switch($event)
-		{
-			case 'added': return $settings->getOnInsertCommand($args);
-			case 'finished': return $settings->getOnFinishedCommand($args);
-			case 'removed': return $settings->getOnEraseCommand($args);
-		}
-		return $settings->getOnFinishedCommand($args);
-	}
+    private static function markdownLink($comment)
+    {
+        $comment = self::decodeComment($comment);
+        if ($comment === '' || !preg_match('`^https?://[^\s]+$`i', $comment)) {
+            return '';
+        }
+        $comment = str_replace(['\\', '(', ')'], ['%5C', '%28', '%29'], $comment);
+        return "[link]({$comment})";
+    }
 
-	/**
-	 * Synchronously enqueue through a short shell helper, not a PHP process.
-	 * rTorrent serializes these writers; only the scheduled sender uses PHP.
-	 * Metadata stays in separate argv entries and is never shell source.
-	 */
-	public function notificationCommand($event)
-	{
-		$value = function($command) {
-			return '(cat,('.getCmd($command).'))';
-		};
-		return getCmd('execute.nothrow').'={'.self::quoteCommandArgument(Utility::getExternal('sh')).','.
-			self::quoteCommandArgument(dirname(__FILE__).'/enqueue.sh').','.
-			self::quoteCommandArgument(FileUtil::getSettingsPath().'/telegram').','.
-			self::quoteCommandArgument($event).','.$value('d.get_name').','.$value('d.get_hash').','.
-			$value('d.get_custom2').','.$value('system.time_usec').'}';
-	}
+    private static function escapeMarkdown($value)
+    {
+        return str_replace(
+            ['\\', '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'],
+            ['\\\\', '\_', '\*', '\[', '\]', '\(', '\)', '\~', '\`', '\>', '\#', '\+', '\-', '\=', '\|', '\{', '\}', '\.', '\!'],
+            $value,
+        );
+    }
 
-	public function workerCommand()
-	{
-		return getCmd('execute.nothrow.bg').'={'.self::quoteCommandArgument(Utility::getPHP()).','.
-			self::quoteCommandArgument(dirname(__FILE__).'/notify.php').','.
-			self::quoteCommandArgument(FileUtil::getSettingsPath().'/telegram').','.
-			self::quoteCommandArgument(User::getUser()).'}';
-	}
+    private function eventCommand($settings, $event, $args)
+    {
+        switch ($event) {
+            case 'added': return $settings->getOnInsertCommand($args);
+            case 'finished': return $settings->getOnFinishedCommand($args);
+            case 'removed': return $settings->getOnEraseCommand($args);
+        }
+        return $settings->getOnFinishedCommand($args);
+    }
 
-	private static function quoteCommandArgument($value)
-	{
-		return '"'.str_replace(array('\\', '"', '$'), array('\\\\', '\\"', '\\$'), (string)$value).'"';
-	}
+    private static function quoteCommandArgument($value)
+    {
+        return '"' . str_replace(['\\', '"', '$'], ['\\\\', '\\"', '\\$'], (string) $value) . '"';
+    }
 
-	private static function protectStorage()
-	{
-		$name = FileUtil::getSettingsPath().'/telegram.dat';
-		if(is_file($name))
-			@chmod($name, self::STORAGE_MODE);
-	}
+    private static function protectStorage()
+    {
+        $name = FileUtil::getSettingsPath() . '/telegram.dat';
+        if (is_file($name)) {
+            @chmod($name, self::STORAGE_MODE);
+        }
+    }
 
-	public static function sanitizeError($message, $token = '')
-	{
-		$message = str_replace(array("\r", "\n"), ' ', (string)$message);
-		if($token !== '')
-			$message = str_replace($token, '[redacted]', $message);
-		return substr($message, 0, 1000);
-	}
+    private static function truthy($value)
+    {
+        return $value === true || $value === 1 || $value === '1' || $value === 'on' || $value === 'true';
+    }
 
-	private static function truthy($value)
-	{
-		return $value === true || $value === 1 || $value === '1' || $value === 'on' || $value === 'true';
-	}
-
-	private static function limitString($value, $length)
-	{
-		$value = (string)$value;
-		return strlen($value) > $length ? substr($value, 0, $length) : $value;
-	}
+    private static function limitString($value, $length)
+    {
+        $value = (string) $value;
+        return strlen($value) > $length ? substr($value, 0, $length) : $value;
+    }
 }
 
 /** Small, injectable Telegram Bot API client. */
 class rTelegramClient
 {
-	private $transport;
+    private $transport;
 
-	public function __construct($transport = null)
-	{
-		$this->transport = $transport;
-	}
+    public function __construct($transport = null)
+    {
+        $this->transport = $transport;
+    }
 
-	public function send($token, $chatId, $message, $parseMode = null)
-	{
-		$message = rTelegram::truncateMessage($message);
-		$url = 'https://api.telegram.org/bot'.$token.'/sendMessage';
-		$payload = array('chat_id' => $chatId, 'text' => $message);
-		if($parseMode !== null && $parseMode !== '')
-			$payload['parse_mode'] = $parseMode;
-		$options = array('connect_timeout' => 5, 'timeout' => 10);
-		if(is_callable($this->transport))
-		{
-			try
-			{
-				$result = call_user_func($this->transport, $url, $payload, $options);
-			}
-			catch(Exception $e)
-			{
-				return array('ok' => false, 'error' => rTelegram::sanitizeError($e->getMessage(), $token));
-			}
-			return $this->normalizeTransportResult($result, $token);
-		}
+    public function send($token, $chatId, $message, $parseMode = null)
+    {
+        $message = rTelegram::truncateMessage($message);
+        $url = 'https://api.telegram.org/bot' . $token . '/sendMessage';
+        $payload = ['chat_id' => $chatId, 'text' => $message];
+        if ($parseMode !== null && $parseMode !== '') {
+            $payload['parse_mode'] = $parseMode;
+        }
+        $options = ['connect_timeout' => 5, 'timeout' => 10];
+        if (is_callable($this->transport)) {
+            try {
+                $result = call_user_func($this->transport, $url, $payload, $options);
+            } catch (Exception $e) {
+                return ['ok' => false, 'error' => rTelegram::sanitizeError($e->getMessage(), $token)];
+            }
+            return $this->normalizeTransportResult($result, $token);
+        }
 
-		if(!function_exists('curl_init'))
-			return array('ok' => false, 'error' => 'cURL extension is unavailable');
-		$curl = curl_init($url);
-		if($curl === false)
-			return array('ok' => false, 'error' => 'could not initialize cURL');
-		curl_setopt_array($curl, array(
-			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => http_build_query($payload, '', '&'),
-			CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_SSL_VERIFYPEER => true,
-			CURLOPT_SSL_VERIFYHOST => 2,
-			CURLOPT_CONNECTTIMEOUT => 5,
-			CURLOPT_TIMEOUT => 10,
-		));
-		$body = curl_exec($curl);
-		$curlError = curl_error($curl);
-		$httpCode = (int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
-		if($body === false)
-			return array('ok' => false, 'error' => rTelegram::sanitizeError('transport: '.$curlError, $token), 'http_code' => $httpCode);
-		return $this->parseResponse($body, $httpCode, $token);
-	}
+        if (!function_exists('curl_init')) {
+            return ['ok' => false, 'error' => 'cURL extension is unavailable'];
+        }
+        $curl = curl_init($url);
+        if ($curl === false) {
+            return ['ok' => false, 'error' => 'could not initialize cURL'];
+        }
+        curl_setopt_array($curl, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($payload, '', '&'),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT => 10,
+        ]);
+        $body = curl_exec($curl);
+        $curlError = curl_error($curl);
+        $httpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        if ($body === false) {
+            return ['ok' => false, 'error' => rTelegram::sanitizeError('transport: ' . $curlError, $token), 'http_code' => $httpCode];
+        }
+        return $this->parseResponse($body, $httpCode, $token);
+    }
 
-	private function normalizeTransportResult($result, $token)
-	{
-		if(!is_array($result))
-			return array('ok' => false, 'error' => 'invalid transport response');
-		if(array_key_exists('ok', $result) && !array_key_exists('body', $result))
-			return $result['ok'] === true ? array('ok' => true) : array('ok' => false, 'error' => rTelegram::sanitizeError(isset($result['error']) ? $result['error'] : 'Telegram API error', $token));
-		return $this->parseResponse(isset($result['body']) ? $result['body'] : '', isset($result['http_code']) ? (int)$result['http_code'] : 0, $token);
-	}
+    private function normalizeTransportResult($result, $token)
+    {
+        if (!is_array($result)) {
+            return ['ok' => false, 'error' => 'invalid transport response'];
+        }
+        if (array_key_exists('ok', $result) && !array_key_exists('body', $result)) {
+            return $result['ok'] === true ? ['ok' => true] : ['ok' => false, 'error' => rTelegram::sanitizeError(isset($result['error']) ? $result['error'] : 'Telegram API error', $token)];
+        }
+        return $this->parseResponse(isset($result['body']) ? $result['body'] : '', isset($result['http_code']) ? (int) $result['http_code'] : 0, $token);
+    }
 
-	private function parseResponse($body, $httpCode, $token)
-	{
-		$data = json_decode($body, true);
-		// Telegram explains a refused request in "description" (a 400 for a MarkdownV2 error, for example)
-		if($httpCode < 200 || $httpCode >= 300)
-		{
-			$error = 'HTTP '.$httpCode;
-			if(is_array($data) && isset($data['description']))
-				$error .= ': '.$data['description'];
-			$result = array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
-			if(is_array($data) && isset($data['parameters']['retry_after']) && is_numeric($data['parameters']['retry_after']))
-				$result['retry_after'] = max(1, (int)$data['parameters']['retry_after']);
-			return $result;
-		}
-		if(!is_array($data))
-			return array('ok' => false, 'error' => 'malformed Telegram response', 'http_code' => $httpCode);
-		if(isset($data['ok']) && $data['ok'] === true)
-		{
-			$result = array('ok' => true, 'http_code' => $httpCode);
-			return $result;
-		}
-		$error = isset($data['description']) ? $data['description'] : 'Telegram API returned ok=false';
-		return array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
-	}
+    private function parseResponse($body, $httpCode, $token)
+    {
+        $data = json_decode($body, true);
+        // Telegram explains a refused request in "description" (a 400 for a MarkdownV2 error, for example)
+        if ($httpCode < 200 || $httpCode >= 300) {
+            $error = 'HTTP ' . $httpCode;
+            if (is_array($data) && isset($data['description'])) {
+                $error .= ': ' . $data['description'];
+            }
+            $result = ['ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode];
+            if (is_array($data) && isset($data['parameters']['retry_after']) && is_numeric($data['parameters']['retry_after'])) {
+                $result['retry_after'] = max(1, (int) $data['parameters']['retry_after']);
+            }
+            return $result;
+        }
+        if (!is_array($data)) {
+            return ['ok' => false, 'error' => 'malformed Telegram response', 'http_code' => $httpCode];
+        }
+        if (isset($data['ok']) && $data['ok'] === true) {
+            $result = ['ok' => true, 'http_code' => $httpCode];
+            return $result;
+        }
+        $error = isset($data['description']) ? $data['description'] : 'Telegram API returned ok=false';
+        return ['ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode];
+    }
 }

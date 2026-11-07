@@ -11,10 +11,10 @@
  * cs:'Czech', da:'Danish', nl:'Dutch', en:'English', et:'Estonian', fo:'Faroese',
  * fi:'Finnish', fr:'French', de:'German', el:'Greek', he:'Hebrew', hi:'Hindi',
  * hu:'Hungarian', it:'Italian', ja:'Japanese', km:'Khmer', ko:'Korean', lv:'Latvian',
- * lt:'Lithuanian', ms:'Malay', mn:'Mongolian', no:'Norwegian', fa:'Persian',
- * pl:'Polish', pt:'Portuguese', ro:'Romanian', ru:'Russian', sr:'Serbian', sk:'Slovak',
- * sl:'Slovenian', es:'Spanish', sv:'Swedish', th:'Thai', tr:'Turkish', uk:'Ukrainian',
- * vi:'Vietnamese'
+ * lt:'Lithuanian', ms:'Malay', mn:'Mongolian', no:'Norwegian', nn:'Norwegian Nynorsk',
+ * fa:'Persian', pl:'Polish', pt:'Portuguese', ro:'Romanian', ru:'Russian', sr:'Serbian',
+ * sk:'Slovak', sl:'Slovenian', es:'Spanish', sv:'Swedish', th:'Thai', tr:'Turkish',
+ * uk:'Ukrainian', vi:'Vietnamese'
  */
 
 function readLangCookie() {
@@ -45,6 +45,7 @@ var AvailableLanguages =
 	lv:'Latvijas',
 	nl:'Nederlands',
 	no:'Norsk',
+	nn:'Norsk (nynorsk)',
 	pl:'Polski',
 	"pt-br":'Português (Brasil)',
 	"pt-pt":'Português (Portugal)',
@@ -59,29 +60,51 @@ var AvailableLanguages =
 	"zh-tw":'繁體中文'
 };
 
+/*
+ * Tags a browser sends that name a language in AvailableLanguages under a
+ * different code. "nb" is the ISO 639-1 code for Bokmal, which is what no.js
+ * holds; the rest follow the regions and scripts CLDR resolves them to, so
+ * zh and zh-SG are Simplified and zh-HK and zh-MO are Traditional.
+ *
+ * These are deliberately not entries in AvailableLanguages: that object is
+ * also the list the settings dialog renders as the language selector, and an
+ * entry here would be a second Norwegian in the dropdown.
+ */
+var LanguageAliases =
+{
+	nb:'no',
+	pt:'pt-br',
+	zh:'zh-cn',
+	"zh-hans":'zh-cn',
+	"zh-hant":'zh-tw',
+	"zh-hk":'zh-tw',
+	"zh-mo":'zh-tw',
+	"zh-sg":'zh-cn'
+};
+
 function GetActiveLanguage()
 {
 	var DefaultLanguage = 'en';
 	var LC = readLangCookie();
 	if(LC != null)
 		return LC;
-	var A;
+	var A = '';
 	if(navigator.userLanguage)
 		A = navigator.userLanguage.toLowerCase();
 	else
 		if(navigator.language)
 			A = navigator.language.toLowerCase();
-	if(A.length >= 5)
+	// Most specific first, dropping one subtag at a time: zh-hant-tw, then
+	// zh-hant, then zh.
+	var subtags = A.split('-');
+	while(subtags.length)
 	{
-		A = A.substr(0,5);
-		if(AvailableLanguages[A])
-			return A;
-	}
-	if(A.length >= 2)
-	{
-		A = A.substr(0,2);
-		if (AvailableLanguages[A])
-			return A;
+		var tag = subtags.join('-');
+		if(AvailableLanguages[tag])
+			return tag;
+		if(LanguageAliases[tag])
+			return LanguageAliases[tag];
+		subtags.pop();
 	}
 	return(DefaultLanguage);
 }
@@ -94,13 +117,43 @@ function SetActiveLanguage(lang)
 	document.cookie = "Language="+ lang + expires +"; path=/";
 }
 
+/*
+ * Fill in whatever the chosen language does not define from English, in
+ * place, so the chosen wording always wins where it exists. Three core keys
+ * (MoveView, retryOnErrorList, speedGraphDurationOptions) hold a group of
+ * strings rather than one, and a group is filled member by member: a
+ * translation that carries half of one would otherwise keep the half it has
+ * and lose the rest.
+ */
+function mergeUILang(english, chosen)
+{
+	for (const key of Object.keys(english)) {
+		const base = english[key];
+		if (!(key in chosen))
+			chosen[key] = base;
+		else if (base !== null && typeof base === 'object' &&
+			 chosen[key] !== null && typeof chosen[key] === 'object')
+			mergeUILang(base, chosen[key]);
+	}
+	return chosen;
+}
+
+function loadLangFile(lang, onLoad, onError)
+{
+	const langScript = document.createElement("script");
+	langScript.onload = onLoad;
+	if (onError)
+		langScript.onerror = onError;
+	langScript.src = `./lang/${lang}.js?v=5321`;
+	document.head.appendChild(langScript);
+}
+
 function loadUILang(onLoadFunc)
 {
 	const lang = GetActiveLanguage();
 	document.documentElement.setAttribute('lang', lang);
 
-	const langScript = document.createElement("script");
-	langScript.onload = () => {
+	const done = () => {
 		if (onLoadFunc) {
 			onLoadFunc();
 		}
@@ -110,8 +163,29 @@ function loadUILang(onLoadFunc)
 			translateDOM();
 		}
 	};
-	langScript.src = `./lang/${lang}.js?v=5314`;
-	document.head.appendChild(langScript);
+
+	/*
+	 * en.js is the one file that defines every key -- the other 28 are
+	 * translations of it. A key only English has reads as the literal
+	 * "undefined" everywhere else, so English is loaded underneath and the
+	 * chosen language laid over it. Each file assigns theUILang rather than
+	 * adding to it, which is why English is kept aside before the second
+	 * load replaces it.
+	 */
+	loadLangFile('en', () => {
+		if (lang === 'en') {
+			done();
+			return;
+		}
+		const english = theUILang;
+		loadLangFile(lang, () => {
+			mergeUILang(english, theUILang);
+			done();
+		}, () => {
+			theUILang = english;
+			done();
+		});
+	});
 }
 
 function translateDOM() {

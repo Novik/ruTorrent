@@ -8,15 +8,15 @@
 //
 // Shared because getplugins.php and initplugins.php both need it and neither
 // can include the other: each does work at the top level.
-function getFlag($permissions,$pname,$fname)
+function getFlag($permissions, $pname, $fname)
 {
-	$ret = true;
-	if(array_key_exists($pname,$permissions) &&
-		array_key_exists($fname,$permissions[$pname]))
-		$ret = $permissions[$pname][$fname];
-	else
-	if(array_key_exists("default",$permissions) &&
-		array_key_exists($fname,$permissions["default"]))
-		$ret = $permissions["default"][$fname];
-	return($ret);
+    $ret = true;
+    if (array_key_exists($pname, $permissions)
+        && array_key_exists($fname, $permissions[$pname])) {
+        $ret = $permissions[$pname][$fname];
+    } elseif (array_key_exists("default", $permissions)
+    && array_key_exists($fname, $permissions["default"])) {
+        $ret = $permissions["default"][$fname];
+    }
+    return($ret);
 }

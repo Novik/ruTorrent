@@ -32,7 +32,7 @@
  					  };
  theUILang.pushbulletNotification	= "PushBullet-varslinger";
  theUILang.pushbulletKey		= "PushBullet-tilgangstoken";
- theUILang.turnNotifyOn			= "Skru varslinger på";
- theUILang.turnNotifyOff		= "Skru varslinger av";
+ theUILang.turnNotifyOn			= "Skru på varslinger";
+ theUILang.turnNotifyOff		= "Skru av varslinger";
 
 thePlugins.get("history").langLoaded();

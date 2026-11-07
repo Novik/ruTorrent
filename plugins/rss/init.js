@@ -256,7 +256,7 @@ theWebUI.rssDblClick = function( obj )
         	theWebUI.getTable("trt").ondblclick( tmp );
 	}
 	else
-		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
+		openExternalURL(theWebUI.rssItems[obj.id].guid);
 }
 
 theWebUI.getRSSSettings = function( d )
@@ -293,7 +293,7 @@ theWebUI.RSSMarkState = function( state )
 theWebUI.RSSOpen = function()
 {
 	for(var i = 0; i<this.rssArray.length; i++)
-		window.open(this.rssArray[i],"_blank");
+		openExternalURL(this.rssArray[i]);
 }
 
 theWebUI.RSSLoad = function()
@@ -329,7 +329,7 @@ theWebUI.doRSSDelete = function()
 theWebUI.RSSDelete = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, "theWebUI.doRSSDelete()" );
+		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, () => theWebUI.doRSSDelete() );
 	else
 		theWebUI.doRSSDelete();
 }
@@ -420,7 +420,7 @@ theWebUI.doRSSGroupDelete = function()
 theWebUI.RSSGroupDelete = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuGroupDelete, theUILang.rssDeleteGroupPrompt, "theWebUI.doRSSGroupDelete()" );
+		askYesNo( theUILang.rssMenuGroupDelete, theUILang.rssDeleteGroupPrompt, () => theWebUI.doRSSGroupDelete() );
 	else
 		theWebUI.doRSSGroupDelete();
 }
@@ -433,7 +433,7 @@ theWebUI.doRSSGroupContentsDelete = function()
 theWebUI.RSSGroupDeleteContents = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuGroupContentsDelete, theUILang.rssDeleteGroupContentsPrompt, "theWebUI.doRSSGroupContentsDelete()" );
+		askYesNo( theUILang.rssMenuGroupContentsDelete, theUILang.rssDeleteGroupContentsPrompt, () => theWebUI.doRSSGroupContentsDelete() );
 	else
 		theWebUI.doRSSGroupContentsDelete();
 }
@@ -448,53 +448,41 @@ theWebUI.createRSSMenuPrim = function()
 	}
 	let entries = [];
 	entries = [
-		[ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"],
-		[ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"],
-		[ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"],
-		[ theUILang.rssMenuManager, "theWebUI.RSSManager()"]
+		[ theUILang.rssMenuClearHistory, () => theWebUI.RSSClearHistory()],
+		[ theUILang.addRSS, () => theDialogManager.toggle('dlgAddRSS')],
+		[ theUILang.addRSSGroup, () => theWebUI.RSSAddGroup()],
+		[ theUILang.rssMenuManager, () => theWebUI.RSSManager()]
 	];
 	const actLabelId = plugin.actRSSLbl();
 	if(actLabelId)
 	{
 		entries.push([CMENU_SEP]);
-		if(!actLabelId)
+		if(actLabelId in this.rssGroups)
 		{
-			entries = entries.concat([
-				[ theUILang.rssMenuDisable ],
-				[ theUILang.rssMenuEdit ],
-				[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"],
-				[ theUILang.rssMenuDelete ]
+			entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
+				[ theUILang.rssMenuGroupDisable, () => theWebUI.RSSGroupSetStatus(0)],
+				[ theUILang.rssMenuGroupRefresh, () => theWebUI.RSSGroupRefresh()]
+			] : [
+				[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : () => theWebUI.RSSGroupSetStatus(1)],
+				[ theUILang.rssMenuGroupRefresh ]
+			]).concat([
+				[ theUILang.rssMenuGroupEdit, () => theWebUI.RSSEditGroup()],
+				[ theUILang.rssMenuGroupDelete, () => theWebUI.RSSGroupDelete()],
+				[ theUILang.rssMenuGroupContentsDelete, () => theWebUI.RSSGroupDeleteContents()]
 			]);
 		}
 		else
 		{
-			if(actLabelId in this.rssGroups)
-			{
-				entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"],
-					[ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]
-				] : [
-					[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
-					[ theUILang.rssMenuGroupRefresh ]
-				]).concat([
-					[ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"],
-					[ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"],
-					[ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]
-				]);
-			}
-			else
-			{
-				entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"],
-					[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]
-				] : [
-					[ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"],
-					[ theUILang.rssMenuRefresh ]
-				]).concat([
-					[ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"],
-					[ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]
-				]);
-			}
+			entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
+				[ theUILang.rssMenuDisable, () => theWebUI.RSSToggleStatus()],
+				[ theUILang.rssMenuRefresh, () => theWebUI.RSSRefresh()]
+			] : [
+				[ theUILang.rssMenuEnable, () => theWebUI.RSSToggleStatus()],
+				[ theUILang.rssMenuRefresh ]
+			]).concat([
+				[ theUILang.rssMenuEdit, () => theWebUI.RSSEdit()],
+				[ theUILang.rssMenuDelete, () => theWebUI.RSSDelete()]
+			]);
 		}
 	}
 	return entries;
@@ -534,10 +522,10 @@ theWebUI.createRSSMenu = function(e, id)
 	{
 		if(plugin.canChangeMenu())
 		{
-			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
-			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
-			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
-			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, "theWebUI.RSSMarkState(1)"], [ theUILang.rssAsUnloaded, "theWebUI.RSSMarkState(0)"] ]]);
+			theContextMenu.add([ theUILang.rssMenuLoad, () => theWebUI.RSSLoad()]);
+			theContextMenu.add([ theUILang.rssMenuOpen, () => theWebUI.RSSOpen()]);
+			theContextMenu.add([ theUILang.rssMenuAddToFilter, () => theWebUI.RSSAddToFilter()]);
+			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, () => theWebUI.RSSMarkState(1)], [ theUILang.rssAsUnloaded, () => theWebUI.RSSMarkState(0)] ]]);
 		}
 		else
 			theContextMenu.hide();
@@ -703,6 +691,19 @@ theWebUI.showRSS = function()
 		theDialogManager.toggle("dlgAddRSS");
 }
 
+// An error entry carries the name of a theUILang key plus optional free text.
+// The free text can hold whatever a feed server put in its http status line
+// (Snoopy keeps the status token from the response's status line and rss.php
+// concatenates it), so it is looked at as text and never as code.
+theWebUI.rssErrorText = function(err)
+{
+	if(typeof err.key === 'string')
+		return (theUILang[err.key] || err.key) + (err.detail ? ' - '+err.detail : '');
+	// An entry cached by an older release holds a javascript expression in
+	// desc. Show it for what it is rather than running it.
+	return err.desc == null ? '' : String(err.desc);
+}
+
 theWebUI.showErrors = function(errors)
 {
 	for( const err of errors)
@@ -712,7 +713,7 @@ theWebUI.showErrors = function(errors)
 		const args = [
 			'['+theConverter.date('time' in err ? iv(err.time) : new Date().getTime()/1000)+'] '
 			+ (name ? '<'+name+'> ' : '')
-			+ eval(err.desc)
+			+ theWebUI.rssErrorText(err)
 			+ (err.prm ? ' ('+err.prm+')' : ''),
 			'error',
 			true
@@ -906,11 +907,11 @@ theWebUI.loadFilters = function( flt, additions )
 	var list = $("#fltlist");
 	list.empty();
 	$('#FLT_rss option').remove();
-	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
+	$('#FLT_rss').append($("<option>").val("").text(theUILang.allFeeds));
 	for(var lbl in this.rssGroups)
-		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
+		$('#FLT_rss').append($("<option>").val(lbl).text(this.rssGroups[lbl].name));
 	for(lbl in this.rssLabels)
-		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
+		$('#FLT_rss').append($("<option>").val(lbl).text(this.rssLabels[lbl].name));
 	var fltThrottle = $('#FLT_throttle');
 	if(fltThrottle.length)
 	{
@@ -1307,7 +1308,7 @@ plugin.correctFilterDialog = function() {
 
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
+        this.addButtonToToolbar("rss",theUILang.mnu_rss,() => theWebUI.showRSS(),"settings");
 
 	plugin.addPaneToCategory(
 		"prss",

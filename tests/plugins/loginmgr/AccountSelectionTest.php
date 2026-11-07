@@ -13,12 +13,27 @@ foreach (glob(__DIR__ . '/../../../plugins/loginmgr/accounts/*.php') as $account
     require_once($accountFile);
 }
 
+// Five accounts name no site until one is configured; YggTorrentOriginTest and
+// ConfiguredOriginTest are about that. Here they have one, so that they are
+// asked like every other account.
+$yggTorrentOrigin = 'https://yggtorrent.example';
+$abTorrentsOrigin = 'https://abtorrents.example';
+$revolutionTTOrigin = 'https://revolutiontt.example';
+$tfileOrigin = 'https://tfile.example';
+$redactedOrigin = 'https://redacted.example';
+
 // A site still configured http, to pin the direction the rule allows.
 class ProbeHttpSiteAccount extends commonAccount
 {
     public $url = 'http://http-only.example';
-    protected function isOK($client) { return true; }
-    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f) { return false; }
+    protected function isOK($client)
+    {
+        return true;
+    }
+    protected function login($c, $l, $p, &$u, &$m, &$ct, &$b, &$f)
+    {
+        return false;
+    }
 }
 
 function selAssertSame($expected, $actual, $message)
@@ -26,12 +41,12 @@ function selAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
 
-$tests = array(
+$tests = [
     'an account is chosen by the url host, not by a substring of the url' => function () {
         // A prefix match accepts https://tracker.example@evil.test/ (the name
         // is userinfo) and https://tracker.example.evil.test/ (the name is one
@@ -39,24 +54,32 @@ $tests = array(
         // https://evil.test/path/tracker.example/x. All three would have sent
         // the account's cookies to a host the attacker controls, and the url
         // need not come from the user -- plugins/rss follows feed links.
-        $cases = array(
-            array('ABTorrentsAccount', 'https://abtorrents.me/x', true),
-            array('ABTorrentsAccount', 'https://abtorrents.me@evil.test/', false),
-            array('ABTorrentsAccount', 'https://abtorrents.me.evil.test/', false),
-            array('ABTorrentsAccount', 'https://evil.test/abtorrents.me/', false),
-            array('KinozalTVAccount', 'https://kinozal.guru/details.php?id=1', true),
-            array('KinozalTVAccount', 'https://dl.kinozal.guru/download.php?id=1', true),
-            array('KinozalTVAccount', 'https://evil.test/path/kinozal.guru/feed', false),
-            array('ruTrackerAccount', 'https://rutracker.org/forum/dl.php?t=1', true),
-            array('ruTrackerAccount', 'https://rutracker.org/other/', false),
-            array('ruTrackerAccount', 'https://evil.test/x/rutracker.org/forum/', false),
-            array('TapochekNetAccount', 'https://tapochek.net/x', true),
-            array('TapochekNetAccount', 'https://tapochek.net.evil.test/x', false),
-            array('YggTorrentAccount', 'https://www.ygg.re/engine/download_torrent?id=1', true),
-            array('YggTorrentAccount', 'https://evil.test/x/ygg.re/engine/download_torrent?id=1', false),
-            array('LostFilmAccount', 'https://lostfilm.tv/download.php?id=7&', true),
-            array('LostFilmAccount', 'https://lostfilm.tv.evil.test/download.php?id=7&', false),
-        );
+        $cases = [
+            ['ABTorrentsAccount', 'https://abtorrents.example/x', true],
+            ['ABTorrentsAccount', 'https://abtorrents.example@evil.test/', false],
+            ['ABTorrentsAccount', 'https://abtorrents.example.evil.test/', false],
+            ['ABTorrentsAccount', 'https://evil.test/abtorrents.example/', false],
+            ['TfileAccount', 'https://tfile.example/forum/index.php', true],
+            ['TfileAccount', 'https://tfile.example/other/', false],
+            ['TfileAccount', 'https://evil.test/x/tfile.example/forum/', false],
+            ['RedactedAccount', 'https://redacted.example/torrents.php?id=1', true],
+            ['RedactedAccount', 'https://redacted.example.evil.test/torrents.php?id=1', false],
+            ['RevolutionTTAccount', 'https://revolutiontt.example/download.php/1/x', true],
+            ['RevolutionTTAccount', 'https://revolutiontt.example@evil.test/download.php/1/x', false],
+            ['KinozalTVAccount', 'https://kinozal.guru/details.php?id=1', true],
+            ['KinozalTVAccount', 'https://dl.kinozal.guru/download.php?id=1', true],
+            ['KinozalTVAccount', 'https://evil.test/path/kinozal.guru/feed', false],
+            ['ruTrackerAccount', 'https://rutracker.org/forum/dl.php?t=1', true],
+            ['ruTrackerAccount', 'https://rutracker.org/other/', false],
+            ['ruTrackerAccount', 'https://evil.test/x/rutracker.org/forum/', false],
+            ['TapochekNetAccount', 'https://tapochek.net/x', true],
+            ['TapochekNetAccount', 'https://tapochek.net.evil.test/x', false],
+            ['YggTorrentAccount', 'https://yggtorrent.example/engine/download_torrent?id=1', true],
+            ['YggTorrentAccount', 'https://ygg-lookalike.example/engine/download_torrent?id=1', false],
+            ['YggTorrentAccount', 'https://evil.test/x/yggtorrent.example/engine/download_torrent?id=1', false],
+            ['LostFilmAccount', 'https://lostfilm.tv/download.php?id=7&', true],
+            ['LostFilmAccount', 'https://lostfilm.tv.evil.test/download.php?id=7&', false],
+        ];
         foreach ($cases as $case) {
             list($class, $url, $expected) = $case;
             $account = new $class();
@@ -68,16 +91,19 @@ $tests = array(
         // Matched over http, an https site would have this account's cookies
         // put on the wire in clear by the very first request, before any
         // redirect could upgrade it -- and the url can arrive from a feed.
-        foreach (array(
-            array('LostFilmAccount', 'http://lostfilm.tv/download.php?id=7&'),
-            array('TfileAccount', 'http://megatfile.cc/forum/index.php'),
-            array('AniDUBAccount', 'http://tr.anidub.com/'),
-            array('ABTorrentsAccount', 'http://abtorrents.me/x'),
-        ) as $case) {
+        foreach ([
+            ['LostFilmAccount', 'http://lostfilm.tv/download.php?id=7&'],
+            ['TfileAccount', 'http://tfile.example/forum/index.php'],
+            ['AniDUBAccount', 'http://tr.anidub.com/'],
+            ['ABTorrentsAccount', 'http://abtorrents.example/x'],
+        ] as $case) {
             list($class, $url) = $case;
             $account = new $class();
-            selAssertSame(false, (bool) $account->test($url),
-                $class . ' must not claim the http form of an https site');
+            selAssertSame(
+                false,
+                (bool) $account->test($url),
+                $class . ' must not claim the http form of an https site',
+            );
         }
     },
 
@@ -96,6 +122,7 @@ $tests = array(
         // the path rather than the host -- but an acceptance is always wrong,
         // and this is what catches the next test() written against the raw
         // url string instead of the parsed host.
+        $asked = 0;
         foreach (get_declared_classes() as $class) {
             if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
                 continue;
@@ -105,7 +132,8 @@ $tests = array(
             if (!$host) {
                 continue;
             }
-            $elsewhere = array(
+            $asked++;
+            $elsewhere = [
                 'https://evil.test/x/' . $host . '/forum/dl.php?t=1',
                 'https://evil.test/x/' . $host . '/download.php?id=1',
                 'https://evil.test/x/' . $host . '/engine/download_torrent?id=1',
@@ -113,27 +141,40 @@ $tests = array(
                 'https://' . $host . '@evil.test/forum/dl.php?t=1',
                 'https://' . $host . '@evil.test/',
                 'https://' . $host . '.evil.test/forum/dl.php?t=1',
-            );
+            ];
             foreach ($elsewhere as $url) {
-                selAssertSame(false, (bool) $account->test($url),
-                    $class . ' must not claim ' . var_export($url, true));
+                selAssertSame(
+                    false,
+                    (bool) $account->test($url),
+                    $class . ' must not claim ' . var_export($url, true),
+                );
             }
         }
+        // The accounts are loaded by the glob at the top of this file, and the
+        // cases that name a class by hand are the only ones that notice when
+        // it matches nothing. This one would simply ask no account anything.
+        selAssertSame(true, $asked > 0, 'accounts were found to ask');
     },
 
     'a url with no host at all matches nothing' => function () {
+        $asked = 0;
         foreach (get_declared_classes() as $class) {
             if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
                 continue;
             }
+            $asked++;
             $account = new $class();
-            foreach (array('', 'not a url', '/relative/path', 'javascript:alert(1)') as $url) {
-                selAssertSame(false, (bool) $account->test($url),
-                    $class . ' must not claim ' . var_export($url, true));
+            foreach (['', 'not a url', '/relative/path', 'javascript:alert(1)'] as $url) {
+                selAssertSame(
+                    false,
+                    (bool) $account->test($url),
+                    $class . ' must not claim ' . var_export($url, true),
+                );
             }
         }
+        selAssertSame(true, $asked > 0, 'accounts were found to ask');
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

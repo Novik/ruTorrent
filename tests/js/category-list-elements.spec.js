@@ -57,6 +57,24 @@ describe("category-list", () => {
     expect(callArg2.labelId).toEqual(newLabelId);
     expect(callArg2.panelId).toEqual("plabel");
   });
+  // theWebUI.labelContextMenu opens the menu at the event's clientX/clientY,
+  // and only falls back to the last mousemove when they are missing: a
+  // right-click that no mousemove preceded (a touch long-press, say) would
+  // put the menu in the corner of the window.
+  it("should carry the click position on label-click", () => {
+    const onClick = jest.fn();
+    catList.addEventListener("label-click", onClick);
+    const panelLabelEl = document.getElementById("-_-_-com-_-_-");
+
+    panelLabelEl.dispatchEvent(new MouseEvent("mousedown", { which: 3, button: 2, clientX: 120, clientY: 245 }));
+    panelLabelEl.dispatchEvent(new MouseEvent("contextmenu", { button: 2, clientX: 121, clientY: 246 }));
+
+    expect(onClick.mock.calls.length).toBe(2);
+    expect([onClick.mock.calls[0][0].clientX, onClick.mock.calls[0][0].clientY]).toEqual([120, 245]);
+    expect(onClick.mock.calls[1][0].rightClick).toBe(true);
+    expect([onClick.mock.calls[1][0].clientX, onClick.mock.calls[1][0].clientY]).toEqual([121, 246]);
+  });
+
   it("should emit panel-close", async () => {
     const pstateEl = document.getElementById("pstate");
     pstateEl.closed = true;
@@ -166,5 +184,60 @@ describe("panel-label", () => {
     expect(ic.style.backgroundImage).toEqual("");
     expect(ic.children.length).toBeGreaterThan(0);
     expect([...ic.classList]).toEqual(["icon-letter"]);
+  });
+});
+
+// A ctrl-click with the primary button is the secondary click on macOS, and
+// the browser reports it as a press first and a contextmenu after: one gesture
+// then both moved the label filter and opened the label menu. jsdom reports
+// which === 0 for a constructed MouseEvent, so the button is the one read here.
+describe("a panel label under a ctrl-click", () => {
+  let onClick;
+  let label;
+
+  const press = (opts) =>
+    label.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0, ...opts }));
+  const release = (opts) =>
+    label.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, button: 0, ...opts }));
+  const menu = () =>
+    label.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, button: 2 }));
+
+  beforeEach(() => {
+    document.body.replaceChildren(categoryListElements());
+    onClick = jest.fn();
+    document.getElementById("CatList").addEventListener("label-click", onClick);
+    label = document.getElementById("-_-_-com-_-_-");
+  });
+
+  afterEach(() => {
+    browser.isMac = false;
+  });
+
+  it("is reported once, as a right click, on a Mac", () => {
+    browser.isMac = true;
+    press({ ctrlKey: true });
+    menu();
+    release({ ctrlKey: true });
+
+    expect(onClick.mock.calls.length).toBe(1);
+    expect(onClick.mock.calls[0][0].rightClick).toBe(true);
+  });
+
+  it("is reported at the release when no contextmenu arrives", () => {
+    browser.isMac = true;
+    press({ ctrlKey: true });
+    expect(onClick.mock.calls.length).toBe(0);
+
+    release({ ctrlKey: true });
+    expect(onClick.mock.calls.length).toBe(1);
+    expect(onClick.mock.calls[0][0].rightClick).toBe(false);
+    expect(onClick.mock.calls[0][0].metaKey).toBe(true);
+  });
+
+  it("is reported at the press anywhere else", () => {
+    press({ ctrlKey: true });
+
+    expect(onClick.mock.calls.length).toBe(1);
+    expect(onClick.mock.calls[0][0].metaKey).toBe(true);
   });
 });

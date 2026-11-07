@@ -1,0 +1,193 @@
+<?php
+
+require_once(__DIR__ . '/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/TestTree.php');
+
+/**
+ * A daemon that answers rTorrentSettings::obtain() the way rtorrent 0.16.20
+ * answers it, and that holds d.multicall to the signature 0.16.16 gave it:
+ * (target, view, command...).
+ *
+ * The probe is seven round trips and the alias map is only built from what
+ * they return, so a test about the map cannot stand on a canned reply list --
+ * the answer to each request has to suit the request. A call that puts the
+ * view where the target belongs is answered with rtorrent's own refusal, so
+ * a caller can be told apart by what came back rather than by reading its
+ * request.
+ */
+class RtorrentProbeFixture
+{
+    public const VERSION = '0.16.20';
+    public const INVALID_TARGET = 'invalid parameters: invalid target';
+    private const HASH = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+    /** The method names one request asks for, in order. */
+    public static function methodNames($body)
+    {
+        if (preg_match('|<methodName>(.*)</methodName>|Us', $body, $outer)
+            && ($outer[1] !== 'system.multicall')) {
+            return [$outer[1]];
+        }
+        if (preg_match_all(
+            '|<name>methodName</name><value><string>(.*)</string></value>|Us',
+            $body,
+            $inner,
+        )) {
+            return $inner[1];
+        }
+        return [];
+    }
+
+    /** The first parameter of a single-command request, or null. */
+    public static function firstParameter($body)
+    {
+        if (preg_match(
+            '|<params>\s*<param><value><string>(.*)</string></value></param>|Us',
+            $body,
+            $m,
+        )) {
+            return $m[1];
+        }
+        return null;
+    }
+
+    /** One d.multicall row: the hash, then a value per remaining command. */
+    public static function row($hash, $columns)
+    {
+        $row = [$hash];
+        for ($i = 1; $i < $columns; $i++) {
+            $row[] = '0';
+        }
+        return $row;
+    }
+
+    /**
+     * Leave in $profilePath the settings cache that probing this daemon
+     * leaves, so a script driven against that profile starts where an
+     * install whose interface has been opened starts: past the handshake,
+     * with the alias map already in hand.
+     *
+     * For a test whose daemon answers from a fixed reply list and whose
+     * subject is what the script asks rtorrent for, not how it learned to
+     * ask. The file is produced by running the real probe once rather than
+     * written out here, so it holds whatever that probe produces. $name is
+     * the session name the daemon reports.
+     */
+    public static function warmSettingsCache($profilePath, $name = '')
+    {
+        static $caches = [];
+        if (!array_key_exists($name, $caches)) {
+            $caches[$name] = self::probeForCache($name);
+        }
+        if ($caches[$name] === false) {
+            return false;
+        }
+        @mkdir($profilePath . '/settings', 0700, true);
+        return file_put_contents($profilePath . '/settings/rtorrent.dat', $caches[$name]) !== false;
+    }
+
+    /**
+     * The files a daemon worker has to load before it unserializes a reply
+     * plan built from responder().
+     */
+    public static function replyClassFiles()
+    {
+        return [__FILE__];
+    }
+
+    public static function responder($hash = self::HASH, $name = '')
+    {
+        return new RtorrentProbeResponder($hash, $name);
+    }
+
+    private static function probeForCache($name)
+    {
+        $base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
+        $daemon = null;
+        try {
+            @mkdir($base . '/settings', 0700, true);
+            $daemon = new FakeRtorrentDaemon(
+                self::responder(self::HASH, $name),
+                $base . '/calls.log',
+                false,
+                self::replyClassFiles(),
+            );
+            $root = dirname(__DIR__, 2);
+            $driver = $base . '/probe.php';
+            $source = "<?php\n"
+                . '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($base, true) . ";\n"
+                . '$_ENV[\'RU_SCGI_HOST\'] = "127.0.0.1";' . "\n"
+                . '$_ENV[\'RU_SCGI_PORT\'] = ' . var_export((string) $daemon->port(), true) . ";\n"
+                . 'require_once(' . var_export($root . '/php/xmlrpc.php', true) . ");\n"
+                . 'rTorrentSettings::get(true);' . "\n";
+            if (file_put_contents($driver, $source) !== strlen($source)) {
+                return false;
+            }
+            $ignored = [];
+            exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+                . escapeshellarg($driver) . ' 2>&1', $ignored);
+            return @file_get_contents($base . '/settings/rtorrent.dat');
+        } finally {
+            if ($daemon !== null) {
+                $daemon->stop();
+            }
+            TestTree::remove($base);
+        }
+    }
+}
+
+/**
+ * The answers above as an object rather than a Closure. A Closure cannot be
+ * serialized into the daemon's worker process, so it has to be forked to,
+ * which puts pcntl and posix in the way of every test that drives a script
+ * against this daemon.
+ */
+class RtorrentProbeResponder
+{
+    private $hash;
+    private $name;
+
+    public function __construct($hash, $name = '')
+    {
+        $this->hash = $hash;
+        $this->name = $name;
+    }
+
+    public function __invoke($body)
+    {
+        $names = RtorrentProbeFixture::methodNames($body);
+        $single = (count($names) === 1) ? $names[0] : '';
+
+        if ($single === 'd.multicall') {
+            if (RtorrentProbeFixture::firstParameter($body) !== '') {
+                return FakeRtorrentDaemon::fault(RtorrentProbeFixture::INVALID_TARGET);
+            }
+            // The httprpc list mode asks for 36 columns.
+            return RtorrentProbeFixture::row($this->hash, 36);
+        }
+        switch ($single) {
+            case 'system.client_version':
+                return [RtorrentProbeFixture::VERSION];
+            case 'system.api_version':
+                return ['11'];
+            case 'convert.kb':
+                return ['1'];
+            case 'network.listen.port':
+                return ['6890'];
+            case 'execute.capture':
+                // uid, group list, home -- the three lines obtain() reads.
+                return ["1000\n1000 1001\n/home/rtorrent\n"];
+        }
+        // The settings batch: directory, session, library version, name,
+        // port range, bind address, local address. Every one of these but
+        // the library version and a name the test gave is answered with the
+        // value the class carries unprobed, so that warmSettingsCache()
+        // changes what a script knows about the daemon's commands and
+        // nothing else.
+        if (count($names) === 7) {
+            return ['/tmp', '', RtorrentProbeFixture::VERSION, $this->name,
+                '6890-6999', '0.0.0.0', '0.0.0.0'];
+        }
+        return array_fill(0, max(1, count($names)), '0');
+    }
+}

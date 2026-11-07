@@ -1,4 +1,5 @@
 <?php
+
 /**
  * A filtered XMLRPC endpoint for rtorrent.
  *
@@ -34,23 +35,24 @@
  */
 
 // Not reachable except from the location block the operator wrote for it.
-if(!isset($_SERVER['RUTORRENT_XMLRPC_ENDPOINT']) ||
-	($_SERVER['RUTORRENT_XMLRPC_ENDPOINT'] !== 'on'))
-{
-	header('HTTP/1.1 404 Not Found');
-	exit;
+if (!isset($_SERVER['RUTORRENT_XMLRPC_ENDPOINT'])
+    || ($_SERVER['RUTORRENT_XMLRPC_ENDPOINT'] !== 'on')) {
+    header('HTTP/1.1 404 Not Found');
+    exit;
 }
 
-require_once(dirname(__FILE__).'/conf/config.php');
-require_once(dirname(__FILE__).'/php/xmlrpc_proxy.php');
+require_once(dirname(__FILE__) . '/conf/config.php');
+require_once(dirname(__FILE__) . '/php/xmlrpc_proxy.php');
+require_once(dirname(__FILE__) . '/php/scgitransport.php');
 
-$policyFile = dirname(__FILE__).'/conf/xmlrpc_proxy.php';
-if(is_file($policyFile) && is_readable($policyFile))
-	require_once($policyFile);
+$policyFile = dirname(__FILE__) . '/conf/xmlrpc_proxy.php';
+if (is_file($policyFile) && is_readable($policyFile)) {
+    require_once($policyFile);
+}
 
 $mode = isset($XMLRPCProxy) ? $XMLRPCProxy : 'sanitize';
 $logging = isset($XMLRPCProxyLog) ? $XMLRPCProxyLog : true;
-$safeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : array();
+$safeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : [];
 $allowLocalPaths = isset($XMLRPCProxyAllowLocalPaths) ? $XMLRPCProxyAllowLocalPaths : false;
 $allowRootDirectory = isset($XMLRPCProxyAllowRootDirectory) ? $XMLRPCProxyAllowRootDirectory : false;
 
@@ -62,97 +64,81 @@ $allowRootDirectory = isset($XMLRPCProxyAllowRootDirectory) ? $XMLRPCProxyAllowR
  */
 function rpc2_resolve_path($path)
 {
-	$real = @realpath($path);
-	if($real !== false)
-		return $real;
+    $real = @realpath($path);
+    if ($real !== false) {
+        return $real;
+    }
 
-	$parts = explode('/', trim($path, '/'));
-	$tail = array();
-	while(count($parts) > 0)
-	{
-		array_unshift($tail, array_pop($parts));
-		$base = '/'.implode('/', $parts);
-		$real = @realpath(($base === '') ? '/' : $base);
-		if($real !== false)
-			return rtrim($real, '/').'/'.implode('/', $tail);
-	}
-	return '';
+    $parts = explode('/', trim($path, '/'));
+    $tail = [];
+    while (count($parts) > 0) {
+        array_unshift($tail, array_pop($parts));
+        $base = '/' . implode('/', $parts);
+        $real = @realpath(($base === '') ? '/' : $base);
+        if ($real !== false) {
+            return rtrim($real, '/') . '/' . implode('/', $tail);
+        }
+    }
+    return '';
 }
 
 /**
- * Written here rather than through FileUtil so that this file needs nothing
- * but the proxy and the configuration — the point of the endpoint is that it
- * does one thing.
+ * Keep logging independent of ruTorrent's profile/settings bootstrap.
  */
 function rpc2_log($message)
 {
-	global $logging, $log_file;
-	if(!$logging)
-		return;
-	$line = date('d.m.Y H:i:s').' rpc2: '.str_replace(array("\r", "\n"), ' ', $message)."\n";
-	if(!empty($log_file) && (@file_put_contents($log_file, $line, FILE_APPEND | LOCK_EX) !== false))
-		return;
-	error_log('rpc2: '.$line);
+    global $logging, $log_file;
+    if (!$logging) {
+        return;
+    }
+    $line = date('d.m.Y H:i:s') . ' rpc2: ' . str_replace(["\r", "\n"], ' ', $message) . "\n";
+    if (!empty($log_file) && (@file_put_contents($log_file, $line, FILE_APPEND | LOCK_EX) !== false)) {
+        return;
+    }
+    error_log('rpc2: ' . $line);
 }
 
 function rpc2_fault($status, $message)
 {
-	header('HTTP/1.1 '.$status);
-	header('Content-Type: text/xml');
-	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
-		.'<methodResponse><fault><value><struct>'
-		.'<member><name>faultCode</name><value><i4>-501</i4></value></member>'
-		.'<member><name>faultString</name><value><string>'
-		.htmlspecialchars($message, ENT_NOQUOTES, 'UTF-8')
-		.'</string></value></member>'
-		.'</struct></value></fault></methodResponse>';
-	exit;
+    header('HTTP/1.1 ' . $status);
+    header('Content-Type: text/xml');
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+        . '<methodResponse><fault><value><struct>'
+        . '<member><name>faultCode</name><value><i4>-501</i4></value></member>'
+        . '<member><name>faultString</name><value><string>'
+        . htmlspecialchars($message, ENT_NOQUOTES, 'UTF-8')
+        . '</string></value></member>'
+        . '</struct></value></fault></methodResponse>';
+    exit;
 }
 
 /**
- * One SCGI request to rtorrent, with the trust the policy decided on. Same
- * wire format ruTorrent's rXMLRPCRequest::send() uses; kept here so the
- * endpoint does not need ruTorrent's settings bootstrap to make a call.
+ * One exchange through the shared transport, without the settings bootstrap.
  */
 function rpc2_send($payload, $trusted)
 {
-	global $scgi_host, $scgi_port, $rpcTimeOut;
-
-	$timeout = empty($rpcTimeOut) ? 30 : $rpcTimeOut;
-	$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, $timeout);
-	if(!$socket)
-	{
-		rpc2_log('cannot reach rtorrent at '.$scgi_host.': '.$errstr);
-		return null;
-	}
-
-	$header = "CONTENT_LENGTH\x00".strlen($payload)."\x00CONTENT_TYPE\x00text/xml\x00"
-		."SCGI\x001\x00UNTRUSTED_CONNECTION\x00".($trusted ? '0' : '1')."\x00";
-	$request = strlen($header).':'.$header.','.$payload;
-
-	stream_set_timeout($socket, $timeout);
-	@fwrite($socket, $request, strlen($request));
-
-	$response = '';
-	while(!feof($socket))
-	{
-		$chunk = fread($socket, 65536);
-		if($chunk === false)
-			break;
-		$response .= $chunk;
-	}
-	fclose($socket);
-
-	// rtorrent answers with its own headers; the body is what the client asked for.
-	$split = strpos($response, "\r\n\r\n");
-	return ($split === false) ? $response : substr($response, $split + 4);
+    global $scgi_host;
+    $result = rSCGITransport::sendConfigured(
+        $payload,
+        $trusted,
+        ['responseMode' => rSCGITransport::RESPONSE_BODY],
+        $failure,
+        $error,
+    );
+    if ($result === null) {
+        rpc2_log(($failure === 'connect-failed') ? 'cannot reach rtorrent at ' . $scgi_host . ': ' . $error
+            : rSCGITransport::describeFailure($failure));
+        rpc2_fault('502 Bad Gateway', ($failure === 'connect-failed')
+            ? 'Could not reach rTorrent over XMLRPC. Is rTorrent running?'
+            : 'Could not complete the rTorrent XMLRPC request.');
+    }
+    return $result;
 }
 
-if(!isset($_SERVER['REQUEST_METHOD']) || ($_SERVER['REQUEST_METHOD'] !== 'POST'))
-{
-	header('HTTP/1.1 405 Method Not Allowed');
-	header('Allow: POST');
-	exit;
+if (!isset($_SERVER['REQUEST_METHOD']) || ($_SERVER['REQUEST_METHOD'] !== 'POST')) {
+    header('HTTP/1.1 405 Method Not Allowed');
+    header('Allow: POST');
+    exit;
 }
 
 // A caller may name the directory a download is written into, so the endpoint
@@ -162,44 +148,43 @@ if(!isset($_SERVER['REQUEST_METHOD']) || ($_SERVER['REQUEST_METHOD'] !== 'POST')
 // apply a check that confines nothing, refuse to serve until somebody has said
 // which it is.
 $topDirectory = isset($topDirectory) ? trim($topDirectory) : '';
-if((($topDirectory === '') || ($topDirectory === '/')) && !$allowRootDirectory)
-{
-	rpc2_log('refusing to serve: $topDirectory is "'.$topDirectory.'"'
-		.' and $XMLRPCProxyAllowRootDirectory is false');
-	rpc2_fault('503 Service Unavailable',
-		'This XMLRPC endpoint is not configured: set $topDirectory in conf/config.php '
-		.'to the directory downloads may be written under, or set '
-		.'$XMLRPCProxyAllowRootDirectory = true in conf/xmlrpc_proxy.php to allow any path.');
+if ((($topDirectory === '') || ($topDirectory === '/')) && !$allowRootDirectory) {
+    rpc2_log('refusing to serve: $topDirectory is "' . $topDirectory . '"'
+        . ' and $XMLRPCProxyAllowRootDirectory is false');
+    rpc2_fault(
+        '503 Service Unavailable',
+        'This XMLRPC endpoint is not configured: set $topDirectory in conf/config.php '
+        . 'to the directory downloads may be written under, or set '
+        . '$XMLRPCProxyAllowRootDirectory = true in conf/xmlrpc_proxy.php to allow any path.',
+    );
 }
 
 $raw = file_get_contents('php://input');
-if($raw === false)
-{
-	rpc2_log('could not read request body');
-	rpc2_fault('400 Bad Request', 'Could not read XMLRPC request.');
+if ($raw === false) {
+    rpc2_log('could not read request body');
+    rpc2_fault('400 Bad Request', 'Could not read XMLRPC request.');
 }
-if($raw === '')
-{
-	rpc2_log('empty request body');
-	rpc2_fault('400 Bad Request', 'Empty XMLRPC request.');
+if ($raw === '') {
+    rpc2_log('empty request body');
+    rpc2_fault('400 Bad Request', 'Empty XMLRPC request.');
 }
 
-$decision = XMLRPCProxy::decide($raw, $mode, $safeParams, $allowLocalPaths, array(
-	'directory' => array(
-		'root'    => ($topDirectory === '') ? '/' : $topDirectory,
-		'resolve' => 'rpc2_resolve_path',
-	),
-));
-foreach($decision['log'] as $line)
-	rpc2_log($line);
+$decision = XMLRPCProxy::decide($raw, $mode, $safeParams, $allowLocalPaths, [
+    'directory' => [
+        'root' => ($topDirectory === '') ? '/' : $topDirectory,
+        'resolve' => 'rpc2_resolve_path',
+    ],
+]);
+foreach ($decision['log'] as $line) {
+    rpc2_log($line);
+}
 
-if($decision['action'] !== 'send')
-	rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null));
+if ($decision['action'] !== 'send') {
+    rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null));
+}
 
 $result = rpc2_send($decision['payload'], $decision['trusted']);
-if($result === null)
-	rpc2_fault('502 Bad Gateway', 'Could not reach rTorrent over XMLRPC. Is rTorrent running?');
 
 header('Content-Type: text/xml');
-header('Content-Length: '.strlen($result));
+header('Content-Length: ' . strlen($result));
 echo $result;

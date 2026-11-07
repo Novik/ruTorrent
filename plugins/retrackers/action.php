@@ -1,6 +1,7 @@
 <?php
-require_once( 'retrackers.php' );
+
+require_once('retrackers.php');
 
 $trks = new rRetrackers();
 $trks->set();
-CachedEcho::send($trks->get(),"application/javascript");
+CachedEcho::send($trks->get(), "application/javascript");

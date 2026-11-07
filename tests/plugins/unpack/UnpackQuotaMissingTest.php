@@ -20,85 +20,85 @@ require_once(__DIR__ . '/../../../plugins/unpack/unpack.php');
  */
 class UnpackQuotaMissingTest extends TestCase
 {
-	use UnpackQuotaProbe;
+    use UnpackQuotaProbe;
 
-	public function setUp()
-	{
-		$this->beginProbe();
-	}
+    public function setUp()
+    {
+        $this->beginProbe();
+    }
 
-	public function tearDown()
-	{
-		$this->quotaspaceRegistered(false);
-		$this->endProbe();
-	}
+    public function tearDown()
+    {
+        $this->quotaspaceRegistered(false);
+        $this->endProbe();
+    }
 
-	// Preconditions. If either of these fails the rest of the file is testing
-	// something other than what it claims to.
-	public function testQuotaspaceIsNotVendoredInThisTree()
-	{
-		$this->assertTrue(
-			!file_exists($this->rquotaPath()),
-			'plugins/quotaspace/rquota.php is not shipped with ruTorrent'
-		);
-	}
+    // Preconditions. If either of these fails the rest of the file is testing
+    // something other than what it claims to.
+    public function testQuotaspaceIsNotVendoredInThisTree()
+    {
+        $this->assertTrue(
+            !file_exists($this->rquotaPath()),
+            'plugins/quotaspace/rquota.php is not shipped with ruTorrent',
+        );
+    }
 
-	public function testRQuotaIsNotDeclaredInThisProcess()
-	{
-		$this->assertTrue(
-			!class_exists('rQuota', false),
-			'No rQuota class exists in the process running this file'
-		);
-	}
+    public function testRQuotaIsNotDeclaredInThisProcess()
+    {
+        $this->assertTrue(
+            !class_exists('rQuota', false),
+            'No rQuota class exists in the process running this file',
+        );
+    }
 
-	// The autounpack path: it runs unattended on download completion, so a fatal
-	// here is a silently broken feature rather than a visible error.
-	public function testTheSilentTaskRunsWhenTheQuotaCannotBeConsulted()
-	{
-		$this->quotaspaceRegistered(true);
-		$this->assertTrue(
-			$this->silentTaskWasAllowed(),
-			'A registered quotaspace with no rquota.php lets the silent unpack proceed'
-		);
-	}
+    // The autounpack path: it runs unattended on download completion, so a fatal
+    // here is a silently broken feature rather than a visible error.
+    public function testTheSilentTaskRunsWhenTheQuotaCannotBeConsulted()
+    {
+        $this->quotaspaceRegistered(true);
+        $this->assertTrue(
+            $this->silentTaskWasAllowed(),
+            'A registered quotaspace with no rquota.php lets the silent unpack proceed',
+        );
+    }
 
-	// The manual "Unpack" menu entry.
-	public function testTheManualTaskRunsWhenTheQuotaCannotBeConsulted()
-	{
-		$this->quotaspaceRegistered(true);
-		$this->assertTrue(
-			$this->startTaskErrors() != $this->quotaRefusal(),
-			'A registered quotaspace with no rquota.php is not reported as a quota refusal'
-		);
-	}
+    // The manual "Unpack" menu entry.
+    public function testTheManualTaskRunsWhenTheQuotaCannotBeConsulted()
+    {
+        $this->quotaspaceRegistered(true);
+        $this->assertTrue(
+            $this->startTaskErrors() != $this->quotaRefusal(),
+            'A registered quotaspace with no rquota.php is not reported as a quota refusal',
+        );
+    }
 
-	// Looking for a quota that is not installed must not send the core
-	// autoloader hunting for php/utility/rquota.php, which is not where a plugin
-	// class would ever live and which warns on every miss when al_diagnostic is
-	// on.
-	public function testTheCoreAutoloaderIsNotAskedForRQuota()
-	{
-		$this->quotaspaceRegistered(true);
-		$asked = array();
-		spl_autoload_register(function ($class) use (&$asked) {
-			$asked[] = $class;
-		});
-		$this->silentTaskWasAllowed();
-		$this->assertEquals(array(), $asked, 'No class was autoloaded while looking for the quota');
-	}
+    // Looking for a quota that is not installed must not send the core
+    // autoloader hunting for php/utility/rquota.php, which is not where a plugin
+    // class would ever live and which warns on every miss when al_diagnostic is
+    // on.
+    public function testTheCoreAutoloaderIsNotAskedForRQuota()
+    {
+        $this->quotaspaceRegistered(true);
+        $asked = [];
+        spl_autoload_register(function ($class) use (&$asked) {
+            $asked[] = $class;
+        });
+        $this->silentTaskWasAllowed();
+        $this->assertEquals([], $asked, 'No class was autoloaded while looking for the quota');
+    }
 
-	// The overwhelmingly common install: no quotaspace at all. Nothing about the
-	// quota is looked at, so nothing about it can fail.
-	public function testAnUnregisteredQuotaspaceIsNeverConsulted()
-	{
-		$this->quotaspaceRegistered(false);
-		$this->assertTrue(
-			$this->silentTaskWasAllowed(),
-			'Without quotaspace the silent unpack proceeds'
-		);
-		$this->assertTrue(
-			$this->startTaskErrors() != $this->quotaRefusal(),
-			'Without quotaspace the manual unpack is not refused'
-		);
-	}
+    // The overwhelmingly common install: no quotaspace at all. Nothing about the
+    // quota is looked at, so nothing about it can fail.
+    public function testAnUnregisteredQuotaspaceIsNeverConsulted()
+    {
+        $this->quotaspaceRegistered(false);
+        $this->assertTrue(
+            $this->silentTaskWasAllowed(),
+            'Without quotaspace the silent unpack proceeds',
+        );
+        $this->assertTrue(
+            $this->startTaskErrors() != $this->quotaRefusal(),
+            'Without quotaspace the manual unpack is not refused',
+        );
+    }
 }

@@ -49,10 +49,14 @@ catlist.refreshPanel.ptrackers = () => [
 plugin.config = theWebUI.config;
 theWebUI.config = function()
 {
-	if(plugin.canChangeColumns())
+	const changeColumns = plugin.canChangeColumns();
+	if(changeColumns)
 	{
 		theWebUI.tables.trt.columns.push({ text: theUILang.Tracker, width: '100px', id: 'tracker', type: TYPE_STRING});
-		plugin.config.call(this);
+	}
+	plugin.config.apply(this, arguments);
+	if(changeColumns)
+	{
 		plugin.reqId = theRequestManager.addRequest("trk", null, function(hash,tracker,value)
 		{
 			const domain = theWebUI.getTrackerName( tracker.name );
@@ -110,7 +114,7 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 				? (labelId.startsWith('clabel__') ? labelId.substring(8) : 'nlb')
 				: labelId.substring(1);
 			return entries.concat([
-				[theUILang.EditIcon, `theWebUI.showTracklabelsDialog('${lbl}');`]
+				[theUILang.EditIcon, () => theWebUI.showTracklabelsDialog(lbl)]
 			]);
 		}
 	}
@@ -300,5 +304,7 @@ plugin.onRemove = function()
 		theWebUI.getTable("trt").removeColumnById("tracker");
 		if(thePlugins.isInstalled("rss"))
 			theWebUI.getTable("rss").removeColumnById("tracker");
+		if(thePlugins.isInstalled("extsearch"))
+			theWebUI.getTable("teg").removeColumnById("tracker");
 	}
 }

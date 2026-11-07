@@ -191,7 +191,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		public function saveSession() {
 			$_SESSION['XMPPHP_BOSH_RID'] = (string) $this->rid;
 			$_SESSION['XMPPHP_BOSH_SID'] = (string) $this->sid;
-			$_SESSION['XMPPHP_BOSH_authed'] = (boolean) $this->authed;
+			$_SESSION['XMPPHP_BOSH_authed'] = (bool) $this->authed;
 			$_SESSION['XMPPHP_BOSH_jid'] = (string) $this->jid;
 			$_SESSION['XMPPHP_BOSH_fulljid'] = (string) $this->fulljid;
 		}

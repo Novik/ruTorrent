@@ -2,19 +2,23 @@
 
 class TapochekNetCheckImpl
 {
-    static public function download_torrent($url, $hash, $old_torrent)
+    public static function download_torrent($url, $hash, $old_torrent)
     {
         if (preg_match('`^https?://tapochek\.net/viewtopic\.php\?p=(?P<id>\d+)$`', $url, $matches)) {
-            $client = ruTrackerChecker::makeClient("https://tapochek.net/viewtopic.php?p=".$matches["id"]);
-            if ($client->status != 200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
+            $client = ruTrackerChecker::makeClient("https://tapochek.net/viewtopic.php?p=" . $matches["id"]);
+            if ($client->status != 200) {
+                return ruTrackerChecker::STE_CANT_REACH_TRACKER;
+            }
             if (preg_match('`btih:(?P<hash>[0-9A-Fa-f]{40})&dn`', $client->results, $matches)) {
-                if (strtoupper($matches["hash"])==$hash) {
+                if (strtoupper($matches["hash"]) == $hash) {
                     return  ruTrackerChecker::STE_UPTODATE;
                 }
                 if (preg_match('`\"download.php\?id=(?P<id>\d+)\"`', $client->results, $matches)) {
                     $client->setcookies();
-                    $client->fetchComplex("https://tapochek.net/download.php?id=".$matches["id"]);
-                    if ($client->status != 200) return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
+                    $client->fetchComplex("https://tapochek.net/download.php?id=" . $matches["id"]);
+                    if ($client->status != 200) {
+                        return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
+                    }
                     return ruTrackerChecker::createTorrent($client->results, $hash);
                 }
             }

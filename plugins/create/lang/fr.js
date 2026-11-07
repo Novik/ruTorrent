@@ -22,7 +22,7 @@
  theUILang.createConsole		= "Console";
  theUILang.createErrors			= "Erreurs";
  theUILang.torrentSave			= "Enregistrer";
- theUILang.torrentKill			= "Stop";
+ theUILang.torrentKill			= "Arrêter";
  theUILang.torrentKilled		= "Le processus a été interrompu.";
  theUILang.recentTrackers		= "Trackers récents";
  theUILang.source			= "Source";

@@ -41,7 +41,8 @@ div#dlgAddRSS {background-color: #222222; border-top: 1px solid #333; border-rig
   background-position-y: -48px;
 }
 
-.lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
+.lf li input.TextboxFocus, .lf_rur li input.TextboxFocus { background-color: transparent; color: #009DDD }
+.lf li input.TextboxNormal, .lf_rur li input.TextboxNormal { color: var(--text-color) }
 
 .cCell {color:#333;}
 .Cell0 {

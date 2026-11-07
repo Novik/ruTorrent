@@ -1,7 +1,7 @@
 <?php
 
-$updateInterval 	= 60;	// in minutes, zero for disable
-$ignoreLabels 	= ['tv-sonarr', 'radarr'];	// list of labels to ignore
+$updateInterval = 60;	// in minutes, zero for disable
+$ignoreLabels = ['tv-sonarr', 'radarr'];	// list of labels to ignore
 // ??=, not =: every evaluator of this file -- the CLI entry points
 // (update.php, batch_check.php) and the web path (php/getplugins.php) --
 // runs it in global scope after conf/config.php has already been loaded,

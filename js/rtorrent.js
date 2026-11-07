@@ -202,6 +202,27 @@ rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
 	this.params.push( {type : aType, value : aValue} );
 }
 
+// The text of an XMLRPC <i8> for a number or a numeric string, rounded half
+// away from zero as php/xmlrpc.php rounds it, or null if it is not a finite
+// number within 64 bits. "1.5", "1e400" or "abc" written into an <i8> as they
+// stand is not an integer, and the daemon cannot read the request.
+function xmlrpcInteger(value)
+{
+	var n = NaN;
+	if(typeof(value) == "number")
+		n = value;
+	else
+	if((typeof(value) == "string") && (value.trim() !== ""))
+		n = Number(value);
+	if(!isFinite(n))
+		return(null);
+	n = (n<0) ? -Math.round(-n) : Math.round(n);
+	// -2^63 and 2^63 are exact as doubles; the largest below 2^63 is 2^63-1024.
+	if((n < -9223372036854775808) || (n >= 9223372036854775808))
+		return(null);
+	return(n.toFixed(0));
+}
+
 function rTorrentStub( URI )
 {
 	this.action = "none";
@@ -383,7 +404,17 @@ rTorrentStub.prototype.setsettings = function()
 		var prmType = "string";
 		var prm = this.vs[i];
 		if(this.ss[i].charAt(0)=='n')
+		{
 			prmType = "i8";
+			// Empty stays empty, and so does a value with no integer text:
+			// the daemon refuses an empty <i8> as a fault, which is the
+			// outcome such a value should have.
+			if((prm !== "") && (this.ss[i]!="ndht"))
+			{
+				var text = xmlrpcInteger(prm);
+				prm = (text===null) ? "" : text;
+			}
+		}
 		var cmd = null;
 		var socketAlloc = theRequestManager.getSocketAllocCategory(this.ss[i]);
 		if(this.ss[i]=="ndht")
@@ -904,6 +935,37 @@ rTorrentStub.prototype.processAction = function(actionSuffix, data)
 	return parseFunc in this ? this[parseFunc](data) : data;
 }
 
+// An XMLRPC fault delivered with an error status names the reason in faultString.
+// The envelope around it is not something to show a person, so hand back the
+// sentence; a body that is not a fault is returned as it came.
+function getXMLRPCFaultString(text)
+{
+	if((typeof(text) != "string") || (text.indexOf("faultString") < 0))
+		return(text);
+	var doc = null;
+	try { doc = $.parseXML(text); } catch(e) { return(text); }
+	if(!doc)
+		return(text);
+	var names = doc.getElementsByTagName("name");
+	for(var i=0; i<names.length; i++)
+		if(names[i].childNodes[0] && (names[i].childNodes[0].data == "faultString"))
+		{
+			var values = names[i].parentNode.getElementsByTagName("value");
+			if(values.length)
+				return($(values[0]).text());
+		}
+	return(text);
+}
+
+// plugins/httprpc/action.php names the daemon's state in X-rTorrent-State on the
+// one answer that establishes it, and says "unreachable" there. Reading it out of
+// band leaves the sentence in the body to the reader, in whatever language it is
+// written, and tells that answer apart from every other 500 a door can send.
+function rTorrentStateHeader(jqXHR)
+{
+	return(jqXHR.getResponseHeader("X-rTorrent-State"));
+}
+
 rTorrentStub.prototype.getResponse = function(data)
 {
 	var ret = "";
@@ -1300,6 +1362,41 @@ rTorrentStub.prototype.listResponse = function(data)
 {
 	/** @type {ListResponseType} */
 	var ret = { labels: {}, labels_size: {}, torrents: {} };
+	// Admit the entire delta before changing the shared cache. PHP encodes empty
+	// maps as [] and sparse row deltas as objects, so validate merged rows.
+	var validMap = function(value) {
+		return value !== null && typeof value === "object" &&
+			(!Array.isArray(value) || value.length === 0);
+	};
+	var valid = validMap(data) && Number.isInteger(data.cid) &&
+		validMap(data.t) && (data.full === undefined || data.full === 0 || data.full === 1) &&
+		(data.d === undefined || (Array.isArray(data.d) && data.d.every(function(hash) {
+			return typeof hash === "string" && /^[a-f0-9]{40}$/i.test(hash);
+		})));
+	if(valid)
+	{
+		var deleted = new Set(data.d || []);
+		valid = Object.keys(data.t).every(function(hash) {
+			var values = data.t[hash];
+			if(!/^[a-f0-9]{40}$/i.test(hash) || values === null || typeof values !== "object")
+				return false;
+			if(!Object.keys(values).every(function(key) {
+				return /^(0|[1-9][0-9]*)$/.test(key) &&
+					(typeof values[key] === "string" || typeof values[key] === "number");
+			}))
+				return false;
+			var previous = !data.full && !deleted.has(hash) &&
+				theRequestManager.torrents[hash];
+			var merged = Object.assign({}, previous || {}, values);
+			return [4, 25, 29].every(function(key) { return typeof merged[key] === "string"; });
+		});
+	}
+	if(!valid)
+	{
+		this.invalidListResponse = true;
+		this.faultString.push("Invalid list response ["+this.action+"]");
+		return;
+	}
 	theRequestManager.cid = data.cid;
 	// A full answer lists every torrent there is, so anything held that it does
 	// not mention is gone. Deletions are reported against a previous state the
@@ -1420,6 +1517,13 @@ rTorrentStub.prototype.logErrorMessages = function()
 function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialData)
 {
 	var stub = URI instanceof rTorrentStub ? URI : new rTorrentStub(URI);
+	// A failed request and a rejected list reach the error callback with the
+	// same arguments, including the daemon state named by X-rTorrent-State.
+	var reportError = function(jqXHR, status, textStatus, response)
+	{
+		onError(status+" ["+textStatus+","+stub.action+"]", response,
+			rTorrentStateHeader(jqXHR));
+	};
 	var request = $.ajax(
 	{
 		type: stub.method,
@@ -1469,7 +1573,9 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 			try { status = jqXHR.status; response = jqXHR.responseText; } catch(e) {};
 			if( stub.dataType=="script" )
 				response = errorThrown;
-			onError(status+" ["+textStatus+","+stub.action+"]",response);
+			else
+				response = getXMLRPCFaultString(response);
+			reportError(jqXHR, status, textStatus, response);
 		}
 		stub.finishSetsettingsFailure();
 		stub = null; // Cleanup memory leak
@@ -1480,7 +1586,10 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		Ajax_UpdateTime(jqXHR);
 
 		var responseText = stub.getResponse(data);
-		stub.logErrorMessages();
+		// The error callback reports a rejected list; a second notice would repeat it.
+		var rejectedList = stub.invalidListResponse && ($type(onError)=="function");
+		if(!rejectedList)
+			stub.logErrorMessages();
 		if(!stub.isError()) {
 			if (partialData) {
 				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
@@ -1515,6 +1624,8 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		}
 		else
 		{
+			if(rejectedList)
+				reportError(jqXHR, jqXHR.status, "parsererror", "Invalid list response");
 			if(stub.xmlRPCFault)
 				stub.finishSetsettingsFailure();
 			stub.finishXMLFailure();

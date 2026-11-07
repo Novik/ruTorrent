@@ -7,32 +7,33 @@
 // unserialize the very same class.
 class CacheMergePayload
 {
-	public $hash = 'merge-cache-test.dat';
-	public $modified = false;
-	public $rows = array();
+    public $hash = 'merge-cache-test.dat';
+    public $modified = false;
+    public $rows = [];
 
-	// Deliberately left out of __sleep(), exactly like rHistoryData's own
-	// bookkeeping: the stored format stays what it always was.
-	protected $ownAdditions = array();
+    // Deliberately left out of __sleep(), exactly like rHistoryData's own
+    // bookkeeping: the stored format stays what it always was.
+    protected $ownAdditions = [];
 
-	public function __sleep()
-	{
-		return(array('hash', 'modified', 'rows'));
-	}
+    public function __sleep()
+    {
+        return(['hash', 'modified', 'rows']);
+    }
 
-	public function addRow($key)
-	{
-		$this->rows[$key] = $key;
-		$this->ownAdditions[$key] = $key;
-		return((new rCache())->set($this));
-	}
+    public function addRow($key)
+    {
+        $this->rows[$key] = $key;
+        $this->ownAdditions[$key] = $key;
+        return((new rCache())->set($this));
+    }
 
-	public function merge($instance, $arg)
-	{
-		$rows = (is_object($instance) && is_array($instance->rows)) ? $instance->rows : array();
-		foreach($this->ownAdditions as $key => $value)
-			$rows[$key] = $value;
-		$this->rows = $rows;
-		return(true);
-	}
+    public function merge($instance, $arg)
+    {
+        $rows = (is_object($instance) && is_array($instance->rows)) ? $instance->rows : [];
+        foreach ($this->ownAdditions as $key => $value) {
+            $rows[$key] = $value;
+        }
+        $this->rows = $rows;
+        return(true);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
-require_once( 'ratio.php' );
+
+require_once('ratio.php');
 
 $rat = rRatio::load();
 $rat->set();
-CachedEcho::send($rat->get(),"application/javascript");
+CachedEcho::send($rat->get(), "application/javascript");

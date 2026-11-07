@@ -49,7 +49,7 @@
  theUILang.country[ "bt" ] = "Bhoutan";
  theUILang.country[ "bv" ] = "Île Bouvet";
  theUILang.country[ "bw" ] = "Botswana";
- theUILang.country[ "by" ] = "Belarus";
+ theUILang.country[ "by" ] = "Biélorussie";
  theUILang.country[ "bz" ] = "Belize";
  theUILang.country[ "ca" ] = "Canada";
  theUILang.country[ "cc" ] = "Îles Cocos";
@@ -199,7 +199,7 @@
  theUILang.country[ "pr" ] = "Porto Rico";
  theUILang.country[ "ps" ] = "Palestine";
  theUILang.country[ "pt" ] = "Portugal";
- theUILang.country[ "pw" ] = "Palau";
+ theUILang.country[ "pw" ] = "Palaos";
  theUILang.country[ "py" ] = "Paraguay";
  theUILang.country[ "qa" ] = "Qatar";
  theUILang.country[ "re" ] = "Réunion";
@@ -224,7 +224,7 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Soudan du Sud";
  theUILang.country[ "st" ] = "Sao Tomé et Principe";
- theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sv" ] = "Salvador";
  theUILang.country[ "sx" ] = "Saint-Martin";
  theUILang.country[ "sy" ] = "Syrie";
  theUILang.country[ "sz" ] = "Swaziland";

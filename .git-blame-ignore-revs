@@ -1,0 +1,7 @@
+# Formatting-only commits, skipped by git blame (GitHub reads this file;
+# locally: git config blame.ignoreRevsFile .git-blame-ignore-revs).
+
+# Apply the code style rules that change code tokens
+947ec9bc74bbde3b91b5a115a46052a633b41d11
+# Format PHP to PER Coding Style 3.0
+08ba1df75601911355b0ea3f0f6bebf251af5eb5

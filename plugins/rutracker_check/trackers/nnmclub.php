@@ -103,439 +103,6 @@ class NNMClubCheckImpl
     /** @var false|null|array false = not looked up, null = absent, array = found */
     private static $donor = false;
 
-    private static function log($message)
-    {
-        ruTrackerChecker::logDebug('[NNMClub] ' . $message);
-    }
-
-    // fetch() (not fetchComplex()) deliberately bypasses loginmgr: this handler
-    // works as a guest, and a Cloudflare-blocked login would poison the check.
-    private static function makeGuestClient()
-    {
-        $client = new Snoopy();
-        $client->read_timeout = 5;
-        $client->_fp_timeout = 5;
-        $client->agent = ruTrackerChecker::USER_AGENT;
-        return $client;
-    }
-
-    private static function guestFetch($client, $url, $method = "GET", $contentType = "", $body = "")
-    {
-        @$client->fetch($url, $method, $contentType, $body);
-        // Socket errors are negative; the https path stores curl's exit code,
-        // which is below any real HTTP status.
-        if ($client->status < 100) {
-            self::log("Guest fetch failed: url={$url} status={$client->status}");
-        }
-    }
-
-    private static function looksLikeChallengePage($html)
-    {
-        return is_string($html)
-            && $html !== ''
-            && (bool) preg_match('/cf-chl|turnstile|captcha|cloudflare|just a moment|challenge-platform/i', $html);
-    }
-
-    /**
-     * Parse and normalize an NNMClub viewtopic URL (?p=... or ?t=...).
-     *
-     * @return array|null ['host' => string, 'query' => string]
-     */
-    private static function parseTopicRef($url)
-    {
-        if (!is_string($url) || $url === '') return null;
-
-        $parts = @parse_url(trim($url));
-        if (!is_array($parts)) return null;
-
-        if (isset($parts['scheme']) && !preg_match('`^https?$`i', $parts['scheme'])) {
-            return null;
-        }
-
-        $hostOnly = isset($parts['host']) ? strtolower($parts['host']) : self::SITE_DOMAIN;
-        if (!self::isAllowedTopicHost($hostOnly)) {
-            return null;
-        }
-        $host = $hostOnly;
-
-        if (isset($parts['port'])) {
-            $port = (int) $parts['port'];
-            if ($port < 1 || $port > 65535) return null;
-            $host .= ':' . $port;
-        }
-
-        $path = isset($parts['path']) ? $parts['path'] : '';
-        if (!preg_match('`^/forum/viewtopic\.php/?$`i', $path)) {
-            return null;
-        }
-
-        $query = [];
-        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
-
-        foreach (['p', 't'] as $param) {
-            if (array_key_exists($param, $query)
-                && is_scalar($query[$param])
-                && ctype_digit((string) $query[$param])) {
-                return [
-                    'host' => $host,
-                    'query' => $param . '=' . $query[$param],
-                ];
-            }
-        }
-
-        return null;
-    }
-
-    private static function isAllowedTopicHost($host)
-    {
-        $normalized = preg_replace('/^www\./i', '', (string) $host);
-        return in_array($normalized, self::TOPIC_HOSTS, true);
-    }
-
-    private static function isAllowedTrackerHost($host)
-    {
-        return is_string($host)
-            && in_array(strtolower($host), self::TRACKER_HOSTS, true);
-    }
-
-    /**
-     * Parse one announce URL into a typed credential descriptor. `mode` names
-     * the URL form the passkey was found in: `path` (/PASSKEY/announce, the
-     * form in currently served .torrents) or `query` (announce?uk=PASSKEY,
-     * the form in older downloads). Both forms carry the same account
-     * passkey; when a URL carries both, the query value wins.
-     *
-     * @return array|null ['mode' => 'path'|'query', 'token' => string, 'announceUrl' => string]
-     */
-    private static function parseAuthUrl($url)
-    {
-        if (!is_string($url) || $url === '') return null;
-
-        $url = trim($url);
-        $parts = @parse_url($url);
-        if (!is_array($parts)
-            || !isset($parts['scheme'], $parts['host'])
-            || !preg_match('/^https?$/i', $parts['scheme'])
-            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
-            return null;
-        }
-        $path = isset($parts['path']) ? $parts['path'] : '';
-        if (!preg_match(self::ANNOUNCE_PATH_RE, $path, $match)) return null;
-
-        $query = array();
-        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
-        if (isset($query['uk'])
-            && is_scalar($query['uk'])
-            && preg_match(self::TOKEN_RE, (string) $query['uk'])
-            && !preg_match(self::DUMMY_PASSKEY_RE, (string) $query['uk'])) {
-            return array(
-                'mode' => 'query',
-                'token' => (string) $query['uk'],
-                'announceUrl' => $url,
-            );
-        }
-
-        if (isset($match[2]) && $match[2] !== ''
-            && !preg_match(self::DUMMY_PASSKEY_RE, $match[2])) {
-            return array(
-                'mode' => 'path',
-                'token' => $match[2],
-                'announceUrl' => $url,
-            );
-        }
-        return null;
-    }
-
-    /**
-     * Extract a typed credential from announce metadata or raw session bencode.
-     *
-     * @param  string|array|null $announce
-     * @param  string|null       $requiredMode Optional `path` or `query` filter
-     * @return array|null
-     */
-    private static function extractAuth($announce, $requiredMode = null)
-    {
-        if ($announce === null) return null;
-
-        if (is_array($announce)) {
-            foreach ($announce as $value) {
-                $auth = self::extractAuth($value, $requiredMode);
-                if ($auth !== null) return $auth;
-            }
-            return null;
-        }
-        if (!is_string($announce)) return null;
-
-        $auth = self::parseAuthUrl($announce);
-        if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
-            return $auth;
-        }
-
-        if (preg_match_all(self::TRACKER_URL_RE, $announce, $matches)) {
-            foreach ($matches[0] as $url) {
-                $auth = self::parseAuthUrl($url);
-                if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
-                    return $auth;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Scan the rTorrent session directory for a donor passkey, consulted only
-     * when the torrent being checked carries no usable key of its own. Only a
-     * key another torrent published in the query (`uk=`) form is accepted:
-     * that form has always been profile-wide, whereas a path-form key inside
-     * a foreign torrent belongs to whoever downloaded that file, and real
-     * sessions do carry torrents fetched from other accounts. The result (or
-     * its absence) is cached per process.
-     */
-    private static function findDonorAuth()
-    {
-        if (self::$donor !== false) {
-            return self::$donor;
-        }
-        self::$donor = null;
-
-        $sessionDir = rtrim((string) rTorrentSettings::get()->session, '/');
-        if ($sessionDir === '') {
-            self::log("No session directory, skipping reusable credential lookup");
-            return null;
-        }
-
-        $files = @glob($sessionDir . '/*.torrent');
-        if (!$files) {
-            self::log("No session torrents found for reusable credential lookup");
-            return null;
-        }
-
-        foreach ($files as $path) {
-            // announce keys precede the info dict in bencode order, so a
-            // bounded head read finds any credential the file has.
-            $head = @file_get_contents($path, false, null, 0, 65536);
-            if ($head === false || !preg_match('/nnm-?club|searchtor/i', $head)) {
-                continue;
-            }
-            $auth = self::extractAuth($head, 'query');
-            if ($auth !== null) {
-                return (self::$donor = $auth);
-            }
-        }
-        self::log("Reusable profile credential not found in session torrents");
-        return null;
-    }
-
-    private static function rebuildTrackerUrl($parts, $path, $query)
-    {
-        $url = strtolower($parts['scheme']) . '://' . strtolower($parts['host']);
-        if (isset($parts['port'])) $url .= ':' . (int) $parts['port'];
-        $url .= $path;
-        if (count($query)) {
-            $url .= '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
-        }
-        return $url;
-    }
-
-    /**
-     * Patch every NNMClub announce URL in a torrent with the account passkey.
-     *
-     * @return bool True when the torrent carries at least one NNMClub
-     *              announce URL; each such URL now holds the passkey, whether
-     *              or not its text needed changing.
-     */
-    private static function patchAuthInTorrent($torrent, $auth)
-    {
-        if (!is_array($auth)
-            || !isset($auth['token'])
-            || !preg_match(self::TOKEN_RE, (string) $auth['token'])) {
-            return false;
-        }
-        $token = (string) $auth['token'];
-        $found = false;
-
-        $announce = $torrent->announce();
-        if (is_string($announce) && $announce !== '') {
-            $patched = self::injectAuthIntoUrl($announce, $token);
-            if ($patched !== null) {
-                $found = true;
-                if ($patched !== $announce) {
-                    $torrent->announce($patched);
-                }
-            }
-        }
-
-        $list = $torrent->announce_list();
-        if (is_array($list)) {
-            $newList = [];
-            $listChanged = false;
-            foreach ($list as $tier) {
-                $newTier = [];
-                $urls = is_array($tier) ? $tier : [$tier];
-                foreach ($urls as $url) {
-                    $patchedUrl = is_string($url)
-                        ? self::injectAuthIntoUrl($url, $token)
-                        : null;
-                    if ($patchedUrl !== null) {
-                        $found = true;
-                        if ($patchedUrl !== $url) {
-                            $listChanged = true;
-                            $url = $patchedUrl;
-                        }
-                    }
-                    $newTier[] = $url;
-                }
-                $newList[] = $newTier;
-            }
-            if ($listChanged) {
-                $torrent->announce_list($newList);
-            }
-        }
-
-        return $found;
-    }
-
-    /**
-     * Write the account passkey into an NNMClub announce URL. Every form the
-     * URL already carries is updated in place -- the tracker serves both forms
-     * and they hold the same value -- and a URL with no passkey at all gets
-     * the query form: the only form this handler wrote before, and torrents
-     * carrying it announce successfully on the live fleet.
-     *
-     * @param  string $token Passkey already validated against TOKEN_RE
-     * @return string|null Patched URL (possibly identical to the input), or
-     *                     null when the URL is not an NNMClub announce URL
-     */
-    private static function injectAuthIntoUrl($url, $token)
-    {
-        if (!is_string($url)) return null;
-        $parts = @parse_url($url);
-        if (!is_array($parts)
-            || !isset($parts['scheme'], $parts['host'], $parts['path'])
-            || !preg_match('/^https?$/i', $parts['scheme'])
-            || !self::isAllowedTrackerHost(strtolower($parts['host']))
-            || !preg_match(self::ANNOUNCE_PATH_RE, $parts['path'], $match)) {
-            return null;
-        }
-
-        $query = array();
-        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
-
-        if (isset($match[2]) && $match[2] !== '') {
-            $path = $match[1] . '/' . $token . '/announce';
-            if (isset($query['uk'])) {
-                $query['uk'] = $token;
-            }
-        } else {
-            $path = $match[1] . '/announce';
-            $query['uk'] = $token;
-        }
-        return self::rebuildTrackerUrl($parts, $path, $query);
-    }
-
-    /**
-     * Check whether a scrape response lists the given hash. Scrape bodies are
-     * tiny bencoded dicts keyed by raw 20-byte hashes, so finding the bencoded
-     * key is enough; phase 2 (guest download + hash comparison) independently
-     * re-verifies before any replacement happens.
-     *
-     * @param  string $binaryHash Raw 20-byte hash
-     */
-    private static function scrapeContainsHash($payload, $binaryHash)
-    {
-        return is_string($payload)
-            && is_string($binaryHash) && strlen($binaryHash) === 20
-            && isset($payload[0]) && $payload[0] === 'd'
-            && strpos($payload, '20:' . $binaryHash) !== false;
-    }
-
-    /** Derive a scrape URL without changing the credential's meaning or case. */
-    private static function buildScrapeUrl($auth, $binaryHash)
-    {
-        if (!is_array($auth) || !isset($auth['mode'], $auth['token'], $auth['announceUrl'])) {
-            return null;
-        }
-        $parts = @parse_url($auth['announceUrl']);
-        if (!is_array($parts)
-            || !isset($parts['scheme'], $parts['host'], $parts['path'])
-            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
-            return null;
-        }
-
-        $path = preg_replace('`/announce/?$`', '/scrape', $parts['path'], 1, $count);
-        if ($count !== 1 || $path === null) return null;
-
-        $query = array();
-        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
-        unset($query['info_hash']);
-        if ($auth['mode'] === 'query') {
-            $query['uk'] = $auth['token'];
-        } elseif ($auth['mode'] !== 'path') {
-            return null;
-        }
-
-        $url = self::rebuildTrackerUrl($parts, $path, $query);
-        return $url . (count($query) ? '&' : '?') . 'info_hash=' . rawurlencode($binaryHash);
-    }
-
-    /**
-     * Scrape the tracker endpoint associated with a typed credential. The
-     * passkey is the account's key in either form, so when the credential's
-     * own host fails the current official IPv4 endpoint is consulted too, in
-     * the same form the credential already uses.
-     *
-     * @return int One of SCRAPE_RESULT_* constants
-     */
-    private static function checkViaScrape($auth, $hash)
-    {
-        if (!is_string($hash) || !preg_match('/^[0-9A-F]{40}$/i', $hash)) {
-            self::log("Scrape skipped: invalid info hash format {$hash}");
-            return self::SCRAPE_RESULT_FAILED;
-        }
-        $binary = pack('H*', $hash);
-
-        $urls = array();
-        $primary = self::buildScrapeUrl($auth, $binary);
-        if ($primary !== null) $urls[] = $primary;
-        $mode = isset($auth['mode']) ? $auth['mode'] : null;
-        if (isset($auth['token']) && ($mode === 'query' || $mode === 'path')) {
-            $fallback = self::buildScrapeUrl(array(
-                'mode' => $mode,
-                'token' => $auth['token'],
-                'announceUrl' => $mode === 'query'
-                    ? 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token'])
-                    : 'http://bt.searchtor.to/' . rawurlencode($auth['token']) . '/announce',
-            ), $binary);
-            if ($fallback !== null && !in_array($fallback, $urls, true)) $urls[] = $fallback;
-        }
-        if (!count($urls)) return self::SCRAPE_RESULT_FAILED;
-
-        $sawNotFound = false;
-
-        foreach ($urls as $url) {
-            $host = @parse_url($url, PHP_URL_HOST);
-            $host = is_string($host) ? $host : 'unknown';
-
-            $client = ruTrackerChecker::makeClient($url);
-
-            if ($client->status == 200
-                && is_string($client->results)
-                && $client->results !== '') {
-                if (self::scrapeContainsHash($client->results, $binary)) {
-                    return self::SCRAPE_RESULT_UPTODATE;
-                }
-                self::log("Scrape response OK on {$host}, hash {$hash} not found");
-                $sawNotFound = true;
-                continue;
-            }
-            self::log("Scrape failed on {$host}: status={$client->status}");
-        }
-
-        return $sawNotFound
-            ? self::SCRAPE_RESULT_NOT_FOUND
-            : self::SCRAPE_RESULT_FAILED;
-    }
-
     /**
      * Check whether an NNMClub torrent needs updating.
      *
@@ -560,10 +127,14 @@ class NNMClubCheckImpl
             self::log("Start announce-only check for {$hash}; guest replacement will be unavailable");
         }
 
-        $announces = array($url);
+        $announces = [$url];
         if (is_object($old_torrent)) {
-            if (method_exists($old_torrent, 'announce')) $announces[] = $old_torrent->announce();
-            if (method_exists($old_torrent, 'announce_list')) $announces[] = $old_torrent->announce_list();
+            if (method_exists($old_torrent, 'announce')) {
+                $announces[] = $old_torrent->announce();
+            }
+            if (method_exists($old_torrent, 'announce_list')) {
+                $announces[] = $old_torrent->announce_list();
+            }
         }
         // The passkey this torrent itself announces with is the account's own
         // key (see the file header), so one credential serves both the scrape
@@ -669,6 +240,467 @@ class NNMClubCheckImpl
         self::log("createTorrent result for {$hash}: " . var_export($replaceResult, true));
         return $replaceResult;
     }
+
+    private static function log($message)
+    {
+        ruTrackerChecker::logDebug('[NNMClub] ' . $message);
+    }
+
+    // fetch() (not fetchComplex()) deliberately bypasses loginmgr: this handler
+    // works as a guest, and a Cloudflare-blocked login would poison the check.
+    private static function makeGuestClient()
+    {
+        $client = new Snoopy();
+        $client->read_timeout = 5;
+        $client->_fp_timeout = 5;
+        $client->agent = ruTrackerChecker::USER_AGENT;
+        return $client;
+    }
+
+    private static function guestFetch($client, $url, $method = "GET", $contentType = "", $body = "")
+    {
+        @$client->fetch($url, $method, $contentType, $body);
+        // Socket errors are negative; the https path stores curl's exit code,
+        // which is below any real HTTP status.
+        if ($client->status < 100) {
+            self::log("Guest fetch failed: url={$url} status={$client->status}");
+        }
+    }
+
+    private static function looksLikeChallengePage($html)
+    {
+        return is_string($html)
+            && $html !== ''
+            && (bool) preg_match('/cf-chl|turnstile|captcha|cloudflare|just a moment|challenge-platform/i', $html);
+    }
+
+    /**
+     * Parse and normalize an NNMClub viewtopic URL (?p=... or ?t=...).
+     *
+     * @return array|null ['host' => string, 'query' => string]
+     */
+    private static function parseTopicRef($url)
+    {
+        if (!is_string($url) || $url === '') {
+            return null;
+        }
+
+        $parts = @parse_url(trim($url));
+        if (!is_array($parts)) {
+            return null;
+        }
+
+        if (isset($parts['scheme']) && !preg_match('`^https?$`i', $parts['scheme'])) {
+            return null;
+        }
+
+        $hostOnly = isset($parts['host']) ? strtolower($parts['host']) : self::SITE_DOMAIN;
+        if (!self::isAllowedTopicHost($hostOnly)) {
+            return null;
+        }
+        $host = $hostOnly;
+
+        if (isset($parts['port'])) {
+            $port = (int) $parts['port'];
+            if ($port < 1 || $port > 65535) {
+                return null;
+            }
+            $host .= ':' . $port;
+        }
+
+        $path = isset($parts['path']) ? $parts['path'] : '';
+        if (!preg_match('`^/forum/viewtopic\.php/?$`i', $path)) {
+            return null;
+        }
+
+        $query = [];
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+
+        foreach (['p', 't'] as $param) {
+            if (array_key_exists($param, $query)
+                && is_scalar($query[$param])
+                && ctype_digit((string) $query[$param])) {
+                return [
+                    'host' => $host,
+                    'query' => $param . '=' . $query[$param],
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    private static function isAllowedTopicHost($host)
+    {
+        $normalized = preg_replace('/^www\./i', '', (string) $host);
+        return in_array($normalized, self::TOPIC_HOSTS, true);
+    }
+
+    private static function isAllowedTrackerHost($host)
+    {
+        return is_string($host)
+            && in_array(strtolower($host), self::TRACKER_HOSTS, true);
+    }
+
+    /**
+     * Parse one announce URL into a typed credential descriptor. `mode` names
+     * the URL form the passkey was found in: `path` (/PASSKEY/announce, the
+     * form in currently served .torrents) or `query` (announce?uk=PASSKEY,
+     * the form in older downloads). Both forms carry the same account
+     * passkey; when a URL carries both, the query value wins.
+     *
+     * @return array|null ['mode' => 'path'|'query', 'token' => string, 'announceUrl' => string]
+     */
+    private static function parseAuthUrl($url)
+    {
+        if (!is_string($url) || $url === '') {
+            return null;
+        }
+
+        $url = trim($url);
+        $parts = @parse_url($url);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'])
+            || !preg_match('/^https?$/i', $parts['scheme'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
+            return null;
+        }
+        $path = isset($parts['path']) ? $parts['path'] : '';
+        if (!preg_match(self::ANNOUNCE_PATH_RE, $path, $match)) {
+            return null;
+        }
+
+        $query = [];
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+        if (isset($query['uk'])
+            && is_scalar($query['uk'])
+            && preg_match(self::TOKEN_RE, (string) $query['uk'])
+            && !preg_match(self::DUMMY_PASSKEY_RE, (string) $query['uk'])) {
+            return [
+                'mode' => 'query',
+                'token' => (string) $query['uk'],
+                'announceUrl' => $url,
+            ];
+        }
+
+        if (isset($match[2]) && $match[2] !== ''
+            && !preg_match(self::DUMMY_PASSKEY_RE, $match[2])) {
+            return [
+                'mode' => 'path',
+                'token' => $match[2],
+                'announceUrl' => $url,
+            ];
+        }
+        return null;
+    }
+
+    /**
+     * Extract a typed credential from announce metadata or raw session bencode.
+     *
+     * @param  string|array|null $announce
+     * @param  string|null       $requiredMode Optional `path` or `query` filter
+     * @return array|null
+     */
+    private static function extractAuth($announce, $requiredMode = null)
+    {
+        if ($announce === null) {
+            return null;
+        }
+
+        if (is_array($announce)) {
+            foreach ($announce as $value) {
+                $auth = self::extractAuth($value, $requiredMode);
+                if ($auth !== null) {
+                    return $auth;
+                }
+            }
+            return null;
+        }
+        if (!is_string($announce)) {
+            return null;
+        }
+
+        $auth = self::parseAuthUrl($announce);
+        if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
+            return $auth;
+        }
+
+        if (preg_match_all(self::TRACKER_URL_RE, $announce, $matches)) {
+            foreach ($matches[0] as $url) {
+                $auth = self::parseAuthUrl($url);
+                if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
+                    return $auth;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Scan the rTorrent session directory for a donor passkey, consulted only
+     * when the torrent being checked carries no usable key of its own. Only a
+     * key another torrent published in the query (`uk=`) form is accepted:
+     * that form has always been profile-wide, whereas a path-form key inside
+     * a foreign torrent belongs to whoever downloaded that file, and real
+     * sessions do carry torrents fetched from other accounts. The result (or
+     * its absence) is cached per process.
+     */
+    private static function findDonorAuth()
+    {
+        if (self::$donor !== false) {
+            return self::$donor;
+        }
+        self::$donor = null;
+
+        $sessionDir = rtrim((string) rTorrentSettings::get()->session, '/');
+        if ($sessionDir === '') {
+            self::log("No session directory, skipping reusable credential lookup");
+            return null;
+        }
+
+        $files = @glob($sessionDir . '/*.torrent');
+        if (!$files) {
+            self::log("No session torrents found for reusable credential lookup");
+            return null;
+        }
+
+        foreach ($files as $path) {
+            // announce keys precede the info dict in bencode order, so a
+            // bounded head read finds any credential the file has.
+            $head = @file_get_contents($path, false, null, 0, 65536);
+            if ($head === false || !preg_match('/nnm-?club|searchtor/i', $head)) {
+                continue;
+            }
+            $auth = self::extractAuth($head, 'query');
+            if ($auth !== null) {
+                return (self::$donor = $auth);
+            }
+        }
+        self::log("Reusable profile credential not found in session torrents");
+        return null;
+    }
+
+    private static function rebuildTrackerUrl($parts, $path, $query)
+    {
+        $url = strtolower($parts['scheme']) . '://' . strtolower($parts['host']);
+        if (isset($parts['port'])) {
+            $url .= ':' . (int) $parts['port'];
+        }
+        $url .= $path;
+        if (count($query)) {
+            $url .= '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+        }
+        return $url;
+    }
+
+    /**
+     * Patch every NNMClub announce URL in a torrent with the account passkey.
+     *
+     * @return bool True when the torrent carries at least one NNMClub
+     *              announce URL; each such URL now holds the passkey, whether
+     *              or not its text needed changing.
+     */
+    private static function patchAuthInTorrent($torrent, $auth)
+    {
+        if (!is_array($auth)
+            || !isset($auth['token'])
+            || !preg_match(self::TOKEN_RE, (string) $auth['token'])) {
+            return false;
+        }
+        $token = (string) $auth['token'];
+        $found = false;
+
+        $announce = $torrent->announce();
+        if (is_string($announce) && $announce !== '') {
+            $patched = self::injectAuthIntoUrl($announce, $token);
+            if ($patched !== null) {
+                $found = true;
+                if ($patched !== $announce) {
+                    $torrent->announce($patched);
+                }
+            }
+        }
+
+        $list = $torrent->announce_list();
+        if (is_array($list)) {
+            $newList = [];
+            $listChanged = false;
+            foreach ($list as $tier) {
+                $newTier = [];
+                $urls = is_array($tier) ? $tier : [$tier];
+                foreach ($urls as $url) {
+                    $patchedUrl = is_string($url)
+                        ? self::injectAuthIntoUrl($url, $token)
+                        : null;
+                    if ($patchedUrl !== null) {
+                        $found = true;
+                        if ($patchedUrl !== $url) {
+                            $listChanged = true;
+                            $url = $patchedUrl;
+                        }
+                    }
+                    $newTier[] = $url;
+                }
+                $newList[] = $newTier;
+            }
+            if ($listChanged) {
+                $torrent->announce_list($newList);
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * Write the account passkey into an NNMClub announce URL. Every form the
+     * URL already carries is updated in place -- the tracker serves both forms
+     * and they hold the same value -- and a URL with no passkey at all gets
+     * the query form: the only form this handler wrote before, and torrents
+     * carrying it announce successfully on the live fleet.
+     *
+     * @param  string $token Passkey already validated against TOKEN_RE
+     * @return string|null Patched URL (possibly identical to the input), or
+     *                     null when the URL is not an NNMClub announce URL
+     */
+    private static function injectAuthIntoUrl($url, $token)
+    {
+        if (!is_string($url)) {
+            return null;
+        }
+        $parts = @parse_url($url);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'], $parts['path'])
+            || !preg_match('/^https?$/i', $parts['scheme'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))
+            || !preg_match(self::ANNOUNCE_PATH_RE, $parts['path'], $match)) {
+            return null;
+        }
+
+        $query = [];
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+
+        if (isset($match[2]) && $match[2] !== '') {
+            $path = $match[1] . '/' . $token . '/announce';
+            if (isset($query['uk'])) {
+                $query['uk'] = $token;
+            }
+        } else {
+            $path = $match[1] . '/announce';
+            $query['uk'] = $token;
+        }
+        return self::rebuildTrackerUrl($parts, $path, $query);
+    }
+
+    /**
+     * Check whether a scrape response lists the given hash. Scrape bodies are
+     * tiny bencoded dicts keyed by raw 20-byte hashes, so finding the bencoded
+     * key is enough; phase 2 (guest download + hash comparison) independently
+     * re-verifies before any replacement happens.
+     *
+     * @param  string $binaryHash Raw 20-byte hash
+     */
+    private static function scrapeContainsHash($payload, $binaryHash)
+    {
+        return is_string($payload)
+            && is_string($binaryHash) && strlen($binaryHash) === 20
+            && isset($payload[0]) && $payload[0] === 'd'
+            && strpos($payload, '20:' . $binaryHash) !== false;
+    }
+
+    /** Derive a scrape URL without changing the credential's meaning or case. */
+    private static function buildScrapeUrl($auth, $binaryHash)
+    {
+        if (!is_array($auth) || !isset($auth['mode'], $auth['token'], $auth['announceUrl'])) {
+            return null;
+        }
+        $parts = @parse_url($auth['announceUrl']);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'], $parts['path'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
+            return null;
+        }
+
+        $path = preg_replace('`/announce/?$`', '/scrape', $parts['path'], 1, $count);
+        if ($count !== 1 || $path === null) {
+            return null;
+        }
+
+        $query = [];
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+        unset($query['info_hash']);
+        if ($auth['mode'] === 'query') {
+            $query['uk'] = $auth['token'];
+        } elseif ($auth['mode'] !== 'path') {
+            return null;
+        }
+
+        $url = self::rebuildTrackerUrl($parts, $path, $query);
+        return $url . (count($query) ? '&' : '?') . 'info_hash=' . rawurlencode($binaryHash);
+    }
+
+    /**
+     * Scrape the tracker endpoint associated with a typed credential. The
+     * passkey is the account's key in either form, so when the credential's
+     * own host fails the current official IPv4 endpoint is consulted too, in
+     * the same form the credential already uses.
+     *
+     * @return int One of SCRAPE_RESULT_* constants
+     */
+    private static function checkViaScrape($auth, $hash)
+    {
+        if (!is_string($hash) || !preg_match('/^[0-9A-F]{40}$/i', $hash)) {
+            self::log("Scrape skipped: invalid info hash format {$hash}");
+            return self::SCRAPE_RESULT_FAILED;
+        }
+        $binary = pack('H*', $hash);
+
+        $urls = [];
+        $primary = self::buildScrapeUrl($auth, $binary);
+        if ($primary !== null) {
+            $urls[] = $primary;
+        }
+        $mode = isset($auth['mode']) ? $auth['mode'] : null;
+        if (isset($auth['token']) && ($mode === 'query' || $mode === 'path')) {
+            $fallback = self::buildScrapeUrl([
+                'mode' => $mode,
+                'token' => $auth['token'],
+                'announceUrl' => $mode === 'query'
+                    ? 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token'])
+                    : 'http://bt.searchtor.to/' . rawurlencode($auth['token']) . '/announce',
+            ], $binary);
+            if ($fallback !== null && !in_array($fallback, $urls, true)) {
+                $urls[] = $fallback;
+            }
+        }
+        if (!count($urls)) {
+            return self::SCRAPE_RESULT_FAILED;
+        }
+
+        $sawNotFound = false;
+
+        foreach ($urls as $url) {
+            $host = @parse_url($url, PHP_URL_HOST);
+            $host = is_string($host) ? $host : 'unknown';
+
+            $client = ruTrackerChecker::makeClient($url);
+
+            if ($client->status == 200
+                && is_string($client->results)
+                && $client->results !== '') {
+                if (self::scrapeContainsHash($client->results, $binary)) {
+                    return self::SCRAPE_RESULT_UPTODATE;
+                }
+                self::log("Scrape response OK on {$host}, hash {$hash} not found");
+                $sawNotFound = true;
+                continue;
+            }
+            self::log("Scrape failed on {$host}: status={$client->status}");
+        }
+
+        return $sawNotFound
+            ? self::SCRAPE_RESULT_NOT_FOUND
+            : self::SCRAPE_RESULT_FAILED;
+    }
 }
 
 // Register this tracker handler with ruTrackerChecker.
@@ -677,5 +709,5 @@ class NNMClubCheckImpl
 ruTrackerChecker::registerTracker(
     "/(nnm-club|nnmclub)\./",
     "/(?:nnm-club|nnmclub)\.|(?:ipv6\.)?bt\.searchtor\.to/i",
-    "NNMClubCheckImpl::download_torrent"
+    "NNMClubCheckImpl::download_torrent",
 );

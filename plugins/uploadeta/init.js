@@ -154,4 +154,14 @@ plugin.onRemove = function() {
 	theWebUI.getTable("trt").removeColumnById("upload_target");
 	theWebUI.getTable("trt").removeColumnById("upload_remaining");
 	theWebUI.getTable("trt").removeColumnById("upload_eta");
+	if(thePlugins.isInstalled("rss")) {
+		theWebUI.getTable("rss").removeColumnById("upload_target");
+		theWebUI.getTable("rss").removeColumnById("upload_remaining");
+		theWebUI.getTable("rss").removeColumnById("upload_eta");
+	}
+	if(thePlugins.isInstalled("extsearch")) {
+		theWebUI.getTable("teg").removeColumnById("upload_target");
+		theWebUI.getTable("teg").removeColumnById("upload_remaining");
+		theWebUI.getTable("teg").removeColumnById("upload_eta");
+	}
 }

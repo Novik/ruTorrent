@@ -202,10 +202,21 @@ a:hover, a:focus {
    edge of the page — a fixed element flush with it gets its background
    color extended into the iOS status-bar area, so leave a small strip
    of the page background above the toast (plus the safe-area inset,
-   for when the page runs edge-to-edge in standalone mode) */
-#alert_placeholder .alert {
+   for when the page runs edge-to-edge in standalone mode). The toasts
+   stack in the fixed placeholder instead of each being fixed at the
+   same spot, so every result of a batch upload stays readable; a stack
+   taller than the screen scrolls */
+#alert_placeholder {
+  position: fixed;
   top: calc(env(safe-area-inset-top, 0px) + 5px);
-  margin: 0 5px;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  max-height: calc(100% - env(safe-area-inset-top, 0px) - 10px);
+  overflow-y: auto;
+}
+#alert_placeholder .alert {
+  margin: 0 5px 5px;
 }
 /* The label is its own layer sized to the bar, so it centers in the
    filled part; min-width keeps it from clipping when the bar is narrower

@@ -2,13 +2,12 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://www3.yggtorrent.cool';
-    const MAX_PAGE = 10;
-    const PAGE_SIZE = 50;
+    public const MAX_PAGE = 10;
+    public const PAGE_SIZE = 50;
 
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
+    public $defaults = ["public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1];
 
-    public $categories = array(
+    public $categories = [
         'Tout' => '',
         '|--Film/Vidéo' => '&category=2145',
         '|--F--Animation' => '&category=2145&sub_category=2178',
@@ -70,23 +69,31 @@ class YggTorrentEngine extends commonEngine
         '|--X--Films' => '&category=2188&sub_category=2189',
         '|--X--Hentai' => '&category=2188&sub_category=2190',
         '|--X--Images' => '&category=2188&sub_category=2191',
-    );
+    ];
 
-    private $category_mapping = array(
-        'filmvidéo' => 'Film/Vidéos'
-    );
+    private $category_mapping = [
+        'filmvidéo' => 'Film/Vidéos',
+    ];
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
-        if($useGlobalCats) {
-            $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140");
+        $origin = $this->accountOrigin('YggTorrent');
+        if ($origin === '') {
+            $item = $this->getNewEntry();
+            $item["name"] = 'YggTorrent: set $yggTorrentOrigin to the tracker\'s https origin in the loginmgr plugin configuration';
+            $ret[""] = $item;
+            return;
+        }
+
+        if ($useGlobalCats) {
+            $categories = ['all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140"];
             $defaultCat = 'all';
         } else {
             $categories = &$this->categories;
             $defaultCat = 'Tout';
         }
 
-        if(!array_key_exists($cat,$categories)) {
+        if (!array_key_exists($cat, $categories)) {
             $catParameters = $categories[$defaultCat];
         } else {
             $catParameters = $categories[$cat];
@@ -96,27 +103,26 @@ class YggTorrentEngine extends commonEngine
         $what = rawurlencode(rawurldecode($what));
 
         // Initial search to retrieve the page count
-        $search = self::URL . '/engine/search/?name=' . $what . $catParameters . '&do=search&attempt=1';
+        $search = $origin . '/engine/search/?name=' . $what . $catParameters . '&do=search&attempt=1';
         $cli = $this->fetch($search);
         // Check if we have results
         if ($cli == false) {
-	    $item = $this->getNewEntry();
-	    $item["name"] = "Fetch Error";
-	    $ret[""] = $item;
+            $item = $this->getNewEntry();
+            $item["name"] = "Fetch Error";
+            $ret[""] = $item;
             return;
-	} else if (strpos($cli->results, "Aucun résultat !") !== false) {
-	    $item = $this->getNewEntry();
-	    $item["name"] = "No result found";
-	    $ret[""] = $item;
+        } elseif (strpos($cli->results, "Aucun résultat !") !== false) {
+            $item = $this->getNewEntry();
+            $item["name"] = "No result found";
+            $ret[""] = $item;
             return;
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
-	if (!$nbRet)
-	{
-	    $item = $this->getNewEntry();
-	    $item["name"] = "No result found";
-	    $ret[""] = $item;
+        if (!$nbRet) {
+            $item = $this->getNewEntry();
+            $item["name"] = "No result found";
+            $ret[""] = $item;
             return;
         }
         $nbResults = $retPage['results'][0];
@@ -133,29 +139,28 @@ class YggTorrentEngine extends commonEngine
             // We already have results for the first page
             if ($page !== 1) {
                 $pg = ($page - 1) * self::PAGE_SIZE;
-                $search = self::URL . '/engine/search/?name=' . $what . '&page=' . $pg . $catParameters . '&do=search';
+                $search = $origin . '/engine/search/?name=' . $what . '&page=' . $pg . $catParameters . '&do=search';
                 $cli = $this->fetch($search);
             }
 
             $res = preg_match_all(
-                '`<td>\s*<div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)\s*</td>.*'.
-                '<a target="(?P<id>.*)".*'.
-                '<div class="hidden">(?P<timestamp>.*)</div>.*'.
-                '<td>(?P<size>.*)</td>.*'.
-                '<td>(?P<completed>.*)</td>.*'.
-                '<td>(?P<seeder>.*)</td>.*'.
-                '<td>(?P<leecher>.*)</td>'.
-                '`siU',
+                '`<td>\s*<div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)\s*</td>.*'
+                . '<a target="(?P<id>.*)".*'
+                . '<div class="hidden">(?P<timestamp>.*)</div>.*'
+                . '<td>(?P<size>.*)</td>.*'
+                . '<td>(?P<completed>.*)</td>.*'
+                . '<td>(?P<seeder>.*)</td>.*'
+                . '<td>(?P<leecher>.*)</td>'
+                . '`siU',
                 $cli->results,
-                $matches
+                $matches,
             );
 
             if ($res) {
-                // Get current URL
-                preg_match('`.+?(?=/torrent)`', $matches["desc"][0], $url);
-
                 for ($i = 0; $i < $res; $i++) {
-                    $link = $url[0] . "/engine/download_torrent?id=" . $matches["id"][$i];
+                    // On the origin loginmgr logs in at, whichever host the
+                    // page linked to, or the download is made as a guest.
+                    $link = $origin . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
@@ -167,7 +172,7 @@ class YggTorrentEngine extends commonEngine
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`' . $url[0] . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`/torrent/(?P<cat1>[^/]+)/(?P<cat2>[^/]+)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);

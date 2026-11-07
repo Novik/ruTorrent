@@ -1,4 +1,5 @@
 <?php
+
 require_once(dirname(__FILE__) . "/../../php/cache.php");
 require_once(dirname(__FILE__) . "/../../php/utility/json.php");
 require_once(dirname(__FILE__) . "/../../php/utility/fileutil.php");
@@ -21,7 +22,17 @@ class LogHandler
     public $log_count;
     protected $cache;
 
-    static public function load()
+    public function __construct(rCache $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public static function cacheClasses()
+    {
+        return ['rCache'];
+    }
+
+    public static function load()
     {
         global $LogTab_array;
 
@@ -35,14 +46,9 @@ class LogHandler
         }
 
         $handler->max_entries = max(1, intval($LogTab_array['max_entries']));
-        $handler->log_count   = max(1, intval($LogTab_array['log_count']));
+        $handler->log_count = max(1, intval($LogTab_array['log_count']));
 
         return $handler;
-    }
-
-    public function __construct(rCache $cache)
-    {
-        $this->cache = $cache;
     }
 
     public function saveLog($message, $status, $timestamp = null)
@@ -54,7 +60,7 @@ class LogHandler
         $this->logs[] = [
             'message' => $message,
             'status' => $status,
-            'timestamp' => $timestamp ? intval($timestamp) : time()
+            'timestamp' => $timestamp ? intval($timestamp) : time(),
         ];
 
         if (count($this->logs) > $this->max_entries) {
@@ -71,11 +77,11 @@ class LogHandler
         $count = $count !== null ? max(1, $count) : $this->log_count;
         return array_values(array_filter(
             array_slice($this->logs, -$count),
-            fn($l) => is_array($l) && isset($l['message'], $l['status'])
+            fn($l) => is_array($l) && isset($l['message'], $l['status']),
         ));
     }
 
-    static public function handleRequest()
+    public static function handleRequest()
     {
         $handler = self::load();
 
@@ -87,15 +93,15 @@ class LogHandler
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $msg  = trim($_POST['message'] ?? '');
-            $st   = trim($_POST['status'] ?? '');
-            $ts   = $_POST['timestamp'] ?? null;
+            $msg = trim($_POST['message'] ?? '');
+            $st = trim($_POST['status'] ?? '');
+            $ts = $_POST['timestamp'] ?? null;
             $resp = $handler->saveLog($msg, $st, $ts);
         } else {
             global $LogTab_array;
             $resp = [
                 'logs' => $handler->getLatestLogs(),
-                'load_style' => $LogTab_array['load_style'] ?? 'noty'
+                'load_style' => $LogTab_array['load_style'] ?? 'noty',
             ];
         }
 

@@ -9,7 +9,7 @@
  theUILang.accLogin		= "Nom d'utilisateur";
  theUILang.accPassword		= "Mot de passe";
  theUILang.accAccounts		= "Comptes";
- theUILang.accAuto		= "Autologin";
+ theUILang.accAuto		= "Connexion automatique";
  theUILang.acAutoNone		= "Jamais";
  theUILang.acAutoDay		= "Tous les jours";
  theUILang.acAutoWeek		= "Toutes les semaines";

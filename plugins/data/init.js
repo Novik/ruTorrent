@@ -64,7 +64,7 @@ if(plugin.canChangeMenu())
 						(theWebUI.dID.length>40))
 						fno = null;
 				}
-				theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );
+				theContextMenu.add( [theUILang.getData,  (fno==null) ? null : () => theWebUI.getData(theWebUI.dID,fno)] );
 			}
 			return(true);
 		}
