@@ -4,12 +4,23 @@ $_ENV['RU_PROFILE_PATH'] = sys_get_temp_dir().'/rutorrent-telegram-test-'.getmyp
 
 require_once(__DIR__.'/../../../tests/php/TestCase.php');
 require_once(__DIR__.'/../../../plugins/telegram/telegram.php');
+require_once(__DIR__.'/../../../plugins/telegram/queue.php');
 
 class TelegramTest extends TestCase
 {
 	public function tearDown()
 	{
 		$settings = FileUtil::getSettingsPath();
+		$queueDir = $settings.'/telegram';
+		if(is_dir($queueDir))
+		{
+			foreach(scandir($queueDir) as $entry)
+			{
+				if($entry !== '.' && $entry !== '..')
+					@unlink($queueDir.'/'.$entry);
+			}
+			@rmdir($queueDir);
+		}
 		if(is_dir($settings))
 		{
 			array_map('unlink', glob($settings.'/telegram.dat*'));
@@ -101,7 +112,7 @@ class TelegramTest extends TestCase
 	public function testClientAcceptsTelegramSuccess()
 	{
 		$client = new rTelegramClient(function($url, $payload, $options) {
-			return array('http_code' => 200, 'body' => '{"ok":true,"result":{"message_id":1}}');
+			return array('http_code' => 200, 'body' => '{"ok":true}');
 		});
 		$result = $client->send('secret-token', '1', 'hello');
 		$this->assertTrue($result['ok'], 'a successful Telegram response is accepted');
@@ -153,7 +164,7 @@ class TelegramTest extends TestCase
 		$this->assertTrue(strpos($result['error'], 'secret-token') === false, 'transport errors redact the bot token');
 	}
 
-	public function testNotificationCommandUsesBackgroundArgumentPassing()
+	public function testNotificationCommandUsesNonblockingArgumentPassing()
 	{
 		$_SERVER['REMOTE_USER'] = 'Test User';
 		$settings = rTorrentSettings::get();
@@ -162,9 +173,10 @@ class TelegramTest extends TestCase
 		$settings->aliases['d.get_custom2'] = array('name' => 'd.custom2', 'prm' => 0);
 		$config = new rTelegram();
 		$command = $config->notificationCommand('finished');
-		$this->assertTrue(strpos($command, 'execute.nothrow') !== false, 'notifications use execute.nothrow');
-		$this->assertTrue(strpos($command, '\\$@') !== false, 'torrent data is passed through shell positional arguments');
+		$this->assertTrue(strpos($command, 'execute.nothrow.bg') !== false, 'notifications use rTorrent’s background executor');
+		$this->assertTrue(strpos($command, 'sh,-c') === false, 'torrent metadata is not interpreted by a shell');
 		$this->assertTrue(strpos($command, 'notify.php') !== false, 'the background command launches notify.php');
+		$this->assertTrue(strpos($command, 'settings/telegram') !== false, 'the command passes the per-profile queue path');
 		$this->assertTrue(strpos($command, '(cat,(d.name))') !== false, 'the command uses mapped name substitution');
 		$this->assertTrue(strpos($command, '(cat,(d.hash))') !== false, 'the command uses mapped hash substitution');
 		$this->assertTrue(strpos($command, '(cat,(d.custom2))') !== false, 'the command uses mapped comment substitution');
@@ -242,5 +254,90 @@ class TelegramTest extends TestCase
 		$this->assertTrue($config->notify('added', 'Movie', 'ABC', '', $client) === null && !$sent, 'a disabled event sends nothing');
 		@unlink($log_file);
 		$log_file = $saved;
+	}
+
+	public function testQueueBatchesBurstsIntoTelegramSizedMessages()
+	{
+		FileUtil::makeDirectory(FileUtil::getSettingsPath());
+		$queue = new rTelegramQueue();
+		$config = new rTelegram();
+		$config->enabled = true;
+		$config->token = 'secret-token';
+		$config->chatId = '1';
+		$config->events['removed'] = true;
+		$queued = true;
+		for($i = 0; $i < 200; $i++)
+			$queued = $queue->enqueue('removed', sprintf('Bulk torrent %03d', $i), 'HASH'.$i) && $queued;
+		$this->assertTrue($queued, 'all events are queued');
+
+		$queuedFiles = glob($queue->getDirectory().'/*.json');
+		$this->assertEquals(200, count($queuedFiles), 'each event is stored as a separate durable queue item');
+		clearstatcache();
+		$this->assertEquals('700', sprintf('%o', fileperms($queue->getDirectory()) & 0777), 'the queue directory is private');
+		$this->assertEquals('600', sprintf('%o', fileperms($queuedFiles[0]) & 0777), 'queue records are private');
+		$this->assertTrue(strpos(file_get_contents($queuedFiles[0]), 'secret-token') === false, 'the bot token is not stored in queue records');
+
+		$messages = array();
+		$client = new rTelegramClient(function($url, $payload, $options) use (&$messages) {
+			$messages[] = $payload['text'];
+			return array('http_code' => 200, 'body' => '{"ok":true}');
+		});
+		$this->assertTrue($queue->drain($config, $client, 0, 0), 'the single worker drains the queue');
+		$this->assertTrue(count($messages) > 0 && count($messages) < 200, 'a burst is coalesced into fewer Telegram requests');
+		$allMessages = implode("\n", $messages);
+		$allEventsRetained = true;
+		foreach(range(0, 199) as $i)
+			$allEventsRetained = (strpos($allMessages, sprintf('Bulk torrent %03d', $i)) !== false) && $allEventsRetained;
+		$this->assertTrue($allEventsRetained, 'the batches retain every torrent notification');
+		$messagesWithinLimit = true;
+		foreach($messages as $message)
+			$messagesWithinLimit = (strlen($message) <= rTelegram::MAX_TEMPLATE_LENGTH) && $messagesWithinLimit;
+		$this->assertTrue($messagesWithinLimit, 'each batch respects Telegram message size');
+		$this->assertEquals(0, count(glob($queue->getDirectory().'/*.json')), 'successfully sent queue items are removed');
+	}
+
+	public function testDrainWithoutLoadedProfileConfigKeepsItemsForRetry()
+	{
+		FileUtil::makeDirectory(FileUtil::getSettingsPath());
+		$queue = new rTelegramQueue();
+		$this->assertTrue($queue->enqueue('added', 'Movie', 'HASH'), 'an event is queued');
+		$this->assertTrue(!$queue->drain(null, null, 0, 0), 'the worker refuses to drain without profile config loaded at file scope');
+		$this->assertEquals(1, count(glob($queue->getDirectory().'/*.json')), 'the queued item is kept for a correctly initialized worker');
+	}
+
+	public function testQueueUsesOneNonblockingSenderLock()
+	{
+		FileUtil::makeDirectory(FileUtil::getSettingsPath());
+		$queue = new rTelegramQueue();
+		$config = new rTelegram();
+		$config->enabled = true;
+		$config->token = 'secret-token';
+		$config->chatId = '1';
+		$config->events['added'] = true;
+		$this->assertTrue($queue->enqueue('added', 'Movie', 'HASH'), 'an event is queued');
+
+		$lock = fopen($queue->getDirectory().'/worker.lock', 'c');
+		$this->assertTrue(flock($lock, LOCK_EX | LOCK_NB), 'the test holds the worker lock');
+		$sent = 0;
+		$client = new rTelegramClient(function($url, $payload, $options) use (&$sent) {
+			$sent++;
+			return array('http_code' => 200, 'body' => '{"ok":true}');
+		});
+		$this->assertTrue(!$queue->drain($config, $client, 0, 0), 'a second sender exits instead of waiting');
+		$this->assertEquals(0, $sent, 'the locked-out process does not send');
+		flock($lock, LOCK_UN);
+		fclose($lock);
+		$this->assertTrue($queue->drain($config, $client, 0, 0), 'the lock holder can drain after release');
+		$this->assertEquals(1, $sent, 'the queued notification is sent once');
+	}
+
+	public function testClientReturnsTelegramRetryAfter()
+	{
+		$client = new rTelegramClient(function($url, $payload, $options) {
+			return array('http_code' => 429, 'body' => '{"ok":false,"error_code":429,"description":"Too Many Requests","parameters":{"retry_after":7}}');
+		});
+		$result = $client->send('secret-token', '1', 'hello');
+		$this->assertTrue(!$result['ok'], 'a rate-limited response is a failure');
+		$this->assertEquals(7, $result['retry_after'], 'the worker can honor Telegram retry_after');
 	}
 }

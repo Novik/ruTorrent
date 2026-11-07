@@ -177,13 +177,26 @@ class rTelegram
 	{
 		if(!$this->canNotify($event))
 			return null;
+		return $this->sendMessage($this->render($event, $torrent, $hash, $comment), $client, $event.' notification');
+	}
+
+	/** Send a pre-rendered message. Queued batches use this after rendering each event. */
+	public function sendMessage($message, $client = null, $context = 'notification', $logFailure = true)
+	{
+		if($this->token === '' || $this->chatId === '')
+			return null;
 		if($client === null)
 			$client = new rTelegramClient();
-		$result = $client->send($this->token, $this->chatId, $this->render($event, $torrent, $hash, $comment), 'MarkdownV2');
-		if(empty($result['ok']))
-			FileUtil::toLog('telegram: '.$event.' notification failed: '.
-				self::sanitizeError(isset($result['error']) ? $result['error'] : 'Telegram request failed', $this->token));
+		$result = $client->send($this->token, $this->chatId, $message, 'MarkdownV2');
+		if(empty($result['ok']) && $logFailure)
+			$this->logNotificationFailure($result, $context);
 		return $result;
+	}
+
+	public function logNotificationFailure($result, $context = 'notification')
+	{
+		$error = isset($result['error']) ? $result['error'] : 'Telegram request failed';
+		FileUtil::toLog('telegram: '.$context.' failed: '.self::sanitizeError($error, $this->token));
 	}
 
 	public function render($event, $torrent, $hash, $comment = '')
@@ -310,23 +323,22 @@ class rTelegram
 	}
 
 	/**
-	 * Keep the shell fixed and pass torrent data through "$@".  Torrent names
-	 * therefore never become shell source, even when they contain quotes or
-	 * shell metacharacters.
+	 * Launch PHP through rTorrent's non-blocking executor. Torrent metadata
+	 * remains in separate command arguments rather than becoming shell source.
 	 */
 	public function notificationCommand($event)
 	{
 		$path = dirname(__FILE__);
+		$queuePath = FileUtil::getSettingsPath().'/telegram';
 		$quote = function($value) {
 			return '"'.str_replace(array('\\', '"', '$'), array('\\\\', '\\"', '\\$'), (string)$value).'"';
 		};
-		$script = '"$0" "$@" </dev/null >/dev/null 2>&1 &';
 		$value = function($command) {
 			return '(cat,('.getCmd($command).'))';
 		};
-		return getCmd('execute.nothrow').'={sh,-c,'.$quote($script).','.
-			$quote(Utility::getPHP()).','.$quote($path.'/notify.php').','.
-			$quote($event).','.$value('d.get_name').','.$value('d.get_hash').','.$value('d.get_custom2').','.$quote(User::getUser()).'}';
+		return getCmd('execute.nothrow.bg').'={'.$quote(Utility::getPHP()).','.
+			$quote($path.'/notify.php').','.$quote($queuePath).','.$quote($event).','.
+			$value('d.get_name').','.$value('d.get_hash').','.$value('d.get_custom2').','.$quote(User::getUser()).'}';
 	}
 
 	private static function protectStorage()
@@ -429,12 +441,18 @@ class rTelegramClient
 			$error = 'HTTP '.$httpCode;
 			if(is_array($data) && isset($data['description']))
 				$error .= ': '.$data['description'];
-			return array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
+			$result = array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
+			if(is_array($data) && isset($data['parameters']['retry_after']) && is_numeric($data['parameters']['retry_after']))
+				$result['retry_after'] = max(1, (int)$data['parameters']['retry_after']);
+			return $result;
 		}
 		if(!is_array($data))
 			return array('ok' => false, 'error' => 'malformed Telegram response', 'http_code' => $httpCode);
 		if(isset($data['ok']) && $data['ok'] === true)
-			return array('ok' => true, 'http_code' => $httpCode);
+		{
+			$result = array('ok' => true, 'http_code' => $httpCode);
+			return $result;
+		}
 		$error = isset($data['description']) ? $data['description'] : 'Telegram API returned ok=false';
 		return array('ok' => false, 'error' => rTelegram::sanitizeError($error, $token), 'http_code' => $httpCode);
 	}

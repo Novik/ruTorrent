@@ -6,5 +6,5 @@ php.version: 7.4.0
 php.extensions.error: curl,json
 rtorrent.remote: error
 rtorrent.external.error: php
-rtorrent.php.error: telegram.php,notify.php
+rtorrent.php.error: telegram.php,queue.php,notify.php
 rtorrent.version: 0.9.8
