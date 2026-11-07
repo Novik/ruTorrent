@@ -508,12 +508,33 @@ class TelegramTest extends TestCase
         $this->assertTrue(!$result['ok'], 'a rate-limited response is a failure');
         $this->assertEquals(7, $result['retry_after'], 'the worker can honor Telegram retry_after');
     }
+    public function testShellEnqueueKeepsFullMicrosecondTimestamp()
+    {
+        $queue = new rTelegramQueue();
+        $before = microtime(true) * 1000000;
+        if (!$this->enqueue($queue, 'added', 'Timestamp test', 'HASH')) {
+            throw new RuntimeException('The shell helper rejected the generated microsecond timestamp');
+        }
+        $after = microtime(true) * 1000000;
+        $files = glob($queue->getDirectory() . '/*.event');
+        $this->assertEquals(1, count($files), 'the timestamp test creates one event record');
+        if (count($files) !== 1) {
+            return;
+        }
+        $timestamp = strstr(basename($files[0]), '.', true);
+        $this->assertTrue(preg_match('/^[0-9]{16,}$/D', $timestamp) === 1, 'the filename retains the full decimal microsecond timestamp on every word size');
+        $this->assertTrue((float) $timestamp >= floor($before) && (float) $timestamp <= ceil($after), 'the timestamp represents the enqueue time without integer overflow');
+        unlink($files[0]);
+    }
+
     private function enqueue($queue, $event, $torrent, $hash, $comment = '')
     {
+        // Epoch microseconds exceed a 32-bit integer; format directly as a string.
+        $timestamp = sprintf('%.0f', microtime(true) * 1000000);
         $process = proc_open([
             'sh', __DIR__ . '/../../../plugins/telegram/enqueue.sh',
             $queue->getDirectory(), $event, $torrent, $hash, $comment,
-            (string) (int) (microtime(true) * 1000000),
+            $timestamp,
         ], [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $pipes);
         return is_resource($process) && proc_close($process) === 0;
     }
