@@ -299,7 +299,10 @@ define('MAX_DURATION_OF_CHECK', 3600);
 // included.
 function logFatalError()
 {
-    global $list, $n;
+    global $list, $n, $fatalReserve;
+    // A script stopped at memory_limit can have no memory left to write the
+    // line with. Released first, the reserve is what the line is written in.
+    $fatalReserve = null;
     $error = error_get_last();
     if (($error !== null) && ($error['type'] === E_ERROR)) {
         FileUtil::toLog('erasedata: the collector stopped on a PHP fatal error ('
@@ -352,6 +355,7 @@ if (!is_file($lock) || (time() - filemtime($lock) > MAX_DURATION_OF_CHECK)) {
     //
     // What is left is the moment between one answer and that list's unlinks;
     // only rtorrent itself could close it.
+    $fatalReserve = str_repeat(' ', 1 << 20);
     register_shutdown_function('logFatalError');
     $says = ['fault' => 'answered with a fault', 'unreadable' => 'gave an answer that could not be read'];
     $sizes = null;
