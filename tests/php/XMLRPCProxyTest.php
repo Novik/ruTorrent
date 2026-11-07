@@ -706,7 +706,7 @@ class XMLRPCProxyTest extends TestCase
 
     public function testOneDownloadByHashIsElevated()
     {
-        foreach (['d.open', 'd.start', 'd.stop', 'd.delete_tied'] as $method) {
+        foreach (['d.open', 'd.start', 'd.stop', 'd.delete_tied', 'd.check_hash'] as $method) {
             $this->callMethod($method, ['0123456789abcdef0123456789ABCDEF01234567']);
             $this->assertTrue(rXMLRPCRequest::$lastTrusted === true, $method . ' is elevated');
             $this->assertTrue(
