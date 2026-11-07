@@ -6,8 +6,43 @@ require_once(__DIR__.'/../../../tests/php/TestCase.php');
 require_once(__DIR__.'/../../../plugins/telegram/telegram.php');
 require_once(__DIR__.'/../../../plugins/telegram/queue.php');
 
+// Inspect the temporary file while serialize() runs, before any token bytes
+// have been written. A final-mode-only assertion misses the exposure window.
+class TelegramStorageProbe extends rTelegram
+{
+	public $temporaryMode = null;
+
+	public function __sleep()
+	{
+		foreach(glob(FileUtil::getSettingsPath().'/telegram.dat.*.tmp') as $file)
+		{
+			clearstatcache(true, $file);
+			$this->temporaryMode = fileperms($file) & 0777;
+		}
+		return array_keys(get_object_vars($this));
+	}
+}
+
+class TelegramEmptyRenderer extends rTelegram
+{
+	public function render($event, $torrent, $hash, $comment = '')
+	{
+		return " \n ";
+	}
+}
+
 class TelegramTest extends TestCase
 {
+	private function enqueue($queue, $event, $torrent, $hash, $comment = '')
+	{
+		$process = proc_open(array(
+			'sh', __DIR__.'/../../../plugins/telegram/enqueue.sh',
+			$queue->getDirectory(), $event, $torrent, $hash, $comment,
+			(string)(int)(microtime(true) * 1000000),
+		), array(1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w')), $pipes);
+		return is_resource($process) && proc_close($process) === 0;
+	}
+
 	public function tearDown()
 	{
 		$settings = FileUtil::getSettingsPath();
@@ -164,7 +199,7 @@ class TelegramTest extends TestCase
 		$this->assertTrue(strpos($result['error'], 'secret-token') === false, 'transport errors redact the bot token');
 	}
 
-	public function testNotificationCommandUsesNonblockingArgumentPassing()
+	public function testNotificationCommandEnqueuesWithoutStartingPhp()
 	{
 		$_SERVER['REMOTE_USER'] = 'Test User';
 		$settings = rTorrentSettings::get();
@@ -173,9 +208,11 @@ class TelegramTest extends TestCase
 		$settings->aliases['d.get_custom2'] = array('name' => 'd.custom2', 'prm' => 0);
 		$config = new rTelegram();
 		$command = $config->notificationCommand('finished');
-		$this->assertTrue(strpos($command, 'execute.nothrow.bg') !== false, 'notifications use rTorrent’s background executor');
-		$this->assertTrue(strpos($command, 'sh,-c') === false, 'torrent metadata is not interpreted by a shell');
-		$this->assertTrue(strpos($command, 'notify.php') !== false, 'the background command launches notify.php');
+		$this->assertTrue(strpos($command, 'execute.nothrow=') === 0, 'rTorrent serializes the short enqueue helpers instead of forking a burst');
+		$this->assertTrue(strpos($command, 'execute.nothrow.bg') === false, 'event enqueue does not run in the background');
+		$this->assertTrue(strpos($command, 'sh,-c') === false, 'torrent metadata is not interpreted as shell source');
+		$this->assertTrue(strpos($command, 'enqueue.sh') !== false && strpos($command, '.php') === false, 'the event handler never starts PHP');
+		$this->assertTrue(strpos($command, '(cat,(system.time_usec))') !== false, 'microsecond timestamps preserve event ordering');
 		$this->assertTrue(strpos($command, 'settings/telegram') !== false, 'the command passes the per-profile queue path');
 		$this->assertTrue(strpos($command, '(cat,(d.name))') !== false, 'the command uses mapped name substitution');
 		$this->assertTrue(strpos($command, '(cat,(d.hash))') !== false, 'the command uses mapped hash substitution');
@@ -183,6 +220,17 @@ class TelegramTest extends TestCase
 		$this->assertTrue(strpos($command, '$d.name=') === false, 'the command does not use inert name substitution');
 		$this->assertTrue(strpos($command, '$d.get_hash=') === false, 'the command does not use inert hash substitution');
 		$this->assertTrue(strpos($command, '$d.get_custom2=') === false, 'the command does not use inert comment substitution');
+	}
+
+	public function testScheduledWorkerUsesBackgroundArgumentPassing()
+	{
+		$_SERVER['REMOTE_USER'] = 'Test User';
+		$command = (new rTelegram())->workerCommand();
+		$this->assertTrue(strpos($command, 'execute.nothrow.bg=') === 0, 'only the scheduled sender launches background PHP');
+		$this->assertTrue(strpos($command, 'notify.php') !== false, 'the sender launches notify.php');
+		$this->assertTrue(strpos($command, ',"'.User::getUser().'"}') !== false, 'the sender receives the normalized profile as one argument');
+		$this->assertTrue(strpos($command, 'sh,-c') === false, 'the sender does not build shell source');
+		$this->assertTrue(rTelegram::WORKER_INTERVAL_SECONDS >= 3, 'scheduled starts are bounded independently of event count');
 	}
 
 	public function testAClearedTemplateUsesTheDefault()
@@ -227,6 +275,80 @@ class TelegramTest extends TestCase
 		unlink($name);
 	}
 
+	public function testCredentialFilesArePrivateBeforeSerializationAndPublication()
+	{
+		global $profileMask;
+		$oldProfileMask = $profileMask;
+		$oldMask = umask(0);
+		$profileMask = 0777;
+		$config = new TelegramStorageProbe();
+		$config->token = 'secret-token';
+		try
+		{
+			$this->assertTrue($config->store(), 'credential settings are stored with a permissive profile mask and umask');
+			$this->assertEquals(0640, $config->temporaryMode, 'the temporary file is already private before serialization');
+			$name = FileUtil::getSettingsPath().'/telegram.dat';
+			clearstatcache(true, $name);
+			$this->assertEquals(0640, fileperms($name) & 0777, 'publication preserves the private mode');
+			$this->assertEquals(0, umask(), 'the cache restores the process umask');
+			$this->assertEquals(0777, $profileMask, 'credential storage does not change the global profile mask');
+		}
+		finally
+		{
+			umask($oldMask);
+			$profileMask = $oldProfileMask;
+		}
+	}
+
+	public function testEmptyRenderedTemplatesFallBackToTheDefault()
+	{
+		$config = new rTelegram();
+		foreach(array('{LINK}', " \n{LINK} \n", '{TORRENT}{HASH}') as $template)
+		{
+			$config->templates['added'] = $template;
+			$this->assertEquals('Torrent added: ', $config->render('added', '', ''), 'a template that renders empty falls back to the default');
+		}
+		$config->templates['added'] = '{LINK}';
+		$this->assertEquals('Torrent added: Movie', $config->render('added', 'Movie', 'HASH'), 'a missing link does not produce an empty message');
+		$this->assertEquals('[link](https://example.org/item)', $config->render('added', 'Movie', 'HASH', 'VRS24mrkerhttps%3A%2F%2Fexample.org%2Fitem'), 'a nonempty link-only message still uses the custom template');
+	}
+
+	public function testQueueDrainsLinkOnlyTemplatesWithoutComments()
+	{
+		$queue = new rTelegramQueue();
+		$config = new rTelegram();
+		$config->enabled = true;
+		$config->token = 'secret-token';
+		$config->chatId = '1';
+		$config->events['added'] = true;
+		$config->templates['added'] = '{LINK}';
+		$this->assertTrue($this->enqueue($queue, 'added', 'Movie', 'HASH'), 'a link-less event is queued');
+		$messages = array();
+		$client = new rTelegramClient(function($url, $payload, $options) use (&$messages) {
+			$messages[] = $payload['text'];
+			return array('http_code' => 200, 'body' => '{"ok":true}');
+		});
+		$this->assertTrue($queue->drain($config, $client, 0, 0), 'draining terminates and sends the fallback');
+		$this->assertEquals(array('Torrent added: Movie'), $messages, 'the queued event uses the default message');
+		$this->assertEquals(0, $queue->getPendingCount(), 'no empty-message item is stranded');
+	}
+
+	public function testQueueDiscardsEmptyMessagesDefensively()
+	{
+		$queue = new rTelegramQueue();
+		$config = new TelegramEmptyRenderer();
+		$config->enabled = true;
+		$config->token = 'secret-token';
+		$config->chatId = '1';
+		$config->events['added'] = true;
+		$this->assertTrue($this->enqueue($queue, 'added', 'Movie', 'HASH'), 'an event is queued for the empty renderer');
+		$method = new ReflectionMethod('rTelegramQueue', 'renderChunks');
+		if(PHP_VERSION_ID < 80100)
+			$method->setAccessible(true);
+		$this->assertEquals(array(), $method->invoke($queue, $config), 'no empty chunks are sent');
+		$this->assertEquals(0, $queue->getPendingCount(), 'an unexpectedly empty rendering cannot make the drain loop spin');
+	}
+
 	public function testAFailedNotificationIsLogged()
 	{
 		global $log_file;
@@ -267,10 +389,10 @@ class TelegramTest extends TestCase
 		$config->events['removed'] = true;
 		$queued = true;
 		for($i = 0; $i < 200; $i++)
-			$queued = $queue->enqueue('removed', sprintf('Bulk torrent %03d', $i), 'HASH'.$i) && $queued;
+			$queued = $this->enqueue($queue, 'removed', sprintf('Bulk torrent %03d', $i), 'HASH'.$i) && $queued;
 		$this->assertTrue($queued, 'all events are queued');
 
-		$queuedFiles = glob($queue->getDirectory().'/*.json');
+		$queuedFiles = glob($queue->getDirectory().'/*.event');
 		$this->assertEquals(200, count($queuedFiles), 'each event is stored as a separate durable queue item');
 		clearstatcache();
 		$this->assertEquals('700', sprintf('%o', fileperms($queue->getDirectory()) & 0777), 'the queue directory is private');
@@ -293,16 +415,16 @@ class TelegramTest extends TestCase
 		foreach($messages as $message)
 			$messagesWithinLimit = (strlen($message) <= rTelegram::MAX_TEMPLATE_LENGTH) && $messagesWithinLimit;
 		$this->assertTrue($messagesWithinLimit, 'each batch respects Telegram message size');
-		$this->assertEquals(0, count(glob($queue->getDirectory().'/*.json')), 'successfully sent queue items are removed');
+		$this->assertEquals(0, $queue->getPendingCount(), 'successfully sent queue items are removed');
 	}
 
 	public function testDrainWithoutLoadedProfileConfigKeepsItemsForRetry()
 	{
 		FileUtil::makeDirectory(FileUtil::getSettingsPath());
 		$queue = new rTelegramQueue();
-		$this->assertTrue($queue->enqueue('added', 'Movie', 'HASH'), 'an event is queued');
+		$this->assertTrue($this->enqueue($queue, 'added', 'Movie', 'HASH'), 'an event is queued');
 		$this->assertTrue(!$queue->drain(null, null, 0, 0), 'the worker refuses to drain without profile config loaded at file scope');
-		$this->assertEquals(1, count(glob($queue->getDirectory().'/*.json')), 'the queued item is kept for a correctly initialized worker');
+		$this->assertEquals(1, $queue->getPendingCount(), 'the queued item is kept for a correctly initialized worker');
 	}
 
 	public function testQueueUsesOneNonblockingSenderLock()
@@ -314,7 +436,7 @@ class TelegramTest extends TestCase
 		$config->token = 'secret-token';
 		$config->chatId = '1';
 		$config->events['added'] = true;
-		$this->assertTrue($queue->enqueue('added', 'Movie', 'HASH'), 'an event is queued');
+		$this->assertTrue($this->enqueue($queue, 'added', 'Movie', 'HASH'), 'an event is queued');
 
 		$lock = fopen($queue->getDirectory().'/worker.lock', 'c');
 		$this->assertTrue(flock($lock, LOCK_EX | LOCK_NB), 'the test holds the worker lock');
@@ -329,6 +451,59 @@ class TelegramTest extends TestCase
 		fclose($lock);
 		$this->assertTrue($queue->drain($config, $client, 0, 0), 'the lock holder can drain after release');
 		$this->assertEquals(1, $sent, 'the queued notification is sent once');
+	}
+
+	public function testShellEnqueuePreservesMetadataWithoutEvaluatingIt()
+	{
+		$queue = new rTelegramQueue();
+		$marker = sys_get_temp_dir().'/telegram-injection-'.getmypid();
+		$torrent = 'name";touch '.$marker.';$(touch '.$marker.')`touch '.$marker.'`'."\nsecond line";
+		$comment = "VRS24mrkerhttps%3A%2F%2Fexample.org%2Fitem\nextra";
+		$this->assertTrue($this->enqueue($queue, 'removed', $torrent, 'HASH', $comment), 'shell metacharacters and newlines are queued as data');
+		$files = glob($queue->getDirectory().'/*.event');
+		$record = explode("\0", file_get_contents($files[0]));
+		$this->assertEquals(array('removed', $torrent, 'HASH', $comment, ''), $record, 'NUL-separated records preserve every argument');
+		$this->assertTrue(!file_exists($marker), 'no shell injection marker is created');
+		foreach($files as $file)
+			unlink($file);
+	}
+
+	public function testShellEnqueueEnforcesQueueCapacityAndRejectsInvalidEvents()
+	{
+		$queue = new rTelegramQueue();
+		$this->assertTrue(!$this->enqueue($queue, 'unknown', 'Movie', 'HASH'), 'invalid events are refused');
+		$this->assertTrue($this->enqueue($queue, 'added', 'Movie', 'HASH'), 'a valid event creates the queue');
+		$directory = $queue->getDirectory();
+		for($i = $queue->getPendingCount(); $i < rTelegramQueue::MAX_QUEUE_ITEMS; $i++)
+			file_put_contents($directory.'/capacity-'.$i.'.event', "added\0Movie\0HASH\0\0");
+		$this->assertTrue(!$this->enqueue($queue, 'added', 'Overflow', 'HASH'), 'the shell helper refuses events once the queue is full');
+		$this->assertEquals(rTelegramQueue::MAX_QUEUE_ITEMS, $queue->getPendingCount(), 'the queue never exceeds its capacity');
+		foreach(glob($directory.'/*.event') as $file)
+			unlink($file);
+	}
+
+	public function testScheduledContenderExitsBeforeLoadingTheProfile()
+	{
+		$queue = new rTelegramQueue();
+		$lock = $queue->acquireWorkerLock();
+		$this->assertTrue(is_resource($lock), 'the active sender holds the lock before PHP configuration loads');
+		$profile = sys_get_temp_dir().'/telegram-skipped-profile-'.getmypid();
+		$process = proc_open(array(PHP_BINARY, __DIR__.'/../../../plugins/telegram/notify.php', $queue->getDirectory(), 'contender'),
+			array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes, null, array('RU_PROFILE_PATH' => $profile));
+		try
+		{
+			$output = stream_get_contents($pipes[1]).stream_get_contents($pipes[2]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			$this->assertEquals(0, proc_close($process), 'the scheduled contender exits successfully without waiting');
+			$this->assertEquals('', $output, 'the skipped contender produces no bootstrap output');
+			$this->assertTrue(!is_dir($profile), 'the losing sender never initializes the profile');
+		}
+		finally
+		{
+			flock($lock, LOCK_UN);
+			fclose($lock);
+		}
 	}
 
 	public function testClientReturnsTelegramRetryAfter()

@@ -25,6 +25,7 @@ class rTelegram
 
 	const MAX_TEMPLATE_LENGTH = 4096;
 	const MAX_CHAT_ID_LENGTH = 256;
+	const WORKER_INTERVAL_SECONDS = 5;
 	// notify.php runs as the rTorrent user, which is often not the web server user (Swizzin, for example, runs
 	// PHP-FPM as www-data and rTorrent as the user, who is in the www-data group): the file must stay readable by
 	// the group, while other local users still cannot read the bot token.
@@ -49,9 +50,7 @@ class rTelegram
 	{
 		$this->normalize();
 		$cache = new rCache();
-		$ret = $cache->set($this);
-		self::protectStorage();
-		return $ret;
+		return $cache->set($this, null, self::STORAGE_MODE);
 	}
 
 	/**
@@ -202,6 +201,16 @@ class rTelegram
 	public function render($event, $torrent, $hash, $comment = '')
 	{
 		$template = isset($this->templates[$event]) ? $this->templates[$event] : self::defaultTemplate($event);
+		$message = $this->renderTemplate($template, $event, $torrent, $hash, $comment);
+		// A nonempty template can still render empty (for example, {LINK}
+		// without a comment). Use the default rather than strand a queue item.
+		return trim($message) === ''
+			? $this->renderTemplate(self::defaultTemplate($event), $event, $torrent, $hash, $comment)
+			: $message;
+	}
+
+	private function renderTemplate($template, $event, $torrent, $hash, $comment)
+	{
 		$state = $event;
 		$link = self::markdownLink($comment);
 		if($link === '')
@@ -297,6 +306,9 @@ class rTelegram
 				: getCmd('cat=');
 			$commands[] = $this->eventCommand($settings, $event, array($handler, $command));
 		}
+		$commands[] = $this->enabled && in_array(true, $this->events, true)
+			? $settings->getAlignedScheduleCommand('telegram', self::WORKER_INTERVAL_SECONDS, $this->workerCommand())
+			: $settings->getRemoveScheduleCommand('telegram');
 		$req = new rXMLRPCRequest($commands);
 		return $req->success();
 	}
@@ -308,6 +320,7 @@ class rTelegram
 		$commands = array();
 		foreach(self::eventNames() as $event)
 			$commands[] = $config->eventCommand($settings, $event, array(self::handlerName($event), getCmd('cat=')));
+		$commands[] = $settings->getRemoveScheduleCommand('telegram');
 		return (new rXMLRPCRequest($commands))->success();
 	}
 
@@ -323,22 +336,33 @@ class rTelegram
 	}
 
 	/**
-	 * Launch PHP through rTorrent's non-blocking executor. Torrent metadata
-	 * remains in separate command arguments rather than becoming shell source.
+	 * Synchronously enqueue through a short shell helper, not a PHP process.
+	 * rTorrent serializes these writers; only the scheduled sender uses PHP.
+	 * Metadata stays in separate argv entries and is never shell source.
 	 */
 	public function notificationCommand($event)
 	{
-		$path = dirname(__FILE__);
-		$queuePath = FileUtil::getSettingsPath().'/telegram';
-		$quote = function($value) {
-			return '"'.str_replace(array('\\', '"', '$'), array('\\\\', '\\"', '\\$'), (string)$value).'"';
-		};
 		$value = function($command) {
 			return '(cat,('.getCmd($command).'))';
 		};
-		return getCmd('execute.nothrow.bg').'={'.$quote(Utility::getPHP()).','.
-			$quote($path.'/notify.php').','.$quote($queuePath).','.$quote($event).','.
-			$value('d.get_name').','.$value('d.get_hash').','.$value('d.get_custom2').','.$quote(User::getUser()).'}';
+		return getCmd('execute.nothrow').'={'.self::quoteCommandArgument(Utility::getExternal('sh')).','.
+			self::quoteCommandArgument(dirname(__FILE__).'/enqueue.sh').','.
+			self::quoteCommandArgument(FileUtil::getSettingsPath().'/telegram').','.
+			self::quoteCommandArgument($event).','.$value('d.get_name').','.$value('d.get_hash').','.
+			$value('d.get_custom2').','.$value('system.time_usec').'}';
+	}
+
+	public function workerCommand()
+	{
+		return getCmd('execute.nothrow.bg').'={'.self::quoteCommandArgument(Utility::getPHP()).','.
+			self::quoteCommandArgument(dirname(__FILE__).'/notify.php').','.
+			self::quoteCommandArgument(FileUtil::getSettingsPath().'/telegram').','.
+			self::quoteCommandArgument(User::getUser()).'}';
+	}
+
+	private static function quoteCommandArgument($value)
+	{
+		return '"'.str_replace(array('\\', '"', '$'), array('\\\\', '\\"', '\\$'), (string)$value).'"';
 	}
 
 	private static function protectStorage()

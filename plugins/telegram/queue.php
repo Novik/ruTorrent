@@ -1,8 +1,8 @@
 <?php
 
 /**
- * A per-profile disk queue for Telegram notifications. Event processes only
- * write a small record; one lock holder batches and sends the pending events.
+ * A per-profile disk queue for Telegram notifications. rTorrent's shell helper
+ * writes NUL-delimited .event records; one scheduled PHP sender drains them.
  */
 class rTelegramQueue
 {
@@ -33,55 +33,22 @@ class rTelegramQueue
 		return count($this->queueFiles());
 	}
 
-	public function enqueue($event, $torrent, $hash, $comment = '')
+	/** Acquire the sender lock before loading the ruTorrent/PHP stack. */
+	public function acquireWorkerLock()
 	{
-		if(!in_array($event, self::eventNames(), true))
-			return false;
 		if(!$this->ensureDirectory())
-		{
-			$this->logMessage('notification queue directory is unavailable');
 			return false;
-		}
-
-		$lockPath = $this->directory.'/queue.lock';
+		$lockPath = $this->directory.'/worker.lock';
 		$lock = @fopen($lockPath, 'c');
 		if($lock === false)
-		{
-			$this->logMessage('could not lock the notification queue');
 			return false;
-		}
 		@chmod($lockPath, 0600);
-		if(!@flock($lock, LOCK_EX))
+		if(!@flock($lock, LOCK_EX | LOCK_NB))
 		{
 			fclose($lock);
-			$this->logMessage('could not acquire the notification queue lock');
 			return false;
 		}
-
-		$ret = false;
-		try
-		{
-			if(count($this->queueFiles()) >= self::MAX_QUEUE_ITEMS)
-			{
-				$this->logMessage('notification queue is full; dropping a new event');
-				return false;
-			}
-			$ret = $this->writeItem(array(
-				'event' => $event,
-				'torrent' => self::limitString($torrent, 4096),
-				'hash' => self::limitString($hash, 256),
-				'comment' => self::limitString($comment, 2048),
-				'created_at' => time(),
-			));
-			if(!$ret)
-				$this->logMessage('could not write a notification queue item');
-		}
-		finally
-		{
-			flock($lock, LOCK_UN);
-			fclose($lock);
-		}
-		return $ret;
+		return $lock;
 	}
 
 	/**
@@ -90,8 +57,9 @@ class rTelegramQueue
 	 * ruTorrent's profile globals are initialized by config.php. The optional
 	 * timing parameters keep tests deterministic; production uses a short
 	 * coalescing window and conservative spacing between Telegram requests.
+	 * A caller that supplies an acquired worker lock retains ownership of it.
 	 */
-	public function drain($config = null, $client = null, $batchWindowMicroseconds = null, $sendIntervalMicroseconds = null)
+	public function drain($config = null, $client = null, $batchWindowMicroseconds = null, $sendIntervalMicroseconds = null, $workerLock = null)
 	{
 		if(!$this->ensureDirectory())
 		{
@@ -105,11 +73,10 @@ class rTelegramQueue
 		if($sendIntervalMicroseconds === null)
 			$sendIntervalMicroseconds = self::SEND_INTERVAL_MICROSECONDS;
 
-		$lockPath = $this->directory.'/worker.lock';
-		$lock = @fopen($lockPath, 'c');
+		$ownsLock = ($workerLock === null);
+		$lock = $ownsLock ? $this->acquireWorkerLock() : $workerLock;
 		if($lock === false)
 			return false;
-		@chmod($lockPath, 0600);
 
 		$didWork = false;
 		$lastSentAt = 0;
@@ -117,8 +84,6 @@ class rTelegramQueue
 		{
 			while(true)
 			{
-				if(!@flock($lock, LOCK_EX | LOCK_NB))
-					break;
 				$keepDraining = $this->drainAvailable(
 					$config,
 					$client,
@@ -127,18 +92,19 @@ class rTelegramQueue
 					$lastSentAt,
 					$didWork
 				);
-				flock($lock, LOCK_UN);
-				// Check after releasing the lock. If an event was enqueued while
-				// this worker held it, either this process or the event process
-				// will acquire the lock and drain the new item.
+				// Keep the lock through the whole drain, including new arrivals.
+				// An event arriving at shutdown is picked up by the next tick.
 				if(!$keepDraining || !$this->hasPendingItems())
 					break;
 			}
 		}
 		finally
 		{
-			@flock($lock, LOCK_UN);
-			fclose($lock);
+			if($ownsLock)
+			{
+				@flock($lock, LOCK_UN);
+				fclose($lock);
+			}
 		}
 		return $didWork;
 	}
@@ -178,7 +144,7 @@ class rTelegramQueue
 				'notification batch'
 			);
 			if($this->isRetryable($result))
-				return false; // Keep transient failures queued for the next event to retry.
+				return false; // Keep transient failures queued for the next scheduled tick.
 			$this->removeItems($chunk['files']); // Permanent failures must not block later notifications.
 		}
 		return true;
@@ -191,7 +157,7 @@ class rTelegramQueue
 		$currentFiles = array();
 		foreach($this->queueFiles() as $file)
 		{
-			$item = json_decode(@file_get_contents($file), true);
+			$item = $this->readItem($file);
 			if(!is_array($item) || !isset($item['event'], $item['torrent'], $item['hash'], $item['comment']) ||
 				!in_array($item['event'], self::eventNames(), true))
 			{
@@ -206,6 +172,12 @@ class rTelegramQueue
 			}
 
 			$message = $config->render($item['event'], $item['torrent'], $item['hash'], $item['comment']);
+			if(trim($message) === '')
+			{
+				@unlink($file);
+				$this->logMessage('discarded an empty rendered notification');
+				continue;
+			}
 			$separator = ($currentText === '') ? '' : "\n\n";
 			if($currentText !== '' && strlen($currentText) + strlen($separator) + strlen($message) > rTelegram::MAX_TEMPLATE_LENGTH)
 			{
@@ -220,6 +192,22 @@ class rTelegramQueue
 		if($currentText !== '')
 			$chunks[] = array('text' => $currentText, 'files' => $currentFiles);
 		return $chunks;
+	}
+
+	private function readItem($file)
+	{
+		$data = @file_get_contents($file);
+		$parts = explode("\0", $data === false ? '' : $data);
+		if(count($parts) !== 5 || $parts[4] !== '')
+			return null;
+		// Bound metadata and replace invalid UTF-8 bytes before rendering.
+		$item = array(
+			'event' => $parts[0],
+			'torrent' => self::limitString($parts[1], 4096),
+			'hash' => self::limitString($parts[2], 256),
+			'comment' => self::limitString($parts[3], 2048),
+		);
+		return json_decode(json_encode($item, JSON_INVALID_UTF8_SUBSTITUTE), true);
 	}
 
 	private function waitForSendInterval($lastSentAt, $sendIntervalMicroseconds)
@@ -249,49 +237,6 @@ class rTelegramQueue
 		return $code === 0 || $code === 429 || $code >= 500;
 	}
 
-	private function writeItem($item)
-	{
-		try
-		{
-			$id = sprintf('%010d%06d-%s', time(), (int)((microtime(true) - floor(microtime(true))) * 1000000), bin2hex(random_bytes(6)));
-		}
-		catch(Exception $e)
-		{
-			return false;
-		}
-		$tmp = $this->directory.'/.'.$id.'.tmp';
-		$target = $this->directory.'/'.$id.'.json';
-		$json = json_encode($item, JSON_INVALID_UTF8_SUBSTITUTE);
-		if(!is_string($json))
-			return false;
-		$fp = @fopen($tmp, 'x');
-		if($fp === false)
-			return false;
-		$offset = 0;
-		$length = strlen($json);
-		while($offset < $length)
-		{
-			$written = fwrite($fp, substr($json, $offset));
-			if($written === false || $written === 0)
-			{
-				fclose($fp);
-				@unlink($tmp);
-				return false;
-			}
-			$offset += $written;
-		}
-		$flushed = fflush($fp);
-		fclose($fp);
-		@chmod($tmp, 0600);
-		if(!$flushed || !@rename($tmp, $target))
-		{
-			@unlink($tmp);
-			return false;
-		}
-		@chmod($target, 0600);
-		return true;
-	}
-
 	private function ensureDirectory()
 	{
 		if(is_link($this->directory))
@@ -308,9 +253,7 @@ class rTelegramQueue
 
 	private function queueFiles()
 	{
-		$files = glob($this->directory.'/*.json');
-		if(!is_array($files))
-			return array();
+		$files = glob($this->directory.'/*.event') ?: array();
 		sort($files, SORT_STRING);
 		return $files;
 	}
