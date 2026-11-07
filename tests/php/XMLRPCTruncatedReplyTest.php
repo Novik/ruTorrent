@@ -240,14 +240,14 @@ class XMLRPCTruncatedReplyTest extends TestCase
 
     public function testErasedataTellsATransportFailureFromAFault()
     {
-        require_once(__DIR__ . '/../../plugins/erasedata/pending.php');
+        require_once(__DIR__ . '/../../plugins/erasedata/shared.php');
         $this->daemon([FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx")]);
         $this->assertTrue(
-            erasedataLiveHashes($why) === null && $why === 'no-answer',
+            erasedataLoadedDownloads($why) === null && $why === 'no-answer',
             'a reply the transport refused is no answer, not a refusal by rtorrent',
         );
         $this->daemon([FakeRtorrentDaemon::raw(self::FAULT_016)]);
-        $this->assertTrue(erasedataLiveHashes($why) === null && $why === 'fault', 'a fault from rtorrent is still a fault');
+        $this->assertTrue(erasedataLoadedDownloads($why) === null && $why === 'fault', 'a fault from rtorrent is still a fault');
 
         $this->daemon([FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx"), FakeRtorrentDaemon::raw(self::HASHES_016)]);
         $request = $this->hashRequest();

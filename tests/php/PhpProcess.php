@@ -83,6 +83,24 @@ class PhpProcess
         return ($ini === false) ? [] : ['-c', $ini];
     }
 
+    /**
+     * How a child started with $arguments ends when it exhausts its
+     * memory_limit: ['code' => its exit status, 'shutdown' => whether a
+     * shutdown function still ran]. PHP raises a fatal error, runs the
+     * shutdown functions and exits 255. Some builds exit 1 at once and run
+     * none, with or without an ini: Ondrej Sury's Ubuntu packages of PHP
+     * 7.4.33-31 and 8.1.34-9 (2026-10-21), which backport "Avoid state
+     * corruption via bailout" (CVE-2026-109618, CVE-2026-109619).
+     */
+    public static function memoryExhaustion(array $arguments = [])
+    {
+        $run = self::run(array_merge($arguments, ['-d', 'memory_limit=16M', '-r',
+            'register_shutdown_function(function () { echo "\nshutdown function ran\n"; });'
+            . ' $bytes = str_repeat("x", 64 << 20);']));
+        return ['code' => $run['code'],
+            'shutdown' => strpos($run['out'] . $run['err'], "\nshutdown function ran\n") !== false];
+    }
+
     /** SIGTERM, then SIGKILL if the child is still running two seconds later. */
     public static function stop($process)
     {

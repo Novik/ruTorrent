@@ -48,17 +48,17 @@ class ListCollectorTest extends TestCase
             throw new Exception('could not copy update.php');
         }
 
-        // update.php asks rtorrent which hashes it holds before it applies a
-        // list, through erasedataLiveHashes() in pending.php, which is copied
+        // update.php asks rtorrent which downloads it holds, and about their
+        // files, before it applies a list, through shared.php, which is copied
         // beside it. The daemon this stands for holds none, so every list here
         // is applied; what the collector does when the daemon holds one, or
         // does not answer, is pinned in UnconfirmedEraseTest.php against the
         // real RPC layer.
-        $source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/pending.php';
-        $target = $this->tree . '/plugins/erasedata/pending.php';
+        $source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/shared.php';
+        $target = $this->tree . '/plugins/erasedata/shared.php';
         copy($source, $target);
         if (hash_file('sha256', $source) !== hash_file('sha256', $target)) {
-            throw new Exception('could not copy pending.php');
+            throw new Exception('could not copy shared.php');
         }
         file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
 			class rXMLRPCCommand
