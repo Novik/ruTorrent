@@ -62,9 +62,12 @@ class rCache
         }
         return(true);
     }
-    public function set($rss, $arg = null)
+    // An explicit mode lets credential caches stay private throughout the write,
+    // including their temporary file. Other caches keep following profileMask.
+    public function set($rss, $arg = null, $mode = null)
     {
         global $profileMask;
+        $fileMode = (is_null($mode) ? $profileMask : $mode) & 0666;
         $name = $this->getName($rss);
         if (is_null($name)) {
             return(false);
@@ -80,7 +83,7 @@ class rCache
         if ($lock === false) {
             return(false);
         }
-        @chmod($lockName, $profileMask & 0666);
+        @chmod($lockName, $fileMode);
         if (!self::flock($lock)) {
             fclose($lock);
             return(false);
@@ -107,14 +110,20 @@ class rCache
         }
         // Use a per-process temporary file and publish it atomically under the key lock.
         $tmpName = $name . '.' . getmypid() . '.' . uniqid('', true) . '.tmp';
-        $fp = fopen($tmpName, "wb");
-        if ($fp !== false) {
+        // Start private even with umask(0): an unrelated reader must not be
+        // able to open the temporary file before its final mode is applied.
+        $oldMask = umask(0077);
+        try {
+            $fp = fopen($tmpName, "x+b");
+        } finally {
+            umask($oldMask);
+        }
+        if (($fp !== false) && @chmod($tmpName, $fileMode)) {
             $str = serialize($rss);
             if ((fwrite($fp, $str) == strlen($str)) && fflush($fp)) {
                 if (fclose($fp) !== false) {
-                    @chmod($tmpName, $profileMask & 0666);
+                    // rename preserves the mode already set before serialization.
                     if (@rename($tmpName, $name)) {
-                        @chmod($name, $profileMask & 0666);
                         // The next store must not merge this object's own published version.
                         if (is_object($rss) && method_exists($rss, "merge")) {
                             self::$loadStamps[spl_object_id($rss)] = [
@@ -131,6 +140,8 @@ class rCache
             } else {
                 fclose($fp);
             }
+        } elseif ($fp !== false) {
+            fclose($fp);
         }
         @unlink($tmpName);
         flock($lock, LOCK_UN);
