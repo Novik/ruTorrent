@@ -255,8 +255,12 @@ class TorrentZeroNameTest extends TestCase
 
         $relative = $this->buildAt($parent, $name, $what . ' (relative)');
         $absolute = $this->buildAt($parent, $directory, $what . ' (absolute)');
+        // Each build is stamped with the second it ran in.
+        $undated = function ($bytes) {
+            return preg_replace('/13:creation datei[0-9]+e/', '', $bytes, 1);
+        };
         $this->assertTrue(
-            $relative === $absolute,
+            $undated($relative) === $undated($absolute),
             $what . ': the relative and absolute base directories describe the same torrent',
         );
 
