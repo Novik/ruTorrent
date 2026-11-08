@@ -59,7 +59,7 @@ class BackfillCommandTest extends TestCase
         }
         $values = $this->parameterValues($command);
         $this->assertEquals(
-            'branch=d.complete=,"branch=d.custom=seedingtime,,\"d.custom.set=seedingtime,$d.custom=addtime\""',
+            'branch=d.complete=,"branch=d.custom=seedingtime,,\"branch=d.timestamp.finished=,\\\\\\"d.custom.set=seedingtime,$cat=$d.timestamp.finished=\\\\\\",\\\\\\"d.custom.set=seedingtime,$d.custom=addtime\\\\\\"\""',
             end($values),
             'complete, and only when seedingtime is empty',
         );
