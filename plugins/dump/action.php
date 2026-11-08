@@ -54,12 +54,14 @@ if (($hash !== '') && ($cmd !== '')) {
                 } else {
                     // The session copy, then the file the download is tied to:
                     // the two places the torrent can be, preferred in that order.
+                    // The reply reader escapes backslashes and double quotes.
+                    $paths = array_map(['rXMLRPCRequest', 'unescapeValue'], $req->val);
                     $candidates = [];
-                    if (!empty($req->val[0])) {
-                        $candidates[] = $req->val[0] . $hash . ".torrent";
+                    if (!empty($paths[0])) {
+                        $candidates[] = $paths[0] . $hash . ".torrent";
                     }
-                    if (strlen($req->val[1])) {
-                        $candidates[] = $req->val[1];
+                    if (strlen($paths[1])) {
+                        $candidates[] = $paths[1];
                     }
                     $reason = count($candidates) ? "dumpErrorNoFile" : "dumpErrorNoSessionDirectory";
                     $file = count($candidates) ? $candidates[0] : '';
