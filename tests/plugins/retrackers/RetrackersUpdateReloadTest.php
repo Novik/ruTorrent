@@ -84,6 +84,30 @@ class RetrackersUpdateReloadTest extends TestCase
         );
     }
 
+    /**
+     * rtorrent 0.16 queues the session copy for a thread of its own, so the
+     * insert event that runs update.php can come before the file is written.
+     */
+    public function testASessionCopyWrittenAfterTheEventIsWaitedFor()
+    {
+        $fromSession = [['http://one.test/announce'], ['http://added.test/announce']];
+        $printed = $this->addTrackers('tied.torrent', 'late/', 1);
+        $this->assertTrue(
+            $this->reloaded($fromSession),
+            'the session copy written a second later is read; calls: '
+            . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
+        );
+
+        $started = microtime(true);
+        $printed = $this->addTrackers('tied.torrent', 'never/', -1);
+        $this->assertTrue(
+            $this->reloaded([['http://added.test/announce']]),
+            'a session copy that never comes falls back to the tied file; calls: '
+            . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
+        );
+        $this->assertTrue(microtime(true) - $started < 15, 'and the wait for it is bounded');
+    }
+
     public function testTheTiedFileIsKept()
     {
         $printed = $this->addTrackers('xy.torrent');
@@ -114,7 +138,7 @@ class RetrackersUpdateReloadTest extends TestCase
      * $session there, with a copy that has one; '' leaves either out. The
      * reloaded bytes tell which of the two was read.
      */
-    private function addTrackers($tied, $session = '')
+    private function addTrackers($tied, $session = '', $sessionLate = 0.0)
     {
         $root = $this->repoRoot();
         if ($this->daemon !== null) {
@@ -124,7 +148,16 @@ class RetrackersUpdateReloadTest extends TestCase
         $tiedPath = ($tied === '') ? '' : $this->base . '/' . $tied;
         if ($sessionPath !== '') {
             @mkdir($sessionPath, 0700);
-            file_put_contents($sessionPath . self::HASH . '.torrent', $this->announceOnlyTorrent());
+            $copy = $sessionPath . self::HASH . '.torrent';
+            if ($sessionLate > 0) {
+                // Written $sessionLate seconds into the run, as rtorrent 0.16
+                // does from its session thread after the insert event.
+                file_put_contents($this->base . '/late.torrent', $this->announceOnlyTorrent());
+                exec('(sleep ' . $sessionLate . '; mv ' . escapeshellarg($this->base . '/late.torrent') . ' '
+                    . escapeshellarg($copy) . ') >/dev/null 2>&1 &');
+            } elseif ($sessionLate == 0) {
+                file_put_contents($copy, $this->announceOnlyTorrent());
+            }
         }
         if ($tiedPath !== '') {
             file_put_contents($tiedPath, $this->trackerlessTorrent());
