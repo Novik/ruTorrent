@@ -160,7 +160,7 @@ class rTelegramQueue
         $currentFiles = [];
         foreach ($this->queueFiles() as $file) {
             $item = $this->readItem($file);
-            if (!is_array($item) || !isset($item['event'], $item['torrent'], $item['hash'], $item['comment'])
+            if (!is_array($item) || !isset($item['event'], $item['torrent'], $item['hash'], $item['comment'], $item['details'])
                 || !in_array($item['event'], self::eventNames(), true)) {
                 @unlink($file);
                 $this->logMessage('discarded an invalid queued notification');
@@ -171,7 +171,7 @@ class rTelegramQueue
                 continue;
             }
 
-            $message = $config->render($item['event'], $item['torrent'], $item['hash'], $item['comment']);
+            $message = $config->render($item['event'], $item['torrent'], $item['hash'], $item['comment'], $item['details']);
             if (trim($message) === '') {
                 @unlink($file);
                 $this->logMessage('discarded an empty rendered notification');
@@ -197,15 +197,23 @@ class rTelegramQueue
     {
         $data = @file_get_contents($file);
         $parts = explode("\0", $data === false ? '' : $data);
-        if (count($parts) !== 5 || $parts[4] !== '') {
+        // Seven NUL-terminated fields. A record queued by an older version has
+        // only the first four: its size, label and ratio are left empty.
+        if ((count($parts) !== 8 && count($parts) !== 5) || array_pop($parts) !== '') {
             return null;
         }
+        $parts = array_pad($parts, 7, '');
         // Bound metadata and replace invalid UTF-8 bytes before rendering.
         $item = [
             'event' => $parts[0],
             'torrent' => self::limitString($parts[1], 4096),
             'hash' => self::limitString($parts[2], 256),
             'comment' => self::limitString($parts[3], 2048),
+            'details' => [
+                'size' => self::limitString($parts[4], 32),
+                'label' => self::limitString($parts[5], 4096),
+                'ratio' => self::limitString($parts[6], 32),
+            ],
         ];
         return json_decode(json_encode($item, JSON_INVALID_UTF8_SUBSTITUTE), true);
     }
