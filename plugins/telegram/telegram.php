@@ -201,14 +201,18 @@ class rTelegram
         FileUtil::toLog('telegram: ' . $context . ' failed: ' . self::sanitizeError($error, $this->token));
     }
 
-    public function render($event, $torrent, $hash, $comment = '')
+    /**
+     * $details holds what rTorrent passes after the timestamp (see notificationCommand()): 'size' (d.size_bytes),
+     * 'label' (d.custom1, URL-encoded by ruTorrent) and 'ratio' (d.ratio, in thousandths). A missing one renders empty.
+     */
+    public function render($event, $torrent, $hash, $comment = '', $details = [])
     {
         $template = isset($this->templates[$event]) ? $this->templates[$event] : self::defaultTemplate($event);
-        $message = $this->renderTemplate($template, $event, $torrent, $hash, $comment);
+        $message = $this->renderTemplate($template, $event, $torrent, $hash, $comment, $details);
         // A nonempty template can still render empty (for example, {LINK}
         // without a comment). Use the default rather than strand a queue item.
         return trim($message) === ''
-            ? $this->renderTemplate(self::defaultTemplate($event), $event, $torrent, $hash, $comment)
+            ? $this->renderTemplate(self::defaultTemplate($event), $event, $torrent, $hash, $comment, $details)
             : $message;
     }
 
@@ -286,7 +290,9 @@ class rTelegram
             . self::quoteCommandArgument(dirname(__FILE__) . '/enqueue.sh') . ','
             . self::quoteCommandArgument(FileUtil::getSettingsPath() . '/telegram') . ','
             . self::quoteCommandArgument($event) . ',' . $value('d.get_name') . ',' . $value('d.get_hash') . ','
-            . $value('d.get_custom2') . ',' . $value('system.time_usec') . '}';
+            . $value('d.get_custom2') . ',' . $value('system.time_usec') . ','
+            // After the timestamp, so that enqueue.sh still accepts a handler an older version registered.
+            . $value('d.get_size_bytes') . ',' . $value('d.get_custom1') . ',' . $value('d.get_ratio') . '}';
     }
 
     public function workerCommand()
@@ -315,7 +321,7 @@ class rTelegram
         return self::truncateMessage($template);
     }
 
-    private function renderTemplate($template, $event, $torrent, $hash, $comment)
+    private function renderTemplate($template, $event, $torrent, $hash, $comment, $details)
     {
         $state = $event;
         $link = self::markdownLink($comment);
@@ -324,13 +330,19 @@ class rTelegram
         }
         // The template's own text is escaped too: Telegram rejects a MarkdownV2 message with any reserved character
         // left unescaped (a "!" or a "." in a custom template). {LINK} is already MarkdownV2.
+        $detail = function ($name) use ($details) {
+            return is_array($details) && isset($details[$name]) && is_scalar($details[$name]) ? (string) $details[$name] : '';
+        };
         $values = [
             '{STATE}' => self::escapeMarkdown($state),
             '{TORRENT}' => self::escapeMarkdown((string) $torrent),
             '{HASH}' => self::escapeMarkdown((string) $hash),
             '{LINK}' => $link,
+            '{SIZE}' => self::escapeMarkdown(self::formatSize($detail('size'))),
+            '{LABEL}' => self::escapeMarkdown(self::decodeLabel($detail('label'))),
+            '{RATIO}' => self::escapeMarkdown(self::formatRatio($detail('ratio'))),
         ];
-        $parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('`(\{STATE\}|\{TORRENT\}|\{HASH\}|\{LINK\}|\{SIZE\}|\{LABEL\}|\{RATIO\})`', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
         $message = '';
         foreach ($parts as $i => $part) {
             $piece = ($i % 2) ? $values[$part] : self::escapeMarkdown($part);
@@ -354,6 +366,39 @@ class rTelegram
             $text = substr($text, 0, -1);
         }
         return $text;
+    }
+
+    /** ruTorrent's rule for a size (theConverter.bytes(), the history plugin): 1024-based, below 1 KiB in KiB, one decimal rounded down. */
+    private static function formatSize($bytes)
+    {
+        if (preg_match('`^[0-9]+$`D', $bytes) !== 1) {
+            return '';
+        }
+        // A float: a size past 2 GiB does not fit an integer on 32-bit PHP.
+        $size = (float) $bytes / 1024;
+        $units = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+        $unit = 0;
+        while ($size >= 1024 && $unit < count($units) - 1) {
+            $size /= 1024;
+            $unit++;
+        }
+        return number_format(floor($size * 10) / 10, 1, '.', '') . ' ' . $units[$unit];
+    }
+
+    /** d.ratio counts in thousandths; ruTorrent shows it with three decimals. */
+    private static function formatRatio($thousandths)
+    {
+        return preg_match('`^[0-9]+$`D', $thousandths) === 1 ? number_format($thousandths / 1000, 3, '.', '') : '';
+    }
+
+    /**
+     * ruTorrent stores the label URL-encoded in d.custom1. As in the web UI, a label that does not decode to
+     * UTF-8 is shown as no label: Telegram requires UTF-8, and a request it refuses drops its whole batch.
+     */
+    private static function decodeLabel($label)
+    {
+        $label = trim(rawurldecode($label));
+        return preg_match('//u', $label) === 1 ? $label : '';
     }
 
     private static function markdownLink($comment)

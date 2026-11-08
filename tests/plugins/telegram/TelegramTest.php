@@ -24,7 +24,7 @@ class TelegramStorageProbe extends rTelegram
 
 class TelegramEmptyRenderer extends rTelegram
 {
-    public function render($event, $torrent, $hash, $comment = '')
+    public function render($event, $torrent, $hash, $comment = '', $details = [])
     {
         return " \n ";
     }
@@ -104,6 +104,62 @@ class TelegramTest extends TestCase
         $this->assertEquals("✅ Done\\! Movie\\_1 \\(100%\\)\\.\n[link](https://example.org/item)", $config->render('finished', 'Movie_1', 'ABC', 'VRS24mrkerhttps%3A%2F%2Fexample.org%2Fitem'), 'reserved characters of the template text are escaped, the link stays MarkdownV2');
         $config->templates['added'] = '{unknown} {HASH} - {STATE}';
         $this->assertEquals('\\{unknown\\} ABC \\- added', $config->render('added', 'Movie', 'ABC'), 'an unknown placeholder is escaped as text');
+    }
+
+    public function testSizeLabelAndRatioPlaceholders()
+    {
+        $config = new rTelegram();
+        $config->templates['finished'] = '{TORRENT} ({SIZE}) - {LABEL} - ratio {RATIO}';
+        $details = ['size' => '4563402752', 'label' => rawurlencode('Films & séries [HD] v1.0!'), 'ratio' => '1250'];
+        $this->assertEquals('Movie \\(4\\.2 GiB\\) \\- Films & séries \\[HD\\] v1\\.0\\! \\- ratio 1\\.250', $config->render('finished', 'Movie', 'ABC', '', $details), 'size, label and ratio are filled in and escaped for MarkdownV2');
+        $this->assertEquals('Movie \\(\\) \\-  \\- ratio ', $config->render('finished', 'Movie', 'ABC'), 'without details the placeholders are left empty');
+        $this->assertEquals('Torrent finished: Movie', (new rTelegram())->render('finished', 'Movie', 'ABC', '', $details), 'the default template does not change');
+    }
+
+    public function testSizesAreShownAsInTheWebUi()
+    {
+        $config = new rTelegram();
+        $config->templates['added'] = '{SIZE}';
+        $sizes = [
+            '0' => '0.0 KiB',
+            '512' => '0.5 KiB',
+            '1023' => '0.9 KiB',
+            '1024' => '1.0 KiB',
+            '1572864' => '1.5 MiB',
+            '4563402752' => '4.2 GiB',
+            '1099511627776' => '1.0 TiB',
+            '1152921504606846976' => '1024.0 PiB',
+        ];
+        foreach ($sizes as $bytes => $shown) {
+            $this->assertEquals(str_replace('.', '\\.', $shown), $config->render('added', 'Movie', 'ABC', '', ['size' => (string) $bytes]), $bytes . ' bytes are shown as ' . $shown);
+        }
+        foreach (['', '-1', '1e3', '12 ', 'abc'] as $bytes) {
+            $this->assertEquals('Torrent added: Movie', $config->render('added', 'Movie', 'ABC', '', ['size' => $bytes]), 'a size that is not a byte count is left empty: "' . $bytes . '"');
+        }
+    }
+
+    public function testRatiosAreShownAsInTheWebUi()
+    {
+        $config = new rTelegram();
+        $config->templates['removed'] = '{RATIO}';
+        foreach (['0' => '0\\.000', '1250' => '1\\.250', '999' => '0\\.999', '12345' => '12\\.345'] as $thousandths => $shown) {
+            $this->assertEquals($shown, $config->render('removed', 'Movie', 'ABC', '', ['ratio' => (string) $thousandths]), 'd.ratio ' . $thousandths . ' is shown with three decimals');
+        }
+        foreach (['-1', '1.5', 'abc'] as $ratio) {
+            $this->assertEquals('Torrent removed: Movie', $config->render('removed', 'Movie', 'ABC', '', ['ratio' => $ratio]), 'a ratio that is not d.ratio is left empty: "' . $ratio . '"');
+        }
+    }
+
+    public function testLabelsAreDecodedAsInTheWebUi()
+    {
+        $config = new rTelegram();
+        $config->templates['added'] = '[{LABEL}]';
+        $this->assertEquals('\\[TV\\]', $config->render('added', 'Movie', 'ABC', '', ['label' => 'TV']), 'a plain label is kept');
+        $this->assertEquals('\\[a\\+b c\\_d\\]', $config->render('added', 'Movie', 'ABC', '', ['label' => 'a+b%20c_d%20']), 'the label is URL-decoded as decodeURIComponent() does, "+" stays, and trimmed');
+        $this->assertEquals('\\[日本 🎬\\]', $config->render('added', 'Movie', 'ABC', '', ['label' => rawurlencode('日本 🎬')]), 'a UTF-8 label is decoded');
+        $message = $config->render('added', 'Movie', 'ABC', '', ['label' => 'bad%FF%FE']);
+        $this->assertEquals('\\[\\]', $message, 'a label that does not decode to UTF-8 is left out, as in the web UI');
+        $this->assertTrue(preg_match('//u', $message) === 1, 'the message stays UTF-8, which Telegram requires');
     }
 
     public function testStorageStaysReadableByTheGroupOnly()
@@ -194,6 +250,9 @@ class TelegramTest extends TestCase
         $settings->aliases['d.get_name'] = ['name' => 'd.name', 'prm' => 0];
         $settings->aliases['d.get_hash'] = ['name' => 'd.hash', 'prm' => 0];
         $settings->aliases['d.get_custom2'] = ['name' => 'd.custom2', 'prm' => 0];
+        $settings->aliases['d.get_size_bytes'] = ['name' => 'd.size_bytes', 'prm' => 0];
+        $settings->aliases['d.get_custom1'] = ['name' => 'd.custom1', 'prm' => 0];
+        $settings->aliases['d.get_ratio'] = ['name' => 'd.ratio', 'prm' => 0];
         $config = new rTelegram();
         $command = $config->notificationCommand('finished');
         $this->assertTrue(strpos($command, 'execute.nothrow=') === 0, 'rTorrent serializes the short enqueue helpers instead of forking a burst');
@@ -205,6 +264,9 @@ class TelegramTest extends TestCase
         $this->assertTrue(strpos($command, '(cat,(d.name))') !== false, 'the command uses mapped name substitution');
         $this->assertTrue(strpos($command, '(cat,(d.hash))') !== false, 'the command uses mapped hash substitution');
         $this->assertTrue(strpos($command, '(cat,(d.custom2))') !== false, 'the command uses mapped comment substitution');
+        $arguments = '"finished",(cat,(d.name)),(cat,(d.hash)),(cat,(d.custom2)),(cat,(system.time_usec)),(cat,(d.size_bytes)),(cat,(d.custom1)),(cat,(d.ratio))}';
+        $this->assertEquals($arguments, substr($command, -strlen($arguments)), 'size, label and ratio come in the same call, after the timestamp that ended the older arguments');
+        $this->assertEquals(1, substr_count($command, 'execute'), 'the details add no process: still one execute per event');
         $this->assertTrue(strpos($command, '$d.name=') === false, 'the command does not use inert name substitution');
         $this->assertTrue(strpos($command, '$d.get_hash=') === false, 'the command does not use inert hash substitution');
         $this->assertTrue(strpos($command, '$d.get_custom2=') === false, 'the command does not use inert comment substitution');
@@ -450,11 +512,50 @@ class TelegramTest extends TestCase
         $this->assertTrue($this->enqueue($queue, 'removed', $torrent, 'HASH', $comment), 'shell metacharacters and newlines are queued as data');
         $files = glob($queue->getDirectory() . '/*.event');
         $record = explode("\0", file_get_contents($files[0]));
-        $this->assertEquals(['removed', $torrent, 'HASH', $comment, ''], $record, 'NUL-separated records preserve every argument');
+        $this->assertEquals(['removed', $torrent, 'HASH', $comment, '', '', '', ''], $record, 'NUL-separated records preserve every argument');
         $this->assertTrue(!file_exists($marker), 'no shell injection marker is created');
         foreach ($files as $file) {
             unlink($file);
         }
+    }
+
+    public function testShellEnqueueStoresSizeLabelAndRatio()
+    {
+        $queue = new rTelegramQueue();
+        $label = 'a;$(touch x)`id`' . "\nb%20c";
+        $this->assertTrue($this->enqueue($queue, 'removed', 'Movie', 'HASH', '', ['4563402752', $label, '1250']), 'the current handler\'s nine arguments are queued');
+        $files = glob($queue->getDirectory() . '/*.event');
+        $this->assertEquals(['removed', 'Movie', 'HASH', '', '4563402752', $label, '1250', ''], explode("\0", file_get_contents($files[0])), 'size, label and ratio are stored verbatim after the comment');
+        unlink($files[0]);
+        $this->assertTrue($this->enqueue($queue, 'removed', 'Movie', 'HASH'), 'the six arguments of a handler an older version registered are still queued');
+        $files = glob($queue->getDirectory() . '/*.event');
+        $this->assertEquals(['removed', 'Movie', 'HASH', '', '', '', '', ''], explode("\0", file_get_contents($files[0])), 'that event is stored with an empty size, label and ratio');
+        unlink($files[0]);
+        $this->assertTrue(!$this->enqueue($queue, 'removed', 'Movie', 'HASH', '', ['1']) && !$this->enqueue($queue, 'removed', 'Movie', 'HASH', '', ['1', '2']), 'another number of arguments is refused');
+        $this->assertEquals(0, $queue->getPendingCount(), 'nothing is queued for a refused event');
+    }
+
+    public function testQueueRendersEachEventWithItsOwnDetails()
+    {
+        $queue = new rTelegramQueue();
+        $config = new rTelegram();
+        $config->enabled = true;
+        $config->token = 'secret-token';
+        $config->chatId = '1';
+        $config->events['removed'] = true;
+        $config->templates['removed'] = '{TORRENT} | {SIZE} | {LABEL} | {RATIO}';
+        $this->assertTrue($this->enqueue($queue, 'removed', 'First', 'HASH1', '', ['1572864', 'TV%20%26%20Films', '2500']), 'a first event is queued');
+        $this->assertTrue($this->enqueue($queue, 'removed', 'Second', 'HASH2', '', ['4563402752', '', '0']), 'a second event is queued');
+        // A record queued by the previous version, before an update: four fields.
+        file_put_contents($queue->getDirectory() . '/9999999999999999.old.event', "removed\0Third\0HASH3\0\0");
+        $messages = [];
+        $client = new rTelegramClient(function ($url, $payload, $options) use (&$messages) {
+            $messages[] = $payload['text'];
+            return ['http_code' => 200, 'body' => '{"ok":true}'];
+        });
+        $this->assertTrue($queue->drain($config, $client, 0, 0), 'the queue is drained');
+        $this->assertEquals(["First \\| 1\\.5 MiB \\| TV & Films \\| 2\\.500\n\nSecond \\| 4\\.2 GiB \\|  \\| 0\\.000\n\nThird \\|  \\|  \\| "], $messages, 'one batch, in which each event shows its own size, label and ratio, and a record from before the update is still sent');
+        $this->assertEquals(0, $queue->getPendingCount(), 'every record is sent');
     }
 
     public function testShellEnqueueEnforcesQueueCapacityAndRejectsInvalidEvents()
@@ -527,15 +628,16 @@ class TelegramTest extends TestCase
         unlink($files[0]);
     }
 
-    private function enqueue($queue, $event, $torrent, $hash, $comment = '')
+    /** Without $details, the arguments of a handler that an older version registered. */
+    private function enqueue($queue, $event, $torrent, $hash, $comment = '', $details = null)
     {
         // Epoch microseconds exceed a 32-bit integer; format directly as a string.
         $timestamp = sprintf('%.0f', microtime(true) * 1000000);
-        $process = proc_open([
+        $process = proc_open(array_merge([
             'sh', __DIR__ . '/../../../plugins/telegram/enqueue.sh',
             $queue->getDirectory(), $event, $torrent, $hash, $comment,
             $timestamp,
-        ], [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $pipes);
+        ], $details === null ? [] : $details), [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $pipes);
         return is_resource($process) && proc_close($process) === 0;
     }
 }
