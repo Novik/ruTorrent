@@ -59,10 +59,15 @@ if (count($argv) > 1) {
         $isStart = ($req->val[1] != 0);
         if ((count($trks->list) || count($trks->todelete)) && !($req->val[5] && $trks->dontAddPrivate)
             && ($req->val[6] != $hash . ".meta")) {
-            $fname = rTorrent::getSourceFile(
-                $hash,
-                array_map(['rXMLRPCRequest', 'unescapeValue'], [$req->val[0], $req->val[2]]),
-            );
+            $paths = array_map(['rXMLRPCRequest', 'unescapeValue'], [$req->val[0], $req->val[2]]);
+            // rtorrent 0.16 queues the session copy for a thread of its own,
+            // so the insert event that started this script can come before
+            // the file is written. Wait for it a little, then take what there is.
+            $copy = $paths[0] . $hash . ".torrent";
+            for ($i = 0; ($paths[0] !== '') && !is_readable($copy) && ($i < 50); $i++) {
+                usleep(100000);
+            }
+            $fname = rTorrent::getSourceFile($hash, $paths);
             if ($fname) {
                 $torrent = new Torrent($fname);
                 if (!$torrent->errors()) {
