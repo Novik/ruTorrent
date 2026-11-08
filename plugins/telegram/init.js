@@ -24,7 +24,7 @@ if (plugin.canChangeOptions()) {
 		if ($('#telegram_chat_id').val() !== (cfg.chatId || '')) return true;
 		if ($('#telegram_token').val() !== '') return true;
 		if ($('#telegram_token_clear').prop('checked')) return true;
-		for (const event of ['added', 'finished', 'removed']) {
+		for (const event of ['added', 'finished', 'removed', 'checkfailed']) {
 			if ($('#telegram_event_' + event).prop('checked') !== !!(cfg.events || {})[event]) return true;
 			if ($('#telegram_template_' + event).val() !== ((cfg.templates || {})[event] || '')) return true;
 		}
@@ -44,7 +44,7 @@ if (plugin.canChangeOptions()) {
 		if (token) content += '&token=' + encodeURIComponent(token);
 		if ($('#telegram_token_clear').prop('checked')) content += '&token_clear=1';
 		content += '&chat_id=' + encodeURIComponent($('#telegram_chat_id').val());
-		for (const event of ['added', 'finished', 'removed']) {
+		for (const event of ['added', 'finished', 'removed', 'checkfailed']) {
 			content += '&event_' + event + '=' + ($('#telegram_event_' + event).prop('checked') ? '1' : '0');
 			content += '&template_' + event + '=' + encodeURIComponent($('#telegram_template_' + event).val());
 		}
@@ -75,7 +75,7 @@ if (plugin.canChangeOptions()) {
 
 plugin.onLangLoaded = function() {
 	if (!this.canChangeOptions()) return;
-	const events = ['added', 'finished', 'removed'];
+	const events = ['added', 'finished', 'removed', 'checkfailed'];
 	const eventFields = events.map((event) => $('<div>').addClass('row').append(
 		$('<div>').addClass('col-12 col-md-3').append(
 			$('<input>').attr({type: 'checkbox', id: 'telegram_event_' + event}),

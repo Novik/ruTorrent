@@ -10,6 +10,7 @@ theUILang.telegramTemplateHelp = "Доступные подстановки: {ST
 theUILang.telegramEventAdded = "Добавлен";
 theUILang.telegramEventFinished = "Завершён";
 theUILang.telegramEventRemoved = "Удалён";
+theUILang.telegramEventCheckfailed = "Ошибка проверки";
 theUILang.telegramTest = "Отправить тестовое сообщение";
 theUILang.telegramTestHelp = "Перед тестированием сохраните настройки, нажав OK.";
 theUILang.telegramSaved = "Настройки Telegram сохранены.";

@@ -58,7 +58,7 @@ class TelegramTest extends TestCase
         $export = $config->get();
         $this->assertTrue(strpos($export, 'super-secret') === false, 'the bot token is never exported to JavaScript');
         $this->assertTrue(strpos($export, 'tokenConfigured') !== false, 'the browser receives only token configuration status');
-        $this->assertEquals(3, count(rTelegram::eventNames()), 'all supported event types are declared');
+        $this->assertEquals(4, count(rTelegram::eventNames()), 'all supported event types are declared');
     }
 
     public function testInputAndTemplateRendering()
@@ -270,6 +270,34 @@ class TelegramTest extends TestCase
         $this->assertTrue(strpos($command, '$d.name=') === false, 'the command does not use inert name substitution');
         $this->assertTrue(strpos($command, '$d.get_hash=') === false, 'the command does not use inert hash substitution');
         $this->assertTrue(strpos($command, '$d.get_custom2=') === false, 'the command does not use inert comment substitution');
+    }
+
+    public function testRTorrentTestsTheFailedCheckItself()
+    {
+        $_SERVER['REMOTE_USER'] = 'Test User';
+        $settings = rTorrentSettings::get();
+        foreach (['name', 'hash', 'custom2', 'size_bytes', 'custom1', 'ratio', 'complete', 'message'] as $field) {
+            $settings->aliases['d.get_' . $field] = ['name' => 'd.' . $field, 'prm' => 0];
+        }
+        $config = new rTelegram();
+        $this->assertEquals($config->notificationCommand('added'), $config->eventHandlerCommand('added'), 'the other events queue every time');
+        $command = $config->eventHandlerCommand('checkfailed');
+        $condition = 'branch=((and,((not,((d.complete)))),((match,((d.message)),".*hash check returned unfinished chunks.*")))),';
+        $this->assertEquals($condition, substr($command, 0, strlen($condition)), 'rTorrent itself tests that the check found a complete torrent incomplete');
+        $this->assertEquals('"' . addcslashes($config->notificationCommand('checkfailed'), '\\"') . '"', substr($command, strlen($condition)), 'only then does it run the usual enqueue command, quoted as one argument');
+        $this->assertEquals(1, substr_count($command, 'execute'), 'one process at most, and none for a check that passes');
+    }
+
+    public function testTheFailedCheckIsOffUntilTurnedOn()
+    {
+        $config = new rTelegram();
+        $config->events = ['added' => true, 'finished' => true, 'removed' => true];
+        $config->templates = [];
+        $config->normalize();
+        $this->assertTrue($config->events['checkfailed'] === false, 'settings saved by an older version get the new event turned off');
+        $this->assertEquals('Torrent check failed: Movie', $config->render('checkfailed', 'Movie', 'ABC'), 'the default template reads "check failed"');
+        $config->templates['checkfailed'] = '{STATE} - {TORRENT} ({SIZE})';
+        $this->assertEquals('check failed \\- Movie \\(4\\.2 GiB\\)', $config->render('checkfailed', 'Movie', 'ABC', '', ['size' => '4563402752']), '{STATE} reads "check failed" too');
     }
 
     public function testScheduledWorkerUsesBackgroundArgumentPassing()
@@ -556,6 +584,24 @@ class TelegramTest extends TestCase
         $this->assertTrue($queue->drain($config, $client, 0, 0), 'the queue is drained');
         $this->assertEquals(["First \\| 1\\.5 MiB \\| TV & Films \\| 2\\.500\n\nSecond \\| 4\\.2 GiB \\|  \\| 0\\.000\n\nThird \\|  \\|  \\| "], $messages, 'one batch, in which each event shows its own size, label and ratio, and a record from before the update is still sent');
         $this->assertEquals(0, $queue->getPendingCount(), 'every record is sent');
+    }
+
+    public function testAFailedCheckIsQueuedAndSent()
+    {
+        $queue = new rTelegramQueue();
+        $config = new rTelegram();
+        $config->enabled = true;
+        $config->token = 'secret-token';
+        $config->chatId = '1';
+        $config->events['checkfailed'] = true;
+        $this->assertTrue($this->enqueue($queue, 'checkfailed', 'Movie', 'HASH', '', ['1048576', 'TV', '0']), 'enqueue.sh accepts the failed check');
+        $messages = [];
+        $client = new rTelegramClient(function ($url, $payload, $options) use (&$messages) {
+            $messages[] = $payload['text'];
+            return ['http_code' => 200, 'body' => '{"ok":true}'];
+        });
+        $this->assertTrue($queue->drain($config, $client, 0, 0), 'the queue is drained');
+        $this->assertEquals(['Torrent check failed: Movie'], $messages, 'the sender sends it');
     }
 
     public function testShellEnqueueEnforcesQueueCapacityAndRejectsInvalidEvents()

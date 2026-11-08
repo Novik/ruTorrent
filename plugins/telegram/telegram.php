@@ -23,16 +23,18 @@ class rTelegram
         'added' => false,
         'finished' => false,
         'removed' => false,
+        'checkfailed' => false,
     ];
     public $templates = [
         'added' => "Torrent {STATE}: {TORRENT}\n{LINK}",
         'finished' => "Torrent {STATE}: {TORRENT}\n{LINK}",
         'removed' => "Torrent {STATE}: {TORRENT}\n{LINK}",
+        'checkfailed' => "Torrent {STATE}: {TORRENT}\n{LINK}",
     ];
 
     public static function eventNames()
     {
-        return ['added', 'finished', 'removed'];
+        return ['added', 'finished', 'removed', 'checkfailed'];
     }
 
     public static function load()
@@ -253,7 +255,7 @@ class rTelegram
         foreach (self::eventNames() as $event) {
             $handler = self::handlerName($event);
             $command = !empty($this->events[$event]) && $this->enabled
-                ? $this->notificationCommand($event)
+                ? $this->eventHandlerCommand($event)
                 : getCmd('cat=');
             $commands[] = $this->eventCommand($settings, $event, [$handler, $command]);
         }
@@ -295,6 +297,23 @@ class rTelegram
             . $value('d.get_size_bytes') . ',' . $value('d.get_custom1') . ',' . $value('d.get_ratio') . '}';
     }
 
+    /**
+     * The handler of an event. rTorrent runs hash_done after every hash check, also the one of each torrent it
+     * loads, and sets "hash check returned unfinished chunks" when a check finds that a complete torrent is not
+     * complete any more; it then stops the torrent. rTorrent tests that itself, so a check that passes starts
+     * no process.
+     */
+    public function eventHandlerCommand($event)
+    {
+        $command = $this->notificationCommand($event);
+        if ($event !== 'checkfailed') {
+            return $command;
+        }
+        return getCmd('branch') . '=((and,((not,((' . getCmd('d.get_complete') . ')))),((match,(('
+            . getCmd('d.get_message') . ')),".*hash check returned unfinished chunks.*")))),'
+            . self::quoteCommandArgument($command);
+    }
+
     public function workerCommand()
     {
         return getCmd('execute.nothrow.bg') . '={' . self::quoteCommandArgument(Utility::getPHP()) . ','
@@ -323,7 +342,7 @@ class rTelegram
 
     private function renderTemplate($template, $event, $torrent, $hash, $comment, $details)
     {
-        $state = $event;
+        $state = ($event === 'checkfailed') ? 'check failed' : $event;
         $link = self::markdownLink($comment);
         if ($link === '') {
             $template = str_replace(["\r\n{LINK}", "\n{LINK}"], '{LINK}', $template);
@@ -426,6 +445,7 @@ class rTelegram
             case 'added': return $settings->getOnInsertCommand($args);
             case 'finished': return $settings->getOnFinishedCommand($args);
             case 'removed': return $settings->getOnEraseCommand($args);
+            case 'checkfailed': return $settings->getOnHashdoneCommand($args);
         }
         return $settings->getOnFinishedCommand($args);
     }
