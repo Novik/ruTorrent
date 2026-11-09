@@ -119,7 +119,8 @@ class rTelegramQueue
             usleep($batchWindowMicroseconds);
         }
 
-        $chunks = $this->renderChunks($config);
+        $unreadable = 0;
+        $chunks = $this->renderChunks($config, $unreadable);
         foreach ($chunks as $chunk) {
             $result = null;
             for ($attempt = 0; $attempt < self::MAX_SEND_ATTEMPTS; $attempt++) {
@@ -150,16 +151,24 @@ class rTelegramQueue
             } // Keep transient failures queued for the next scheduled tick.
             $this->removeItems($chunk['files']); // Permanent failures must not block later notifications.
         }
-        return true;
+        // A record kept as unreadable stays pending: stop here so the drain loop
+        // does not spin on it. The next scheduled tick tries it again.
+        return $unreadable === 0;
     }
 
-    private function renderChunks($config)
+    private function renderChunks($config, &$unreadable = 0)
     {
         $chunks = [];
         $currentText = '';
         $currentFiles = [];
         foreach ($this->queueFiles() as $file) {
             $item = $this->readItem($file);
+            if ($item === false) {
+                // Keep it: a permission problem is fixable, a deletion is not.
+                $unreadable++;
+                $this->logMessage('queued notification ' . $file . ' is unreadable and was not sent; fix its permissions or delete it');
+                continue;
+            }
             if (!is_array($item) || !isset($item['event'], $item['torrent'], $item['hash'], $item['comment'], $item['details'])
                 || !in_array($item['event'], self::eventNames(), true)) {
                 @unlink($file);
@@ -196,7 +205,10 @@ class rTelegramQueue
     private function readItem($file)
     {
         $data = @file_get_contents($file);
-        $parts = explode("\0", $data === false ? '' : $data);
+        if ($data === false) {
+            return false;
+        }
+        $parts = explode("\0", $data);
         // Seven NUL-terminated fields. A record queued by an older version has
         // only the first four: its size, label and ratio are left empty.
         if ((count($parts) !== 8 && count($parts) !== 5) || array_pop($parts) !== '') {

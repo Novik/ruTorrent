@@ -604,6 +604,51 @@ class TelegramTest extends TestCase
         $this->assertEquals(['Torrent check failed: Movie'], $messages, 'the sender sends it');
     }
 
+    public function testAnUnreadableRecordIsKeptLoggedAndDoesNotBlockTheOnesAroundIt()
+    {
+        global $log_file;
+        $saved = $log_file;
+        $log_file = sys_get_temp_dir() . '/rutorrent-telegram-test-' . getmypid() . '.log';
+        @unlink($log_file);
+        $queue = new rTelegramQueue();
+        $config = new rTelegram();
+        $config->enabled = true;
+        $config->token = 'secret-token';
+        $config->chatId = '1';
+        $config->events['added'] = true;
+        $config->events['checkfailed'] = true;
+        $this->assertTrue($this->enqueue($queue, 'added', 'First', 'HASH1'), 'the first event is queued');
+        $this->assertTrue($this->enqueue($queue, 'checkfailed', 'Second', 'HASH2'), 'the failed check is queued');
+        $this->assertTrue($this->enqueue($queue, 'added', 'Third', 'HASH3'), 'the third event is queued');
+        $files = glob($queue->getDirectory() . '/*.event');
+        sort($files, SORT_STRING);
+        $this->assertEquals(3, count($files), 'three records are queued');
+        chmod($files[1], 0);
+        if (is_readable($files[1])) { // root reads a mode-000 file
+            chmod($files[1], 0600);
+            $log_file = $saved;
+            return;
+        }
+        $messages = [];
+        $client = new rTelegramClient(function ($url, $payload, $options) use (&$messages) {
+            $messages[] = $payload['text'];
+            return ['http_code' => 200, 'body' => '{"ok":true}'];
+        });
+        $queue->drain($config, $client, 0, 0);
+        $this->assertEquals(['Torrent added: First' . "\n\n" . 'Torrent added: Third'], $messages, 'the readable records around it are sent');
+        $this->assertEquals([$files[1]], glob($queue->getDirectory() . '/*.event'), 'the unreadable record is kept');
+        $log = is_file($log_file) ? file_get_contents($log_file) : '';
+        $this->assertTrue(strpos($log, $files[1] . ' is unreadable and was not sent; fix its permissions or delete it') !== false, 'the log names the record and what to do');
+
+        chmod($files[1], 0600);
+        $messages = [];
+        $queue->drain($config, $client, 0, 0);
+        $this->assertEquals(['Torrent check failed: Second'], $messages, 'the record is sent once it is readable again');
+        $this->assertEquals(0, $queue->getPendingCount(), 'it is removed after sending');
+        @unlink($log_file);
+        $log_file = $saved;
+    }
+
     public function testShellEnqueueEnforcesQueueCapacityAndRejectsInvalidEvents()
     {
         $queue = new rTelegramQueue();
