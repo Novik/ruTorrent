@@ -38,6 +38,19 @@ class MakeDirectoryTest extends TestCase
         $this->assertEquals(0755, $this->mode($dir), 'and it carries the mode it was given');
     }
 
+    public function testRequestedModeIsNotReducedByUmask()
+    {
+        $dir = $this->root . '/umask';
+        $oldMask = umask(0022);
+        try {
+            FileUtil::makeDirectory($dir, 0777);
+            $this->assertEquals(0777, $this->mode($dir), 'the requested mode ignores the process umask');
+            $this->assertEquals(0022, umask(), 'the process umask is restored');
+        } finally {
+            umask($oldMask);
+        }
+    }
+
     /** Every path of a list, which is the branch that wraps a foreach. */
     public function testEveryPathOfAListIsCreated()
     {
