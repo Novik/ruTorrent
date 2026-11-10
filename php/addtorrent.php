@@ -147,10 +147,12 @@ if (isset($_REQUEST['result'])) {
             }
         }
     }
-    // A Location may be a relative reference, so an install whose public
-    // address cannot be determined is still sent back to the page it posted.
-    $base = Requests::publicBaseURL('/php/addtorrent.php');
-    $location = "Location: " . ($base === false ? "./addtorrent.php?" : $base . "php/addtorrent.php?");
+    // The upload frame reads its answer only from its own origin. A relative
+    // Location resolves against the URL the browser posted to, so it keeps the
+    // scheme, host and prefix the browser used, which a proxy in front need not
+    // pass on. Only a public base the operator configured overrides it.
+    $base = Requests::configuredPublicBaseURL();
+    $location = "Location: " . (is_string($base) ? $base . "php/addtorrent.php?" : "./addtorrent.php?");
     if (empty($uploaded_files)) {
         $uploaded_files = [ [ 'status' => "Failed" ] ];
     }
