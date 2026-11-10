@@ -297,7 +297,7 @@ class rTelegramQueue
 
     private static function eventNames()
     {
-        return ['added', 'finished', 'removed'];
+        return ['added', 'finished', 'removed', 'checkfailed'];
     }
 
     private static function limitString($value, $length)

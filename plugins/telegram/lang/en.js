@@ -10,6 +10,7 @@ theUILang.telegramTemplateHelp = "Available placeholders: {STATE}, {TORRENT}, {H
 theUILang.telegramEventAdded = "Added";
 theUILang.telegramEventFinished = "Finished";
 theUILang.telegramEventRemoved = "Removed";
+theUILang.telegramEventCheckfailed = "Check failed";
 theUILang.telegramTest = "Send test message";
 theUILang.telegramTestHelp = "Save settings by clicking OK before testing.";
 theUILang.telegramSaved = "Telegram settings saved.";

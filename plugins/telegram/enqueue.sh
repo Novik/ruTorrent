@@ -7,7 +7,7 @@
 # after the timestamp: a handler registered by an older version passes only the
 # first six until ruTorrent registers the current one, and its events are kept.
 [ "$#" -eq 6 ] || [ "$#" -eq 9 ] || exit 1
-case "$2" in added|finished|removed) ;; *) exit 1 ;; esac
+case "$2" in added|finished|removed|checkfailed) ;; *) exit 1 ;; esac
 case "$6" in ''|*[!0-9]*) exit 1 ;; esac
 
 directory=$1
