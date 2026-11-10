@@ -50,26 +50,18 @@ function makeContent() {
 	// One toast per item. The input is cleared only after a confirmed
 	// success, so a refusal leaves it to be corrected and sent again, and
 	// the send button is restored for this form alone.
-	var addTorrentFinished = function(frame, input, button, isEmpty) {
-		var answer = uploadFrameAnswer(frame);
-		if(answer === null)
-			return;
-		var added = false;
-		uploadResults(answer).forEach(function(result) {
-			noty(result.text, result.kind);
-			added = added || (result.kind == "success");
-		});
-		if(added)
-			$(input).val("");
-		$(button).prop("disabled", isEmpty());
+	var addTorrentFinished = function(input, button, isEmpty) {
+		return function(results) {
+			var added = false;
+			results.forEach(function(result) {
+				noty(result.text, result.kind);
+				added = added || (result.kind == "success");
+			});
+			if(added)
+				$(input).val("");
+			$(button).prop("disabled", isEmpty());
+		};
 	};
-	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function() {
-		addTorrentFinished(this, "#torrent_file", "#add_button",
-			() => !$$("torrent_file").files || ($$("torrent_file").files.length === 0));
-	}));
-	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function() {
-		addTorrentFinished(this, "#url", "#add_url", () => $("#url").val().trim() === "");
-	}));
 
 	const paddContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").append(
@@ -92,7 +84,7 @@ function makeContent() {
 	theDialogManager.make("tadd",theUILang.torrent_add,
 		$("<div>").addClass("cont").append(
 			$("<form>").attr(
-				{action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data", target: "uploadfrm"}
+				{action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data"}
 			).append(
 				$("<fieldset>").attr({id: "torrent_options"}).append(
 					$("<legend>").text(theUILang.Torrent_options),
@@ -152,7 +144,7 @@ function makeContent() {
 				),
 			),
 			$("<form>").attr(
-				{action: "addtorrent.php", id: "addtorrenturl", method: "post", target: "uploadfrmurl"}
+				{action: "addtorrent.php", id: "addtorrenturl", method: "post"}
 			).append(
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.Add_from_URL),
@@ -227,7 +219,8 @@ function makeContent() {
 		theWebUI.save();
 	});
 
-	var makeAddRequest = function(frm) {
+	// The form is sent by the script, so the page does not navigate.
+	var sendAddRequest = function(frm, done) {
 		var s = theURLs.AddTorrentURL;
 		var req = []
 		if($("#torrents_start_stopped").prop("checked"))
@@ -253,7 +246,8 @@ function makeContent() {
 		if(req.length)
 			s+=('?'+req.join('&'));
 		frm.action = s;
-		return true;
+		uploadTorrentForm(frm, done);
+		return false;
 	}
 	$("#addtorrent").on('submit', function() {
 		if (!$("#torrent_file").val().match(/\.torrent$/i)) {
@@ -261,11 +255,12 @@ function makeContent() {
 	   		return false;
    		}
 		$("#add_button").prop("disabled", true);
-		return makeAddRequest(this);
+		return sendAddRequest(this, addTorrentFinished("#torrent_file", "#add_button",
+			() => !$$("torrent_file").files || ($$("torrent_file").files.length === 0)));
 	});
 	$("#addtorrenturl").on('submit', function() {
 	   	$("#add_url").prop("disabled", true);
-	   	return makeAddRequest(this);
+	   	return sendAddRequest(this, addTorrentFinished("#url", "#add_url", () => $("#url").val().trim() === ""));
 	});
 
 	const dlgPropsContent = $("<div>").addClass("cont").append(

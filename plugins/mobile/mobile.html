@@ -210,7 +210,7 @@
   </div>
 
   <div class="mainContainer container" id="addTorrent" style="display:none;">
-    <form action="php/addtorrent.php?" id="addTorrentFile" method="post" enctype="multipart/form-data" target="uploadFrame">
+    <form action="php/addtorrent.php?" id="addTorrentFile" method="post" enctype="multipart/form-data">
       <div class="input-append" id="dirEditBlock">
         <input type="text" id="dir_edit" name="dir_edit" class="form-control pull-left" placeholder="Directory">
       </div>
@@ -239,7 +239,7 @@
       <button type="submit" class="btn btn-primary" id='torrentFileSend' disabled></button>
     </form>
     <hr>
-    <form action="php/addtorrent.php?" id="addTorrentUrl" method="post" target="uploadFrame">
+    <form action="php/addtorrent.php?" id="addTorrentUrl" method="post">
       <div class="form-group">
         <textarea id="url" name="url" class="form-control" rows="4"></textarea>
       </div>

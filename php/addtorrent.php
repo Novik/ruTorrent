@@ -147,10 +147,8 @@ if (isset($_REQUEST['result'])) {
             }
         }
     }
-    // A Location may be a relative reference, so an install whose public
-    // address cannot be determined is still sent back to the page it posted.
-    $base = Requests::publicBaseURL('/php/addtorrent.php');
-    $location = "Location: " . ($base === false ? "./addtorrent.php?" : $base . "php/addtorrent.php?");
+    $query = '';
+    $answer = [];
     if (empty($uploaded_files)) {
         $uploaded_files = [ [ 'status' => "Failed" ] ];
     }
@@ -186,14 +184,35 @@ if (isset($_REQUEST['result'])) {
                 }
             }
         }
-        $location .= ('result[]=' . $file['status'] . '&');
+        $query .= ('result[]=' . $file['status'] . '&');
+        $item = [ 'status' => $file['status'] ];
         if (isset($file['name'])) {
-            $location .= ('name[]=' . rawurlencode($file['name']) . '&');
+            $query .= ('name[]=' . rawurlencode($file['name']) . '&');
+            $item['name'] = UTF::display($file['name']);
         }
+        $answer[] = $item;
     }
+    // json_results asks for every result in the answer itself, which a
+    // script sending the form with fetch() reads directly:
+    // {"results":[{"status":"Success","name":"x.torrent"},...]}, where name is
+    // present whenever the redirect below would carry one. Without it the
+    // upload is redirected to the result branch above, as json=1 when asked.
+    if (isset($_REQUEST['json_results'])) {
+        CachedEcho::send(
+            json_encode(
+                [ 'results' => $answer ],
+                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+                | JSON_INVALID_UTF8_SUBSTITUTE,
+            ),
+            "application/json",
+        );
+    }
+    // A Location may be a relative reference, so an install whose public
+    // address cannot be determined is still sent back to the page it posted.
+    $base = Requests::publicBaseURL('/php/addtorrent.php');
     header("HTTP/1.0 302 Moved Temporarily");
     if (isset($_REQUEST['json'])) {
-        $location .= 'json=1';
+        $query .= 'json=1';
     }
-    header($location);
+    header("Location: " . ($base === false ? "./addtorrent.php?" : $base . "php/addtorrent.php?") . $query);
 }
