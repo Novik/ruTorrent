@@ -61,7 +61,7 @@ function operationOnTorrentFiles($torrent, &$base_path, $base_file, $is_multy_fi
     $info = $torrent->info;
     if (isset($info['files'])) {
         foreach ($info['files'] as $key => $file) {
-            $files[] = implode('/', $file['path']);
+            $files[] = implode('/', $file['path'] ?? $file['path.utf-8']);
         }
     } else {
         $files[] = $base_file;

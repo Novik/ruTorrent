@@ -75,6 +75,15 @@ class AutoMoveDestinationTest extends TestCase
         );
     }
 
+    public function testMoveHandlesAFileWithOnlyAUtf8Path()
+    {
+        $r = $this->runTheFinishedHook([], 'mytorrent', ['сезон/серия.bin'], '', '', '', false, true, 'path.utf-8');
+
+        $this->assertEquals(0, $r['move']['exit'], 'move.php exits successfully: ' . $r['move']['errors']);
+        $this->assertEquals([true], $r['at_named'], 'the file is moved to the named directory');
+        $this->assertEquals([false], $r['at_source'], 'the file is no longer at the source');
+    }
+
     /**
      * The whole point: a destination name that move.php will refuse must not
      * be the one rtorrent is given, because rtorrent is given it first. The
@@ -357,13 +366,13 @@ class AutoMoveDestinationTest extends TestCase
      * names makes a torrent of those files called mytorrent, a string makes a
      * single-file torrent of that name.
      */
-    private function torrentBytes($names, $root = 'mytorrent')
+    private function torrentBytes($names, $root = 'mytorrent', $pathKey = 'path')
     {
         if (is_array($names)) {
             $files = '';
             foreach ($names as $n) {
                 $files .= 'd' . $this->bstr('length') . 'i12e'
-                    . $this->bstr('path') . 'l' . implode('', array_map([$this, 'bstr'], explode('/', $n))) . 'e' . 'e';
+                    . $this->bstr($pathKey) . 'l' . implode('', array_map([$this, 'bstr'], explode('/', $n))) . 'e' . 'e';
             }
             $layout = $this->bstr('files') . 'l' . $files . 'e'
                 . $this->bstr('name') . $this->bstr($root);
@@ -440,7 +449,8 @@ class AutoMoveDestinationTest extends TestCase
         $dir = '',
         $label = '',
         $addLabel = false,
-        $encoded = true
+        $encoded = true,
+        $pathKey = 'path'
     ) {
         $this->removeTree($this->base);
         $multi = is_array($files);
@@ -465,7 +475,7 @@ class AutoMoveDestinationTest extends TestCase
         }
         file_put_contents(
             $this->base . '/session/' . self::HASH . '.torrent',
-            $this->torrentBytes($files, $root),
+            $this->torrentBytes($files, $root, $pathKey),
         );
         $this->seed('Move', $skip, $addLabel);
         $custom1 = $encoded ? rawurlencode($label) : $label;
