@@ -12,14 +12,14 @@ if (isset($_REQUEST['cmd'])) {
                     && isset($_REQUEST['no'])) {
                     $req = new rXMLRPCRequest(new rXMLRPCCommand("f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]));
                     if ($req->success()) {
-                        $filename = $req->val[0];
+                        $filename = rXMLRPCRequest::unescapeValue($req->val[0]);
                         if ($filename == '') {
                             $req = new rXMLRPCRequest([
                                 new rXMLRPCCommand("d.open", $_REQUEST['hash']),
                                 new rXMLRPCCommand("f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]),
                                 new rXMLRPCCommand("d.close", $_REQUEST['hash']) ]);
                             if ($req->success()) {
-                                $filename = $req->val[1];
+                                $filename = rXMLRPCRequest::unescapeValue($req->val[1]);
                             }
                         }
                         if ($filename !== '') {
@@ -27,7 +27,7 @@ if (isset($_REQUEST['cmd'])) {
                             $commands = [];
                             $name = '"${dir}"/frame.png';
                             $commands[] = Utility::getExternal("sox")
-                                    . " " . escapeshellarg($filename) . " "
+                                    . " --no-glob " . escapeshellarg($filename) . " "
                                     . implode(" ", array_map("escapeshellarg", explode(" ", $arguments)))
                                     . ' -t ' . escapeshellarg($mediafile) . ' -o '
                                     . $name;
