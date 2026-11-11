@@ -133,6 +133,8 @@ if (count($argv) > 1) {
                         }
                     }
                 }
+            } else {
+                FileUtil::toLog('retrackers: source-unavailable: ' . $hash . '; trackers not updated');
             }
         }
         if (!$processed && $isStart) {

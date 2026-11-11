@@ -15,7 +15,7 @@ require_once(__DIR__ . '/../../../php/Torrent.php');
  * rXMLRPCRequest hands back every string with its backslashes doubled and a
  * backslash put before each double quote. Both paths are paths on disk, so
  * they are looked for in their own bytes. Read as they arrive, the session
- * copy is not found: the download gets no tracker and nothing is logged --
+ * copy is not found: the download gets no tracker and a line is logged --
  * it is started again if it was added started, and otherwise stays stopped
  * -- or, when it has a readable tied file, the trackers are added to that
  * file's torrent instead.
@@ -106,6 +106,20 @@ class RetrackersUpdateReloadTest extends TestCase
             . implode(', ', $this->daemon->calls()) . '; printed: ' . $printed,
         );
         $this->assertTrue(microtime(true) - $started < 15, 'and the wait for it is bounded');
+        $this->assertTrue(!is_file($this->base . '/app.log'), 'the readable tied file does not log a missing source');
+    }
+
+    public function testAMissingSourceIsLoggedAndTheDownloadIsStarted()
+    {
+        $printed = $this->addTrackers('', 'missing/', -1);
+        $calls = $this->daemon->calls();
+        $this->assertTrue(in_array('d.start', $calls, true), 'the download is started: ' . implode(', ', $calls));
+        $this->assertTrue(!in_array('d.erase', $calls, true), 'the download is not erased: ' . implode(', ', $calls));
+        $this->assertEquals(
+            1,
+            substr_count((string) @file_get_contents($this->base . '/app.log'), 'retrackers: source-unavailable: ' . self::HASH . '; trackers not updated'),
+            'the missing source and its consequence are logged once; printed: ' . $printed,
+        );
     }
 
     public function testTheTiedFileIsKept()
@@ -141,6 +155,7 @@ class RetrackersUpdateReloadTest extends TestCase
     private function addTrackers($tied, $session = '', $sessionLate = 0.0)
     {
         $root = $this->repoRoot();
+        @unlink($this->base . '/app.log');
         if ($this->daemon !== null) {
             $this->daemon->stop();
         }
@@ -176,6 +191,7 @@ class RetrackersUpdateReloadTest extends TestCase
         $driver = $this->base . '/drive-update.php';
         file_put_contents($driver, "<?php\n"
             . '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+            . '$_ENV[\'RU_LOG_FILE\'] = ' . var_export($this->base . '/app.log', true) . ";\n"
             . 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
             . '$scgi_host = "127.0.0.1";' . "\n"
             . '$scgi_port = ' . $this->daemon->port() . ";\n"
