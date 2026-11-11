@@ -11,14 +11,14 @@ if (isset($_REQUEST['hash']) && isset($_REQUEST['no'])) {
         new rXMLRPCCommand("f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]),
     );
     if ($req->success()) {
-        $filename = $req->val[0];
+        $filename = rXMLRPCRequest::unescapeValue($req->val[0]);
         if ($filename == '') {
             $req = new rXMLRPCRequest([
                 new rXMLRPCCommand("d.open", $_REQUEST['hash']),
                 new rXMLRPCCommand("f.get_frozen_path", [$_REQUEST['hash'],intval($_REQUEST['no'])]),
                 new rXMLRPCCommand("d.close", $_REQUEST['hash']) ]);
             if ($req->success()) {
-                $filename = $req->val[1];
+                $filename = rXMLRPCRequest::unescapeValue($req->val[1]);
             }
         }
         if (SendFile::send($filename)) {
