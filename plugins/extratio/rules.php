@@ -187,7 +187,7 @@ class rRatioRulesList
         if ($req->getCommandsCount() && $req->success()) {
             $out = new rXMLRPCRequest();
             foreach ($hashes as $ndx => $hash) {
-                $label = rawurldecode($req->val[$ndx * 4]);
+                $label = rawurldecode(rXMLRPCRequest::unescapeValue($req->val[$ndx * 4]));
                 $state = !empty($req->val[$ndx * 4 + 1]);
                 $ratio = null;
                 if (preg_match('`rat_(\d+)`', $req->val[$ndx * 4 + 2], $matches)) {
