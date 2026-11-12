@@ -2616,8 +2616,14 @@ var theWebUI = {
 		$$("query").blur();
 	},
 
+	updateSearchClear: function()
+	{
+		$$("query_clear").hidden = ($$("query").value === "");
+	},
+
 	updateQuickSearch: function()
 	{
+		theWebUI.updateSearchClear();
 		theWebUI.categoryList.setQuickSearch(
 			theSearchEngines.current === -1 ? $$("query").value : null
 		);
