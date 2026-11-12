@@ -4,22 +4,34 @@ require_once('urlhost.php');
 
 class Requests
 {
-    /** Public RSS links need an explicit base when the proxy rewrites Host or the prefix. */
-    public static function publicBaseURL($scriptSuffix)
+    /**
+     * The public base an operator configured, RU_PUBLIC_URL or $publicURL:
+     * null when neither is set, false when the one set is refused.
+     */
+    public static function configuredPublicBaseURL()
     {
         global $publicURL;
         $environment = getenv('RU_PUBLIC_URL');
         // An empty environment value permits config.local.php overrides.
         $usesEnvironment = $environment !== false && $environment !== '';
         $configured = $usesEnvironment ? $environment : ($publicURL ?? '');
-        if ($configured !== '' && $configured !== null) {
-            $base = self::normalizedPublicBase($configured);
-            if ($base !== false) {
-                return $base;
-            }
+        if ($configured === '' || $configured === null) {
+            return null;
+        }
+        $base = self::normalizedPublicBase($configured);
+        if ($base === false) {
             error_log('public-url: refused setting=' . ($usesEnvironment ? 'RU_PUBLIC_URL' : 'publicURL')
                 . '; expected an absolute HTTP(S) application base without credentials, query or fragment');
-            return false;
+        }
+        return $base;
+    }
+
+    /** Public RSS links need an explicit base when the proxy rewrites Host or the prefix. */
+    public static function publicBaseURL($scriptSuffix)
+    {
+        $configured = self::configuredPublicBaseURL();
+        if ($configured !== null) {
+            return $configured;
         }
         // Forwarded-Host and CSRF grants do not identify the public application URL.
         $origin = self::currentOrigin();

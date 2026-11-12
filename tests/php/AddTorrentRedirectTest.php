@@ -29,9 +29,9 @@ class AddTorrentRedirectTest extends TestCase
             'the upload is answered with a redirect: ' . $result['status'],
         );
         $this->assertEquals(
-            'http://127.0.0.1/php/addtorrent.php?result[]=Failed&',
+            './addtorrent.php?result[]=Failed&',
             $this->location($result),
-            'a direct install redirects to its own addtorrent.php',
+            'an install with no configured public base redirects relatively',
         );
     }
 
@@ -57,17 +57,25 @@ class AddTorrentRedirectTest extends TestCase
         );
     }
 
-    public function testProxiedTLSKeepsTheRedirectOnHttps()
+    /**
+     * The upload frame reads its answer only from its own origin. A proxy
+     * that terminates TLS and sends no X-Forwarded-Proto left PHP deriving
+     * http://, the browser refused the frame's navigation from an https page,
+     * and a torrent that was added was reported as "Failed to add torrent."
+     * (#3533). A relative target keeps the scheme, host and prefix the
+     * browser posted to, whatever the proxy says or leaves out.
+     */
+    public function testProxiedTLSKeepsTheBrowsersOwnOrigin()
     {
-        $result = $this->post(
-            '/php/addtorrent.php',
-            ['Host' => 'public.test', 'X-Forwarded-Proto' => 'https'],
-        );
-        $this->assertEquals(
-            'https://public.test/php/addtorrent.php?result[]=Failed&',
-            $this->location($result),
-            'a proxy that terminates TLS redirects to https',
-        );
+        foreach ([[], ['X-Forwarded-Proto' => 'https']] as $forwarded) {
+            $result = $this->post('/php/addtorrent.php', ['Host' => 'public.test'] + $forwarded);
+            $this->assertEquals(
+                './addtorrent.php?result[]=Failed&',
+                $this->location($result),
+                'a proxy that terminates TLS, ' . (count($forwarded) ? 'saying so' : 'without saying so')
+                    . ', leaves the redirect to the browser\'s own origin',
+            );
+        }
     }
 
     /**
@@ -92,7 +100,7 @@ class AddTorrentRedirectTest extends TestCase
     {
         $result = $this->post('/php/addtorrent.php?json=1', ['Host' => '127.0.0.1']);
         $this->assertEquals(
-            'http://127.0.0.1/php/addtorrent.php?result[]=Failed&json=1',
+            './addtorrent.php?result[]=Failed&json=1',
             $this->location($result),
             'a json upload is redirected to the json result',
         );
