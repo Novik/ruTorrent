@@ -242,14 +242,14 @@ class rUnpack
                 new rXMLRPCCommand("f.get_frozen_path", [$hash,intval($fileno)]),
             );
             if ($req->success()) {
-                $filename = $req->val[0];
+                $filename = rXMLRPCRequest::unescapeValue($req->val[0]);
                 if ($filename == '') {
                     $req = new rXMLRPCRequest([
                         new rXMLRPCCommand("d.open", $hash),
                         new rXMLRPCCommand("f.get_frozen_path", [$hash,intval($fileno)]),
                         new rXMLRPCCommand("d.close", $hash) ]);
                     if ($req->success()) {
-                        $filename = $req->val[1];
+                        $filename = rXMLRPCRequest::unescapeValue($req->val[1]);
                     }
                 }
 
@@ -284,16 +284,16 @@ class rUnpack
                     new rXMLRPCCommand("d.get_name", $hash) ],
             );
             if ($req->success()) {
-                $basename = $req->val[0];
-                $label = rawurldecode($req->val[1]);
-                $tname = $req->val[2];
+                $basename = rXMLRPCRequest::unescapeValue($req->val[0]);
+                $label = rawurldecode(rXMLRPCRequest::unescapeValue($req->val[1]));
+                $tname = rXMLRPCRequest::unescapeValue($req->val[2]);
                 if ($basename == '') {
                     $req = new rXMLRPCRequest([
                         new rXMLRPCCommand("d.open", $hash),
                         new rXMLRPCCommand("d.get_base_path", $hash),
                         new rXMLRPCCommand("d.close", $hash) ]);
                     if ($req->success()) {
-                        $basename = $req->val[1];
+                        $basename = rXMLRPCRequest::unescapeValue($req->val[1]);
                     }
                 }
                 self::log("[Manual] Check torrent [$tname] at [$basename] for archives");
