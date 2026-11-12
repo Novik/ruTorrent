@@ -24,6 +24,7 @@ if (isset($_REQUEST['cmd'])) {
                                 $filename = $req->val[1];
                             }
                         }
+                        $filename = rXMLRPCRequest::unescapeValue($filename);
                         if ($filename !== '') {
                             $commands = [];
                             $offs = $st->data['exfrmoffs'];
