@@ -545,6 +545,7 @@ theWebUI.tegRefresh = function()
 	if (tegId) {
 		const item = plugin.tegs[tegId];
 		$("#query").val(item.what).prop("readonly",true);
+		theWebUI.updateSearchClear();
 		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI]);
 	}
 }

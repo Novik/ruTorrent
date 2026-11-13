@@ -122,7 +122,10 @@
 							<a id="mnu_search" class="nav-link top-menu-item" href="#" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" uilangtitle="mnu_search">
 								<div id="search" class="nav-icon"></div>
 							</a>
-							<input type="text" id="query" onfocus="$('#sc').hide();"/>
+							<span id="query_box">
+								<input type="text" id="query" onfocus="$('#sc').hide();"/>
+								<button type="button" id="query_clear" hidden onclick="theWebUI.clearSearch(); $$('query').focus(); return(false);" uilangtitle="ClearButton"></button>
+							</span>
 							<a id="mnu_go" class="nav-link" href="#" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" uilangtitle="mnu_go">
 								<div id="go" class="nav-icon"></div>
 							</a>

@@ -420,6 +420,28 @@ div#moved {background: url(../images/toolbar.png) -192px center}
 div#help {background: url(../images/quest.gif) 0px center}
 div#plugins {background: url(../images/plugin.png) 0px center}
 #go {background: url(../images/go.gif) 0px center; }
+#query_box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+#query_box #query {padding-right: 22px;}
+#query_clear {
+  all: unset;
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8C8C8C url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1 1l6 6M7 1L1 7' stroke='%23FFF' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center / 8px;
+  cursor: pointer;
+}
+#query_clear:hover {background-color: #5C5C5C;}
+#query_clear:focus-visible {outline: 2px solid #4D90FE; outline-offset: 1px;}
+#query_clear[hidden] {display: none;}
 
 #ind {
   background: transparent var(--loading-indicator-icon) no-repeat center;
