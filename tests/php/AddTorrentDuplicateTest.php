@@ -31,6 +31,8 @@ class AddTorrentDuplicateTest extends TestCase
     private $daemon;
     private $server;
     private $saveUploads = true;
+    /** The last answer add() read, headers and body. */
+    private $response;
 
     public function setUp()
     {
@@ -194,6 +196,89 @@ class AddTorrentDuplicateTest extends TestCase
         );
     }
 
+    /**
+     * With json_results the answer is the results themselves: every item,
+     * each with the name the redirect would carry for it.
+     */
+    public function testJsonResultsAnswersEveryUploadWithItsName()
+    {
+        $results = $this->upload(false, ['one.torrent', 'two.torrent'], null, ['json_results' => '1']);
+        $this->assertEquals(['no redirect: ' . $this->response['body']], $results, 'no redirect is sent');
+        $this->assertTrue(
+            strpos($this->response['status'], ' 200 ') !== false,
+            'the upload is answered directly: ' . $this->response['status'],
+        );
+        $this->assertEquals(
+            ['results' => [
+                ['status' => 'Success', 'name' => 'one.torrent'],
+                ['status' => 'Duplicate', 'name' => 'two.torrent'],
+            ]],
+            json_decode($this->response['body'], true),
+            'every item is answered in order: ' . $this->response['body'],
+        );
+        $this->assertEquals(2, $this->loadCalls(), 'both uploads were sent');
+    }
+
+    public function testJsonResultsAnswersEveryUrlWithItsName()
+    {
+        $loaded = 'magnet:?xt=urn:btih:' . self::LOADED;
+        $fresh = 'magnet:?xt=urn:btih:' . self::FRESH;
+        $this->add(
+            [self::LOADED],
+            2,
+            'application/x-www-form-urlencoded',
+            'json_results=1&url=' . rawurlencode($loaded . "\n" . $fresh),
+        );
+        $this->assertEquals(
+            ['results' => [
+                ['status' => 'Duplicate', 'name' => $loaded],
+                ['status' => 'Success', 'name' => $fresh],
+            ]],
+            json_decode($this->response['body'], true),
+            'every magnet is answered under its own link: ' . $this->response['body'],
+        );
+    }
+
+    /**
+     * A name is the user's file name, which is any string of bytes. It is
+     * answered as text the client can show as it is, the way the result page
+     * shows it, and the answer stays json that no name turns into markup.
+     */
+    public function testJsonResultsCarriesNamesAsData()
+    {
+        $this->upload(false, ["<img src=x>&'x.torrent", "bad\xFF.torrent"], null, ['json_results' => '1']);
+        $body = $this->response['body'];
+        $this->assertEquals(
+            ['results' => [
+                ['status' => 'Success', 'name' => "<img src=x>&'x.torrent"],
+                ['status' => 'Duplicate', 'name' => 'bad\\xFF.torrent'],
+            ]],
+            json_decode($body, true),
+            'the names come back as the result page shows them: ' . $body,
+        );
+        $this->assertTrue(
+            strpbrk($body, "<>&'") === false,
+            'no markup character reaches the answer as it is: ' . $body,
+        );
+        $this->assertTrue(
+            isset($this->response['headers']['content-type'])
+                && (strpos($this->response['headers']['content-type'], 'application/json') === 0)
+                && (($this->response['headers']['x-content-type-options'] ?? '') === 'nosniff'),
+            'and it is declared json, not to be sniffed: ' . json_encode($this->response['headers']),
+        );
+    }
+
+    /** A request without json_results is still answered with the redirect. */
+    public function testWithoutJsonResultsTheUploadIsStillRedirected()
+    {
+        $results = $this->upload(false, ['one.torrent', 'two.torrent']);
+        $this->assertEquals(['Success', 'Duplicate'], $results, 'the redirect carries both results');
+        $this->assertTrue(
+            strpos($this->response['status'], ' 302 ') !== false,
+            'with a redirect: ' . $this->response['status'],
+        );
+    }
+
     private function stop()
     {
         if ($this->daemon !== null) {
@@ -255,6 +340,7 @@ class AddTorrentDuplicateTest extends TestCase
 
         $this->server = TestHttpServer::start($this->base, [], PhpProcess::sameIni(), $router);
         $response = TestHttpServer::rawPost($this->server->port(), '/php/addtorrent.php', $body, $contentType);
+        $this->response = $response;
         if (!isset($response['headers']['location'])
             || !preg_match('`^[^?]*\?(.*)$`', $response['headers']['location'], $location)) {
             return ['no redirect: ' . $response['body']];

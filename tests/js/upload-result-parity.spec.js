@@ -1,18 +1,17 @@
 import { readFileSync } from "fs";
 
 // The desktop add dialog (js/content.js) and the mobile add page
-// (plugins/mobile/init.js) both read their upload's answer out of a hidden
-// frame and turn php/addtorrent.php's script of noty(text, kind) calls into
-// notifications. This pins the part they are meant to agree on: for the same
-// answer, the same messages in the same order, with the same kinds, and the
-// same decision to clear or keep the input the upload came from.
+// (plugins/mobile/init.js) both send their forms with uploadTorrentForm() and
+// turn php/addtorrent.php's json results into notifications. This pins the
+// part they are meant to agree on: for the same answer, the same messages in
+// the same order, with the same kinds, and the same decision to clear or keep
+// the input the upload came from.
 //
 // What is deliberately not compared, because the two interfaces differ there:
 // how a notification reaches the DOM (a $.noty toast against a bootstrap
 // alert), which inputs a success clears (desktop clears only the form whose
-// answer arrived, mobile clears both), the page change and scroll mobile does
-// on a success, and what each does with its send button while the frame still
-// holds its initial blank page.
+// answer arrived, mobile clears both), and the page change and scroll mobile
+// does on a success.
 //
 // The two UIs use the same element ids, so they cannot stand in one document.
 // The desktop runs first and is read out, then the body is replaced and the
@@ -23,34 +22,52 @@ window.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 
 const read = (src) => readFileSync(src, { encoding: "utf-8" });
 
-const noty = (name, status, kind) =>
-  `noty(${JSON.stringify(name + " - ")}+theUILang["addTorrent"+${JSON.stringify(status)}],${JSON.stringify(kind)});`;
+const results = (...items) => JSON.stringify({ results: items.map(([status, name]) => (name === undefined ? { status } : { status, name })) });
 const nginx413 = "\n413 Request Entity Too Large\n\n413 Request Entity Too Large\nnginx\n";
 
-// Marker objects: these answers are not a document body at all.
+// Marker object: the connection was lost, fetch() rejects.
 const LOST = { lost: true };
-const BLANK = { blank: true };
 
 const CASES = [
-  ["a success", noty("good.torrent", "Success", "success")],
-  ["a refused file", noty("bad.torrent", "FailedFile", "error")],
-  ["a duplicate", noty("again.torrent", "Duplicate", "alert")],
-  ["a batch, some added", noty("one.torrent", "Success", "success") + noty("two.torrent", "Duplicate", "alert")],
-  ["a batch, none added", noty("one.torrent", "FailedFile", "error") + noty("two.torrent", "Duplicate", "alert")],
-  ["an empty answer", ""],
-  ["the origin check's refusal", "Forbidden"],
-  ["the web server's 413 page", nginx413],
-  ["a server error page", "Internal Server Error"],
-  ["text printed around the result", "a stray PHP notice\n" + noty("good.torrent", "Success", "success")],
-  ["a statement that is not a result call", "window.__ran = true;\n" + noty("good.torrent", "Success", "success")],
-  ["an unreadable result call", 'noty("x.torrent - "+theUILang[,"error");'],
-  ["the answer format before upstream #3280", 'noty("bad.torrent - "+theUILang.addTorrentFailedFile,"error");'],
-  ["a lost connection", LOST],
-  ["the frame's own blank page", BLANK],
+  ["a success", 200, results(["Success", "good.torrent"])],
+  ["a refused file", 200, results(["FailedFile", "bad.torrent"])],
+  ["a duplicate", 200, results(["Duplicate", "again.torrent"])],
+  ["a refused directory", 200, results(["FailedDirectory"])],
+  ["a batch, some added", 200, results(["Success", "one.torrent"], ["Duplicate", "two.torrent"])],
+  ["a batch, none added", 200, results(["FailedFile", "one.torrent"], ["Duplicate", "two.torrent"])],
+  ["an empty answer", 200, ""],
+  ["the origin check's refusal", 403, "Forbidden"],
+  ["the web server's 413 page", 413, nginx413],
+  ["a server error page", 500, "Internal Server Error"],
+  ["a result page instead of json", 200, 'noty("good.torrent - "+theUILang["addTorrent"+"Success"],"success");'],
+  ["json with no item", 200, '{"results":[]}'],
+  ["a lost connection", 0, LOST],
 ];
 
+let pending;
+function stubFetch() {
+  pending = [];
+  window.fetch = (url, init) => new Promise((resolve, reject) => pending.push({ resolve, reject }));
+}
+
+async function settle() {
+  for (let i = 0; i < 20; i++)
+    await Promise.resolve();
+}
+
+/** Answer the one request in flight with this case. */
+async function reply(status, body) {
+  expect(pending).toHaveLength(1);
+  const request = pending.pop();
+  if (body === LOST)
+    request.reject(new TypeError("Failed to fetch"));
+  else
+    request.resolve({ ok: status >= 200 && status < 300, status, text: () => Promise.resolve(body) });
+  await settle();
+}
+
 /** [[text, kind], ...] and whether the upload's own input was cleared. */
-function runDesktop() {
+async function runDesktop() {
   window.theWebUI = { settings: {}, version: "test", save() {}, upRateMenu() {}, downRateMenu() {} };
   window.theOptionsWindow = { init: () => {} };
   document.body.innerHTML = '<div id="dialog-container"></div>';
@@ -73,37 +90,24 @@ function runDesktop() {
     set: (v) => { if (v === "") selected = []; },
   });
 
-  return CASES.map(([, body]) => {
+  const out = [];
+  for (const [, status, body] of CASES) {
     selected = [new File(["d8:announce0:e"], "picked.torrent")];
     const notes = [];
     window.noty = (text, kind) => notes.push([String(text), String(kind)]);
+    stubFetch();
     $("#addtorrent").triggerHandler("submit");
-
-    const frame = document.querySelector("iframe[name='uploadfrm']");
-    const href = (body === BLANK) ? "about:blank" : "http://localhost/php/addtorrent.php";
-    const doc = (body === LOST) ? null
-      : { location: { href }, body: { textContent: body === BLANK ? "" : body, innerText: body === BLANK ? "" : body } };
-    Object.defineProperty(frame, "contentDocument", { configurable: true, get: () => doc });
-    Object.defineProperty(frame, "contentWindow", {
-      configurable: true,
-      get: () => ({
-        get document() {
-          if (doc === null)
-            throw new DOMException("Blocked a frame from accessing a cross-origin frame.", "SecurityError");
-          return doc;
-        },
-      }),
-    });
-    frame.dispatchEvent(new Event("load"));
-    return { notes, cleared: $("#torrent_file").val() === "" };
-  });
+    await reply(status, body);
+    out.push({ notes, cleared: $("#torrent_file").val() === "" });
+  }
+  return out;
 }
 
 // plugin.alertClass() is how mobile renders a kind; read it back to compare
 // with the kind the desktop handed to noty(). The server writes only these.
 const CLASS_TO_KIND = { "alert-success": "success", "alert-danger": "error", "alert-warning": "alert" };
 
-function runMobile() {
+async function runMobile() {
   window.plugin = { disable: jest.fn(), loadLang: jest.fn() };
   window.theDialogManager = { addHandler: jest.fn() };
   window.theWebUI = { getTrackerName: () => "" };
@@ -112,7 +116,8 @@ function runMobile() {
   document.body.appendChild(el);
   const markup = read("../plugins/mobile/mobile.html");
 
-  return CASES.map(([, body]) => {
+  const out = [];
+  for (const [, status, body] of CASES) {
     document.body.innerHTML = markup;
     plugin.currentPage = "addTorrent";
     plugin.scrollToAddedUntil = 0;
@@ -125,55 +130,38 @@ function runMobile() {
     Object.defineProperty(input, "value", { configurable: true, get: () => value, set: (v) => { value = v; } });
     Object.defineProperty(input, "files", { configurable: true, get: () => (value ? [{ name: "picked.torrent" }] : []) });
 
-    plugin.createiFrame(document.getElementById("addTorrentFile"));
-    const frame = document.querySelector("#addTorrent iframe");
-    if (body === LOST) {
-      Object.defineProperty(frame, "contentDocument", { configurable: true, get: () => null });
-      Object.defineProperty(frame, "contentWindow", {
-        configurable: true,
-        get: () => ({
-          get document() {
-            throw new DOMException("Blocked a frame from accessing a cross-origin frame.", "SecurityError");
-          },
-        }),
-      });
-    } else {
-      const href = (body === BLANK) ? "about:blank" : "http://rutorrent.invalid/php/addtorrent.php?result[]=";
-      const page = new DOMParser().parseFromString(body === BLANK ? "" : body, "text/html");
-      Object.defineProperty(frame, "contentDocument", {
-        configurable: true,
-        get: () => ({ location: { href }, body: page.body }),
-      });
-    }
-    frame.dispatchEvent(new Event("load"));
+    stubFetch();
+    plugin.sendAddForm(document.getElementById("addTorrentFile"));
+    await reply(status, body);
 
     const notes = $("#alert_placeholder .alert").map((i, node) => {
       const kind = Object.keys(CLASS_TO_KIND).filter((c) => node.classList.contains(c)).map((c) => CLASS_TO_KIND[c]);
       return [[node.textContent, kind.length === 1 ? kind[0] : "information"]];
     }).get();
-    return { notes, cleared: $("#torrent_file").val() === "" };
-  });
+    out.push({ notes, cleared: $("#torrent_file").val() === "" });
+  }
+  return out;
 }
 
-const desktop = runDesktop();
-const mobile = runMobile();
+let desktop, mobile;
+beforeAll(async () => {
+  desktop = await runDesktop();
+  mobile = await runMobile();
+});
 
-describe("the desktop and mobile add-torrent result collectors", () => {
+describe("the desktop and mobile add-torrent results", () => {
   test.each(CASES.map(([label], i) => [label, i]))("agree on %s", (label, i) => {
     expect(mobile[i]).toEqual(desktop[i]);
   });
 
-  test("an answer with no result call at all is still one failure", () => {
-    for (const i of CASES.map(([, body], n) => [body, n]).filter(([body]) => body === "" || body === "Forbidden" || body === nginx413 || body === "Internal Server Error" || body === LOST).map(([, n]) => n)) {
+  test("an answer with no result at all is still one failure", () => {
+    const failures = ["an empty answer", "the origin check's refusal", "the web server's 413 page",
+      "a server error page", "a result page instead of json", "json with no item", "a lost connection"];
+    for (const label of failures) {
+      const i = CASES.findIndex(([l]) => l === label);
       expect(desktop[i].notes).toEqual([[theUILang.addTorrentFailed, "error"]]);
       expect(desktop[i].cleared).toBe(false);
     }
-  });
-
-  test("the frame's own blank page reports nothing", () => {
-    const i = CASES.findIndex(([, body]) => body === BLANK);
-    expect(desktop[i].notes).toEqual([]);
-    expect(desktop[i].cleared).toBe(false);
   });
 
   test("a success clears the upload's input and a refusal keeps it", () => {
@@ -183,9 +171,5 @@ describe("the desktop and mobile add-torrent result collectors", () => {
     expect(at("a refused file").cleared).toBe(false);
     expect(at("a duplicate").cleared).toBe(false);
     expect(at("a batch, none added").cleared).toBe(false);
-  });
-
-  test("a statement that is not a result call does not run", () => {
-    expect(window.__ran).toBeUndefined();
   });
 });

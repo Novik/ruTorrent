@@ -1020,8 +1020,61 @@ function noty(msg, status, noTime) {
 	log(msg, noTime, "std", force);
 }
 
-// An add-torrent upload posts into a hidden frame; this reads what came back.
-// Null means the frame still holds the blank page it was inserted with, which
+// The add-torrent forms of the desktop dialog and of the mobile plugin are
+// sent with uploadTorrentForm(). The form's own fields go as they are,
+// multipart when the form says so and url-encoded otherwise, with
+// json_results, so php/addtorrent.php answers with every item's result as
+// json rather than with a redirect to a page that would have to be loaded
+// into a frame. done() is called once, with what addTorrentResults() makes
+// of the answer.
+function uploadTorrentForm(form, done) {
+	var data = new FormData(form);
+	data.append("json_results", "1");
+	return(fetch(form.action, {
+		method: "POST",
+		body: (form.enctype == "multipart/form-data") ? data : new URLSearchParams(data),
+		credentials: "same-origin",
+	}).then(function(response) {
+		return(response.ok ? response.text() : null);
+	}).then(function(text) {
+		var answer = null;
+		try {
+			answer = JSON.parse(text);
+		} catch(e) {}
+		return(addTorrentResults(answer));
+	}, function() {
+		return(addTorrentResults(null));
+	}).then(done));
+}
+
+// One {text, kind} per item of php/addtorrent.php's json_results answer,
+// worded and styled as its result page words them: the name and " - " when
+// the item has one, then theUILang["addTorrent" + status]; "success",
+// "alert" for a duplicate, "error" for the rest. Names stay data; the caller
+// renders them through noty() or the mobile plugin's showAlert(), and both
+// escape. An answer with no result -- the origin check's 403, the web
+// server's 413 or 5xx page, a lost connection, a body that is not the json
+// asked for -- becomes one error, so an upload never ends without a message.
+function addTorrentResults(answer) {
+	var results = [];
+	if(answer && Array.isArray(answer.results)) {
+		answer.results.forEach(function(item) {
+			if(!item || (typeof item.status !== "string"))
+				return;
+			results.push({
+				text: String(((typeof item.name === "string") ? item.name + " - " : "") + theUILang["addTorrent" + item.status]),
+				kind: (item.status == "Success") ? "success" : ((item.status == "Duplicate") ? "alert" : "error"),
+			});
+		});
+	}
+	if(!results.length)
+		results.push({text: theUILang.addTorrentFailed, kind: "error"});
+	return(results);
+}
+
+// A form posted into a frame without json_results is answered with a page of
+// noty(text, kind) calls; uploadFrameAnswer() and uploadResults() read such a
+// frame. Null means the frame still holds the blank page it was inserted with, which
 // loads before the upload finishes. A failed request leaves the browser's own
 // error page there, and that page is cross-origin: reading it throws, so the
 // answer is empty.

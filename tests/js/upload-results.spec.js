@@ -1,8 +1,9 @@
 import { readFileSync } from "fs";
 
-// js/common.js holds the add-torrent upload's answer reader and result
-// collector, which the desktop dialog (js/content.js) and the mobile add page
-// (plugins/mobile/init.js) share. Everything the two interfaces do with the
+// js/common.js holds the add-torrent form sender and its result reader, which
+// the desktop dialog (js/content.js) and the mobile add page
+// (plugins/mobile/init.js) share, and the reader of a result page loaded into
+// a frame, kept for code outside them. Everything the two interfaces do with the
 // results -- how a notification is drawn, which inputs a success clears, the
 // send buttons, the page change -- stays with each of them.
 
@@ -106,11 +107,105 @@ describe("the upload's results", () => {
   });
 });
 
+describe("the json results", () => {
+  const json = (...items) => ({ results: items });
+
+  it("are one entry per item, in the order the server wrote them, worded as the result page words them", () => {
+    expect(addTorrentResults(json(
+      { status: "Success", name: "one.torrent" },
+      { status: "Duplicate", name: "two.torrent" },
+      { status: "FailedFile", name: "three.torrent" },
+    ))).toEqual([
+      { text: "one.torrent - " + theUILang.addTorrentSuccess, kind: "success" },
+      { text: "two.torrent - " + theUILang.addTorrentDuplicate, kind: "alert" },
+      { text: "three.torrent - " + theUILang.addTorrentFailedFile, kind: "error" },
+    ]);
+  });
+
+  it("word an item without a name by its status alone", () => {
+    expect(addTorrentResults(json({ status: "FailedDirectory" }))).toEqual([
+      { text: theUILang.addTorrentFailedDirectory, kind: "error" },
+    ]);
+  });
+
+  it("keep a name as the text it is", () => {
+    const name = '</script><img src=x onerror="window.__xss=1">.torrent';
+    expect(addTorrentResults(json({ status: "Success", name }))).toEqual([
+      { text: name + " - " + theUILang.addTorrentSuccess, kind: "success" },
+    ]);
+  });
+
+  it.each([
+    ["no answer", null],
+    ["an answer that is not an object", "Forbidden"],
+    ["an object without results", {}],
+    ["results that are not a list", { results: "Success" }],
+    ["an empty list", { results: [] }],
+    ["items without a status", { results: [null, 1, { name: "x.torrent" }] }],
+  ])("are one error when the answer carries no result: %s", (_label, answer) => {
+    expect(addTorrentResults(answer)).toEqual([{ text: theUILang.addTorrentFailed, kind: "error" }]);
+  });
+});
+
+describe("a form sent with uploadTorrentForm()", () => {
+  const form = (html) => {
+    document.body.insertAdjacentHTML("beforeend", html);
+    return document.body.lastElementChild;
+  };
+  const reply = (status, body) => () => Promise.resolve({ ok: status >= 200 && status < 300, status, text: () => Promise.resolve(body) });
+
+  afterEach(() => {
+    document.querySelectorAll("form").forEach((f) => f.remove());
+    delete window.fetch;
+  });
+
+  it("is posted to its action with its own fields and json_results, and needs no frame", async () => {
+    window.fetch = jest.fn(reply(200, '{"results":[{"status":"Success","name":"a.torrent"}]}'));
+    const done = jest.fn();
+    const f = form('<form action="php/addtorrent.php?label=x" method="post" enctype="multipart/form-data"><input name="dir_edit" value="/d"></form>');
+    await uploadTorrentForm(f, done);
+    expect(window.fetch).toHaveBeenCalledTimes(1);
+    const [url, init] = window.fetch.mock.calls[0];
+    expect(url).toBe("http://localhost/php/addtorrent.php?label=x");
+    expect(init.method).toBe("POST");
+    expect(init.credentials).toBe("same-origin");
+    expect(init.body).toBeInstanceOf(FormData);
+    expect([...init.body.entries()]).toEqual([["dir_edit", "/d"], ["json_results", "1"]]);
+    expect(done).toHaveBeenCalledWith([{ text: "a.torrent - " + theUILang.addTorrentSuccess, kind: "success" }]);
+    expect(document.querySelector("iframe")).toBeNull();
+  });
+
+  it("is url-encoded when the form is not multipart", async () => {
+    window.fetch = jest.fn(reply(200, '{"results":[{"status":"Success"}]}'));
+    const f = form('<form action="php/addtorrent.php" method="post"><textarea name="url">magnet:?xt=urn:btih:1</textarea></form>');
+    await uploadTorrentForm(f, () => {});
+    const body = window.fetch.mock.calls[0][1].body;
+    expect(body).toBeInstanceOf(URLSearchParams);
+    expect(body.toString()).toBe("url=magnet%3A%3Fxt%3Durn%3Abtih%3A1&json_results=1");
+  });
+
+  it.each([
+    ["the origin check's 403", reply(403, "Forbidden")],
+    ["a 413 page", reply(413, "413 Request Entity Too Large")],
+    ["a 200 that is not json", reply(200, "<html>login</html>")],
+    ["a lost connection", () => Promise.reject(new TypeError("Failed to fetch"))],
+    ["a body lost on the way", () => Promise.resolve({ ok: true, status: 200, text: () => Promise.reject(new TypeError("network error")) })],
+  ])("ends with one error on %s", async (_label, answer) => {
+    window.fetch = jest.fn(answer);
+    const done = jest.fn();
+    await uploadTorrentForm(form('<form action="php/addtorrent.php" method="post"></form>'), done);
+    expect(done).toHaveBeenCalledTimes(1);
+    expect(done).toHaveBeenCalledWith([{ text: theUILang.addTorrentFailed, kind: "error" }]);
+  });
+});
+
 // js/common.js is loaded before js/content.js and before the plugins, and
-// these two read theUILang only when called, so a plugin's own init.js sees
+// these read theUILang only when called, so a plugin's own init.js sees
 // them and nothing here needs anything the desktop UI defines.
 describe("the helpers", () => {
   it("are reachable with only lang and common.js loaded", () => {
+    expect(typeof window.uploadTorrentForm).toBe("function");
+    expect(typeof window.addTorrentResults).toBe("function");
     expect(typeof window.uploadFrameAnswer).toBe("function");
     expect(typeof window.uploadResults).toBe("function");
     expect(window.theDialogManager).toBeUndefined();

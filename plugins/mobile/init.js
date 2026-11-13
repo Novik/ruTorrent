@@ -25,7 +25,6 @@ plugin.lastHref = "";
 plugin.currentPage = 'torrentsList';
 plugin.scrollTop = 0;
 plugin.scrollToAddedUntil = 0; /* deadline for scrolling to a just-added torrent */
-plugin.uploadFrames = 0; /* names each upload's hidden frame */
 plugin.searchText = '';
 plugin.searchPattern = null;
 plugin.searchDebounce = 0;
@@ -235,33 +234,20 @@ plugin.alertClass = function(kind) {
 };
 
 /*** Add-torrent upload ***/
-// Every upload gets a hidden frame of its own, and its form targets that
-// frame by name. With one shared name, a second upload started while the
-// first was in flight (picking another file enables the button again)
-// could load into the first one's frame, and the first upload to finish
-// removed the other one's frame.
-plugin.createiFrame = function(form) {
-  var name = 'uploadFrame' + (++this.uploadFrames);
-  var frame = $('<iframe style="visibility: hidden; width: 0; height: 0; line-height: 0; font-size: 0; border: 0;"></iframe>').attr('name', name);
-  $('#addTorrent').prepend(frame);
-  // Bind after insertion: inserting the frame fires load for its initial
-  // blank page, which is not the answer
-  frame.on('load', function() {
-    plugin.uploadFinished(this);
+// The form is sent by the script, with its action already set. Each send is
+// a request of its own, so a second upload started while the first is in
+// flight (picking another file enables the button again) reports its own
+// answer.
+plugin.sendAddForm = function(form) {
+  uploadTorrentForm(form, function(results) {
+    plugin.uploadFinished(results);
   });
-  form.target = name;
 };
 
-plugin.uploadFinished = function(frame) {
-  // Report the answer, but restore the buttons and drop the frame either
-  // way: the blank page the frame is inserted with loads here too
-  var answer = uploadFrameAnswer(frame);
-  if (answer !== null) {
-    this.showUploadResults(uploadResults(answer));
-  }
+plugin.uploadFinished = function(results) {
+  this.showUploadResults(results);
   $('#addUrl').prop('disabled', $.trim($('#url').val()) === '');
   $('#torrentFileSend').prop('disabled', $('#torrent_file')[0].files.length === 0);
-  $(frame).remove();
   this.update(true);
 };
 
@@ -2641,7 +2627,8 @@ plugin.init = function() {
           theWebUI.save();
         }, true);
 
-        return(true);
+        plugin.sendAddForm(frm);
+        return(false);
       }
       $("#addTorrentFile").submit(function()
       {
@@ -2653,12 +2640,10 @@ plugin.init = function() {
           }
         }
         $('#torrentFileSend').prop('disabled', true);
-        plugin.createiFrame(this);
         return(makeAddRequest(this));
       });
       $("#addTorrentUrl").submit(function() {
         $('#addUrl').prop('disabled', true);
-        plugin.createiFrame(this);
         return(makeAddRequest(this));
       });
 

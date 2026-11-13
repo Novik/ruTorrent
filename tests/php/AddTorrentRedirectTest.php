@@ -98,6 +98,59 @@ class AddTorrentRedirectTest extends TestCase
         );
     }
 
+    /**
+     * A request that carries json_results is answered with every result
+     * itself, so a client that sends it with fetch() has nothing to follow
+     * and nothing to read out of a frame.
+     */
+    public function testJsonResultsAnswersWithTheResultsAndNoRedirect()
+    {
+        $result = $this->post('/php/addtorrent.php?json_results=1', ['Host' => '127.0.0.1']);
+        $this->assertTrue(
+            strpos($result['status'], ' 200 ') !== false,
+            'the upload is answered directly: ' . $result['status'],
+        );
+        $this->assertEquals('', $this->location($result), 'and is not redirected');
+        $this->assertTrue(
+            isset($result['headers']['content-type'])
+                && (strpos($result['headers']['content-type'], 'application/json') === 0),
+            'the answer is json: ' . json_encode($result['headers']),
+        );
+        $this->assertEquals(
+            ['results' => [['status' => 'Failed']]],
+            json_decode($result['body'], true),
+            'carrying the result of the request: ' . $result['body'],
+        );
+    }
+
+    /** The redirect's address plays no part in the answer. */
+    public function testJsonResultsIgnoresAnUnusablePublicBase()
+    {
+        $result = $this->post(
+            '/php/addtorrent.php?json_results=1',
+            ['Host' => 'public.test'],
+            'ftp://public.test/app',
+        );
+        $this->assertEquals('', $this->location($result), 'no redirect is sent');
+        $this->assertEquals(
+            ['results' => [['status' => 'Failed']]],
+            json_decode($result['body'], true),
+            'the results are answered: ' . $result['body'],
+        );
+    }
+
+    /** A client that asks for both is one that knows json_results. */
+    public function testJsonResultsTakesPrecedenceOverTheJsonRedirect()
+    {
+        $result = $this->post('/php/addtorrent.php?json=1&json_results=1', ['Host' => '127.0.0.1']);
+        $this->assertEquals('', $this->location($result), 'no redirect is sent');
+        $this->assertEquals(
+            ['results' => [['status' => 'Failed']]],
+            json_decode($result['body'], true),
+            'the results are answered: ' . $result['body'],
+        );
+    }
+
     // ---- plumbing --------------------------------------------------------
 
     private function location($result)
