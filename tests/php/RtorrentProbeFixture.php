@@ -71,15 +71,16 @@ class RtorrentProbeFixture
      * subject is what the script asks rtorrent for, not how it learned to
      * ask. The file is produced by running the real probe once rather than
      * written out here, so it holds whatever that probe produces. $name is
-     * the session name the daemon reports, $directory its default directory
-     * and $session its session directory.
+     * the session name the daemon reports, $directory its default directory,
+     * $session its session directory and $home the home directory of the
+     * user it runs as.
      */
-    public static function warmSettingsCache($profilePath, $name = '', $directory = '/tmp', $session = '')
+    public static function warmSettingsCache($profilePath, $name = '', $directory = '/tmp', $session = '', $home = '/home/rtorrent')
     {
         static $caches = [];
-        $key = serialize([$name, $directory, $session]);
+        $key = serialize([$name, $directory, $session, $home]);
         if (!array_key_exists($key, $caches)) {
-            $caches[$key] = self::probeForCache($name, $directory, $session);
+            $caches[$key] = self::probeForCache($name, $directory, $session, $home);
         }
         if ($caches[$key] === false) {
             return false;
@@ -97,19 +98,19 @@ class RtorrentProbeFixture
         return [__FILE__];
     }
 
-    public static function responder($hash = self::HASH, $name = '', $directory = '/tmp', $session = '')
+    public static function responder($hash = self::HASH, $name = '', $directory = '/tmp', $session = '', $home = '/home/rtorrent')
     {
-        return new RtorrentProbeResponder($hash, $name, $directory, $session);
+        return new RtorrentProbeResponder($hash, $name, $directory, $session, $home);
     }
 
-    private static function probeForCache($name, $directory, $session)
+    private static function probeForCache($name, $directory, $session, $home)
     {
         $base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
         $daemon = null;
         try {
             @mkdir($base . '/settings', 0700, true);
             $daemon = new FakeRtorrentDaemon(
-                self::responder(self::HASH, $name, $directory, $session),
+                self::responder(self::HASH, $name, $directory, $session, $home),
                 $base . '/calls.log',
                 false,
                 self::replyClassFiles(),
@@ -150,13 +151,15 @@ class RtorrentProbeResponder
     private $name;
     private $directory;
     private $session;
+    private $home;
 
-    public function __construct($hash, $name = '', $directory = '/tmp', $session = '')
+    public function __construct($hash, $name = '', $directory = '/tmp', $session = '', $home = '/home/rtorrent')
     {
         $this->hash = $hash;
         $this->name = $name;
         $this->directory = $directory;
         $this->session = $session;
+        $this->home = $home;
     }
 
     public function __invoke($body)
@@ -182,7 +185,7 @@ class RtorrentProbeResponder
                 return ['6890'];
             case 'execute.capture':
                 // uid, group list, home -- the three lines obtain() reads.
-                return ["1000\n1000 1001\n/home/rtorrent\n"];
+                return ["1000\n1000 1001\n" . $this->home . "\n"];
         }
         // The settings batch: directory, session, library version, name,
         // port range, bind address, local address. Every one of these but

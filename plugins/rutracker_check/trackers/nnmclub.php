@@ -458,7 +458,7 @@ class NNMClubCheckImpl
             return null;
         }
 
-        $files = @glob($sessionDir . '/*.torrent');
+        $files = @glob(addcslashes($sessionDir, '\\*?[') . '/*.torrent');
         if (!$files) {
             self::log("No session torrents found for reusable credential lookup");
             return null;

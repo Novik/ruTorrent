@@ -5,7 +5,7 @@ eval(FileUtil::getPluginConf($plugin["name"]));
 
 $session = rTorrentSettings::get()->session;
 if (!strlen($session) || !@file_exists(FileUtil::addslash($session) . '.')) {
-    $jResult .= "plugin.disable(); noty('" . $plugin["name"] . ": '+theUILang.webBadSessionError+' (" . $session . ").','error');";
+    $jResult .= "plugin.disable(); noty('" . $plugin["name"] . ": '+theUILang.webBadSessionError+' ('+" . JSON::jsValue($session) . "+').','error');";
 } else {
     if ($updateInterval) {
         // getScheduleCommand, not getAbsScheduleCommand: this file runs on every

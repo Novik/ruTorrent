@@ -461,6 +461,47 @@ $suite->test('donor passkey is used in memory without rewriting session torrent'
     }
 });
 
+// The session directory is a path, not a pattern: a '\', '"' or '[' in it
+// is part of the directory's name.
+$suite->test('a donor is found in a session directory holding a quote, a backslash and a bracket', function () use ($realPasskey, $dummyPasskey) {
+    nnmReset();
+    $tempDir = sys_get_temp_dir() . '/nnmclub-donor-bytes-' . getmypid() . '-' . mt_rand();
+    $sessionDir = $tempDir . '/se"ss\\ion[1]';
+    mkdir($sessionDir, 0700, true);
+
+    try {
+        $targetRaw = strictTorrentRaw(
+            'target-bytes.bin',
+            'http://bt02.nnm-club.cc:2710/' . $dummyPasskey . '/announce',
+            nnmTopicUrl(43),
+        );
+        $target = @new Torrent($targetRaw);
+        strictAssertTrue(!$target->errors(), 'Target torrent fixture must parse');
+        $targetHash = $target->hash_info();
+        file_put_contents($sessionDir . '/' . $targetHash . '.torrent', $targetRaw);
+
+        $donorRaw = strictTorrentRaw(
+            'donor-bytes.bin',
+            'http://bt.searchtor.to/announce?uk=' . $realPasskey,
+            nnmTopicUrl(78),
+        );
+        file_put_contents($sessionDir . '/' . str_repeat('C', 40) . '.torrent', $donorRaw);
+
+        rTorrentSettings::get()->session = $sessionDir . '/';
+        Snoopy::queue(
+            nnmStaticScrapeUrl('bt.searchtor.to', $realPasskey, $targetHash),
+            200,
+            strictScrapePayload($targetHash, true),
+        );
+
+        $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(43), $targetHash, $target);
+
+        strictAssertSame(ruTrackerChecker::STE_UPTODATE, $result, 'The donor passkey in ' . $sessionDir . ' authenticates the scrape');
+    } finally {
+        strictRemoveTree($tempDir);
+    }
+});
+
 // The donor is the one remaining cross-torrent transplant: consulted only
 // when the torrent being replaced carries no usable key of its own, and only
 // for keys another torrent published in the profile-wide `uk=` form. A

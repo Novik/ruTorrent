@@ -281,10 +281,10 @@ class rTorrentSettings
                     new rXMLRPCCommand("get_ip"),
                 ]);
                 if ($req->success()) {
-                    // As rtorrent reported it: the plugins compare it with the
-                    // paths rtorrent passes them and hand it on as a path.
+                    // As rtorrent reported them: the plugins compare these with
+                    // the paths rtorrent passes them and use them as paths.
                     $this->directory = rXMLRPCRequest::unescapeValue($req->val[0]);
-                    $this->session = $req->val[1];
+                    $this->session = rXMLRPCRequest::unescapeValue($req->val[1]);
                     $this->libVersion = $req->val[2];
                     $this->server = $req->val[3];
                     $this->portRange = $req->val[4];
@@ -314,7 +314,7 @@ class rTorrentSettings
                         if ($req->run() && !$req->fault && (($line = explode("\n", $req->val[0])) !== false) && (count($line) > 2)) {
                             $this->uid = intval(trim($line[0]));
                             $this->gid = explode(' ', trim($line[1]));
-                            $this->home = trim($line[2]);
+                            $this->home = rXMLRPCRequest::unescapeValue(trim($line[2]));
                             if (!empty($this->directory)
                                 && ($this->directory[0] == '~')) {
                                 $this->directory = $this->home . substr($this->directory, 1);
