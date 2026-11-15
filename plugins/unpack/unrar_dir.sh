@@ -3,9 +3,10 @@
 # $1 - unrar
 # $2 - input directory with tail slash
 # $3 - output directory with tail slash
-# $5 - archive files to delete
+# $5 - unused
 # $6 - unpack temp dir
 # $7-$10 - for place.php, see stage.sh
+# $11... - archives to delete after a successful unpack
 
 . "$(dirname "$0")/stage.sh"
 
@@ -38,8 +39,6 @@ process_directory()
 process_directory "$1" "$2" ""
 ret=$?
 
-if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
-	unpack_delete "$5"
-fi
+[ $ret -eq 0 ] && unpack_delete "$@"
 
 exit $ret

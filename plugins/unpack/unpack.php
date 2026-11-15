@@ -122,6 +122,7 @@ class rUnpack
         }
 
         self::log("[Auto] Check torrent [$name] at [$basename] for archives");
+        $filesToDelete = [];
 
         if (is_dir($basename)) {
             $postfix = "_dir";
@@ -130,7 +131,6 @@ class rUnpack
             }
             $basename = FileUtil::addslash($basename);
 
-            $filesToDelete = "";
             $downloadname = FileUtil::addslash($downloadname);
             $Directory = new RecursiveDirectoryIterator($basename);
             $Iterator = new RecursiveIteratorIterator($Directory);
@@ -183,14 +183,18 @@ class rUnpack
             } else {
                 $randTempDirectory = "";
             }
-            $commands[] = escapeshellarg($rootPath . '/plugins/unpack/un' . $mode . $postfix . '.sh') . " "
+            $command = escapeshellarg($rootPath . '/plugins/unpack/un' . $mode . $postfix . '.sh') . " "
             . escapeshellarg($arh) . " "
             . escapeshellarg($basename) . " "
             . escapeshellarg($outPath) . " "
-            . escapeshellarg($pathToUnzip) . " "
-            . escapeshellarg($filesToDelete) . " "
+            . escapeshellarg($pathToUnzip) . " '' "
             . escapeshellarg($randTempDirectory)
             . self::placeArguments("automatic", $hash);
+            // The archives to delete follow, an argument each.
+            foreach ($filesToDelete as $file) {
+                $command .= " " . Utility::escapeShellArg($file);
+            }
+            $commands[] = $command;
             if ($cleanupAutoTasks) {
                 $commands[] = 'rm -r "${dir}"';
             }
@@ -390,16 +394,16 @@ class rUnpack
     {
         if (is_link($filePath)) {
             self::log("Unpack: SoftLink operation enabled. Deleting " . $filePath);
-            $filesToDelete .= $filePath . ";";
+            $filesToDelete[] = $filePath;
         } else {
             $stat = LFS::stat($filePath);
             if ($stat) {
                 if ($stat['nlink'] > 1) {
                     self::log("Unpack: HardLink operation enabled. Deleting " . $filePath);
-                    $filesToDelete .= $filePath . ";";
+                    $filesToDelete[] = $filePath;
                 } else {
                     self::log("Unpack: Copy operation enabled. Deleting " . $filePath);
-                    $filesToDelete .= $filePath . ";";
+                    $filesToDelete[] = $filePath;
                 }
             }
         }

@@ -7,7 +7,8 @@
 #
 # The scripts' $3 is the output directory, $6 the unpack temp directory if
 # any, and $7-$10 are for place.php: PHP, "automatic" or "manual", the
-# download's hash and the user.
+# download's hash and the user. Any arguments after those are the archives
+# to delete once the unpack has succeeded.
 
 unpack_output="$3"
 unpack_root="${6:-$3}"
@@ -38,16 +39,15 @@ unpack_rar_links()
 		END { print n + 0 }')
 }
 
-# The caller supplies a semicolon-separated list. Do not expand wildcard
-# characters in the paths when splitting that list.
+# Called with the script's own arguments: the archives to delete are the
+# ones after the tenth, a path each, so no byte of a name can split it.
 unpack_delete()
-(
-	IFS=';'
-	set -f
-	for unpack_file in $1 ; do
+{
+	shift 10
+	for unpack_file ; do
 		rm -- "$unpack_file"
 	done
-)
+}
 
 # UnRAR treats asterisks and question marks in the whole path as masks.
 unpack_rar_path()
