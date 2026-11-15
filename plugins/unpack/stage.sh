@@ -38,6 +38,49 @@ unpack_rar_links()
 		END { print n + 0 }')
 }
 
+# The caller supplies a semicolon-separated list. Do not expand wildcard
+# characters in the paths when splitting that list.
+unpack_delete()
+(
+	IFS=';'
+	set -f
+	for unpack_file in $1 ; do
+		rm -- "$unpack_file"
+	done
+)
+
+# UnRAR treats asterisks and question marks in the whole path as masks.
+unpack_rar_path()
+{
+	case "$1" in
+		*'*'*|*'?'*)
+			unpack_php refuse archive-name-pattern "$1"
+			printf '%s\n' 'unpack: archive not unpacked; rename the archive, its volumes and parent directories without * or ?' >&2
+			return 1 ;;
+	esac
+}
+
+# Info-ZIP treats the archive basename as a wildcard pattern. Keep its
+# directory literal and quote metacharacters only when pattern matching is used.
+unpack_zip_pattern()
+{
+	unpack_zip_name=${1##*/}
+	unpack_archive_pattern=$1
+	case "$unpack_zip_name" in
+		*'['*|*'*'*|*'?'*)
+			# Keep trailing newlines: manual unpack also accepts names without .zip.
+			unpack_zip_escaped=$(printf '%s' "$unpack_zip_name" | sed -e 's/\\/\\\\/g' -e 's/\[/[[]/g' -e 's/\*/[*]/g' -e 's/?/[?]/g' && printf '.') || {
+				unpack_php refuse archive-name-unavailable "$1"
+				return 1
+			}
+			unpack_zip_escaped=${unpack_zip_escaped%.}
+			case "$1" in
+				*/*) unpack_archive_pattern=${1%/*}/$unpack_zip_escaped ;;
+				*) unpack_archive_pattern=$unpack_zip_escaped ;;
+			esac ;;
+	esac
+}
+
 # Runs the extractor command "$2"... with a private directory, plus the
 # subdirectory $1 (empty or with tail slash), as its last argument, then
 # places what it wrote. Returns the extractor's status, or 1 if the
