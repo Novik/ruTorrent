@@ -4,9 +4,10 @@
 # $2 - intput directory with tail slash
 # $3 - output directory with tail slash
 # $4 - unzip
-# $5 - archive files to delete
+# $5 - unused
 # $6 - unpack temp dir
 # $7-$10 - for place.php, see stage.sh
+# $11... - archives to delete after a successful unpack
 
 . "$(dirname "$0")/stage.sh"
 
@@ -17,7 +18,5 @@ last=$?
 "$(dirname $0)"/unzip_dir.sh "$4" "$2" "$3" "$1" "" "$6" "$7" "$8" "$9" "${10}"
 last=$?
 [ $last -ge 1 ] && ret=$last
-if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
-	unpack_delete "$5"
-fi
+[ $ret -eq 0 ] && unpack_delete "$@"
 exit $ret
