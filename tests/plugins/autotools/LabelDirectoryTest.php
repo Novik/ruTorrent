@@ -22,8 +22,6 @@ class LabelDirectoryTest extends TestCase
         $this->base = sys_get_temp_dir() . '/rutorrent-autotools-label-' . getmypid();
         TestTree::remove($this->base);
         mkdir($this->base, 0700);
-        // Past the settings handshake, so the replies below answer the script's own requests.
-        $this->assertTrue(RtorrentProbeFixture::warmSettingsCache($this->base . '/profile'), 'the settings cache is warmed');
     }
 
     public function tearDown()
@@ -50,10 +48,20 @@ class LabelDirectoryTest extends TestCase
         $this->assertLabelIs('sub"x', '/da\\ta"', '/da\\ta"/sub"x');
     }
 
+    public function testADefaultDirectoryWithABackslashBeforeAQuoteStillPrecedesTheTorrentDirectory()
+    {
+        $this->assertLabelIs('c\\\\d', '/a\\"b', '/a\\"b/c\\\\d');
+    }
+
     private function assertLabelIs($label, $defaultDirectory, $torrentDirectory)
     {
-        // The default directory, then the torrent's directory, custom3 and multi-file flag, then the label being set.
-        $this->daemon = new FakeRtorrentDaemon([[$defaultDirectory], [$torrentDirectory, '', 0], [0]], $this->base . '/calls.log');
+        // Past the settings handshake, with the default directory the probe read from a daemon reporting it.
+        $this->assertTrue(
+            RtorrentProbeFixture::warmSettingsCache($this->base . '/profile', '', $defaultDirectory),
+            'the settings cache is warmed',
+        );
+        // The torrent's directory, custom3 and multi-file flag, then the label being set.
+        $this->daemon = new FakeRtorrentDaemon([[$torrentDirectory, '', 0], [0]], $this->base . '/calls.log');
         $root = realpath(__DIR__ . '/../../..');
         file_put_contents($this->base . '/drive.php', "<?php\n"
             . '$_ENV["RU_PROFILE_PATH"] = ' . var_export($this->base . '/profile', true) . ";\n"
@@ -63,9 +71,6 @@ class LabelDirectoryTest extends TestCase
             . 'chdir(' . var_export($root . '/plugins/autotools', true) . ");\n"
             . 'require_once("./util_rt.php"); require_once("./autotools.php");' . "\n"
             . '$at = rAutoTools::load(); $at->enable_label = 1; $at->label_template = "{DIR}"; $at->store();' . "\n"
-            // As php/settings.php keeps it: the answer to get_directory, escaped by run().
-            . '$req = new rXMLRPCRequest(new rXMLRPCCommand("get_directory")); $req->run();' . "\n"
-            . 'rTorrentSettings::get()->directory = $req->val[0];' . "\n"
             . 'require(' . var_export($root . '/plugins/autotools/label.php', true) . ");\n");
         PhpProcess::run(array_merge(PhpProcess::sameIni(), [$this->base . '/drive.php', '--daemon', '0123456789ABCDEF0123456789ABCDEF01234567']));
         $bodies = $this->daemon->bodies();
