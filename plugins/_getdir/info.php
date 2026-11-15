@@ -23,8 +23,8 @@ function compareEntries($a, $b)
         : strcmp(strtolower($a), strtolower($b)));
 }
 
+$output = [];
 if (isset($_REQUEST['mode'])) {
-    $output = [];
     $modes = explode(';', $_REQUEST['mode']);
     $theSettings = rTorrentSettings::get();
     if (in_array("labels", $modes)) {

@@ -17,9 +17,9 @@ function compareEntries($a, $b)
 
 $theSettings = rTorrentSettings::get();
 
-$requestedDir = $_REQUEST['dir'];
+$requestedDir = $_REQUEST['dir'] ?? '';
 
-if (isset($requestedDir) && strlen($requestedDir)) {
+if (strlen($requestedDir)) {
     $dir = rawurldecode($requestedDir);
     rTorrentSettings::get()->correctDirectory($dir);
 
