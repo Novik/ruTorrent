@@ -92,7 +92,7 @@ theWebUI.rDirBrowser = class {
 						$(ev.currentTarget).find(".rmenuitem.active").trigger("dblclick");
 					} break;
 					case "ArrowLeft": {
-						$(ev.currentTarget).find(".rmenuitem:contains('..')").trigger("click").trigger("dblclick");
+						$(ev.currentTarget).find(".rmenuitem").filter((_, item) => item.textContent === "../").trigger("click").trigger("dblclick");
 					} break;
 					case "Home": {
 						$(ev.currentTarget).find(".rmenuitem").first().trigger("click");
