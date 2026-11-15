@@ -112,7 +112,55 @@ describe("toolbar search clear button", () => {
     expect(button().hidden).toBe(true);
   });
 
-  it("appears when extsearch puts a result's query back into the field", () => {
+  it("hides the clear button while a new external search is pending", () => {
+    const plugin = { enabled: true };
+    theSearchEngines.current = "all";
+    theSearchEngines.checkForIncorrectCurrent = jest.fn();
+    theWebUI.requestWithoutTimeout = jest.fn();
+    type("ubuntu");
+    const src = readFileSync("../plugins/extsearch/init.js", "utf8");
+    const start = src.indexOf("theSearchEngines.run = function");
+    const end = src.indexOf("\nrTorrentStub.prototype.extsearch", start);
+    new Function("theSearchEngines", "theWebUI", "plugin", "$", src.slice(start, end))(theSearchEngines, theWebUI, plugin, window.$);
+    theSearchEngines.run();
+    expect(field().readOnly).toBe(true);
+    expect(button().hidden).toBe(true);
+    expect(theWebUI.requestWithoutTimeout).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not clear the query while an external search is pending", () => {
+    type("ubuntu");
+    field().readOnly = true;
+    theWebUI.updateSearchClear();
+    expect(button().hidden).toBe(true);
+    theWebUI.clearSearch();
+    expect(field().value).toBe("ubuntu");
+  });
+
+  it("keeps a refreshed query until the delayed external result is assigned", () => {
+    const plugin = { tegs: { teg_1: { val: "all/all: ubuntu", what: "ubuntu", eng: "all", cat: "all", data: [] } } };
+    const catlist = { switchLabel: jest.fn(), refresh: jest.fn() };
+    theSearchEngines.getEngName = () => "all";
+    window.$type = () => false;
+    theWebUI.activeExtTegId = () => "teg_1";
+    theWebUI.requestWithoutTimeout = jest.fn();
+    const src = readFileSync("../plugins/extsearch/init.js", "utf8");
+    const start = src.indexOf("theWebUI.setExtSearchTag = function");
+    const end = src.indexOf("\nplugin.getTegByRowId", start);
+    new Function("theWebUI", "plugin", "catlist", "$", src.slice(start, end))(theWebUI, plugin, catlist, window.$);
+    new Function("theWebUI", "plugin", "$", loadTegRefresh())(theWebUI, plugin, window.$);
+    theWebUI.tegRefresh();
+    button().click();
+    theWebUI.clearSearch();
+    const callback = theWebUI.requestWithoutTimeout.mock.calls[0][1];
+    callback[0].call(callback[1], { eng: "all", cat: "all", data: ["result"] });
+    expect(plugin.tegs.teg_1.what).toBe("ubuntu");
+    expect(plugin.tegs.teg_1.data).toEqual(["result"]);
+    expect(field().readOnly).toBe(false);
+    expect(button().hidden).toBe(false);
+  });
+
+  it("stays hidden while extsearch refreshes a readonly query", () => {
     const plugin = { tegs: { teg_1: { what: "ubuntu", eng: "all", cat: "all" } } };
     theWebUI.activeExtTegId = () => "teg_1";
     theWebUI.requestWithoutTimeout = jest.fn();
@@ -121,6 +169,6 @@ describe("toolbar search clear button", () => {
     theWebUI.tegRefresh();
 
     expect(field().value).toBe("ubuntu");
-    expect(button().hidden).toBe(false);
+    expect(button().hidden).toBe(true);
   });
 });
