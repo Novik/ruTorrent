@@ -62,19 +62,27 @@ if (plugin.canChangeOptions()) {
 			this.request("?action=setautotools");
 	}
 
+	// rAutoTools::set() splits the body on "&" and then on "=", so every value
+	// goes out escaped, after a first word that says so: without it, set()
+	// takes the values as written, which is what a page from before sent.
+	const field = function(name, value) {
+		return "&" + name + "=" + encodeURIComponent(value);
+	}
+
 	rTorrentStub.prototype.setautotools = function() {
-		this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
-			"&label_template=" + $$('label_template').value +
-			"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
-			"&path_to_finished=" + $$('path_to_finished').value +
-			"&skip_move_for_files=" + $$('skip_move_for_files').value +
-			"&fileop_type=" + $$('fileop_type').value +
-			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
-			"&add_label=" + ( $$('auto_add_label').checked  ? '1' : '0' ) +
-			"&add_name=" + ( $$('auto_add_name').checked  ? '1' : '0' ) +
-			"&path_to_watch=" + $$('path_to_watch').value +
-			"&automove_filter=" + $$('automove_filter').value +
-			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
+		this.content = "formEncoding=percent-v1" +
+			field("enable_label", $$('enable_label').checked ? '1' : '0') +
+			field("label_template", $$('label_template').value) +
+			field("enable_move", $$('enable_move').checked ? '1' : '0') +
+			field("path_to_finished", $$('path_to_finished').value) +
+			field("skip_move_for_files", $$('skip_move_for_files').value) +
+			field("fileop_type", $$('fileop_type').value) +
+			field("enable_watch", $$('enable_watch').checked ? '1' : '0') +
+			field("add_label", $$('auto_add_label').checked ? '1' : '0') +
+			field("add_name", $$('auto_add_name').checked ? '1' : '0') +
+			field("path_to_watch", $$('path_to_watch').value) +
+			field("automove_filter", $$('automove_filter').value) +
+			field("watch_start", $$('watch_start').checked ? '1' : '0');
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/autotools/action.php";
 		this.dataType = "script";
