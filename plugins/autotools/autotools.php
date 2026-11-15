@@ -59,13 +59,22 @@ class rAutoTools
         }
         return false;
     }
-    public function set()
+    // $rawPostData names the request body, which is otherwise read from
+    // php://input and so cannot be handed to this from a test.
+    public function set($rawPostData = null)
     {
         if (!isset($HTTP_RAW_POST_DATA)) {
-            $HTTP_RAW_POST_DATA = file_get_contents("php://input");
+            $HTTP_RAW_POST_DATA = is_null($rawPostData) ? file_get_contents("php://input") : $rawPostData;
         }
         if (isset($HTTP_RAW_POST_DATA)) {
             $vars = explode('&', $HTTP_RAW_POST_DATA);
+            // Said first by a settings page that escapes its values, as the
+            // XMPP settings page does. A page that does not say it wrote them
+            // literally, so what arrived from it is the value, and only a
+            // body that opens with the word is unescaped: a later segment
+            // that looks like it can be the tail of a literal value that held
+            // an ampersand.
+            $escaped = isset($vars[0]) && ($vars[0] === "formEncoding=percent-v1");
             $this->enable_label = 0;
             $this->label_template = "{DIR}";
             $this->enable_move = 0;
@@ -79,7 +88,16 @@ class rAutoTools
             $this->addName = 0;
             $this->addLabel = 0;
             foreach ($vars as $var) {
-                $parts = explode("=", $var);
+                // Split at the first "=" only: what follows it is the value.
+                // An escaped value went out through encodeURIComponent() and
+                // comes back through rawurldecode(), which leaves a plus a plus.
+                $parts = explode("=", $var, 2);
+                if (!isset($parts[1])) {
+                    continue;
+                }
+                if ($escaped) {
+                    $parts[1] = rawurldecode($parts[1]);
+                }
                 if ($parts[0] == "enable_label") {
                     $this->enable_label = $parts[1];
                 } elseif ($parts[0] == "label_template") {

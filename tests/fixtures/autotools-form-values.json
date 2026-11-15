@@ -1,0 +1,13 @@
+[
+  { "value": "{TRACKER} & co", "encoded": "%7BTRACKER%7D%20%26%20co", "why": "an ampersand starts another field in the body" },
+  { "value": "/^(?=tv)t/", "encoded": "%2F%5E(%3F%3Dtv)t%2F", "why": "an equals sign ends the value at the first one" },
+  { "value": "/a&b|c=d/", "encoded": "%2Fa%26b%7Cc%3Dd%2F", "why": "both separators in one pattern" },
+  { "value": "p+q", "encoded": "p%2Bq", "why": "a plus is a space to a form-urlencoded reader" },
+  { "value": "100%", "encoded": "100%25", "why": "a percent sign is the escape character" },
+  { "value": "p%26s", "encoded": "p%2526s", "why": "a value that already looks escaped" },
+  { "value": "it's \"{DIR}\"", "encoded": "it's%20%22%7BDIR%7D%22", "why": "quotes" },
+  { "value": "back\\slash", "encoded": "back%5Cslash", "why": "a backslash" },
+  { "value": "a?b#c", "encoded": "a%3Fb%23c", "why": "a question mark and a hash" },
+  { "value": "Filés ✓", "encoded": "Fil%C3%A9s%20%E2%9C%93", "why": "non-ascii, which has to survive as utf-8" },
+  { "value": "tab\tsep", "encoded": "tab%09sep", "why": "a control character" }
+]
