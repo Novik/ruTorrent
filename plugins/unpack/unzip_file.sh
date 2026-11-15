@@ -9,8 +9,12 @@
 
 . "$(dirname "$0")/stage.sh"
 
-unpack_extract "" "$1" -o "$2" -d
-ret=$?
+if unpack_zip_pattern "$2" ; then
+	unpack_extract "" "$1" -o "$unpack_archive_pattern" -d
+	ret=$?
+else
+	ret=1
+fi
 
 [ $ret -eq 0 ] && echo 'All OK'
 if [ $ret -eq 0 ] && [ "$5" != '' ] ; then

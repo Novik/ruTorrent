@@ -25,8 +25,12 @@ process_directory()
 {
         for fn in "$2"*.zip ; do
         	if [ -f "${fn}" ] && [ -r "${fn}" ] ; then
-			unpack_extract "$3" unzip_into "$1" -o "${fn}" -d
-			last=$?
+			if unpack_zip_pattern "${fn}" ; then
+				unpack_extract "$3" unzip_into "$1" -o "$unpack_archive_pattern" -d
+				last=$?
+			else
+				last=1
+			fi
 			[ $last -ge 1 ] && ret=$last
 		fi
 	done
@@ -46,13 +50,7 @@ ret=$?
 
 [ $ret -eq 0 ] && echo 'All OK'
 if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
-	OIFS=$IFS
-	IFS=';'
-	for file in "$5"
-	do
-		rm $file
-	done
-	IFS=$OIFS
+	unpack_delete "$5"
 fi
 
 exit $ret

@@ -15,6 +15,10 @@ ret=0
 # $3 - its place in the output, empty or with tail slash
 process_directory()
 {
+	if ! unpack_rar_path "$2" ; then
+		ret=1
+		return "$ret"
+	fi
 	# -ol-: never a symbolic link, see unrar_file.sh.
 	unpack_rar_links "$1" "$2."
 	unpack_extract "$3" "$1" x -ai -c- -kb -o+ -ol- -p- -y -v -- "$2."
@@ -35,13 +39,7 @@ process_directory "$1" "$2" ""
 ret=$?
 
 if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
-	OIFS=$IFS
-	IFS=';'
-	for file in "$5"
-	do
-		rm $file
-	done
-	IFS=$OIFS
+	unpack_delete "$5"
 fi
 
 exit $ret

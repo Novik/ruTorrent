@@ -9,6 +9,8 @@
 
 . "$(dirname "$0")/stage.sh"
 
+unpack_rar_path "$2" || exit 1
+
 # -ol-: unrar never creates a symbolic link. An archive that holds one is
 # listed first and refused like a zip's (unpack_rar_links in stage.sh).
 unpack_rar_links "$1" "$2"
