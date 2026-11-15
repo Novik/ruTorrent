@@ -525,6 +525,53 @@ class UnconfirmedEraseTest extends TestCase
         $this->assertTrue($this->logged() === '', 'with nothing to report: ' . $this->logged());
     }
 
+    // -- a name that holds a quote or a backslash ------------------------------
+
+    public function testADownloadWhoseNamesHoldAQuoteAndABackslashIsDeleted()
+    {
+        $this->fresh();
+        $download = $this->download('Dow\\"nload', ['one.bin' => 'one', 'sub/a\\"b.bin' => 'two']);
+        $this->startDaemon(
+            [$this->pathsReply($download), $this->eraseReply()],
+            [$this->holding(self::OTHER)],
+        );
+        $this->assertDeletedWhole($download);
+    }
+
+    public function testTheSameNamesAreDeletedFromTheStoredPathsToo()
+    {
+        $this->fresh();
+        $download = $this->download('Dow\\"nload', ['one.bin' => 'one', 'sub/a\\"b.bin' => 'two']);
+        // A download not opened since rtorrent started has no frozen paths, so
+        // the writer reads d.directory and f.path instead.
+        $this->startDaemon(
+            [['', 1, '', ''], [$download['base'], 1, 'one.bin', 'sub/a\\"b.bin'], $this->eraseReply()],
+            [$this->holding(self::OTHER)],
+        );
+        $this->assertDeletedWhole($download);
+    }
+
+    public function testAFileNamedAsTheReaderEscapesTheDownloadsFileIsKept()
+    {
+        $this->fresh();
+        $download = $this->download('Download', ['one.bin' => 'one', 'sub/a\\"b.bin' => 'two']);
+        // Beside it lies a file the download never had, named the way
+        // rXMLRPCRequest::run() hands out the name of the other.
+        $stray = $download['base'] . '/sub/a\\\\\\"b.bin';
+        file_put_contents($stray, 'stray');
+        $this->startDaemon(
+            [$this->pathsReply($download), $this->eraseReply()],
+            [$this->holding(self::OTHER)],
+        );
+
+        $this->assertTrue($this->removeWithData() === 'erased', 'the removal happened');
+        $out = $this->collect();
+
+        $this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+        $this->assertTrue(!$this->isFile($download['files'][1]), 'the file named a\\"b.bin is deleted');
+        $this->assertTrue($this->isFile($stray), 'and the file named a\\\\\\"b.bin beside it is kept');
+    }
+
     // -- another download holds the same files (#3514) -------------------------
 
     public function testTheFilesOfAnotherLoadedDownloadAreKept()
@@ -1254,6 +1301,19 @@ class UnconfirmedEraseTest extends TestCase
     private function eraseReply()
     {
         return [0, 0, 0];
+    }
+
+    /** Removes $download with its data, collects it, and checks nothing of it is left. */
+    private function assertDeletedWhole($download)
+    {
+        $this->assertTrue($this->removeWithData() === 'erased', 'the removal happened');
+        $out = $this->collect();
+
+        $this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+        foreach ($download['files'] as $file) {
+            $this->assertTrue(!$this->isFile($file), 'a file of the download is deleted: ' . basename($file));
+        }
+        $this->assertTrue(!$this->isDir($download['base']), 'and so is its directory');
     }
 
     /**
