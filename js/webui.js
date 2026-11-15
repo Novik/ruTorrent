@@ -2607,6 +2607,8 @@ var theWebUI = {
 
 	clearSearch: function()
 	{
+		if($$("query").readOnly)
+			return;
 		$$("query").value = "";
 		theWebUI.updateQuickSearch();
 	},
@@ -2618,7 +2620,7 @@ var theWebUI = {
 
 	updateSearchClear: function()
 	{
-		$$("query_clear").hidden = ($$("query").value === "");
+		$$("query_clear").hidden = ($$("query").value === "" || $$("query").readOnly);
 	},
 
 	updateQuickSearch: function()
