@@ -281,7 +281,9 @@ class rTorrentSettings
                     new rXMLRPCCommand("get_ip"),
                 ]);
                 if ($req->success()) {
-                    $this->directory = $req->val[0];
+                    // As rtorrent reported it: the plugins compare it with the
+                    // paths rtorrent passes them and hand it on as a path.
+                    $this->directory = rXMLRPCRequest::unescapeValue($req->val[0]);
                     $this->session = $req->val[1];
                     $this->libVersion = $req->val[2];
                     $this->server = $req->val[3];
