@@ -23,6 +23,7 @@ if (!function_exists('erasedataCollectPaths')) {
             new rXMLRPCCommand(getCmd("f.multicall"), [$hash, "", getCmd("f.get_frozen_path") . "="]),
         ]);
         if ($frozen->success() && count($frozen->val) >= 3) {
+            $frozen->val = array_map(['rXMLRPCRequest', 'unescapeValue'], $frozen->val);
             $files = [];
             foreach (array_slice($frozen->val, 2) as $path) {
                 if (strlen($path)) {
@@ -45,6 +46,7 @@ if (!function_exists('erasedataCollectPaths')) {
         if (!$stored->success() || count($stored->val) < 3) {
             return(false);
         }
+        $stored->val = array_map(['rXMLRPCRequest', 'unescapeValue'], $stored->val);
         $dir = rtrim($stored->val[0], '/');
         if (!strlen($dir)) {
             return(false);

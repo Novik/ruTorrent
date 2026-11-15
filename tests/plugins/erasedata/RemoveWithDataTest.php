@@ -55,6 +55,10 @@ if (!class_exists('rXMLRPCRequest')) {
                 $this->commands = [$commands];
             }
         }
+        public static function unescapeValue($value)
+        {
+            return($value);
+        }
         public function addCommand($command)
         {
             $this->commands[] = $command;
