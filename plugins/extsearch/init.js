@@ -171,7 +171,7 @@ theSearchEngines.run = function()
 			{
 				$("#query").prop("readonly",true);
 				theWebUI.updateSearchClear();
-				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI]);
+				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI], true, theWebUI.extSearchFailed);
 			}
 		}
 		else
@@ -469,6 +469,15 @@ catlist.refreshPanel.psearch = (attribs) => psearchEntries(attribs).concat(Objec
 		}
 	]));
 
+// The query stays read-only while a search is pending; a search that fails
+// gives it back and is reported as any other failed request is.
+theWebUI.extSearchFailed = function(status, text, state)
+{
+	$("#query").removeAttr("readonly");
+	theWebUI.updateSearchClear();
+	theWebUI.error(status, text, state);
+}
+
 theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
@@ -548,7 +557,7 @@ theWebUI.tegRefresh = function()
 		const item = plugin.tegs[tegId];
 		$("#query").val(item.what).prop("readonly",true);
 		theWebUI.updateSearchClear();
-		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI]);
+		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI], true, theWebUI.extSearchFailed);
 	}
 }
 

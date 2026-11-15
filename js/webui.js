@@ -2668,8 +2668,8 @@ var theWebUI = {
 		Ajax(qs instanceof rTorrentStub ? qs : this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
 	},
 
-	requestWithoutTimeout: function(qs, onComplite, isASync) {
-		Ajax(this.url + qs, isASync, onComplite, null, this.error, -1);
+	requestWithoutTimeout: function(qs, onComplite, isASync, onError) {
+		Ajax(this.url + qs, isASync, onComplite, null, onError || this.error, -1);
 	},
 
 	show: function()
