@@ -207,12 +207,14 @@ if (isset($_REQUEST['result'])) {
             "application/json",
         );
     }
-    // A Location may be a relative reference, so an install whose public
-    // address cannot be determined is still sent back to the page it posted.
-    $base = Requests::publicBaseURL('/php/addtorrent.php');
+    // A relative Location resolves against the URL the client posted to, so
+    // it keeps the scheme, host and prefix the client used, which a proxy in
+    // front need not pass on. Only a public base the operator configured
+    // overrides it.
+    $base = Requests::configuredPublicBaseURL();
     header("HTTP/1.0 302 Moved Temporarily");
     if (isset($_REQUEST['json'])) {
         $query .= 'json=1';
     }
-    header("Location: " . ($base === false ? "./addtorrent.php?" : $base . "php/addtorrent.php?") . $query);
+    header("Location: " . (is_string($base) ? $base . "php/addtorrent.php?" : "./addtorrent.php?") . $query);
 }
