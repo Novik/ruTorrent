@@ -16,7 +16,7 @@ if ($at->setHandlers()) {
             } else {
                 $session = rTorrentSettings::get()->session;
                 if (!strlen($session) || !@file_exists(FileUtil::addslash(rTorrentSettings::get()->session) . '.')) {
-                    $jResult .= "plugin.disable(); noty('" . $plugin["name"] . ": '+theUILang.webBadSessionWarning+' (" . $session . ").','error');";
+                    $jResult .= "plugin.disable(); noty('" . $plugin["name"] . ": '+theUILang.webBadSessionWarning+' ('+" . JSON::jsValue($session) . "+').','error');";
                 }
             }
         }

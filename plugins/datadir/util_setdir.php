@@ -299,8 +299,8 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
             if (!$req) {
                 $fast_resume = false;
             } else {
-                $session = $req->val[0];
-                $tied_to_file = $req->val[1];
+                $session = rXMLRPCRequest::unescapeValue($req->val[0]);
+                $tied_to_file = rXMLRPCRequest::unescapeValue($req->val[1]);
                 $label = rawurldecode($req->val[2]);
                 $addition = [];
                 // Both values were read back through rXMLRPCRequest, which

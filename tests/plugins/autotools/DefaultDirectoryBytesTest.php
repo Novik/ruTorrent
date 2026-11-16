@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/../../php/PhpProcess.php');
 require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 require_once(__DIR__ . '/../../php/TestTree.php');
+require_once(__DIR__ . '/../../../php/utility/json.php');
 
 /**
  * rtorrent reports its default directory as its own bytes, and passes a
@@ -13,10 +14,13 @@ require_once(__DIR__ . '/../../php/TestTree.php');
  * comparing the two, and watch.php loads a torrent into the same
  * subdirectory of it, so the settings have to keep the directory as
  * rtorrent reported it: a directory holding a '"' or a '\' is otherwise not
- * the one the download is in.
+ * the one the download is in. move.php reads the torrent's copy in the
+ * session directory, and init.php checks that directory exists, so the same
+ * holds for the session directory.
  *
  * The settings cache each script reads is the one the real probe leaves,
- * run against a daemon that reports $defaultDirectory.
+ * run against a daemon that reports $defaultDirectory and the session
+ * directory.
  */
 class DefaultDirectoryBytesTest extends TestCase
 {
@@ -65,6 +69,35 @@ class DefaultDirectoryBytesTest extends TestCase
         $this->assertMoved('dl', 'sub');
     }
 
+    public function testAFinishedDownloadIsMovedWithASessionDirectoryWithAQuoteAndABackslash()
+    {
+        $this->assertMoved('dl', 'sub', 'se"ss\\ion');
+    }
+
+    public function testAFinishedDownloadIsMovedWithASessionDirectoryWithABackslashBeforeAQuote()
+    {
+        $this->assertMoved('dl', 'sub', 'a\\"b');
+    }
+
+    public function testASessionDirectoryWithAQuoteAndABackslashIsFoundAtStartup()
+    {
+        $run = $this->runInit('se"ss\\ion', true);
+        $this->assertTrue(
+            (strpos($run['printed'], '|registered=1') !== false) && (strpos($run['printed'], 'webBadSessionWarning') === false),
+            'init.php finds the session directory and starts the plugin: ' . $run['printed'] . $run['errors'],
+        );
+    }
+
+    public function testAMissingSessionDirectoryIsNamedAsOneStringLiteral()
+    {
+        $session = $this->base . '/go\\ne\'"x/';
+        $run = $this->runInit('go\\ne\'"x', false);
+        $this->assertTrue(
+            strpos($run['printed'], "+theUILang.webBadSessionWarning+' ('+" . JSON::jsValue($session) . "+').'") !== false,
+            'init.php names the missing session directory ' . $session . ' as one literal: ' . $run['printed'] . $run['errors'],
+        );
+    }
+
     public function testAWatchedTorrentIsLoadedBelowADefaultDirectoryWithAQuoteAndABackslash()
     {
         $this->assertWatched('da\\ta"');
@@ -80,16 +113,16 @@ class DefaultDirectoryBytesTest extends TestCase
      * directory $default, run through check.php and then move.php as rtorrent
      * runs them, with "Move" to fin/: it lands in the same $sub below fin/.
      */
-    private function assertMoved($default, $sub)
+    private function assertMoved($default, $sub, $sessionName = 'session')
     {
-        $this->fresh($this->base . '/' . $default);
+        $this->fresh($this->base . '/' . $default, $sessionName);
         $root = 'subx';
         $source = $this->base . '/' . $default . '/' . $sub . '/' . $root;
         $named = $this->base . '/fin/' . $sub . '/' . $root;
         $this->makeDir($source);
         $this->makeDir($this->base . '/fin');
         file_put_contents($source . '/f.bin', 'download f.bin');
-        file_put_contents($this->base . '/session/' . self::HASH . '.torrent', $this->torrentBytes($root, ['f.bin']));
+        file_put_contents($this->base . '/' . $sessionName . '/' . self::HASH . '.torrent', $this->torrentBytes($root, ['f.bin']));
         $seeded = $this->runPhp($this->driver(
             'require_once("' . $this->repoRoot() . '/plugins/autotools/autotools.php");'
             . ' $at = rAutoTools::load(); $at->enable_move = 1; $at->fileop_type = "Move";'
@@ -142,16 +175,48 @@ class DefaultDirectoryBytesTest extends TestCase
         $this->daemon = null;
     }
 
-    private function fresh($defaultDirectory)
+    /**
+     * init.php, as the interface loads it, with "Move" to fin/ on and the
+     * session directory $sessionName below the test's base, made first when
+     * $exists. What it adds to the script is printed.
+     */
+    private function runInit($sessionName, $exists)
+    {
+        $this->fresh($this->base . '/dl', $sessionName, $exists);
+        $this->makeDir($this->base . '/fin');
+        $this->daemon = new FakeRtorrentDaemon(
+            RtorrentProbeFixture::responder(),
+            $this->base . '/calls.log',
+            false,
+            RtorrentProbeFixture::replyClassFiles(),
+        );
+        $run = $this->runPhp($this->driver(
+            'require_once("' . $this->repoRoot() . '/plugins/autotools/autotools.php");'
+            . ' $at = rAutoTools::load(); $at->enable_move = 1; $at->fileop_type = "Move";'
+            . ' $at->path_to_finished = ' . var_export($this->base . '/fin', true) . '; $at->store();'
+            . ' $jResult = ""; $do_diagnostic = true; $plugin = ["name" => "autotools"]; $pInfo = ["perms" => 0];'
+            . ' $theSettings = rTorrentSettings::get();'
+            . ' require(' . var_export($this->repoRoot() . '/plugins/autotools/init.php', true) . ');'
+            . ' echo $jResult, "|registered=", $theSettings->isPluginRegistered("autotools") ? 1 : 0;',
+            $this->daemon->port(),
+        ));
+        $this->daemon->stop();
+        $this->daemon = null;
+        return $run;
+    }
+
+    private function fresh($defaultDirectory, $sessionName = 'session', $makeSession = true)
     {
         TestTree::remove($this->base);
-        $this->makeDir($this->base . '/session');
+        if ($makeSession) {
+            $this->makeDir($this->base . '/' . $sessionName);
+        }
         $this->assertTrue(
             RtorrentProbeFixture::warmSettingsCache(
                 $this->base . '/profile/users/' . self::USER,
                 '',
                 $defaultDirectory,
-                $this->base . '/session',
+                $this->base . '/' . $sessionName . '/',
             ),
             'the settings cache is warmed',
         );
