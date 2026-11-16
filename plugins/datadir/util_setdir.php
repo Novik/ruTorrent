@@ -31,6 +31,15 @@ function rtDataDirPaths(
 }
 
 //------------------------------------------------------------------------------
+// The file names f.multicall reported, as the paths they are on disk:
+// rXMLRPCRequest escapes every string it returns
+//------------------------------------------------------------------------------
+function rtDataDirFileList($names)
+{
+    return array_map([ 'rXMLRPCRequest', 'unescapeValue' ], $names);
+}
+
+//------------------------------------------------------------------------------
 // The name under $dest_path that something already stands at, for the $hash
 // download, or '' when the destination is free
 //------------------------------------------------------------------------------
@@ -57,9 +66,11 @@ function rtDataDirCollision($hash, $dest_path, $add_path, $dbg = false)
     if (!$req || $req->val[0] == 0) {
         return '';
     }
-    $base_name = trim($req->val[1]);
-    $base_path = trim($req->val[2]);
-    $base_file = trim($req->val[3]);
+    // rXMLRPCRequest escapes every string it returns, and these are used
+    // as paths, so each is put back into the bytes rtorrent reported.
+    $base_name = trim(rXMLRPCRequest::unescapeValue($req->val[1]));
+    $base_path = trim(rXMLRPCRequest::unescapeValue($req->val[2]));
+    $base_file = trim(rXMLRPCRequest::unescapeValue($req->val[3]));
     if ($base_path == '' || $base_file == '') {
         return '';
     }
@@ -85,7 +96,7 @@ function rtDataDirCollision($hash, $dest_path, $add_path, $dbg = false)
         return '';
     }
 
-    return rtTakenDestination($req->val, $full_dest_path);
+    return rtTakenDestination(rtDataDirFileList($req->val), $full_dest_path);
 }
 
 //------------------------------------------------------------------------------
@@ -158,9 +169,11 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
         if (!$req) {
             $is_ok = false;
         } else {
-            $base_name = trim($req->val[0]);
-            $base_path = trim($req->val[1]);
-            $base_file = trim($req->val[2]);
+            // Paths, so in the bytes rtorrent reported rather than as
+            // rXMLRPCRequest escapes them.
+            $base_name = trim(rXMLRPCRequest::unescapeValue($req->val[0]));
+            $base_path = trim(rXMLRPCRequest::unescapeValue($req->val[1]));
+            $base_file = trim(rXMLRPCRequest::unescapeValue($req->val[2]));
             $is_multy_file = ($req->val[3] != 0);
             if ($req->val[4] == 0) { // if torrent is not completed -> "fast start" is impossible
                 $fast_resume = false;
@@ -200,7 +213,7 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
         if (!$req) {
             $is_ok = false;
         } else {
-            $torrent_files = $req->val;
+            $torrent_files = rtDataDirFileList($req->val);
             if ($dbg) {
                 rtDbg(__FUNCTION__, "files in torrent    : " . count($torrent_files));
             }
