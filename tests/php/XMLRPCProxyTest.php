@@ -669,11 +669,21 @@ class XMLRPCProxyTest extends TestCase
 
     public function testHarmlessMethodsAreNotCaughtByTheRefusalList()
     {
-        foreach (['system.client_version', 'd.name', 'view.list', 'directory.default'] as $method) {
+        foreach (['system.client_version', 'd.name', 'view.list'] as $method) {
             $this->callMethod($method);
             $this->assertTrue(rXMLRPCRequest::$sent === 1, $method . ' is still forwarded');
             $this->assertTrue(rXMLRPCRequest::$lastTrusted === false, $method . ' untrusted');
         }
+
+        // directory.default is also one of the Settings dialog's reads, which
+        // go trusted when called bare; with an argument it is forwarded
+        // untrusted like the rest.
+        $this->callMethod('directory.default', ['']);
+        $this->assertTrue(rXMLRPCRequest::$sent === 1, 'directory.default is still forwarded');
+        $this->assertTrue(rXMLRPCRequest::$lastTrusted === false, 'directory.default untrusted');
+        $this->callMethod('directory.default');
+        $this->assertTrue(rXMLRPCRequest::$sent === 1, 'a bare directory.default is forwarded');
+        $this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'as a trusted settings read');
     }
 
     public function testPassthroughUnsafeIsNotSubjectToTheRefusalList()
