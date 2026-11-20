@@ -335,6 +335,39 @@ class FeedsPubDateTest extends TestCase
     }
 
     /**
+     * rTorrent sends a backslash or a double quote in a comment as it is, as
+     * it does in a name. The description prints the comment as rTorrent has
+     * it, once, and URL-decodes it only after that, so %5C%22 in it is still a
+     * backslash and a quote.
+     */
+    public function testACommentWithABackslashOrAQuoteReadsBackAsItIs()
+    {
+        $torrents = $this->torrents;
+        $this->torrents = [
+            ['AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'commented', '1700000000',
+                'VRS24mrkersay "hi" \\ to C:\\dir\\ \\"q\\" %5C%22'],
+        ];
+        try {
+            list(, $output) = $this->feed(true);
+        } finally {
+            $this->torrents = $torrents;
+        }
+        $xml = @simplexml_load_string($output);
+        $this->assertTrue($xml !== false, 'the feed is well-formed XML: ' . substr($output, 0, 300));
+        if ($xml === false) {
+            throw new Exception('The feed could not be parsed');
+        }
+        $description = (string) $xml->channel->item[0]->description;
+        $this->assertTrue(
+            strpos(
+                $description,
+                '<legend>Comment</legend>say &quot;hi&quot; \\ to C:\\dir\\ \\&quot;q\\&quot; \\&quot;</fieldset>',
+            ) !== false,
+            'the description shows the comment as rTorrent has it: ' . $description,
+        );
+    }
+
+    /**
      * mode arrives in the request and titles the channel out of the language
      * file, so an unknown key reads no string: the diagnostic that produces
      * is printed before the document the script is still building, and the
