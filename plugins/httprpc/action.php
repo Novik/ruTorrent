@@ -100,6 +100,21 @@ function httprpcResolvePath($path)
     return '';
 }
 
+/**
+ * The values of a successful request, as rtorrent reported them.
+ *
+ * rXMLRPCRequest hands back every string with its backslashes doubled and a
+ * backslash before each double quote, which suits a caller that pastes a value
+ * into an rtorrent command. This plugin passes the values on to the browser as
+ * json, and the browser shows them as text, so each is unescaped once here:
+ * that is the text the browser reads from the same XML-RPC answer when this
+ * plugin is not in use. A number holds neither character and is left as it is.
+ */
+function httprpcValues($values)
+{
+    return(array_map(['rXMLRPCRequest', 'unescapeValue'], $values));
+}
+
 function makeMulticall($cmds, $hash, $add, $prefix)
 {
     $cmd = new rXMLRPCCommand($prefix . ".multicall", [ $hash, "" ]);
@@ -114,9 +129,10 @@ function makeMulticall($cmds, $hash, $add, $prefix)
         $req->important = false;
     }
     if ($req->success(true)) {
+        $values = httprpcValues($req->val);
         $result = [];
-        for ($i = 0; $i < count($req->val); $i += $cnt) {
-            $result[] = array_slice($req->val, $i, $cnt);
+        for ($i = 0; $i < count($values); $i += $cnt) {
+            $result[] = array_slice($values, $i, $cnt);
         }
         return($result);
     }
@@ -264,7 +280,7 @@ try {
                     $theCache = new rpcCache();
                     $dTorrents = [];
                     $torrents = [];
-                    foreach ($req->val as $index => $value) {
+                    foreach (httprpcValues($req->val) as $index => $value) {
                         if ($index % $cnt == 0) {
                             $current_index = $value;
                             $torrents[$current_index] = [];
@@ -355,7 +371,7 @@ try {
                         $i += (count($req->val) - 51);
                         $dht = $req->val[5];
                     }
-                    $result = array_slice($req->val, $i, count($cmds));
+                    $result = array_slice(httprpcValues($req->val), $i, count($cmds));
                     array_unshift($result, (($dht == "auto") || ($dht == "on")) ? 1 : 0);
                 }
                 break;
@@ -373,7 +389,7 @@ try {
                     $req->addCommand(new rXMLRPCCommand($prm));
                 }
                 if ($req->success(true)) {
-                    $result = $req->val;
+                    $result = httprpcValues($req->val);
                 }
                 break;
             }
@@ -411,7 +427,7 @@ try {
                     $req->addCommand(new rXMLRPCCommand($prm, $hash[0]));
                 }
                 if ($req->success(true)) {
-                    $result = $req->val;
+                    $result = httprpcValues($req->val);
                 }
                 break;
             }
@@ -460,7 +476,7 @@ try {
                         new rXMLRPCCommand("d.close", $hash[0]),
                     ]);
                     if ($req->success(true)) {
-                        $result = $req->val;
+                        $result = httprpcValues($req->val);
                     }
                 }
                 break;
@@ -571,7 +587,7 @@ try {
                     ));
                     if ($req->success(true)) {
                         for ($i = 0; $i < count($req->val); $i += 2) {
-                            $tracker = explode('#', $req->val[$i + 1]);
+                            $tracker = explode('#', rXMLRPCRequest::unescapeValue($req->val[$i + 1]));
                             if (!empty($tracker)) {
                                 unset($tracker[ count($tracker) - 1 ]);
                             }

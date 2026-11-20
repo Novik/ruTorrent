@@ -204,7 +204,8 @@ if ($req->success()) {
             "guid" => $req->val[$i],
             // rXMLRPCRequest escapes backslashes and double quotes in the
             // strings it hands back; the name, the label and, below, the
-            // tracker message are printed, so they are unescaped first.
+            // comment and the tracker message are printed, so they are
+            // unescaped first.
             "title" => rXMLRPCRequest::unescapeValue($req->val[$i + 1]),
             "category" => rawurldecode(rXMLRPCRequest::unescapeValue($req->val[$i + 5])),
             "pubDate" => floatval($req->val[$i + 6]) ];
@@ -242,7 +243,7 @@ if ($req->success()) {
                 "ratio" => floatval($req->val[$i + 13]) / 1000,
                 "ul" => floatval($req->val[$i + 14]),
                 "dl" => floatval($req->val[$i + 15]),
-                "comment" => rawurldecode(substr($req->val[$i + 7], 10)),
+                "comment" => rawurldecode(rXMLRPCRequest::unescapeValue(substr($req->val[$i + 7], 10))),
                 "hash" => $req->val[$i],
                 "peers" => $req->val[$i + 19] . " (" . $get_peers_all . ")",
                 "seeds" => $req->val[$i + 20] . " (" . $get_peers_all . ")",
