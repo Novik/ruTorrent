@@ -314,7 +314,10 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
             } else {
                 $session = rXMLRPCRequest::unescapeValue($req->val[0]);
                 $tied_to_file = rXMLRPCRequest::unescapeValue($req->val[1]);
-                $label = rawurldecode($req->val[2]);
+                // The label is put back into its own bytes before it is
+                // URL-decoded, or the download is loaded again with a label
+                // that has gained a backslash before each '"' and '\'.
+                $label = rawurldecode(rXMLRPCRequest::unescapeValue($req->val[2]));
                 $addition = [];
                 // Both values were read back through rXMLRPCRequest, which
                 // escapes every string it returns, and both are quoted on the

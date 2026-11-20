@@ -204,6 +204,13 @@ class rXMLRPCRequest
         return $matched;
     }
 
+    // The values a test queues are the daemon's own bytes, not escaped as
+    // the real run() returns them, so there is nothing to undo.
+    public static function unescapeValue($value)
+    {
+        return $value;
+    }
+
     public function run($trusted = true)
     {
         return $this->execute();
