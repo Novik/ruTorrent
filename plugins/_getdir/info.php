@@ -32,7 +32,7 @@ if (isset($_REQUEST['mode'])) {
         $labels = [];
         if ($req->run() && !$req->fault) {
             for ($i = 0; $i < count($req->val); $i++) {
-                $val = trim(rawurldecode($req->val[$i]));
+                $val = trim(rawurldecode(rXMLRPCRequest::unescapeValue($req->val[$i])));
                 if ($val != '') {
                     $labels[$val] = true;
                 }
