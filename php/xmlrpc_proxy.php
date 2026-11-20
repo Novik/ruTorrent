@@ -129,10 +129,11 @@ class XMLRPCProxy
     ];
 
     // One canonical name per command, for the other spellings a daemon
-    // registers it under. php/methods-*.php and the table php/settings.php
-    // builds inline are where these come from: they are what rXMLRPCCommand
-    // puts every call through, so they are this tree's own statement of which
-    // spelling a given daemon takes.
+    // registers it under. Two sources: php/methods-*.php and the table
+    // php/settings.php builds inline, which rXMLRPCCommand puts every call
+    // through, and the redirects rtorrent registers itself (CMD2_REDIRECT in
+    // src/main.cc of 0.9.8, CMD_REDIRECT in 0.16), which a caller can name
+    // directly. tests/php/RtorrentCommandRedirectsFixture.php lists the second.
     //
     // Resolved before anything classifies a name, so a command is judged as
     // itself under every spelling the daemon answers to rather than once per
@@ -152,11 +153,16 @@ class XMLRPCProxy
         'system.method.set' => 'method.set',
         'system.method.set_key' => 'method.set_key',
         'set_directory' => 'directory.default.set',
+        'directory' => 'directory.default.set',
         'set_session' => 'session.path.set',
+        'session' => 'session.path.set',
+        'scgi_port' => 'network.scgi.open_port',
+        'scgi_local' => 'network.scgi.open_local',
         'get_scgi_dont_route' => 'network.scgi.dont_route',
         'set_scgi_dont_route' => 'network.scgi.dont_route.set',
         'd.set_directory' => 'd.directory.set',
         'd.set_directory_base' => 'd.directory_base.set',
+        'd.directory.base.set' => 'd.directory_base.set',
     ];
 
     // Methods that take command strings as ordinary arguments and run them, so
