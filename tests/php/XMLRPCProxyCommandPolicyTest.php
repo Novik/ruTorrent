@@ -21,6 +21,76 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
     private $safe = ['d.custom1.set', 'd.directory.set'];
     private $opts;
 
+    // The Settings dialog.
+    //
+    // Without the httprpc plugin, js/rtorrent.js sends the Settings dialog's
+    // reads and writes to theURLs.XMLRPCMountPoint as one system.multicall
+    // each, so on an install that points /RPC2 at rpc2.php they arrive here,
+    // and a batch with one refused member is refused whole. The member names
+    // below are what the browser sent from the Settings dialog to rtorrent
+    // 0.16.28 and 0.9.8, after js/content.js and the methods-*.php renames.
+
+    private static $settingsReads = [
+        '0.16.28' => [
+            'dht.statistics', 'pieces.hash.on_completion', 'network.bind_address', 'dht.port',
+            'directory.default', 'throttle.global_down.max_rate', 'cat', 'cat', 'cat',
+            'network.http.cacert', 'network.http.capath', 'network.proxy.http',
+            'network.local_address', 'throttle.max_downloads.div', 'throttle.max_downloads.global',
+            'system.file.max_size', 'pieces.memory.max', 'network.max_open_files',
+            'system.sockets.http.max_size', 'throttle.max_peers.normal', 'throttle.max_peers.seed',
+            'throttle.max_uploads', 'throttle.max_uploads.global', 'throttle.min_peers.seed',
+            'throttle.min_peers.normal', 'protocol.pex', 'cat', 'throttle.global_up.max_rate',
+            'network.listen.port.random', 'network.listen.port.range', 'pieces.preload.min_size',
+            'pieces.preload.min_rate', 'pieces.preload.type', 'network.proxy.global',
+            'network.receive_buffer.size', 'pieces.sync.always_safe', 'network.scgi.dont_route',
+            'network.send_buffer.size', 'session.path', 'session.use_lock', 'session.on_completion',
+            'system.file.split_size', 'system.file.split_suffix', 'pieces.sync.timeout_safe',
+            'pieces.sync.timeout', 'trackers.numwant', 'trackers.use_udp', 'throttle.max_uploads.div',
+            'system.sockets.max_size',
+        ],
+        '0.9.8' => [
+            'dht.statistics', 'pieces.hash.on_completion', 'network.bind_address', 'dht.port',
+            'directory.default', 'throttle.global_down.max_rate', 'cat', 'cat', 'cat',
+            'network.http.cacert', 'network.http.capath', 'network.http.proxy_address',
+            'network.local_address', 'throttle.max_downloads.div', 'throttle.max_downloads.global',
+            'system.file.max_size', 'pieces.memory.max', 'network.max_open_files',
+            'network.http.max_open', 'throttle.max_peers.normal', 'throttle.max_peers.seed',
+            'throttle.max_uploads', 'throttle.max_uploads.global', 'throttle.min_peers.seed',
+            'throttle.min_peers.normal', 'protocol.pex', 'network.port_open',
+            'throttle.global_up.max_rate', 'network.port_random', 'network.port_range',
+            'pieces.preload.min_size', 'pieces.preload.min_rate', 'pieces.preload.type',
+            'network.proxy_address', 'network.receive_buffer.size', 'pieces.sync.always_safe',
+            'network.scgi.dont_route', 'network.send_buffer.size', 'session.path',
+            'session.use_lock', 'session.on_completion', 'system.file.split_size',
+            'system.file.split_suffix', 'pieces.sync.timeout_safe', 'pieces.sync.timeout',
+            'trackers.numwant', 'trackers.use_udp', 'throttle.max_uploads.div',
+            'network.max_open_sockets',
+        ],
+    ];
+
+    // Every setter the dialog writes on either daemon, other than the two that
+    // name where rtorrent keeps its session and where it writes downloads.
+    private static $settingsWrites = [
+        'pieces.hash.on_completion.set', 'network.bind_address.set', 'dht.port.set',
+        'throttle.global_down.max_rate.set', 'network.http.cacert.set', 'network.http.capath.set',
+        'network.proxy.http.set', 'network.http.proxy_address.set', 'network.local_address.set',
+        'throttle.max_downloads.div.set', 'throttle.max_downloads.global.set',
+        'system.file.max_size.set', 'pieces.memory.max.set', 'network.max_open_files.set',
+        'network.http.max_open.set', 'throttle.max_peers.normal.set', 'throttle.max_peers.seed.set',
+        'throttle.max_uploads.set', 'throttle.max_uploads.global.set',
+        'throttle.min_peers.seed.set', 'throttle.min_peers.normal.set', 'protocol.pex.set',
+        'network.port_open.set', 'throttle.global_up.max_rate.set',
+        'network.listen.port.random.set', 'network.port_random.set',
+        'network.listen.port.range.set', 'network.port_range.set', 'pieces.preload.min_size.set',
+        'pieces.preload.min_rate.set', 'pieces.preload.type.set', 'network.proxy.global.set',
+        'network.proxy_address.set', 'network.receive_buffer.size.set',
+        'pieces.sync.always_safe.set', 'network.scgi.dont_route.set',
+        'network.send_buffer.size.set', 'session.use_lock.set', 'session.on_completion.set',
+        'system.file.split_size.set', 'system.file.split_suffix.set',
+        'pieces.sync.timeout_safe.set', 'pieces.sync.timeout.set', 'trackers.numwant.set',
+        'trackers.use_udp.set', 'throttle.max_uploads.div.set', 'dht.mode.set',
+    ];
+
     public function setUp()
     {
         $this->opts = ['directory' => ['root' => '/', 'resolve' => null]];
@@ -285,9 +355,253 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
         );
     }
 
+    // --- the Settings dialog ---
+
+    public function testTheSettingsDialogReadsAreForwardedOnBothDaemons()
+    {
+        foreach (self::$settingsReads as $version => $names) {
+            $calls = [];
+            foreach ($names as $name) {
+                $calls[] = [$name, []];
+            }
+            $d = $this->decide($this->systemMulticall($calls));
+            $this->assertTrue(
+                $d['action'] === 'send',
+                'the Settings dialog read batch for rtorrent ' . $version . ' is forwarded ('
+                . implode(' | ', $d['log']) . ')',
+            );
+            // rtorrent refuses some of these to an untrusted caller, and one
+            // refused member fails the dialog.
+            $this->assertTrue(
+                $d['trusted'] === true,
+                'the Settings dialog read batch for rtorrent ' . $version . ' goes trusted ('
+                . implode(' | ', $d['log']) . ')',
+            );
+        }
+    }
+
+    /**
+     * The same reads for every daemon tier this tree has a rename table for,
+     * derived the way settings.php layers the tables, so a setting added to
+     * the dialog or a getter renamed for a later daemon fails here.
+     */
+    public function testEverySettingsReadTheAliasTablesProduceGoesTrusted()
+    {
+        $source = file_get_contents(__DIR__ . '/../../js/rtorrent.js');
+        $this->assertTrue(
+            preg_match('/stg:\s*\{\s*commands:\s*\[(.*?)\]/s', $source, $list) === 1,
+            'the Settings dialog command list is found in js/rtorrent.js',
+        );
+        preg_match_all('/"([^"]+)"/', $list[1], $found);
+        $this->assertTrue(count($found[1]) > 40, 'it names the dialog\'s settings (' . count($found[1]) . ')');
+
+        $tiers = [
+            '0.9.8' => ['methods-0.9.4.php'],
+            '0.16.0' => ['methods-0.9.4.php', 'methods-0.10.2.php', 'methods-0.16.0.php'],
+            '0.16.16' => ['methods-0.9.4.php', 'methods-0.10.2.php', 'methods-0.16.0.php',
+                'methods-0.16.16.php'],
+            '0.16.18' => ['methods-0.9.4.php', 'methods-0.10.2.php', 'methods-0.16.0.php',
+                'methods-0.16.16.php', 'methods-0.16.18.php'],
+        ];
+        $untrusted = [];
+        foreach ($tiers as $version => $files) {
+            $aliases = [];
+            foreach ($files as $file) {
+                $aliases = array_merge($aliases, XMLRPCProxyCommandPolicyAliases::read($file));
+            }
+            foreach ($found[1] as $setting) {
+                // js/rtorrent.js reads these three as cat from 0.9.0 on.
+                $name = in_array($setting, ['hash_interval', 'hash_max_tries', 'hash_read_ahead'], true)
+                    ? 'cat'
+                    : (isset($aliases['get_' . $setting]) ? $aliases['get_' . $setting]['name'] : 'get_' . $setting);
+                $d = $this->decide($this->call($name));
+                if (($d['action'] !== 'send') || ($d['trusted'] !== true)) {
+                    $untrusted[] = $version . ': ' . $setting . ' -> ' . $name;
+                }
+            }
+        }
+        $this->assertTrue(
+            count($untrusted) === 0,
+            'every read the dialog makes on every tier goes trusted'
+            . (count($untrusted) ? ', not: ' . implode('; ', array_unique($untrusted)) : ''),
+        );
+    }
+
+    public function testASettingsReadIsTrustedOnlyWithNoArguments()
+    {
+        $bare = $this->decide($this->call('network.listen.port.range'));
+        $this->assertTrue($bare['trusted'] === true, 'a bare settings read goes trusted');
+        $this->assertTrue(
+            strpos($bare['payload'], '<params></params>') !== false,
+            'and is re-emitted with no arguments',
+        );
+
+        foreach ([['network.listen.port.range', ['']], ['cat', ['$execute=/bin/id']],
+            ['session.path', ['', 'x']]] as $call) {
+            $d = $this->decide($this->call($call[0], $call[1]));
+            $this->assertTrue(
+                $d['trusted'] === false,
+                $call[0] . ' with arguments is not vouched for as a settings read',
+            );
+        }
+
+        foreach (['d.name', 'system.client_version', 'network.xmlrpc.size_limit',
+            'network.listen.port.range.set', 'session.path.set'] as $name) {
+            $d = $this->decide($this->call($name));
+            $this->assertTrue(
+                $d['trusted'] === false,
+                $name . ' is not a settings read and is not sent trusted',
+            );
+        }
+
+        // One member that is not a settings read leaves the whole batch untrusted.
+        $d = $this->decide($this->systemMulticall([
+            ['network.listen.port.range', []],
+            ['throttle.global_down.max_rate.set', ['', '1']],
+        ]));
+        $this->assertTrue(
+            ($d['action'] === 'send') && ($d['trusted'] === false),
+            'a batch mixing a settings read with a write goes untrusted',
+        );
+    }
+
+    public function testEverySettingsDialogWriteIsForwarded()
+    {
+        $refused = [];
+        foreach (self::$settingsWrites as $name) {
+            $d = $this->decide($this->systemMulticall([[$name, ['', '1']]]));
+            if ($d['action'] !== 'send') {
+                $refused[] = $name;
+            }
+        }
+        $this->assertTrue(
+            count($refused) === 0,
+            'every setter the Settings dialog writes is forwarded'
+            . (count($refused) ? ', refused: ' . implode(', ', $refused) : ''),
+        );
+
+        $calls = [];
+        foreach (self::$settingsWrites as $name) {
+            $calls[] = [$name, ['', '1']];
+        }
+        $d = $this->decide($this->systemMulticall($calls));
+        $this->assertTrue(
+            $d['action'] === 'send',
+            'a save that changes all of them at once is forwarded',
+        );
+        // Forwarded, not vouched for: what rtorrent lets an untrusted caller
+        // set stays its decision.
+        $this->assertTrue(
+            $d['trusted'] === false,
+            'a save goes untrusted, for rtorrent to judge each write',
+        );
+    }
+
+    public function testTheScgiRouteFlagIsForwardedUnderEverySpelling()
+    {
+        foreach (['network.scgi.dont_route', 'get_scgi_dont_route',
+            'network.scgi.dont_route.set', 'set_scgi_dont_route'] as $name) {
+            $this->assertTrue(
+                XMLRPCProxy::refusedCommandName($name) === null,
+                $name . ' names no refused command',
+            );
+            $this->assertTrue(
+                $this->decide($this->call($name, ['', '1']))['action'] === 'send',
+                $name . ' is forwarded as a call of its own',
+            );
+            $this->assertTrue(
+                $this->decide($this->systemMulticall([[$name, ['', '1']]]))['action'] === 'send',
+                $name . ' is forwarded as a system.multicall member',
+            );
+        }
+    }
+
+    public function testTheRestOfTheScgiFamilyIsStillRefused()
+    {
+        // network.scgi is refused for the commands that open the listener; the
+        // route flag is the only member let through, by its exact name.
+        foreach (['network.scgi.open_port', 'network.scgi.open_local',
+            'network.scgi.open_systemd', 'network.scgi.use_gzip.set',
+            'network.scgi.gzip.min_size.set', 'network.scgi.dont_route.set.x',
+            'network.scgi.dont_routex', 'network.scgi.something_new'] as $name) {
+            $this->assertTrue(
+                $this->decide($this->call($name, ['', '0.0.0.0:5000']))['action'] === 'reject',
+                $name . ' is refused as a call of its own',
+            );
+            $this->assertTrue(
+                $this->decide($this->systemMulticall([
+                    ['network.scgi.dont_route', []],
+                    [$name, ['', '0.0.0.0:5000']],
+                ]))['action'] === 'reject',
+                $name . ' is refused beside the route flag in one batch',
+            );
+        }
+
+        // A command string that starts with the route flag is still read to
+        // its end, so what follows it is judged.
+        foreach (['network.scgi.dont_route.set=1;network.scgi.open_port=0.0.0.0:5000',
+            'network.scgi.dont_route=,$execute=/bin/id'] as $value) {
+            $this->assertTrue(
+                XMLRPCProxy::refusedCommandName($value) !== null,
+                $value . ' still names a refused command',
+            );
+            $this->assertTrue(
+                $this->decide($this->call('d.multicall', ['', 'main', $value]))['action'] === 'reject',
+                $value . ' is refused inside a multicall',
+            );
+        }
+    }
+
+    public function testTheSettingsDialogStillCannotMoveTheSessionOrTheDefaultDirectory()
+    {
+        // The dialog offers both, and both stay refused: one names where
+        // rtorrent keeps its state, the other where every download without a
+        // directory of its own is written, outside any $topDirectory check.
+        foreach (['session.path.set', 'set_session', 'directory.default.set', 'set_directory'] as $name) {
+            $this->assertTrue(
+                $this->decide($this->systemMulticall([[$name, ['', '/tmp']]]))['action'] === 'reject',
+                $name . ' is still refused',
+            );
+        }
+    }
+
+    public function testADeploymentThatNamesTheRouteFlagStillRefusesIt()
+    {
+        // The exception is from a family entry. A deny list that names the
+        // command itself is taken at its word.
+        foreach (['network.scgi.dont_route', 'network.scgi.dont_route.set'] as $name) {
+            $d = XMLRPCProxy::decide(
+                $this->call($name, ['', '1']),
+                'sanitize',
+                $this->safe,
+                false,
+                $this->opts + ['deny' => [$name]],
+            );
+            $this->assertTrue($d['action'] === 'reject', $name . ' named exactly in the deny list is refused');
+        }
+    }
+
     private function decide($xml)
     {
         return XMLRPCProxy::decide($xml, 'sanitize', $this->safe, false, $this->opts);
+    }
+
+    private function systemMulticall($calls)
+    {
+        $xml = '<?xml version="1.0"?><methodCall><methodName>system.multicall'
+            . '</methodName><params><param><value><array><data>';
+        foreach ($calls as $call) {
+            $xml .= '<value><struct><member><name>methodName</name><value><string>'
+                . htmlspecialchars($call[0], ENT_NOQUOTES) . '</string></value></member>'
+                . '<member><name>params</name><value><array><data>';
+            foreach ($call[1] as $i => $p) {
+                $xml .= ($i === 0)
+                    ? '<value><string>' . htmlspecialchars($p, ENT_NOQUOTES) . '</string></value>'
+                    : '<value><i8>' . htmlspecialchars($p, ENT_NOQUOTES) . '</i8></value>';
+            }
+            $xml .= '</data></array></value></member></struct></value>';
+        }
+        return $xml . '</data></array></value></param></params></methodCall>';
     }
 
     private function call($method, $params = [])
@@ -300,5 +614,25 @@ class XMLRPCProxyCommandPolicyTest extends TestCase
         }
         $xml .= '</params></methodCall>';
         return $xml;
+    }
+}
+
+/**
+ * One php/methods-*.php table, read the way settings.php reads it.
+ */
+class XMLRPCProxyCommandPolicyAliases
+{
+    public $aliases = [];
+
+    public static function read($file)
+    {
+        $holder = new self();
+        $holder->load(__DIR__ . '/../../php/' . $file);
+        return $holder->aliases;
+    }
+
+    private function load($path)
+    {
+        require($path);
     }
 }
