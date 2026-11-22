@@ -288,4 +288,55 @@ describe("mobile plugin settings", () => {
       expect(plugin.filters.tracker).toEqual([]);
     });
   });
+
+  describe("init", () => {
+    const label = 'tv "4k" \\ archive';
+    let ajaxSpy;
+
+    beforeEach(() => {
+      window.theUILang.All = "All";
+      window.theUILang.No_label = "No label";
+      window.theUILang.Total = "Total";
+      window.theUILang.Stopped = "Stopped";
+      window.thePlugins = { get: () => null };
+      window.cacheBust = (url) => url;
+      // The page markup arrives over ajax; this spec only needs what init
+      // restores before that request
+      ajaxSpy = jest.spyOn($, "ajax").mockImplementation(() => {});
+      $("body").append(
+        '<div id="initFilterUi"><span id="filterText"></span><span id="filterCount"></span>' +
+        '<span id="filterTotals"></span><div id="filterStatusList"></div>' +
+        '<div id="filterLabelsList"></div><div id="filterTrackersList"></div></div>'
+      );
+      plugin.filters = { status: [], label: [], tracker: [] };
+    });
+    afterEach(() => {
+      ajaxSpy.mockRestore();
+      $(window).off("hashchange");
+      $("#initFilterUi").remove();
+    });
+
+    it("restores the stored filters on load", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify({
+        status: ["stopped"],
+        label: [label],
+        tracker: [],
+      });
+
+      plugin.init();
+
+      expect(plugin.filters).toEqual({ status: ["stopped"], label: [label], tracker: [] });
+
+      plugin.torrents = null;
+      plugin.labelList = [{ name: "other", count: 1 }, { name: label, count: 1 }];
+      plugin.trackerList = [];
+      plugin.updateFilterButton($());
+      plugin.renderFilterPage();
+
+      expect($("#filterText").text()).toBe("Stopped · " + label);
+      expect($("#filterStatusList .active").text()).toBe("0Stopped");
+      expect($("#filterLabelsList .active").text()).toBe("1" + label);
+      expect($("#filterTrackersList .active").text()).toBe("0All");
+    });
+  });
 });
