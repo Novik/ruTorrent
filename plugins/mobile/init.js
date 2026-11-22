@@ -383,12 +383,14 @@ $.each(plugin.statusFilterOptions, function(i, opt) {
 plugin.applyFilters = function() {
   // Drop filters whose label/tracker no longer exists in the torrent list
   // (label/tracker ids are persistent, so check the current lists instead)
-  this.filters.label = $.grep(this.filters.label, function(name) {
-    return $.grep(plugin.labelList, function(o) {return o.name === name;}).length > 0;
-  });
-  this.filters.tracker = $.grep(this.filters.tracker, function(name) {
-    return $.grep(plugin.trackerList, function(o) {return o.name === name;}).length > 0;
-  });
+  if (this.torrents) {
+    this.filters.label = $.grep(this.filters.label, function(name) {
+      return $.grep(plugin.labelList, function(o) {return o.name === name;}).length > 0;
+    });
+    this.filters.tracker = $.grep(this.filters.tracker, function(name) {
+      return $.grep(plugin.trackerList, function(o) {return o.name === name;}).length > 0;
+    });
+  }
 
   // Selections within a category are ORed, categories are ANDed
   // (like the desktop panels), so the selector is the cartesian
@@ -544,6 +546,7 @@ plugin.filtersEqual = function(a, b) {
 plugin.filterDone = function() {
   if (this.filtersSnapshot && !this.filtersEqual(this.filters, this.filtersSnapshot)) {
     this.scrollTop = 0;
+    this.storeSetting('filters', JSON.stringify(this.filters));
   }
   this.filtersSnapshot = null;
   this.showList();
@@ -643,6 +646,42 @@ plugin.showSettings = function() {
 plugin.storedSetting = function(key, isValid, dflt) {
   var v = theWebUI.settings['webui.mobile.' + key];
   return ((typeof v == 'string') && isValid(v)) ? v : dflt;
+};
+
+plugin.storedFilters = function() {
+  var dflt = {status: [], label: [], tracker: []};
+  var v = theWebUI.settings['webui.mobile.filters'];
+  if (typeof v == 'string') {
+    try {
+      v = JSON.parse(v);
+    } catch (e) {
+      return dflt;
+    }
+  }
+  if (!v || (typeof v != 'object') || $.isArray(v)) {
+    return dflt;
+  }
+  var result = {
+    status: [],
+    label: [],
+    tracker: []
+  };
+  if ($.isArray(v.status)) {
+    result.status = $.grep(v.status, function(s, i) {
+      return (typeof s == 'string') && Object.prototype.hasOwnProperty.call(plugin.statusFilterClasses, s) && ($.inArray(s, v.status) === i);
+    });
+  }
+  if ($.isArray(v.label)) {
+    result.label = $.grep(v.label, function(l, i) {
+      return (typeof l == 'string') && ($.inArray(l, v.label) === i);
+    });
+  }
+  if ($.isArray(v.tracker)) {
+    result.tracker = $.grep(v.tracker, function(t, i) {
+      return (typeof t == 'string') && ($.inArray(t, v.tracker) === i);
+    });
+  }
+  return result;
 };
 
 // Re-fetch the stored settings and merge them in before saving, so this
@@ -1893,6 +1932,14 @@ plugin.processTorrents = function(torrents, singleUpdate) {
     v.hash = n;
     v.status = theWebUI.getStatusIcon(v)[1];
     torrentArray.push(v);
+    if (v.label) {
+      if (plugin.labelIds[v.label] == undefined) {
+        plugin.labelIds[v.label] = plugin.nextLabelId++;
+      }
+      if ($.grep(plugin.labelList, function(o) {return o.name === v.label;}).length === 0) {
+        plugin.labelList.push({name: v.label, count: 0});
+      }
+    }
   });
   torrentArray.sort(plugin.dynamicSort(plugin.sort));
 
@@ -2400,6 +2447,7 @@ plugin.init = function() {
   // plugin.sort. Restored before the first render so the list comes up
   // in the order the user left it
   this.sort = this.storedSetting('sort', this.isKnownSort, this.sort);
+  this.filters = this.storedFilters();
 
   // The desktop engine keeps running underneath the mobile UI and can
   // auto-save the whole webui.* settings snapshot without user interaction
