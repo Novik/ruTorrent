@@ -172,6 +172,22 @@ class rTorrent
         return(getCmd($command . '=') . implode(',', $quoted));
     }
 
+    /** Why a fast-resume reload of $hash would be refused, or false. Ask before the erase. */
+    public static function reloadRefusal($torrent, $hash, $directory, $isAddPath, $addition)
+    {
+        if (!self::areValidAdditions($addition)) {
+            return('addition');
+        }
+        if ($torrent->hash_info() !== strtoupper($hash)) {
+            return('hash');
+        }
+        $dir = self::parseDirectory($directory, $isAddPath);
+        if (self::hasDirectory($dir) && !rTorrentSettings::get()->correctReportedDirectory($dir)) {
+            return('directory');
+        }
+        return(false);
+    }
+
     public static function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
     {
         self::$directoryRefused = false;
@@ -225,7 +241,7 @@ class rTorrent
             }
             $req = new rXMLRPCRequest();
             $directory = self::parseDirectory($directory, $isAddPath);
-            if ($directory && (strlen($directory) > 0)) {
+            if (self::hasDirectory($directory)) {
                 if (!self::prepareDirectory($directory, $isNew, $req)) {
                     return(false);
                 }
@@ -758,5 +774,10 @@ class rTorrent
     {
         self::$directoryRefused = true;
         return(false);
+    }
+
+    private static function hasDirectory($directory)
+    {
+        return($directory && strlen($directory) > 0);
     }
 }
