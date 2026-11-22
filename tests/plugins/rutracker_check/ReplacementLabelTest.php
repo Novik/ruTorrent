@@ -16,6 +16,7 @@ require_once(__DIR__ . '/../../php/TestTree.php');
  * into its own bytes first, or the new torrent is given values the old one
  * never had. The check of the ignore list, from run() and from update.php,
  * has to see the label the torrent has.
+ * Also: the directory is checked before the original is stopped.
  */
 class ReplacementLabelTest extends TestCase
 {
@@ -137,12 +138,65 @@ class ReplacementLabelTest extends TestCase
         $this->assertTrue(!$this->updateIgnores('Foo"Bar', ['Foo\\"Bar', 'radarr']), 'a label the list does not name is checked');
     }
 
+    public function testEmptyReportedDirectoryUsesDefault()
+    {
+        $sent = $this->replacement('Plain', 'plain', '', '', '');
+        $this->assertEquals('"' . $this->base . '/dl"', $sent['directory']);
+    }
+
+    public function testOutsideDirectoryIsRefusedBeforeStop()
+    {
+        $this->assertPreflightRefusal($this->base . '/outside', 'directory-not-reusable');
+        $this->assertPreflightRefusal($this->base . '/dl/' . str_repeat('x', 256), 'directory-not-reusable');
+        $this->assertPreflightRefusal('~/same', 'directory-not-reusable');
+        $this->assertPreflightRefusal('0', 'directory-not-reusable');
+        $this->assertPreflightRefusal('symlink', 'directory-not-reusable');
+    }
+
+    public function testDirectoryFaultIsRefusedBeforeStop()
+    {
+        $this->assertPreflightRefusal(FakeRtorrentDaemon::fault('unavailable'), 'directory-unreadable');
+    }
+
+    public function testEmptyDirectoryReplyIsRefusedBeforeStop()
+    {
+        $this->assertPreflightRefusal([], 'directory-unreadable');
+    }
+
+    private function assertPreflightRefusal($answer, $reason)
+    {
+        TestTree::remove($this->base);
+        $session = $this->base . '/session/';
+        $this->makeDir($session);
+        $this->makeDir($this->base . '/dl');
+        if ($answer === 'symlink') {
+            $this->makeDir($this->base . '/outside');
+            $answer = $this->base . '/dl/link"\\name';
+            symlink($this->base . '/outside', $answer);
+        }
+        file_put_contents($session . self::OLD_HASH . '.torrent', $this->torrentBytes('old'));
+        $this->warm($session);
+        $this->daemon = new FakeRtorrentDaemon([
+            FakeRtorrentDaemon::fault('not found'), [$session, ''], [],
+            is_array($answer) ? $answer : [$answer],
+        ], $this->base . '/calls.log');
+        $run = $this->drive('var_export(ruTrackerChecker::createTorrent(' . var_export($this->torrentBytes('new'), true)
+            . ', ' . var_export(self::OLD_HASH, true) . '));');
+        $calls = implode("\n", $this->daemon->bodies());
+        $this->assertEquals('6', $run['printed']);
+        $this->assertTrue(strpos($calls, 'd.stop') === false && strpos($calls, 'd.erase') === false, 'no stop or erase on refusal');
+        $log = (string) @file_get_contents($this->base . '/errors.log');
+        $this->assertTrue(strpos($log, $reason) !== false && strpos($log, self::OLD_HASH) !== false, 'classified refusal identifies torrent');
+        $this->daemon->stop();
+        $this->daemon = null;
+    }
+
     /**
      * Replace the torrent OLD_HASH, whose d.custom1, directory base below the
      * default directory, throttle and connection seed rtorrent reports as
      * given, by a newer one. Answers with what the load of the new one sets.
      */
-    private function replacement($label, $dirName = 'plain', $throttle = '', $seed = '')
+    private function replacement($label, $dirName = 'plain', $throttle = '', $seed = '', $preflight = null)
     {
         TestTree::remove($this->base);
         $session = $this->base . '/session/';
@@ -157,9 +211,10 @@ class ReplacementLabelTest extends TestCase
             [$session, ''],
             // d.views
             [],
+            [$preflight === null ? $this->base . '/dl/' . $dirName : $preflight],
             // d.get_directory_base, d.get_custom1, d.get_throttle_name,
             // d.get_connection_seed, d.get_state, d.is_open, d.stop, d.close
-            [$this->base . '/dl/' . $dirName, $label, $throttle, $seed, '0', '0', '0', '0'],
+            [$preflight === null ? $this->base . '/dl/' . $dirName : $preflight, $label, $throttle, $seed, '0', '0', '0', '0'],
             // execute mkdir -p
             ['0'],
             // the load
@@ -254,7 +309,7 @@ class ReplacementLabelTest extends TestCase
     {
         $this->makeDir($session);
         $this->assertTrue(
-            RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/' . self::USER, '', $this->base . '/dl', $session),
+            RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/' . self::USER, '', $this->base . '/dl', $session, $this->base . '/dl'),
             'the settings cache is warmed',
         );
     }
@@ -270,6 +325,7 @@ class ReplacementLabelTest extends TestCase
             // check.php's own requires are relative to the plugin's directory.
             . 'chdir(' . var_export($this->repoRoot() . '/plugins/rutracker_check', true) . ");\n"
             . 'require_once(' . var_export($this->repoRoot() . '/plugins/rutracker_check/check.php', true) . ");\n"
+            . '$topDirectory = ' . var_export($this->base . '/dl/', true) . '; $log_file = ' . var_export($this->base . '/errors.log', true) . ';' . "\n"
             . $code . "\n");
         $mask = umask(022);
         try {
