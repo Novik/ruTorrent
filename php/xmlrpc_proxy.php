@@ -107,6 +107,19 @@ class XMLRPCProxy
         'system.shutdown',        // and .normal / .quick -- answered by the xmlrpc-c
         // registry, not rtorrent's command map, so rtorrent's
         // own untrusted gate never sees it
+
+        // Commands that keep a command and run it later, or define new ones.
+        // A call of one is otherwise forwarded with its arguments unread, and
+        // what it stores runs when its event fires, on no connection at all.
+        'directory.watch.',       // .added / .ready: a command per new file
+        'view.filter',            // filter, filter.temp and filter_on, which
+        // writes "view.filter_download=<view name>" into an event key
+        'view.sort_',             // sort_new / sort_current
+        'view.event_',            // event_added / event_removed
+        'group.insert',           // and group.insert_persistent_view: methods
+        // and a scheduled task per group
+        'lua.',                   // lua.execute, lua.execute.str
+        'file.append',            // 0.9.8: caller text into a caller path
     ];
 
     // Members of a refused family that are not what the family is refused
@@ -163,6 +176,10 @@ class XMLRPCProxy
         'd.set_directory' => 'd.directory.set',
         'd.set_directory_base' => 'd.directory_base.set',
         'd.directory.base.set' => 'd.directory_base.set',
+        'view_filter' => 'view.filter',
+        'view_filter_on' => 'view.filter_on',
+        'view_sort_current' => 'view.sort_current',
+        'view_sort_new' => 'view.sort_new',
     ];
 
     // Methods that take command strings as ordinary arguments and run them, so
