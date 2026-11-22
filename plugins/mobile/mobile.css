@@ -258,6 +258,40 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
   animation: added-highlight 2s ease-out;
 }
 
+/*** Dynamic sort and view transitions ***/
+:root {
+  view-transition-name: none;
+}
+::view-transition {
+  pointer-events: none;
+}
+.torrentBlock {
+  view-transition-class: torrent-row;
+}
+::view-transition-group(.torrent-row) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+::view-transition-group(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 
 /*** navbar bottom ***/
 .navbar {

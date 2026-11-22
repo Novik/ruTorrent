@@ -899,6 +899,17 @@ plugin.setSort = function() {
     // points at anything meaningful, so go back to the top
     plugin.scrollTop = 0;
     plugin.update(true);
+    var statusEl = document.getElementById('sortLiveStatus');
+    if (statusEl) {
+      var sortField = (sort[0] === '-') ? sort.substr(1) : sort;
+      var sortDir = (sort[0] === '-') ? (theUILang.decs || 'Descending') : (theUILang.acs || 'Ascending');
+      var langKey = '';
+      $.each(plugin.sortFields, function(i, f) {
+        if (f[0] === sortField) langKey = f[1];
+      });
+      var fieldName = langKey ? (theUILang[langKey] || sortField) : sortField;
+      statusEl.textContent = (theUILang.SortTorrents || 'Sort') + ': ' + fieldName + ' (' + sortDir + ')';
+    }
   }
   plugin.goBack();
 };
@@ -1793,6 +1804,77 @@ plugin.loadSeedingTime = function () {
 };
 
 /*** Torrent list rendering and updates ***/
+plugin.reorderRows = function(container, orderedNodes, animate) {
+  var moveNode = (typeof Element.prototype.moveBefore === 'function')
+    ? function(node) { container.moveBefore(node, null); }
+    : function(node) { container.appendChild(node); };
+
+  var update = function() {
+    for (var i = 0; i < orderedNodes.length; i++) {
+      moveNode(orderedNodes[i]);
+    }
+  };
+
+  if (!animate) {
+    update();
+    return;
+  }
+
+  // Respect user preference for reduced motion
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    update();
+    return;
+  }
+
+  // 1. Element-scoped or document-level View Transitions (Baseline)
+  if (container.startViewTransition) {
+    container.startViewTransition(update);
+    return;
+  }
+  if (document.startViewTransition) {
+    document.startViewTransition(update);
+    return;
+  }
+
+  // 2. FLIP fallback for environments without View Transitions
+  try {
+    var i, j, k;
+    var firstTops = {};
+    for (i = 0; i < orderedNodes.length; i++) {
+      orderedNodes[i].style.transform = '';
+      orderedNodes[i].style.transition = '';
+      firstTops[orderedNodes[i].id] = orderedNodes[i].getBoundingClientRect().top;
+    }
+    update();
+    var moved = [];
+    for (i = 0; i < orderedNodes.length; i++) {
+      var node = orderedNodes[i];
+      var delta = firstTops[node.id] - node.getBoundingClientRect().top;
+      if (Math.abs(delta) > 0.5) {
+        node.style.transform = 'translateY(' + delta + 'px)';
+        node.style.transition = 'transform 0s';
+        moved.push(node);
+      }
+    }
+    if (moved.length && typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(function() {
+        for (j = 0; j < moved.length; j++) {
+          var m = moved[j];
+          m.style.transition = 'transform 0.4s cubic-bezier(0.2, 0, 0, 1)';
+          m.style.transform = '';
+        }
+        setTimeout(function() {
+          for (k = 0; k < moved.length; k++) {
+            moved[k].style.transition = '';
+          }
+        }, 400);
+      });
+    }
+  } catch (e) {
+    update();
+  }
+};
+
 plugin.dynamicSort = function (property) {
   var sortOrder = 1;
   if(property[0] === "-") {
@@ -1801,29 +1883,38 @@ plugin.dynamicSort = function (property) {
   }
   return function (a,b) {
     var result;
-    if (typeof a[property] == 'string' || a[property] instanceof String) {
-      if (parseInt(a[property])) {
-        if (parseInt(b[property])) {
-          result = (parseInt(a[property]) < parseInt(b[property])) ? -1 : (parseInt(a[property]) > parseInt(b[property])) ? 1 : 0;
-        } else {
-          result = -1;
-        }
-      } else if (parseInt(b[property])) {
-        result = 1;
-      } else {
-        result = (a[property].toLowerCase() < b[property].toLowerCase()) ? -1 : (a[property].toLowerCase() > b[property].toLowerCase()) ? 1 : 0;
-      }
+    var valA = a[property];
+    var valB = b[property];
+    if (typeof valA == 'string' && property !== 'ul' && property !== 'dl' &&
+        property !== 'size' && property !== 'uploaded' && property !== 'downloaded' &&
+        property !== 'done' && property !== 'eta' && property !== 'ratio' &&
+        property !== 'addtime' && property !== 'seedingtime') {
+      var strA = valA.toLowerCase();
+      var strB = (valB || '').toLowerCase();
+      result = (strA < strB) ? -1 : (strA > strB) ? 1 : 0;
     } else {
-      result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      var numA = (valA === undefined || valA === null) ? 0 : Number(valA);
+      var numB = (valB === undefined || valB === null) ? 0 : Number(valB);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        result = (numA < numB) ? -1 : (numA > numB) ? 1 : 0;
+      } else {
+        result = (valA < valB) ? -1 : (valA > valB) ? 1 : 0;
+      }
     }
-    if (result == 0 && property != 'name') {
-      // Tie-break by name (always ascending), so e.g. sorting by status
-      // lists same-status torrents alphabetically like the desktop does
-      return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0;
+    if (result == 0) {
+      if (property != 'name') {
+        var nameA = (a.name || '').toLowerCase();
+        var nameB = (b.name || '').toLowerCase();
+        var nameResult = (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+        if (nameResult != 0) {
+          return nameResult;
+        }
+      }
+      return (a.hash < b.hash) ? -1 : (a.hash > b.hash) ? 1 : 0;
     }
     return result * sortOrder;
-  }
-}
+  };
+};
 
 // Only the fields the torrent row rendering depends on; comparing these
 // (instead of whole torrent objects) avoids redrawing rows whose visible
@@ -1939,7 +2030,7 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       var row = $('#' + v.hash);
       if ( ! row.length || singleUpdate) {
         var rowHtml =
-        '<tr id="' + v.hash + '" class="' + rowClass + '" onclick="mobile.showDetails(this.id);"><td>' +
+        '<tr id="' + v.hash + '" class="' + rowClass + '" style="view-transition-name: tr-' + v.hash + ';" onclick="mobile.showDetails(this.id);"><td>' +
         '<h5>' + escapeHTML(v.name) + '</h5>' +
         '<span>' + statusHtml + '</span>' +
         '<div class="progress">' +
@@ -1964,6 +2055,9 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       } else if ( ! plugin.rowsPrev[v.hash] || ! isEqual(rowsNow[v.hash], plugin.rowsPrev[v.hash]) ) {
         row.removeClass();
         row.addClass(rowClass);
+        if (row[0] && row[0].style && !row[0].style.viewTransitionName) {
+          row[0].style.viewTransitionName = 'tr-' + v.hash;
+        }
         row.find('span').html(statusHtml);
         var progressBar = row.find('.progress-bar');
         progressBar.removeClass('progress-bar-animated');
@@ -2049,6 +2143,38 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       plugin.applyFilters();
       if ($('#torrentFilter').is(':visible')) {
         plugin.renderFilterPage();
+      }
+    }
+
+    // Reorder DOM rows to match the current sort order when new data arrived
+    if (!listHtmlString && torrentArray.length) {
+      var tbody = listHtml[0];
+      if (tbody) {
+        var currentChildren = tbody.children;
+        var orderChanged = false;
+        var orderedRows = [];
+        var rIdx;
+        for (rIdx = 0; rIdx < torrentArray.length; rIdx++) {
+          var rowEl = document.getElementById(torrentArray[rIdx].hash);
+          if (rowEl) {
+            orderedRows.push(rowEl);
+          }
+        }
+        if (currentChildren.length !== orderedRows.length) {
+          orderChanged = true;
+        } else {
+          for (rIdx = 0; rIdx < orderedRows.length; rIdx++) {
+            if (currentChildren[rIdx] !== orderedRows[rIdx]) {
+              orderChanged = true;
+              break;
+            }
+          }
+        }
+        if (orderChanged) {
+          var isVisible = (plugin.currentPage == 'torrentsList') && ($('#torrentsList').css('display') != 'none');
+          var shouldAnimate = plugin.rowsPrimed && isVisible && orderedRows.length <= 200;
+          plugin.reorderRows(tbody, orderedRows, shouldAnimate);
+        }
       }
     }
 
