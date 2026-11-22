@@ -153,4 +153,190 @@ describe("mobile plugin settings", () => {
       expect($("#sort_asc").prop("checked")).toBe(true);
     });
   });
+
+  describe("storedFilters", () => {
+    it("returns the stored filters when valid JSON is stored", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify({
+        status: ["downloading", "completed"],
+        label: ["music", ""],
+        tracker: ["tracker.example.com"],
+      });
+      expect(plugin.storedFilters()).toEqual({
+        status: ["downloading", "completed"],
+        label: ["music", ""],
+        tracker: ["tracker.example.com"],
+      });
+    });
+
+    it("filters out unknown status options and non-string values", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify({
+        status: ["downloading", "bogus_status", 123, "completed"],
+        label: ["music", 456, null, ""],
+        tracker: ["tracker.example.com", false],
+      });
+      expect(plugin.storedFilters()).toEqual({
+        status: ["downloading", "completed"],
+        label: ["music", ""],
+        tracker: ["tracker.example.com"],
+      });
+    });
+
+    it("deduplicates values in filter arrays", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify({
+        status: ["downloading", "downloading"],
+        label: ["music", "music"],
+        tracker: ["tracker.example.com", "tracker.example.com"],
+      });
+      expect(plugin.storedFilters()).toEqual({
+        status: ["downloading"],
+        label: ["music"],
+        tracker: ["tracker.example.com"],
+      });
+    });
+
+    it("falls back to default empty filters when nothing is stored", () => {
+      expect(plugin.storedFilters()).toEqual({
+        status: [],
+        label: [],
+        tracker: [],
+      });
+    });
+
+    it("falls back to default empty filters for invalid JSON", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = "not-a-json-string";
+      expect(plugin.storedFilters()).toEqual({
+        status: [],
+        label: [],
+        tracker: [],
+      });
+    });
+
+    it("falls back to default empty filters for non-string / non-object values", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = 42;
+      expect(plugin.storedFilters()).toEqual({
+        status: [],
+        label: [],
+        tracker: [],
+      });
+
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify(["status", "downloading"]);
+      expect(plugin.storedFilters()).toEqual({
+        status: [],
+        label: [],
+        tracker: [],
+      });
+    });
+  });
+
+  describe("filterDone", () => {
+    beforeEach(() => {
+      plugin.showList = jest.fn();
+      plugin.filters = { status: [], label: [], tracker: [] };
+      plugin.filtersSnapshot = null;
+    });
+
+    it("persists the filters when changed from snapshot", () => {
+      plugin.filtersSnapshot = { status: [], label: [], tracker: [] };
+      plugin.filters = { status: ["downloading"], label: ["music"], tracker: [] };
+
+      plugin.filterDone();
+
+      expect(saveCount).toBe(1);
+      expect(JSON.parse(storedOnServer["webui.mobile.filters"])).toEqual({
+        status: ["downloading"],
+        label: ["music"],
+        tracker: [],
+      });
+      expect(plugin.filtersSnapshot).toBeNull();
+      expect(plugin.showList).toHaveBeenCalled();
+    });
+
+    it("does not re-save when filters are unchanged from snapshot", () => {
+      plugin.filtersSnapshot = { status: ["downloading"], label: ["music"], tracker: [] };
+      plugin.filters = { status: ["downloading"], label: ["music"], tracker: [] };
+
+      plugin.filterDone();
+
+      expect(saveCount).toBe(0);
+      expect(plugin.filtersSnapshot).toBeNull();
+      expect(plugin.showList).toHaveBeenCalled();
+    });
+  });
+
+  describe("applyFilters with saved filters", () => {
+    it("does not drop saved label and tracker filters before torrents are loaded", () => {
+      plugin.torrents = null;
+      plugin.labelList = [];
+      plugin.trackerList = [];
+      plugin.filters = { status: ["downloading"], label: ["music"], tracker: ["tr.example.com"] };
+
+      plugin.applyFilters();
+
+      expect(plugin.filters.label).toEqual(["music"]);
+      expect(plugin.filters.tracker).toEqual(["tr.example.com"]);
+    });
+
+    it("prunes absent label and tracker filters once torrents are loaded", () => {
+      plugin.torrents = { h1: { name: "test", size: 100 } };
+      plugin.labelList = [{ name: "other", count: 1 }];
+      plugin.trackerList = [{ name: "tr2.example.com", count: 1 }];
+      plugin.filters = { status: ["downloading"], label: ["music"], tracker: ["tr.example.com"] };
+
+      plugin.applyFilters();
+
+      expect(plugin.filters.label).toEqual([]);
+      expect(plugin.filters.tracker).toEqual([]);
+    });
+  });
+
+  describe("init", () => {
+    const label = 'tv "4k" \\ archive';
+    let ajaxSpy;
+
+    beforeEach(() => {
+      window.theUILang.All = "All";
+      window.theUILang.No_label = "No label";
+      window.theUILang.Total = "Total";
+      window.theUILang.Stopped = "Stopped";
+      window.thePlugins = { get: () => null };
+      window.cacheBust = (url) => url;
+      // The page markup arrives over ajax; this spec only needs what init
+      // restores before that request
+      ajaxSpy = jest.spyOn($, "ajax").mockImplementation(() => {});
+      $("body").append(
+        '<div id="initFilterUi"><span id="filterText"></span><span id="filterCount"></span>' +
+        '<span id="filterTotals"></span><div id="filterStatusList"></div>' +
+        '<div id="filterLabelsList"></div><div id="filterTrackersList"></div></div>'
+      );
+      plugin.filters = { status: [], label: [], tracker: [] };
+    });
+    afterEach(() => {
+      ajaxSpy.mockRestore();
+      $(window).off("hashchange");
+      $("#initFilterUi").remove();
+    });
+
+    it("restores the stored filters on load", () => {
+      window.theWebUI.settings["webui.mobile.filters"] = JSON.stringify({
+        status: ["stopped"],
+        label: [label],
+        tracker: [],
+      });
+
+      plugin.init();
+
+      expect(plugin.filters).toEqual({ status: ["stopped"], label: [label], tracker: [] });
+
+      plugin.torrents = null;
+      plugin.labelList = [{ name: "other", count: 1 }, { name: label, count: 1 }];
+      plugin.trackerList = [];
+      plugin.updateFilterButton($());
+      plugin.renderFilterPage();
+
+      expect($("#filterText").text()).toBe("Stopped · " + label);
+      expect($("#filterStatusList .active").text()).toBe("0Stopped");
+      expect($("#filterLabelsList .active").text()).toBe("1" + label);
+      expect($("#filterTrackersList .active").text()).toBe("0All");
+    });
+  });
 });
