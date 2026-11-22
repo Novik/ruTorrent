@@ -17,7 +17,7 @@ require_once(__DIR__ . '/../../php/TestTree.php');
  */
 class SetDirFastResumeSessionTest extends TestCase
 {
-    public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+    public const HASH = '9485646D4F5F05AC4428057712E46FC8189DD1DD';
     public const USER = 'tester';
 
     private $base;
@@ -57,42 +57,95 @@ class SetDirFastResumeSessionTest extends TestCase
         $this->assertFastResumed('session', 'ti"ed\\x/t.torrent');
     }
 
+    public function testDifferentTorrentIsNotErased()
+    {
+        $this->assertRefused('hash');
+    }
+
+    public function testInvalidAdditionIsNotErased()
+    {
+        $this->assertRefused('addition');
+    }
+
+    public function testRefusedDirectoryIsNotErased()
+    {
+        $this->assertRefused('directory');
+    }
+
+    public function testEraseRefusalRestoresRunningState()
+    {
+        $this->assertFastResumed('session', null, 'erase', true);
+    }
+
+    public function testLowercaseHashMatchesTheTorrent()
+    {
+        $this->assertFastResumed('session', null, 'lower-hash');
+    }
+
+    private function assertRefused($reason)
+    {
+        $this->assertFastResumed('session', null, $reason, true);
+    }
+
     /**
      * The download's copy is in $sessionName, or, given $tiedName, only in
      * that file below the test's base.
      */
-    private function assertFastResumed($sessionName, $tiedName = null)
+    private function assertFastResumed($sessionName, $tiedName = null, $refusal = '', $active = false)
     {
         TestTree::remove($this->base);
         $session = $this->base . '/' . $sessionName . '/';
         $dest = $this->base . '/dest';
-        $copy = ($tiedName === null) ? $session . self::HASH . '.torrent' : $this->base . '/' . $tiedName;
+        $bytes = $this->torrentBytes($refusal === 'hash' ? 'other' : 'subx', ['f.bin']);
+        $hash = self::HASH;
+        if ($refusal === 'lower-hash') {
+            $hash = strtolower($hash);
+        }
+        $copy = ($tiedName === null) ? $session . $hash . '.torrent' : $this->base . '/' . $tiedName;
         $tied = ($tiedName === null) ? '' : $copy;
         $this->makeDir($session);
         $this->makeDir($dest);
         $this->makeDir(dirname($copy));
-        file_put_contents($copy, $this->torrentBytes('subx', ['f.bin']));
+        file_put_contents($copy, $bytes);
         $this->assertTrue(
             RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/' . self::USER, '', $this->base . '/dl', $session),
             'the settings cache is warmed',
         );
-        $this->daemon = new FakeRtorrentDaemon([
-            // d.is_open, d.is_active
-            ['0', '0'],
-            // get_session, d.get_tied_to_file, d.get_custom1, d.get_connection_seed, d.get_throttle_name
-            [$session, $tied, '', '', ''],
-            // d.set_directory, then d.erase, then the load; or, after a
-            // failed fast resume, d.set_directory and d.open, d.close.
-            ['0'], ['0'], ['0'], ['0'],
-        ], $this->base . '/calls.log');
+        $replies = [[$active ? '1' : '0', $active ? '1' : '0']];
+        if ($active) {
+            $replies[] = ['0', '0'];
+        }
+        $replies[] = [$session, $tied, '', $refusal === 'addition' ? '$bad' : '', ''];
+        $replies[] = ['0'];
+        $replies[] = $refusal === 'erase' ? FakeRtorrentDaemon::fault('erase refused') : ['0'];
+        $replies[] = ['0', '0'];
+        $replies[] = ['0', '0'];
+        $this->daemon = new FakeRtorrentDaemon($replies, $this->base . '/calls.log');
         $run = $this->runPhp($this->driver(
-            'echo rtSetDataDir(' . var_export(self::HASH, true) . ', ' . var_export($dest, true) . ', true, false, true, false) ? "ok" : "failed";',
+            'echo rtSetDataDir(' . var_export($hash, true) . ', ' . var_export($dest, true) . ', true, false, true, false) ? "ok" : "failed";',
             $this->daemon->port(),
+            $refusal,
         ));
         $bodies = implode("\n", $this->daemon->bodies());
         $this->daemon->stop();
         $this->daemon = null;
         $this->assertEquals('ok', $run['printed'], 'rtSetDataDir() succeeds: ' . $run['printed'] . $run['errors']);
+        if ($refusal !== '' && $refusal !== 'lower-hash') {
+            if ($refusal === 'erase') {
+                $this->assertTrue(strpos($bodies, '<methodName>d.erase</methodName>') !== false, 'erase was attempted and refused');
+            } else {
+                $this->assertTrue(strpos($bodies, '<methodName>d.erase</methodName>') === false, $refusal . ' must not erase the download');
+                $log = @file_get_contents($this->base . '/application.log');
+                $this->assertTrue(
+                    $log !== false && strpos($log, 'fast resume refused (' . $refusal . ') ' . $hash) !== false,
+                    $refusal . ' is recorded in the application log',
+                );
+            }
+            if ($active) {
+                $this->assertTrue(strpos($bodies, '<string>d.start</string>') !== false, $refusal . ' restores the running state');
+            }
+            return;
+        }
         $this->assertTrue(
             (strpos($bodies, '<methodName>d.erase</methodName>') !== false)
                 && (strpos($bodies, '<string>load.raw_start</string>') !== false),
@@ -100,14 +153,16 @@ class SetDirFastResumeSessionTest extends TestCase
         );
     }
 
-    private function driver($code, $port)
+    private function driver($code, $port, $refusal = '')
     {
         $file = $this->base . '/drive.php';
         file_put_contents($file, "<?php\n"
             . '$_SERVER[\'REMOTE_USER\'] = ' . var_export(self::USER, true) . ';'
             . ' $_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
             . 'require_once(' . var_export($this->repoRoot() . '/conf/config.php', true) . ");\n"
+            . '$log_file = ' . var_export($this->base . '/application.log', true) . ";\n"
             . '$scgi_host = "127.0.0.1"; $scgi_port = ' . (int) $port . '; $rpcTimeOut = 5; $rpcLogCalls = false;' . "\n"
+            . ($refusal === 'directory' ? '$topDirectory = ' . var_export($this->base . '/elsewhere/', true) . ';' : '')
             // util_setdir.php's own requires are relative to the plugin's directory.
             . 'chdir(' . var_export($this->repoRoot() . '/plugins/datadir', true) . ");\n"
             . 'require_once(' . var_export($this->repoRoot() . '/plugins/datadir/util_setdir.php', true) . ");\n"
@@ -120,7 +175,11 @@ class SetDirFastResumeSessionTest extends TestCase
         $mask = umask(022);
         try {
             $run = PhpProcess::run(
-                array_merge(PhpProcess::sameIni(), ['-d', 'display_errors=stderr', $file]),
+                array_merge(
+                    PhpProcess::sameIni(),
+                    ['-d', 'display_errors=stderr'],
+                    [$file],
+                ),
                 ['env' => ['LC_ALL' => 'C']],
             );
         } finally {

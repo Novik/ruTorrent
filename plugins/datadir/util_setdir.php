@@ -359,6 +359,13 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                     }
                     $fast_resume = false;
                 } else {
+                    $refusal = rTorrent::reloadRefusal($torrent, $hash, $dest_path, $add_path, $addition);
+                    if ($refusal !== false) {
+                        FileUtil::toLog('datadir: fast resume refused (' . $refusal . ') ' . $hash);
+                        $fast_resume = false;
+                    }
+                }
+                if ($fast_resume) {
                     $is_ok = $add_path
                         ? rtExec("d.set_directory", [ $hash, $dest_path ], $dbg)
                         : rtExec("d.set_directory_base", [ $hash, $dest_path ], $dbg);	// for erasedata plugin

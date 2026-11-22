@@ -15,7 +15,7 @@ require_once(__DIR__ . '/../../php/TestTree.php');
  */
 class SetDirFastResumeLabelTest extends TestCase
 {
-    public const HASH = '0123456789ABCDEF0123456789ABCDEF01234567';
+    public const HASH = '9485646D4F5F05AC4428057712E46FC8189DD1DD';
     public const USER = 'tester';
 
     private $base;
