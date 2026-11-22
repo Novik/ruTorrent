@@ -146,6 +146,18 @@ class ruTrackerChecker
         // entirely when the torrent belongs to no ratio group.
         $existingViews = empty($ratioViews) ? null : self::existingViews();
 
+        $directoryReq = new rXMLRPCRequest(new rXMLRPCCommand('d.get_directory_base', $hash));
+        $directoryReq->important = false;
+        if (!$directoryReq->success() || !isset($directoryReq->val[0])) {
+            FileUtil::toLog('rutracker_check: replacement refused: directory-unreadable ' . $hash);
+            return self::STE_ERROR;
+        }
+        $directory = rXMLRPCRequest::unescapeValue($directoryReq->val[0]);
+        if (!rTorrent::canReplaceInDirectory($directory)) {
+            FileUtil::toLog('rutracker_check: replacement refused: directory-not-reusable ' . $hash);
+            return self::STE_ERROR;
+        }
+
         // Snapshot the logical state and stop/close it in the same multicall so a
         // scheduler action cannot slip between the read and the mutation.
         $req = new rXMLRPCRequest([

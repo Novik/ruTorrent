@@ -98,6 +98,11 @@ class rTorrent
     public static $lastSend = null;
     public static $sends = [];
 
+    public static function canReplaceInDirectory($directory)
+    {
+        return true;
+    }
+
     public static function getSource($hash)
     {
         return self::$source;
@@ -995,6 +1000,7 @@ class CheckerTest
 
     private function queueSnapshot($baseDir, $state = 1, $open = 1)
     {
+        rXMLRPCRequest::queue('d.get_directory_base', true, false, [$baseDir]);
         rXMLRPCRequest::queue(
             ['d.get_directory_base', 'd.get_custom1', 'd.get_throttle_name', 'd.get_connection_seed', 'd.get_state', 'd.is_open', 'd.stop', 'd.close'],
             true,

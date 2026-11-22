@@ -573,6 +573,15 @@ class rTorrent
         return(strpos(FileUtil::addslash(rtrim($real, '/') . $rest), $realTop) === 0);
     }
 
+    // A replacement must load where the original download reported its data.
+    public static function canReplaceInDirectory($directory)
+    {
+        $reported = $directory;
+        rTorrentSettings::get()->correctReportedDirectory($reported);
+        $load = self::parseDirectory($directory, false);
+        return self::normalizeNewDirectory($load) && $reported === $load;
+    }
+
     /**
      * Resolve, in place, the directory a download is loaded into, and see
      * that it exists. False when it is refused or cannot be made.
@@ -590,8 +599,7 @@ class rTorrent
     protected static function prepareDirectory(&$directory, $isNew, $req)
     {
         if ($isNew) {
-            if (!rTorrentSettings::get()->correctDirectory($directory)
-                || !self::isInsideTopDirectory($directory)) {
+            if (!self::normalizeNewDirectory($directory)) {
                 return(self::directoryFailed());
             }
             $mkdir = new rXMLRPCRequest(new rXMLRPCCommand('execute', ['mkdir','-p',$directory]));
@@ -610,6 +618,12 @@ class rTorrent
             $directory = rTorrentSettings::get()->directory;
         }
         return($directory);
+    }
+
+    private static function normalizeNewDirectory(&$directory)
+    {
+        return rTorrentSettings::get()->correctDirectory($directory)
+            && self::isInsideTopDirectory($directory);
     }
 
     /**
