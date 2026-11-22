@@ -683,15 +683,7 @@ var theWebUI = {
 					o.prop('checked',(v!=0));
 				else
 				{
-					switch(i)
-					{
-					        case "max_memory_usage":
-              						v /= 1024;  // falls through
-						case "upload_rate":
-						case "download_rate":
-              						v /= 1024;
-	          					v = Math.ceil(v);
-					}
+					v = theWebUI.settingShown(i,v);
 					o.val(v);
 				}
 				o.trigger('change');
@@ -701,6 +693,23 @@ var theWebUI = {
 			theSearchEngines.set(this.settings["webui.search"],true);
 		this.showSocketAllocBudget();
    	},
+
+	// Settings the dialog shows in a larger unit than rtorrent keeps them in,
+	// as the size of that unit in rtorrent's.
+	settingUnits:
+	{
+		max_memory_usage: 1048576,
+		upload_rate: 1024,
+		download_rate: 1024
+	},
+
+	// What the dialog shows for a setting: rounded up to a whole unit where it
+	// has one, so the field can differ from the daemon's value by up to a unit.
+	settingShown: function(name, value)
+	{
+		var unit = this.settingUnits[name];
+		return(unit ? Math.ceil(value/unit) : value);
+	},
 
 	// rtorrent only accepts an open files/HTTP pair that fits the socket
 	// manager's budget, and refuses the whole write otherwise. Report the
@@ -812,12 +821,15 @@ var theWebUI = {
 				// write zero. Other numeric inputs may use empty as a real UI sentinel.
 				if(nv==="" && emptyLimitLeavesUnchanged[i]===true)
 					return;
-				switch(i) {
-					case "max_memory_usage":
-						nv *= 1024;  // falls through
-					case "upload_rate":
-					case "download_rate":
-						nv *= 1024;
+				var unit = theWebUI.settingUnits[i];
+				if(unit)
+				{
+					// A field still showing what loadSettings() put in it is
+					// unchanged, although that times the unit is not the value
+					// rtorrent has.
+					if(String(nv)===String(theWebUI.settingShown(i,v)))
+						return;
+					nv *= unit;
 				}
 				if(nv!=v)
 				{
