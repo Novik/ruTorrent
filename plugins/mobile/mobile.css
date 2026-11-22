@@ -258,28 +258,16 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
   animation: added-highlight 2s ease-out;
 }
 
-/*** Dynamic sort and view transitions ***/
-:root {
-  view-transition-name: none;
+/*** Dynamic sort rank-change highlight ***/
+@keyframes rank-highlight {
+  from { box-shadow: inset 0 0 0 9999px rgba(var(--mobile-accent-rgb), 0.35); }
+  to { box-shadow: inset 0 0 0 9999px rgba(var(--mobile-accent-rgb), 0); }
 }
-::view-transition {
-  pointer-events: none;
-}
-.torrentBlock {
-  view-transition-class: torrent-row;
-}
-::view-transition-group(.torrent-row) {
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
-}
-::view-transition-group(*) {
-  animation-duration: 0.4s;
-  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+#torrentsList #list .rank-highlight {
+  animation: rank-highlight 1.5s ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
+  #torrentsList #list .rank-highlight {
     animation: none !important;
   }
 }

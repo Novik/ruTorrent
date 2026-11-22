@@ -146,14 +146,14 @@ describe("mobile dynamic sorting and DOM reordering", () => {
       let domOrder = $("#torrentsList #list table tbody tr").map((_, el) => el.id).get();
       expect(domOrder).toEqual([hash2, hash3, hash1]);
 
-      // Mock reorderRows to spy on whether animation was requested
+      // Mock reorderRows to spy on whether highlight was requested
       const origReorder = plugin.reorderRows;
       let reorderCalled = false;
-      let reorderAnimated = false;
-      plugin.reorderRows = function(container, nodes, animate) {
+      let movedNodesPassed = [];
+      plugin.reorderRows = function(container, nodes, movedNodes) {
         reorderCalled = true;
-        reorderAnimated = animate;
-        origReorder.call(this, container, nodes, animate);
+        movedNodesPassed = movedNodes || [];
+        origReorder.call(this, container, nodes, movedNodes);
       };
 
       // Subsequent fetch without singleUpdate: Torrent 1's speed skyrockets to 1000!
@@ -167,10 +167,14 @@ describe("mobile dynamic sorting and DOM reordering", () => {
       plugin.processTorrents(updatedTorrents);
 
       expect(reorderCalled).toBe(true);
-      expect(reorderAnimated).toBe(true);
+      expect(movedNodesPassed.length).toBeGreaterThan(0);
 
       domOrder = $("#torrentsList #list table tbody tr").map((_, el) => el.id).get();
       expect(domOrder).toEqual([hash1, hash2, hash3]);
+
+      // Highlight applied to cells that changed rank
+      const row1Cell = $(`#${hash1}`).children("td");
+      expect(row1Cell.hasClass("rank-highlight")).toBe(true);
 
       // Next fetch where order did NOT change: Torrent 1 speed stays high
       reorderCalled = false;
@@ -186,38 +190,15 @@ describe("mobile dynamic sorting and DOM reordering", () => {
       plugin.reorderRows = origReorder;
     });
 
-    it("assigns view-transition-name to table rows", () => {
-      plugin.sort = "name";
+    it("does not apply rank-highlight on initial render", () => {
+      plugin.sort = "-ul";
       const torrents = {
-        [hash1]: { name: "Torrent 1", size: 1000, state: 1, done: 1000, ul: 0, dl: 0, eta: -1, ratio: 0, label: "" },
+        [hash1]: { name: "Torrent 1", size: 1000, state: 1, done: 1000, ul: 50, dl: 0, eta: -1, ratio: 1000, label: "" },
+        [hash2]: { name: "Torrent 2", size: 1000, state: 1, done: 1000, ul: 500, dl: 0, eta: -1, ratio: 1000, label: "" },
       };
       plugin.processTorrents(torrents, true);
-      const row = document.getElementById(hash1);
-      expect(row.style.viewTransitionName || row.getAttribute("style")).toMatch(/tr-1111111111111111111111111111111111111111/);
-    });
-
-    it("skips animation for large lists (> 200 items)", () => {
-      plugin.sort = "-ul";
-      const manyTorrents = {};
-      for (let i = 0; i < 205; i++) {
-        const h = "a" + i.toString().padStart(39, "0");
-        manyTorrents[h] = { name: `T ${i}`, size: 1000, state: 1, done: 1000, ul: i, dl: 0, eta: -1, ratio: 0, label: "" };
-      }
-      plugin.processTorrents(manyTorrents, true);
-
-      const origReorder = plugin.reorderRows;
-      let reorderAnimated = null;
-      plugin.reorderRows = function(container, nodes, animate) {
-        reorderAnimated = animate;
-        origReorder.call(this, container, nodes, animate);
-      };
-
-      // Change speed of first torrent
-      manyTorrents["a" + "0".padStart(39, "0")].ul = 99999;
-      plugin.processTorrents(manyTorrents);
-
-      expect(reorderAnimated).toBe(false);
-      plugin.reorderRows = origReorder;
+      const cells = $("#torrentsList #list table tbody tr td");
+      expect(cells.hasClass("rank-highlight")).toBe(false);
     });
 
     it("announces sort change in sortLiveStatus on setSort", () => {
@@ -240,130 +221,56 @@ describe("mobile dynamic sorting and DOM reordering", () => {
     });
   });
 
-  describe("reorderRows transition behaviors", () => {
-    it("calls document.startViewTransition when available", () => {
-      const tbody = document.createElement("tbody");
-      const r1 = document.createElement("tr");
-      r1.id = "r1";
-      const r2 = document.createElement("tr");
-      r2.id = "r2";
-      tbody.appendChild(r1);
-      tbody.appendChild(r2);
-
-      let transitionCalled = false;
-      document.startViewTransition = (cb) => {
-        transitionCalled = true;
-        cb();
-      };
-
-      plugin.reorderRows(tbody, [r2, r1], true);
-
-      expect(transitionCalled).toBe(true);
-      expect(Array.from(tbody.children).map(c => c.id)).toEqual(["r2", "r1"]);
-      delete document.startViewTransition;
+  describe("reorderRows highlight behaviors", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
     });
 
-    it("falls back to synchronous reorder when prefers-reduced-motion is active", () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("reorders rows in DOM and applies rank-highlight to moved nodes", () => {
       const tbody = document.createElement("tbody");
       const r1 = document.createElement("tr");
       r1.id = "r1";
+      r1.innerHTML = "<td>Cell 1</td>";
       const r2 = document.createElement("tr");
       r2.id = "r2";
+      r2.innerHTML = "<td>Cell 2</td>";
       tbody.appendChild(r1);
       tbody.appendChild(r2);
 
-      let transitionCalled = false;
-      document.startViewTransition = (cb) => {
-        transitionCalled = true;
-        cb();
-      };
+      // Reorder r2 before r1, passing r2 as moved
+      plugin.reorderRows(tbody, [r2, r1], [r2]);
 
-      const origMatchMedia = window.matchMedia;
-      window.matchMedia = (query) => ({
-        matches: query.includes("prefers-reduced-motion"),
-        addEventListener: () => {},
-        addListener: () => {}
+      expect(Array.from(tbody.children).map(c => c.id)).toEqual(["r2", "r1"]);
+      expect($(r2).children("td").hasClass("rank-highlight")).toBe(true);
+      expect($(r1).children("td").hasClass("rank-highlight")).toBe(false);
+
+      // After 1500ms, rank-highlight should be removed
+      jest.advanceTimersByTime(1500);
+      expect($(r2).children("td").hasClass("rank-highlight")).toBe(false);
+    });
+
+    it("reorders nodes correctly when moveBefore is supported", () => {
+      const tbody = document.createElement("tbody");
+      const r1 = document.createElement("tr");
+      r1.id = "r1";
+      r1.innerHTML = "<td>Cell 1</td>";
+      const r2 = document.createElement("tr");
+      r2.id = "r2";
+      r2.innerHTML = "<td>Cell 2</td>";
+      tbody.appendChild(r1);
+      tbody.appendChild(r2);
+
+      tbody.moveBefore = jest.fn((node, before) => {
+        tbody.insertBefore(node, before);
       });
 
-      plugin.reorderRows(tbody, [r2, r1], true);
-
-      // Animation skipped due to reduced motion preference
-      expect(transitionCalled).toBe(false);
+      plugin.reorderRows(tbody, [r2, r1], []);
+      expect(tbody.moveBefore).toHaveBeenCalled();
       expect(Array.from(tbody.children).map(c => c.id)).toEqual(["r2", "r1"]);
-
-      window.matchMedia = origMatchMedia;
-      delete document.startViewTransition;
-    });
-
-    it("prefers container.startViewTransition when available", () => {
-      const tbody = document.createElement("tbody");
-      const r1 = document.createElement("tr");
-      r1.id = "r1";
-      const r2 = document.createElement("tr");
-      r2.id = "r2";
-      tbody.appendChild(r1);
-      tbody.appendChild(r2);
-
-      let containerTransitionCalled = false;
-      let docTransitionCalled = false;
-      tbody.startViewTransition = (cb) => {
-        containerTransitionCalled = true;
-        cb();
-      };
-      document.startViewTransition = (cb) => {
-        docTransitionCalled = true;
-        cb();
-      };
-
-      plugin.reorderRows(tbody, [r2, r1], true);
-
-      expect(containerTransitionCalled).toBe(true);
-      expect(docTransitionCalled).toBe(false);
-      expect(Array.from(tbody.children).map(c => c.id)).toEqual(["r2", "r1"]);
-      delete document.startViewTransition;
-    });
-
-    it("animates via FLIP transforms when View Transitions are unavailable", (done) => {
-      const tbody = document.createElement("tbody");
-      const r1 = document.createElement("tr");
-      r1.id = "r1";
-      const r2 = document.createElement("tr");
-      r2.id = "r2";
-      tbody.appendChild(r1);
-      tbody.appendChild(r2);
-
-      let r1Top = 0;
-      let r2Top = 50;
-
-      r1.getBoundingClientRect = () => ({ top: r1Top, bottom: r1Top + 50, left: 0, right: 100, width: 100, height: 50 });
-      r2.getBoundingClientRect = () => ({ top: r2Top, bottom: r2Top + 50, left: 0, right: 100, width: 100, height: 50 });
-
-      // When moved, r2 becomes first (top: 0), r1 becomes second (top: 50)
-      const origAppend = tbody.appendChild;
-      tbody.appendChild = function(node) {
-        origAppend.call(this, node);
-        if (node.id === "r2") {
-          r2Top = 0;
-          r1Top = 50;
-        }
-      };
-
-      const origRAF = window.requestAnimationFrame;
-      window.requestAnimationFrame = (fn) => setTimeout(fn, 10);
-
-      plugin.reorderRows(tbody, [r2, r1], true);
-
-      // Invert stage applied
-      expect(r2.style.transform).toBe("translateY(50px)");
-      expect(r1.style.transform).toBe("translateY(-50px)");
-
-      setTimeout(() => {
-        // Play stage clears transform
-        expect(r2.style.transform).toBe("");
-        expect(r1.style.transform).toBe("");
-        window.requestAnimationFrame = origRAF;
-        done();
-      }, 50);
     });
   });
 });

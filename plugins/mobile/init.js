@@ -1804,74 +1804,29 @@ plugin.loadSeedingTime = function () {
 };
 
 /*** Torrent list rendering and updates ***/
-plugin.reorderRows = function(container, orderedNodes, animate) {
-  var moveNode = (typeof Element.prototype.moveBefore === 'function')
+plugin.reorderRows = function(container, orderedNodes, movedNodes) {
+  var moveNode = (typeof container.moveBefore === 'function')
     ? function(node) { container.moveBefore(node, null); }
     : function(node) { container.appendChild(node); };
 
-  var update = function() {
-    for (var i = 0; i < orderedNodes.length; i++) {
-      moveNode(orderedNodes[i]);
-    }
-  };
-
-  if (!animate) {
-    update();
-    return;
+  for (var i = 0; i < orderedNodes.length; i++) {
+    moveNode(orderedNodes[i]);
   }
 
-  // Respect user preference for reduced motion
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    update();
-    return;
-  }
-
-  // 1. Element-scoped or document-level View Transitions (Baseline)
-  if (container.startViewTransition) {
-    container.startViewTransition(update);
-    return;
-  }
-  if (document.startViewTransition) {
-    document.startViewTransition(update);
-    return;
-  }
-
-  // 2. FLIP fallback for environments without View Transitions
-  try {
-    var i, j, k;
-    var firstTops = {};
-    for (i = 0; i < orderedNodes.length; i++) {
-      orderedNodes[i].style.transform = '';
-      orderedNodes[i].style.transition = '';
-      firstTops[orderedNodes[i].id] = orderedNodes[i].getBoundingClientRect().top;
-    }
-    update();
-    var moved = [];
-    for (i = 0; i < orderedNodes.length; i++) {
-      var node = orderedNodes[i];
-      var delta = firstTops[node.id] - node.getBoundingClientRect().top;
-      if (Math.abs(delta) > 0.5) {
-        node.style.transform = 'translateY(' + delta + 'px)';
-        node.style.transition = 'transform 0s';
-        moved.push(node);
+  if (movedNodes && movedNodes.length) {
+    for (var j = 0; j < movedNodes.length; j++) {
+      var cell = $(movedNodes[j]).children('td');
+      cell.removeClass('rank-highlight');
+      if (cell[0]) {
+        void cell[0].offsetWidth;
       }
+      cell.addClass('rank-highlight');
     }
-    if (moved.length && typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(function() {
-        for (j = 0; j < moved.length; j++) {
-          var m = moved[j];
-          m.style.transition = 'transform 0.4s cubic-bezier(0.2, 0, 0, 1)';
-          m.style.transform = '';
-        }
-        setTimeout(function() {
-          for (k = 0; k < moved.length; k++) {
-            moved[k].style.transition = '';
-          }
-        }, 400);
-      });
-    }
-  } catch (e) {
-    update();
+    setTimeout(function() {
+      for (var k = 0; k < movedNodes.length; k++) {
+        $(movedNodes[k]).children('td').removeClass('rank-highlight');
+      }
+    }, 1500);
   }
 };
 
@@ -2030,7 +1985,7 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       var row = $('#' + v.hash);
       if ( ! row.length || singleUpdate) {
         var rowHtml =
-        '<tr id="' + v.hash + '" class="' + rowClass + '" style="view-transition-name: tr-' + v.hash + ';" onclick="mobile.showDetails(this.id);"><td>' +
+        '<tr id="' + v.hash + '" class="' + rowClass + '" onclick="mobile.showDetails(this.id);"><td>' +
         '<h5>' + escapeHTML(v.name) + '</h5>' +
         '<span>' + statusHtml + '</span>' +
         '<div class="progress">' +
@@ -2055,9 +2010,6 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       } else if ( ! plugin.rowsPrev[v.hash] || ! isEqual(rowsNow[v.hash], plugin.rowsPrev[v.hash]) ) {
         row.removeClass();
         row.addClass(rowClass);
-        if (row[0] && row[0].style && !row[0].style.viewTransitionName) {
-          row[0].style.viewTransitionName = 'tr-' + v.hash;
-        }
         row.find('span').html(statusHtml);
         var progressBar = row.find('.progress-bar');
         progressBar.removeClass('progress-bar-animated');
@@ -2153,27 +2105,35 @@ plugin.processTorrents = function(torrents, singleUpdate) {
         var currentChildren = tbody.children;
         var orderChanged = false;
         var orderedRows = [];
+        var prevIndex = {};
         var rIdx;
+        for (rIdx = 0; rIdx < currentChildren.length; rIdx++) {
+          prevIndex[currentChildren[rIdx].id] = rIdx;
+        }
         for (rIdx = 0; rIdx < torrentArray.length; rIdx++) {
           var rowEl = document.getElementById(torrentArray[rIdx].hash);
           if (rowEl) {
             orderedRows.push(rowEl);
           }
         }
+        var movedRows = [];
         if (currentChildren.length !== orderedRows.length) {
           orderChanged = true;
         } else {
           for (rIdx = 0; rIdx < orderedRows.length; rIdx++) {
-            if (currentChildren[rIdx] !== orderedRows[rIdx]) {
+            var r = orderedRows[rIdx];
+            if (currentChildren[rIdx] !== r) {
               orderChanged = true;
-              break;
+            }
+            if (prevIndex[r.id] !== undefined && prevIndex[r.id] !== rIdx) {
+              movedRows.push(r);
             }
           }
         }
         if (orderChanged) {
           var isVisible = (plugin.currentPage == 'torrentsList') && ($('#torrentsList').css('display') != 'none');
-          var shouldAnimate = plugin.rowsPrimed && isVisible && orderedRows.length <= 200;
-          plugin.reorderRows(tbody, orderedRows, shouldAnimate);
+          var highlightMoved = plugin.rowsPrimed && isVisible ? movedRows : [];
+          plugin.reorderRows(tbody, orderedRows, highlightMoved);
         }
       }
     }
