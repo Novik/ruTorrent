@@ -94,6 +94,24 @@ class HttprpcColdCacheListTest extends TestCase
         );
     }
 
+    public function testTheListModeStillAnswersWithACacheDirectoryItCannotWrite()
+    {
+        // The cache directory is there but read-only: the list is answered
+        // in full, and the cache that cannot be written raises nothing.
+        $profile = $this->base . '/readonly-cache';
+        @mkdir($profile . '/settings/httprpc', 0700, true);
+        @chmod($profile . '/settings/httprpc', 0500);
+        $out = $this->post('mode=list&cid=0', $profile);
+        $left = glob($profile . '/settings/httprpc/*') ?: [];
+        @chmod($profile . '/settings/httprpc', 0700);
+
+        $this->assertTrue(
+            strpos($out, self::HASH) !== false,
+            'the torrent list came back without a cache to write: ' . substr($out, 0, 200),
+        );
+        $this->assertEquals([], $left, 'and nothing was cached');
+    }
+
     private function stopDaemon()
     {
         if ($this->daemon !== null) {
@@ -144,7 +162,7 @@ class HttprpcColdCacheListTest extends TestCase
             . 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return implode("\n", $output);
     }
