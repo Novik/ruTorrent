@@ -136,6 +136,27 @@ class RetrackersUpdateReloadTest extends TestCase
         );
     }
 
+    public function testUnusableDirectoryIsRefusedBeforeErase()
+    {
+        $this->addTrackers('tied.torrent', '', 0, '/outside');
+        $calls = $this->daemon->calls();
+        $this->assertTrue(!in_array('d.erase', $calls, true), 'unusable directory must not erase');
+        $this->assertTrue(in_array('d.start', $calls, true), 'running download must restart');
+        $this->assertTrue(strpos(
+            (string) @file_get_contents($this->base . '/app.log'),
+            'retrackers: directory-not-reusable: ' . self::HASH . '; trackers not updated',
+        ) !== false, 'refusal is logged');
+    }
+
+    public function testLoggingFailureDoesNotPreventRestart()
+    {
+        $printed = $this->addTrackers('tied.torrent', '', 0, '/outside', true);
+        $this->assertTrue(strpos($printed, 'log failure') !== false, 'opening the log throws');
+        $calls = $this->daemon->calls();
+        $this->assertTrue(!in_array('d.erase', $calls, true), 'the download is not erased');
+        $this->assertTrue(in_array('d.start', $calls, true), 'restart precedes failed logging');
+    }
+
     private function repoRoot()
     {
         return realpath(__DIR__ . '/../../..');
@@ -152,7 +173,7 @@ class RetrackersUpdateReloadTest extends TestCase
      * $session there, with a copy that has one; '' leaves either out. The
      * reloaded bytes tell which of the two was read.
      */
-    private function addTrackers($tied, $session = '', $sessionLate = 0.0)
+    private function addTrackers($tied, $session = '', $sessionLate = 0.0, $directory = '', $throwLog = false)
     {
         $root = $this->repoRoot();
         @unlink($this->base . '/app.log');
@@ -182,7 +203,7 @@ class RetrackersUpdateReloadTest extends TestCase
         // there rather than have it probe and spend the replies below.
         RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
         $this->daemon = new FakeRtorrentDaemon([
-            [$sessionPath, '1', $tiedPath, '', '', 0, 'name'],
+            [$sessionPath, '1', $tiedPath, '', $directory, 0, 'name'],
             [0],
             [0],
             [0],
@@ -190,6 +211,7 @@ class RetrackersUpdateReloadTest extends TestCase
 
         $driver = $this->base . '/drive-update.php';
         file_put_contents($driver, "<?php\n"
+            . '$_ENV[\'RU_TOP_DIR\'] = \'/tmp/\';' . "\n"
             . '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
             . '$_ENV[\'RU_LOG_FILE\'] = ' . var_export($this->base . '/app.log', true) . ";\n"
             . 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
@@ -202,7 +224,10 @@ class RetrackersUpdateReloadTest extends TestCase
             . '$trackers = new rRetrackers();' . "\n"
             . '$trackers->list = [["http://added.test/announce"]];' . "\n"
             . '$trackers->store();' . "\n"
-            . 'require(' . var_export($root . '/plugins/retrackers/update.php', true) . ");\n");
+            . ($throwLog ? 'class ThrowLog { public function stream_open($p, $m, $o, &$x) { throw new Exception("log failure"); } } stream_wrapper_register("throwlog", "ThrowLog"); $log_file = "throwlog://log";' . "\n" : '')
+            . ($throwLog ? 'try { ' : '')
+            . 'require(' . var_export($root . '/plugins/retrackers/update.php', true) . ");"
+            . ($throwLog ? ' } catch (Throwable $e) { echo $e->getMessage(); }' : '') . "\n");
 
         $output = [];
         exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '

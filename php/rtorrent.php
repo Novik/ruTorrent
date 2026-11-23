@@ -181,11 +181,19 @@ class rTorrent
         if ($torrent->hash_info() !== strtoupper($hash)) {
             return('hash');
         }
-        $dir = self::parseDirectory($directory, $isAddPath);
-        if (self::hasDirectory($dir) && !rTorrentSettings::get()->correctReportedDirectory($dir)) {
+        if (!self::acceptsReloadDirectory($directory, $isAddPath)) {
             return('directory');
         }
         return(false);
+    }
+
+    /**
+     * Applies the reload directory rule before d.erase so a refused reload leaves the download intact.
+     */
+    public static function acceptsReloadDirectory($directory, $isAddPath): bool
+    {
+        $dir = self::parseDirectory($directory, $isAddPath);
+        return !self::hasDirectory($dir) || rTorrentSettings::get()->correctReportedDirectory($dir);
     }
 
     public static function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)

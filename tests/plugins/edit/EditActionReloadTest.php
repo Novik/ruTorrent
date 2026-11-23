@@ -183,6 +183,23 @@ class EditActionReloadTest extends TestCase
         }
     }
 
+    public function testUnusableDirectoryIsRefusedBeforeErase()
+    {
+        $printed = $this->saveAnEdit('hash=' . self::HASH . '&set_comment=1&comment=x', 'session/', '', '/outside');
+        $this->assertTrue($this->indexOf('d.erase') < 0, 'unusable directory must not erase');
+        $this->assertTrue(strpos($printed, 'theUILang.addTorrentFailedDirectory') !== false, $printed);
+    }
+
+    public function testPrivateFlagChangeStillReloads()
+    {
+        $this->saveAnEdit('hash=' . self::HASH . '&set_private=1&private=1');
+        $loaded = $this->reloadedTorrent();
+        $original = new Torrent($this->announceOnlyTorrent());
+        $this->assertTrue($this->indexOf('d.erase') >= 0 && $loaded !== null, 'private edit must reload');
+        $this->assertTrue($loaded->hash_info() !== $original->hash_info(), 'private edit changes info hash');
+        $this->assertTrue($loaded->is_private(), 'the reloaded torrent has private enabled');
+    }
+
     private function repoRoot()
     {
         return realpath(__DIR__ . '/../../..');
@@ -194,15 +211,14 @@ class EditActionReloadTest extends TestCase
      * get_session, d.is_open, d.is_active, d.get_state, d.get_tied_to_file,
      * d.get_custom1, d.get_directory_base, d.get_connection_seed and
      * d.get_complete. d.get_complete is 0 so the reload does not take the
-     * fast resume branch, and the directory is empty so the add does not need
-     * a directory to be approved.
+     * fast resume branch. An empty directory uses the daemon's cached default.
      *
      * The torrent is put in $session, a directory under the case's own, and
      * in the file $tied names there; '' leaves either out. The two hold
      * different torrents -- the tied one has no tracker -- so the reloaded
      * bytes tell which was read.
      */
-    private function saveAnEdit($post, $session = 'session/', $tied = '')
+    private function saveAnEdit($post, $session = 'session/', $tied = '', $directory = '')
     {
         $root = $this->repoRoot();
         if ($this->daemon !== null) {
@@ -222,7 +238,7 @@ class EditActionReloadTest extends TestCase
         // there rather than have it probe and spend the replies below.
         RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
         $this->daemon = new FakeRtorrentDaemon([
-            [$sessionPath, 1, 1, 1, $tiedPath, '', '', 'seed', 0],
+            [$sessionPath, 1, 1, 1, $tiedPath, '', $directory, 'seed', 0],
             [0],
             [0],
             [0],
@@ -230,6 +246,7 @@ class EditActionReloadTest extends TestCase
 
         $driver = $this->base . '/drive-edit.php';
         file_put_contents($driver, "<?php\n"
+            . '$_ENV[\'RU_TOP_DIR\'] = \'/tmp/\';' . "\n"
             . '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
             . 'require_once(' . var_export($root . '/conf/config.php', true) . ");\n"
             . '$scgi_host = "127.0.0.1";' . "\n"
