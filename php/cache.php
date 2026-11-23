@@ -79,7 +79,7 @@ class rCache
         // nothing changed, both skip merging, and the later rename erases the
         // earlier writer's data. The lock is a sidecar file because the cache
         // file itself is replaced by rename() on every store.
-        $lock = fopen($lockName, "c");
+        $lock = self::open($lockName, "c");
         if ($lock === false) {
             return(false);
         }
@@ -114,7 +114,7 @@ class rCache
         // able to open the temporary file before its final mode is applied.
         $oldMask = umask(0077);
         try {
-            $fp = fopen($tmpName, "x+b");
+            $fp = self::open($tmpName, "x+b");
         } finally {
             umask($oldMask);
         }
@@ -208,7 +208,7 @@ class rCache
         $lockName = $name . '.lock';
         // Writers may have opened this sidecar before remove() acquired it.
         // Keep its inode so those writers and later ones still share one lock.
-        $lock = fopen($lockName, "c");
+        $lock = self::open($lockName, "c");
         if ($lock !== false) {
             @chmod($lockName, $profileMask & 0666);
             if (self::flock($lock)) {
@@ -232,6 +232,26 @@ class rCache
             : (self::isValidKey($obj) ? $this->dir . "/" . $obj : null);
         return(is_null($name) ? false : @filemtime($name));
 
+    }
+    // fopen() for the lock and temporary files. Every caller treats false as
+    // a failed store or removal, so the reason is logged here rather than
+    // raised as a PHP warning, which would reach the response.
+    protected static function open($path, $mode)
+    {
+        $reason = 'no reason given';
+        set_error_handler(function ($number, $message) use (&$reason) {
+            $reason = $message;
+            return(true);
+        });
+        try {
+            $fp = fopen($path, $mode);
+        } finally {
+            restore_error_handler();
+        }
+        if ($fp === false) {
+            FileUtil::toLog('rCache: ' . basename($path) . ' cannot be opened: ' . $reason);
+        }
+        return($fp);
     }
     // What get() or set() recorded for this very object; null when neither
     // loaded nor stored it, or when its class has no merge().

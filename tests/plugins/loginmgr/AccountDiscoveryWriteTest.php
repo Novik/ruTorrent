@@ -240,6 +240,8 @@ function discoveryAction($blocked, $check)
         );
         list($head, $body) = explode("\r\n\r\n", $response, 2);
         $check($head, $body, $settings);
+        $log = (string) file_get_contents($directory . '/server.log');
+        discoveryAssert(preg_match('/PHP (Warning|Notice|Deprecated)/', $log) !== 1, 'The server raised no PHP diagnostic: ' . $log);
     } finally {
         proc_terminate($process);
         proc_close($process);
@@ -253,8 +255,7 @@ $tests = [
         $accounts = discoverySeed();
         discoveryBlockWrite();
         $manager = new DiscoveryManager();
-        // The refusal is the point; the warning it carries is not.
-        $written = @$manager->obtain($accounts);
+        $written = $manager->obtain($accounts);
         discoveryAssert($written === false, 'A refused discovery write answers false');
         discoveryAssert(
             !is_file(FileUtil::getSettingsPath() . '/loginmgr.dat'),
