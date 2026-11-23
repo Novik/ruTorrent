@@ -261,6 +261,11 @@ theWebUI.rssDblClick = function( obj )
 
 theWebUI.getRSSSettings = function( d )
 {
+	// The Settings dialog can be filled before these arrive. A field that still
+	// shows what it was filled with takes the value that arrived, so Save does
+	// not send the old one back.
+	const intervalShown = $('#rss_interval').val()==theWebUI.updateRSSInterval/60000;
+	const delayedShown = $('#rss_show_errors_delayed').prop('checked')==theWebUI.rssShowErrorsDelayed;
 	theWebUI.updateRSSInterval = d.interval*60000;
 	theWebUI.rssUpdateTimestamp = d.updatedAt * 1000;
 	if(theWebUI.updateRSSTimer)
@@ -275,6 +280,10 @@ theWebUI.getRSSSettings = function( d )
 	loadRSSLoop();
 
 	theWebUI.rssShowErrorsDelayed = Boolean(d.delayerrui);
+	if(intervalShown)
+		$('#rss_interval').val(theWebUI.updateRSSInterval/60000);
+	if(delayedShown)
+		$('#rss_show_errors_delayed').prop('checked', theWebUI.rssShowErrorsDelayed);
 	if (!theWebUI.rssShowErrorsDelayed) {
 		theWebUI.showDelayedRSSErrros();
 	}
