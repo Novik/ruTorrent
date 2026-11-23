@@ -145,6 +145,8 @@ function saveAction($blocked, $check)
         saveAssert(is_string($response) && strpos($response, "\r\n\r\n") !== false, 'The action sends a complete response');
         list($head, $body) = explode("\r\n\r\n", $response, 2);
         $check($head, $body, $directory . '/profile/settings');
+        $log = (string) file_get_contents($directory . '/server.log');
+        saveAssert(preg_match('/PHP (Warning|Notice|Deprecated)/', $log) !== 1, 'The server raised no PHP diagnostic: ' . $log);
     } finally {
         proc_terminate($process);
         proc_close($process);
@@ -157,8 +159,7 @@ $tests = [
         list($manager, $stored, $sessions) = saveSeed();
         saveBlockWrite();
         $_REQUEST = ['Alpha_login' => 'new-user'];
-        // Failure to open this deliberately blocked cache lock is expected.
-        @$manager->set();
+        $manager->set();
         $directory = FileUtil::getSettingsPath();
         saveAssert(file_get_contents($directory . '/loginmgr.dat') === $stored, 'The prior credential bytes survive');
         foreach ($sessions as $name => $bytes) {
@@ -172,7 +173,7 @@ $tests = [
         $previous = $manager->accounts;
         saveBlockWrite();
         $_REQUEST = ['Alpha_login' => 'new-user'];
-        $saved = @$manager->set();
+        $saved = $manager->set();
         saveAssert($manager->accounts === $previous, 'The same object retains its prior account values');
         saveAssert($saved === false, 'A refused write returns false');
         rmdir(FileUtil::getSettingsPath() . '/loginmgr.dat.lock');
