@@ -22,6 +22,30 @@ class TelegramStorageProbe extends rTelegram
     }
 }
 
+// Makes the queue directory read-only once the drain is under way, after the
+// sender has made it writable, so that no record can be removed. It throws
+// when the drain keeps passing over the queue instead of hanging the suite.
+class TelegramReadOnlyQueue extends rTelegram
+{
+    public $queueDirectory = '';
+    public $emptyEvent = null;
+    public $calls = 0;
+
+    public function canNotify($event)
+    {
+        if (++$this->calls > 30) {
+            throw new RuntimeException('the drain passed over the queue again');
+        }
+        chmod($this->queueDirectory, 0500);
+        return parent::canNotify($event);
+    }
+
+    public function render($event, $torrent, $hash, $comment = '', $details = [])
+    {
+        return $event === $this->emptyEvent ? '' : parent::render($event, $torrent, $hash, $comment, $details);
+    }
+}
+
 class TelegramEmptyRenderer extends rTelegram
 {
     public function render($event, $torrent, $hash, $comment = '', $details = [])
@@ -56,6 +80,8 @@ class TelegramBoundedLog
 
 class TelegramTest extends TestCase
 {
+    private $savedLog = null;
+
     public function tearDown()
     {
         $settings = FileUtil::getSettingsPath();
@@ -751,6 +777,145 @@ class TelegramTest extends TestCase
         $this->assertTrue(preg_match('/^[0-9]{16,}$/D', $timestamp) === 1, 'the filename retains the full decimal microsecond timestamp on every word size');
         $this->assertTrue((float) $timestamp >= floor($before) && (float) $timestamp <= ceil($after), 'the timestamp represents the enqueue time without integer overflow');
         unlink($files[0]);
+    }
+
+    public function testADirectoryNamedLikeARecordIsIgnoredAndDoesNotStopTheDrain()
+    {
+        $queue = new rTelegramQueue();
+        $config = $this->addedConfig(new rTelegram());
+        $this->assertTrue($this->enqueue($queue, 'added', 'First', 'HASH1'), 'the first event is queued');
+        $directory = $queue->getDirectory() . '/0001.event';
+        mkdir($directory, 0700);
+        $this->assertTrue($this->enqueue($queue, 'added', 'Third', 'HASH3'), 'the third event is queued');
+        try {
+            $messages = [];
+            $stopped = $this->boundedDrain($queue, $config, $messages);
+            $this->assertTrue($stopped, 'the drain stops although the directory cannot be removed');
+            $this->assertEquals(['Torrent added: First' . "\n\n" . 'Torrent added: Third'], $messages, 'the records around it are sent once');
+            $this->assertEquals([$directory], glob($queue->getDirectory() . '/*.event'), 'only the directory is left');
+            $this->assertEquals(0, $queue->getPendingCount(), 'the directory is not a pending record');
+            $this->assertEquals(1, substr_count(TelegramBoundedLog::$text, $directory), 'the directory is logged once: ' . TelegramBoundedLog::$text);
+            $this->assertTrue(strpos(TelegramBoundedLog::$text, $directory . ' is not a regular file') !== false, 'the log says why it is left: ' . TelegramBoundedLog::$text);
+        } finally {
+            $this->restoreLog();
+            @rmdir($directory);
+            array_map('unlink', glob($queue->getDirectory() . '/*.event'));
+        }
+    }
+
+    public function testAnInvalidRecordThatCannotBeRemovedIsSkippedAndLoggedOnce()
+    {
+        $this->assertUnremovableRecordIsSkipped(function ($queue, $config) {
+            $file = $queue->getDirectory() . '/' . sprintf('%.0f', microtime(true) * 1000000) . '.invalid.event';
+            file_put_contents($file, "unknown\0Second\0HASH2\0\0");
+            return $file;
+        }, 'is invalid');
+    }
+
+    public function testARecordOfATurnedOffEventThatCannotBeRemovedIsSkippedAndLoggedOnce()
+    {
+        $this->assertUnremovableRecordIsSkipped(function ($queue, $config) {
+            $config->events['removed'] = false;
+            return $this->enqueue($queue, 'removed', 'Second', 'HASH2');
+        }, 'is for an event that is not notified');
+    }
+
+    public function testAnEmptyRenderedRecordThatCannotBeRemovedIsSkippedAndLoggedOnce()
+    {
+        $this->assertUnremovableRecordIsSkipped(function ($queue, $config) {
+            $config->events['finished'] = true;
+            $config->emptyEvent = 'finished';
+            return $this->enqueue($queue, 'finished', 'Second', 'HASH2');
+        }, 'rendered an empty message');
+    }
+
+    /**
+     * Queue First, the record $makeRecord makes, and Third, in that order, and
+     * drain with a queue directory that becomes read-only once the drain has
+     * started: First and Third are sent once, and each record is logged once.
+     */
+    private function assertUnremovableRecordIsSkipped($makeRecord, $reason)
+    {
+        if ($this->rootIgnoresFileModes()) {
+            return;
+        }
+        $queue = new rTelegramQueue();
+        $config = $this->addedConfig(new TelegramReadOnlyQueue());
+        $config->queueDirectory = $queue->getDirectory();
+        $this->assertTrue($this->enqueue($queue, 'added', 'First', 'HASH1'), 'the first event is queued');
+        usleep(10);
+        $makeRecord($queue, $config);
+        usleep(10);
+        $this->assertTrue($this->enqueue($queue, 'added', 'Third', 'HASH3'), 'the third event is queued');
+        $files = glob($queue->getDirectory() . '/*.event');
+        sort($files, SORT_STRING);
+        $this->assertEquals(3, count($files), 'three records are queued');
+        try {
+            $messages = [];
+            $stopped = $this->boundedDrain($queue, $config, $messages);
+            $this->assertTrue($stopped, 'the drain stops although no record can be removed');
+            $this->assertEquals(['Torrent added: First' . "\n\n" . 'Torrent added: Third'], $messages, 'the records around it are sent once');
+            $this->assertEquals($files, glob($queue->getDirectory() . '/*.event'), 'every record is still there');
+            $this->assertEquals(3, $queue->getPendingCount(), 'after the drain they are all pending again, for the next run');
+            $log = TelegramBoundedLog::$text;
+            $this->assertEquals(1, substr_count($log, $files[1]), 'the record that cannot be discarded is logged once: ' . $log);
+            $this->assertTrue(strpos($log, $files[1] . ' ' . $reason . ' but could not be removed: Permission denied') !== false, 'the log names the record, what it is and why it stays: ' . $log);
+            $this->assertEquals(1, substr_count($log, $files[0] . ' was sent but could not be removed'), 'a sent record that cannot be removed is logged once: ' . $log);
+            $this->assertEquals(1, substr_count($log, $files[2] . ' was sent but could not be removed'), 'and so is the other one: ' . $log);
+        } finally {
+            $this->restoreLog();
+            chmod($queue->getDirectory(), 0700);
+            array_map('unlink', glob($queue->getDirectory() . '/*.event'));
+        }
+    }
+
+    private function addedConfig($config)
+    {
+        $config->enabled = true;
+        $config->token = 'secret-token';
+        $config->chatId = '1';
+        $config->events['added'] = true;
+        return $config;
+    }
+
+    /** Drain into a log opened at most ten times; false when the drain did not stop. */
+    private function boundedDrain($queue, $config, &$messages)
+    {
+        global $log_file;
+        $this->savedLog = $log_file;
+        if (!in_array('telegramtestlog', stream_get_wrappers(), true)) {
+            stream_wrapper_register('telegramtestlog', 'TelegramBoundedLog');
+        }
+        $log_file = 'telegramtestlog://log';
+        TelegramBoundedLog::$text = '';
+        TelegramBoundedLog::$opens = 10;
+        $client = new rTelegramClient(function ($url, $payload, $options) use (&$messages) {
+            $messages[] = $payload['text'];
+            return ['http_code' => 200, 'body' => '{"ok":true}'];
+        });
+        try {
+            $queue->drain($config, $client, 0, 0);
+        } catch (RuntimeException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    private function restoreLog()
+    {
+        global $log_file;
+        $log_file = $this->savedLog;
+    }
+
+    private function rootIgnoresFileModes()
+    {
+        $probe = sys_get_temp_dir() . '/rutorrent-telegram-mode-' . getmypid();
+        @mkdir($probe, 0500);
+        chmod($probe, 0500);
+        clearstatcache(true, $probe);
+        $writable = is_writable($probe);
+        rmdir($probe);
+        return $writable;
     }
 
     /** Without $details, the arguments of a handler that an older version registered. */

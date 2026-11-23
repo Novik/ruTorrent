@@ -12,6 +12,8 @@ class rTelegramQueue
     public const MAX_SEND_ATTEMPTS = 3;
 
     private $directory;
+    /** Records that could not be removed: skipped for the rest of this drain. */
+    private $skipped = [];
 
     public function __construct($directory = null)
     {
@@ -85,7 +87,9 @@ class rTelegramQueue
 
         $didWork = false;
         $lastSentAt = 0;
+        $this->skipped = [];
         try {
+            $this->logIgnoredEntries();
             while (true) {
                 $keepDraining = $this->drainAvailable(
                     $config,
@@ -102,6 +106,7 @@ class rTelegramQueue
                 }
             }
         } finally {
+            $this->skipped = [];
             if ($ownsLock) {
                 @flock($lock, LOCK_UN);
                 fclose($lock);
@@ -137,7 +142,7 @@ class rTelegramQueue
             }
 
             if (is_array($result) && !empty($result['ok'])) {
-                $this->removeItems($chunk['files']);
+                $this->removeItems($chunk['files'], 'was sent');
                 $didWork = true;
                 continue;
             }
@@ -149,7 +154,7 @@ class rTelegramQueue
             if ($this->isRetryable($result)) {
                 return false;
             } // Keep transient failures queued for the next scheduled tick.
-            $this->removeItems($chunk['files']); // Permanent failures must not block later notifications.
+            $this->removeItems($chunk['files'], 'was refused by Telegram'); // Permanent failures must not block later notifications.
         }
         // A record kept as unreadable stays pending: stop here so the drain loop
         // does not spin on it. The next scheduled tick tries it again.
@@ -171,19 +176,21 @@ class rTelegramQueue
             }
             if (!is_array($item) || !isset($item['event'], $item['torrent'], $item['hash'], $item['comment'], $item['details'])
                 || !in_array($item['event'], self::eventNames(), true)) {
-                @unlink($file);
-                $this->logMessage('discarded an invalid queued notification');
+                if ($this->removeItem($file, 'is invalid')) {
+                    $this->logMessage('discarded an invalid queued notification');
+                }
                 continue;
             }
             if (!$config->canNotify($item['event'])) {
-                @unlink($file);
+                $this->removeItem($file, 'is for an event that is not notified');
                 continue;
             }
 
             $message = $config->render($item['event'], $item['torrent'], $item['hash'], $item['comment'], $item['details']);
             if (trim($message) === '') {
-                @unlink($file);
-                $this->logMessage('discarded an empty rendered notification');
+                if ($this->removeItem($file, 'rendered an empty message')) {
+                    $this->logMessage('discarded an empty rendered notification');
+                }
                 continue;
             }
             $separator = ($currentText === '') ? '' : "\n\n";
@@ -279,11 +286,30 @@ class rTelegramQueue
         return is_writable($this->directory) && ($mode === false || (($mode & 0077) === 0));
     }
 
+    /**
+     * The records to send: regular files, as enqueue.sh writes and counts them,
+     * less those this drain could not remove.
+     */
     private function queueFiles()
     {
-        $files = glob($this->directory . '/*.event') ?: [];
+        clearstatcache();
+        $files = [];
+        foreach (glob($this->directory . '/*.event') ?: [] as $file) {
+            if (is_file($file) && !isset($this->skipped[$file])) {
+                $files[] = $file;
+            }
+        }
         sort($files, SORT_STRING);
         return $files;
+    }
+
+    private function logIgnoredEntries()
+    {
+        foreach (glob($this->directory . '/*.event') ?: [] as $entry) {
+            if (!is_file($entry)) {
+                $this->logMessage('queued entry ' . $entry . ' is not a regular file and was ignored; delete it');
+            }
+        }
     }
 
     private function hasPendingItems()
@@ -291,11 +317,32 @@ class rTelegramQueue
         return count($this->queueFiles()) > 0;
     }
 
-    private function removeItems($files)
+    private function removeItems($files, $what)
     {
         foreach ($files as $file) {
-            @unlink($file);
+            $this->removeItem($file, $what);
         }
+    }
+
+    /**
+     * Remove a record. One that cannot be removed is logged and skipped for the
+     * rest of this drain, so that the drain does not pass over it again.
+     */
+    private function removeItem($file, $what)
+    {
+        error_clear_last();
+        if (@unlink($file)) {
+            return true;
+        }
+        $error = error_get_last();
+        clearstatcache(true, $file);
+        if (!file_exists($file) && !is_link($file)) {
+            return true;
+        }
+        $reason = is_array($error) ? preg_replace('/^unlink\(.*\): /s', '', $error['message']) : 'unknown error';
+        $this->skipped[$file] = true;
+        $this->logMessage('queued notification ' . $file . ' ' . $what . ' but could not be removed: ' . $reason . '; delete it');
+        return false;
     }
 
     private function logMessage($message)
