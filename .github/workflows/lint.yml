@@ -19,6 +19,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          coverage: none
       - name: php -l
         run: |
           fail=0
@@ -38,6 +39,7 @@ jobs:
         with:
           php-version: '8.3'
           tools: php-cs-fixer:3.95.27
+          coverage: none
       - name: php-cs-fixer
         run: php-cs-fixer fix --dry-run --diff --using-cache=no
 
@@ -98,5 +100,6 @@ jobs:
         with:
           php-version: '8.1'
           tools: phpstan:2.2.9
+          coverage: none
       - name: phpstan
         run: phpstan analyse --no-progress --memory-limit=512M --error-format=github
