@@ -50,7 +50,9 @@ class XMLRPCNumberRangeTest extends TestCase
         $settings->aliases = [];
 
         $property = $reflection->getProperty('theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $this->previousSettings = $property->getValue();
         $property->setValue(null, $settings);
 
@@ -70,7 +72,9 @@ class XMLRPCNumberRangeTest extends TestCase
     {
         $reflection = new ReflectionClass('rTorrentSettings');
         $property = $reflection->getProperty('theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue(null, $this->previousSettings);
         $this->stopDaemon();
         $this->removeTree($this->base);
@@ -329,7 +333,8 @@ class XMLRPCNumberRangeTest extends TestCase
             . ' $__s = $__r->newInstanceWithoutConstructor();'
             . ' $__s->iVersion = 0x904; $__s->aliases = array(); $__s->plugins = array();'
             . ' $__s->directory = "/tmp"; $__s->linkExist = true;'
-            . ' $__p = $__r->getProperty("theSettings"); $__p->setAccessible(true);'
+            . ' $__p = $__r->getProperty("theSettings");'
+            . (PHP_VERSION_ID < 80100 ? ' $__p->setAccessible(true);' : '')
             . ' $__p->setValue(null, $__s);' . "\n"
             . '$HTTP_RAW_POST_DATA = ' . var_export($query, true) . ";\n"
             . 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"

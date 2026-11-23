@@ -308,7 +308,9 @@ class TorrentAdditionCallerTest extends TestCase
             $add->{$field} = $settings->{$field};
         }
         $property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue(null, $add);
         return $add;
     }
@@ -435,7 +437,9 @@ class TorrentAdditionCallerTest extends TestCase
     {
         $this->loadChecker();
         $method = new ReflectionMethod('ruTrackerChecker', 'buildReplacementAddition');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         return $method->invoke(
             null,
             $connectionSeed,

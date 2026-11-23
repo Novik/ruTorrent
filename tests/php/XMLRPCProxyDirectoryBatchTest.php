@@ -158,7 +158,9 @@ class XMLRPCProxyDirectoryBatchTest extends TestCase
     private function confinedCommands()
     {
         $property = new ReflectionProperty('XMLRPCProxy', 'directoryCommands');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         return $property->getValue();
     }
 

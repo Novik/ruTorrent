@@ -528,7 +528,9 @@ class TorrentAdditionArgumentTest extends TestCase
             $safeParams[] = getCmd($alias);
         }
         $rebuild = new ReflectionMethod('XMLRPCProxy', 'rebuildSafeLoadParam');
-        $rebuild->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $rebuild->setAccessible(true);
+        }
 
         $disagreed = [];
         $compared = 0;

@@ -224,7 +224,8 @@ class EraseAndReloadShapeTest extends TestCase
             . ' $__s->iVersion = ' . $iVersion . ';'
             . ' $__s->aliases = array(); $__s->plugins = ' . var_export($plugins, true) . ';'
             . ' $__s->directory = "/tmp"; $__s->linkExist = true;'
-            . ' $__p = $__r->getProperty("theSettings"); $__p->setAccessible(true);'
+            . ' $__p = $__r->getProperty("theSettings");'
+            . (PHP_VERSION_ID < 80100 ? ' $__p->setAccessible(true);' : '')
             . ' $__p->setValue(null, $__s);' . "\n";
     }
 

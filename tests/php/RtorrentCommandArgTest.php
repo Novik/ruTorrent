@@ -66,7 +66,9 @@ class RtorrentCommandArgTest extends TestCase
 
         $reflection = new ReflectionClass('rTorrentSettings');
         $property = $reflection->getProperty('theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $this->previousSettings = $property->getValue();
         $property->setValue(null, $this->settings);
 
@@ -78,7 +80,9 @@ class RtorrentCommandArgTest extends TestCase
     {
         $reflection = new ReflectionClass('rTorrentSettings');
         $property = $reflection->getProperty('theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue(null, $this->previousSettings);
 
         if ($this->torrentFile && file_exists($this->torrentFile)) {
