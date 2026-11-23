@@ -32,7 +32,7 @@ if (plugin.canChangeOptions()) {
 			return true;
 		if ( $$('jabberHost').value != theWebUI.xmpp.JabberHost )
 			return true;
-		if ( $$('advancedSettings').checked  != ( theWebUI.xmpp.AdvansedSettings  == 1 ) )
+		if ( $$('advancedSettings').checked  != ( theWebUI.xmpp.AdvancedSettings  == 1 ) )
 			return true;
 		if ( $$('jabberPort').value != theWebUI.xmpp.JabberPort)
 			return true;
