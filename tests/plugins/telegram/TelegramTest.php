@@ -30,6 +30,30 @@ class TelegramEmptyRenderer extends rTelegram
     }
 }
 
+// A log target that refuses to be opened more than $opens times. A drain
+// logs a record it cannot read once per pass, so a drain that passes over
+// such a record without end throws here instead of hanging the suite.
+class TelegramBoundedLog
+{
+    public static $opens = 0;
+    public static $text = '';
+    public $context;
+
+    public function stream_open($path, $mode, $options, &$openedPath)
+    {
+        if (self::$opens-- <= 0) {
+            throw new RuntimeException('the log was opened again');
+        }
+        return true;
+    }
+
+    public function stream_write($data)
+    {
+        self::$text .= $data;
+        return strlen($data);
+    }
+}
+
 class TelegramTest extends TestCase
 {
     public function tearDown()
@@ -608,8 +632,11 @@ class TelegramTest extends TestCase
     {
         global $log_file;
         $saved = $log_file;
-        $log_file = sys_get_temp_dir() . '/rutorrent-telegram-test-' . getmypid() . '.log';
-        @unlink($log_file);
+        if (!in_array('telegramtestlog', stream_get_wrappers(), true)) {
+            stream_wrapper_register('telegramtestlog', 'TelegramBoundedLog');
+        }
+        $log_file = 'telegramtestlog://log';
+        TelegramBoundedLog::$text = '';
         $queue = new rTelegramQueue();
         $config = new rTelegram();
         $config->enabled = true;
@@ -634,10 +661,18 @@ class TelegramTest extends TestCase
             $messages[] = $payload['text'];
             return ['http_code' => 200, 'body' => '{"ok":true}'];
         });
-        $queue->drain($config, $client, 0, 0);
+        // One pass logs the record once; ten passes is a drain that does not stop.
+        TelegramBoundedLog::$opens = 10;
+        $stopped = true;
+        try {
+            $queue->drain($config, $client, 0, 0);
+        } catch (RuntimeException $e) {
+            $stopped = false;
+        }
+        $this->assertTrue($stopped, 'the drain stops at the unreadable record instead of passing over it again and again');
         $this->assertEquals(['Torrent added: First' . "\n\n" . 'Torrent added: Third'], $messages, 'the readable records around it are sent');
         $this->assertEquals([$files[1]], glob($queue->getDirectory() . '/*.event'), 'the unreadable record is kept');
-        $log = is_file($log_file) ? file_get_contents($log_file) : '';
+        $log = TelegramBoundedLog::$text;
         $this->assertTrue(strpos($log, $files[1] . ' is unreadable and was not sent; fix its permissions or delete it') !== false, 'the log names the record and what to do');
 
         chmod($files[1], 0600);
@@ -645,7 +680,6 @@ class TelegramTest extends TestCase
         $queue->drain($config, $client, 0, 0);
         $this->assertEquals(['Torrent check failed: Second'], $messages, 'the record is sent once it is readable again');
         $this->assertEquals(0, $queue->getPendingCount(), 'it is removed after sending');
-        @unlink($log_file);
         $log_file = $saved;
     }
 
