@@ -4,8 +4,9 @@ require_once(__DIR__ . '/TestCase.php');
 
 /**
  * utf8_encode(), utf8_decode(), strptime(), strftime(), gmstrftime(),
- * xml_set_object(), libxml_disable_entity_loader() and, from PHP 8.5,
- * SplObjectStorage::contains() and attach() are deprecated in the PHP
+ * xml_set_object(), libxml_disable_entity_loader(), from PHP 8.5
+ * SplObjectStorage::contains() and attach(), and from PHP 8.6 strcoll()
+ * (see TorrentSortNamesTest) are deprecated in the PHP
  * versions ruTorrent runs on, and each call writes a deprecation to the
  * log. Each code path that used one runs here in its own PHP process with
  * every error reported, so that a deprecation shows up in its output, and
@@ -288,7 +289,7 @@ class DeprecatedFunctionReplacementTest extends TestCase
 
     public function testNoShippedCodeCallsTheDeprecatedFunctions()
     {
-        $deprecated = ['utf8_encode', 'utf8_decode', 'strptime', 'strftime', 'gmstrftime', 'xml_set_object'];
+        $deprecated = ['utf8_encode', 'utf8_decode', 'strptime', 'strftime', 'gmstrftime', 'xml_set_object', 'strcoll'];
         $found = [];
         foreach (['/php', '/plugins', '/conf'] as $sub) {
             $walk = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
@@ -323,7 +324,7 @@ class DeprecatedFunctionReplacementTest extends TestCase
                 }
             }
         }
-        $this->assertEquals([], $found, 'no shipped code calls a deprecated date, encoding or XML function: '
+        $this->assertEquals([], $found, 'no shipped code calls a deprecated date, encoding, XML or collation function: '
             . implode(', ', $found));
     }
 

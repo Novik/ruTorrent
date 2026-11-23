@@ -51,6 +51,10 @@ class Torrent
      */
     private $extra = [];
 
+    /** Collator or null per LC_COLLATE name, opened on first use
+     * @var array<string, Collator|null> */
+    private static $collators = [];
+
     /** Read and decode torrent file/data OR build a torrent from source folder/file(s)
      * Supported signatures:
      *  - Torrent( string $torrent );
@@ -749,7 +753,63 @@ class Torrent
     private static function sortNames($a, $b)
     {
         $ret = substr_count($b, DIRECTORY_SEPARATOR) - substr_count($a, DIRECTORY_SEPARATOR);
-        return(($ret == 0) ? strcoll($a, $b) : $ret);
+        return(($ret == 0) ? self::compareNames($a, $b, self::collator(strval(setlocale(LC_COLLATE, '0')))) : $ret);
+    }
+
+    /** Compare two file names with $collator, or byte for byte without one.
+     * Names that are not UTF-8 cannot be collated; they follow the others,
+     * in byte order. Names that collate equal are told apart by their bytes.
+     * @param string first name
+     * @param string second name
+     * @param Collator|null collator
+     * @return integer negative, zero or positive
+     */
+    private static function compareNames($a, $b, $collator)
+    {
+        if (!is_null($collator)) {
+            $utf8a = (preg_match('//u', $a) === 1);
+            $utf8b = (preg_match('//u', $b) === 1);
+            if ($utf8a !== $utf8b) {
+                return($utf8a ? -1 : 1);
+            }
+            if ($utf8a && ($ret = $collator->compare($a, $b))) {
+                return($ret);
+            }
+        }
+        return(strcmp($a, $b));
+    }
+
+    /** The collator that orders names as strcoll() did under an LC_COLLATE
+     * locale, such as en_US.UTF-8. Null for C, POSIX and C.UTF-8, where
+     * strcoll() compared bytes, and wherever the intl extension is missing.
+     * @param string LC_COLLATE locale name
+     * @return Collator|null collator
+     */
+    private static function collator($locale)
+    {
+        if (!array_key_exists($locale, self::$collators)) {
+            self::$collators[$locale] = preg_match('/^([a-z]{2,3})(?:_([A-Z]{2}))?(?:[.@]|$)/', $locale, $parts)
+                // Punctuation and symbols are ignored unless the names are otherwise equal, as in glibc.
+                ? self::openCollator($parts[1] . (isset($parts[2]) ? '-' . $parts[2] : '') . '-u-ka-shifted-ks-level4-kv-symbol')
+                : null;
+        }
+        return(self::$collators[$locale]);
+    }
+
+    /** Open a collator for a BCP 47 language tag
+     * @param string language tag
+     * @return Collator|null collator, or null when intl is missing or the collator cannot be opened
+     */
+    private static function openCollator($tag)
+    {
+        if (!class_exists('Collator')) {
+            return(null);
+        }
+        try {
+            return(new Collator($tag));
+        } catch (Throwable $e) {
+            return(null);
+        }
     }
 
     /** Build torrent info from files
