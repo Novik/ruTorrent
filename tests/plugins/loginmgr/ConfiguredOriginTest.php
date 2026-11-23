@@ -189,7 +189,7 @@ PHP;
     $record = $temp . '/recorded.json';
     file_put_contents($record, '[]');
     $process = proc_open(
-        [PHP_BINARY, '-d', 'error_reporting=0', '-r', $peer, $pem, $record, '2'],
+        [PHP_BINARY, '-r', $peer, $pem, $record, '2'],
         [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
         $pipes,
     );

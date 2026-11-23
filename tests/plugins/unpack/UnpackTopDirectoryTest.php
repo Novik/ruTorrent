@@ -253,7 +253,7 @@ class UnpackTopDirectoryTest extends TestCase
             . 'echo json_encode($ret);' . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return [
             'ret' => json_decode(implode("\n", $output), true),

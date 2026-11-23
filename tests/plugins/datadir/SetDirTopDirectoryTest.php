@@ -195,7 +195,7 @@ class SetDirTopDirectoryTest extends TestCase
         $driver = $this->base . '/drive.php';
         file_put_contents($driver, $code);
         $out = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
+        exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver)
             . ' 2>&1', $out);
         return implode("\n", $out);
     }

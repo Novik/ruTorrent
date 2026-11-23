@@ -146,7 +146,7 @@ class SourceActionZipTest extends TestCase
             . 'require(' . var_export($root . '/plugins/source/action.php', true) . ");\n");
 
         $printed = $this->base . '/printed';
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
+        exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver)
             . ' > ' . escapeshellarg($printed) . ' 2>&1');
         if (is_file($recorded)) {
             return unserialize(file_get_contents($recorded));

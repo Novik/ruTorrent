@@ -340,7 +340,7 @@ class XMLRPCNumberRangeTest extends TestCase
             . 'chdir(' . var_export($root . '/plugins/httprpc', true) . ");\n"
             . 'require(' . var_export($root . '/plugins/httprpc/action.php', true) . ");\n");
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver) . ' 2>&1', $output);
+        exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver) . ' 2>&1', $output);
         $this->daemon->stop();
         return implode("\n", $output);
     }

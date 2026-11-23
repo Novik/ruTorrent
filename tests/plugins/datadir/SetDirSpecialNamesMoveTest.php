@@ -229,7 +229,7 @@ class SetDirSpecialNamesMoveTest extends TestCase
         $mask = umask(022);
         try {
             $run = PhpProcess::run(
-                array_merge(PhpProcess::sameIni(), ['-d', 'error_reporting=0'], $args),
+                array_merge(PhpProcess::sameIni(), $args),
                 ['env' => ['LC_ALL' => 'C']],
             );
         } finally {

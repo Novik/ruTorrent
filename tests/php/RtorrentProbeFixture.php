@@ -5,7 +5,8 @@ require_once(__DIR__ . '/TestTree.php');
 
 /**
  * A daemon that answers rTorrentSettings::obtain() the way rtorrent 0.16.20
- * answers it, and that holds d.multicall to the signature 0.16.16 gave it:
+ * answers it, and that holds d.multicall, and d.multicall2 an older rtorrent is
+ * asked instead, to the signature 0.16.16 gave it:
  * (target, view, command...).
  *
  * The probe is seven round trips and the alias map is only built from what
@@ -51,14 +52,19 @@ class RtorrentProbeFixture
         return null;
     }
 
-    /** One d.multicall row: the hash, then a value per remaining command. */
+    /**
+     * One d.multicall row: the hash, then 0 for each command after the first.
+     * A caller that parses by types reads those as integers.
+     */
     public static function row($hash, $columns)
     {
-        $row = [$hash];
-        for ($i = 1; $i < $columns; $i++) {
-            $row[] = '0';
-        }
-        return $row;
+        return array_merge([$hash], array_fill(0, max(0, $columns - 1), 0));
+    }
+
+    /** How many commands a d.multicall request asks for after its target and view. */
+    public static function columns($body)
+    {
+        return max(1, substr_count($body, '<param>') - 2);
     }
 
     /**
@@ -127,7 +133,7 @@ class RtorrentProbeFixture
                 return false;
             }
             $ignored = [];
-            exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+            exec(escapeshellarg(PHP_BINARY) . ' '
                 . escapeshellarg($driver) . ' 2>&1', $ignored);
             return @file_get_contents($base . '/settings/rtorrent.dat');
         } finally {
@@ -167,12 +173,11 @@ class RtorrentProbeResponder
         $names = RtorrentProbeFixture::methodNames($body);
         $single = (count($names) === 1) ? $names[0] : '';
 
-        if ($single === 'd.multicall') {
+        if (($single === 'd.multicall') || ($single === 'd.multicall2')) {
             if (RtorrentProbeFixture::firstParameter($body) !== '') {
                 return FakeRtorrentDaemon::fault(RtorrentProbeFixture::INVALID_TARGET);
             }
-            // The httprpc list mode asks for 36 columns.
-            return RtorrentProbeFixture::row($this->hash, 36);
+            return RtorrentProbeFixture::row($this->hash, RtorrentProbeFixture::columns($body));
         }
         switch ($single) {
             case 'system.client_version':

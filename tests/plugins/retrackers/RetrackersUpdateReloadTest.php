@@ -224,13 +224,13 @@ class RetrackersUpdateReloadTest extends TestCase
             . '$trackers = new rRetrackers();' . "\n"
             . '$trackers->list = [["http://added.test/announce"]];' . "\n"
             . '$trackers->store();' . "\n"
-            . ($throwLog ? 'class ThrowLog { public function stream_open($p, $m, $o, &$x) { throw new Exception("log failure"); } } stream_wrapper_register("throwlog", "ThrowLog"); $log_file = "throwlog://log";' . "\n" : '')
+            . ($throwLog ? 'class ThrowLog { public $context; public function stream_open($p, $m, $o, &$x) { throw new Exception("log failure"); } } stream_wrapper_register("throwlog", "ThrowLog"); $log_file = "throwlog://log";' . "\n" : '')
             . ($throwLog ? 'try { ' : '')
             . 'require(' . var_export($root . '/plugins/retrackers/update.php', true) . ");"
             . ($throwLog ? ' } catch (Throwable $e) { echo $e->getMessage(); }' : '') . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' ' . escapeshellarg(self::HASH) . ' 2>&1', $output);
         return implode("\n", $output);
     }

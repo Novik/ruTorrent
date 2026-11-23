@@ -257,7 +257,7 @@ class SetDirActionCollisionTest extends TestCase
             . 'require(' . var_export($this->repoRoot() . '/plugins/datadir/action.php', true) . ");\n");
 
         $out = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
+        exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver)
             . ' 2>&1', $out);
         $printed = implode("\n", $out);
         $answer = json_decode($printed, true);

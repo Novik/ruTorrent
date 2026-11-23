@@ -173,7 +173,7 @@ class BackfillRequestTest extends TestCase
             . 'require(' . var_export($this->tree . '/plugins/seedingtime/init.php', true) . ");\n"
             . 'echo "JRESULT:" . $jResult;' . "\n");
         return (string) shell_exec(
-            escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver),
+            escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver),
         );
     }
 

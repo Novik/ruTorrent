@@ -188,7 +188,7 @@ class AddTorrentDuplicateTest extends TestCase
             . '$_REQUEST = array("result" => array("Duplicate"), "name" => array("x.torrent"));' . "\n"
             . 'chdir(' . var_export($root . '/php', true) . ");\n"
             . 'require(' . var_export($root . '/php/addtorrent.php', true) . ");\n");
-        $output = shell_exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver));
+        $output = shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver));
         $this->assertEquals(
             'noty("x.torrent - "+theUILang["addTorrent"+"Duplicate"],"alert");',
             $output,

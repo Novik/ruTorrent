@@ -598,7 +598,7 @@ class FeedsPubDateTest extends TestCase
         // A diagnostic printed by the script lands ahead of the document it
         // is building, so a test about the document's shape has to be able to
         // see one rather than run with them switched off.
-        $diagnostics = $reportErrors ? ' -d error_reporting=-1 -d display_errors=1 ' : ' -d error_reporting=0 ';
+        $diagnostics = $reportErrors ? ' -d error_reporting=-1 -d display_errors=1 ' : ' ';
         $output = shell_exec(escapeshellarg(PHP_BINARY) . $diagnostics . escapeshellarg($driver));
         $items = [];
         preg_match_all('`<item>(.*)</item>`Us', (string) $output, $matches);
