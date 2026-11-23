@@ -154,7 +154,9 @@ trait AdditionCallerFixtures
         $settings->aliases = $this->aliasTableFor($iVersion);
 
         $property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue(null, $settings);
         return $settings;
     }
@@ -162,14 +164,18 @@ trait AdditionCallerFixtures
     public function restoreSettings($previous)
     {
         $property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue(null, $previous);
     }
 
     public function currentSettings()
     {
         $property = new ReflectionProperty('rTorrentSettings', 'theSettings');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         return $property->getValue();
     }
 
@@ -200,7 +206,9 @@ trait AdditionCallerFixtures
     public function areValidAdditions($addition)
     {
         $method = new ReflectionMethod('rTorrent', 'areValidAdditions');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         return $method->invoke(null, $addition);
     }
 

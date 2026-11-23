@@ -810,7 +810,9 @@ class XMLRPCProxyBatchParityMatrixTest extends TestCase
     private function property($name)
     {
         $property = new ReflectionProperty('XMLRPCProxy', $name);
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         return $property->getValue();
     }
 

@@ -139,7 +139,9 @@ final class RSSFetchURLTest extends TestCase
     private function fetcherOf($rss)
     {
         $property = new ReflectionProperty('rRSS', 'fetchURL');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         return $property->getValue($rss);
     }
 

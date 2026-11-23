@@ -136,7 +136,9 @@ class XMLRPCProxyTest extends TestCase
     public function testSanitizeMethodsList()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'sanitizeMethods');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $methods = $ref->getValue();
         $this->assertTrue(in_array('load.start', $methods), 'load.start in sanitize list');
         $this->assertTrue(in_array('load.raw_start', $methods), 'load.raw_start in sanitize list');
@@ -525,7 +527,9 @@ class XMLRPCProxyTest extends TestCase
     public function testCommandCarryingMethodsList()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'multicallMethods');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $methods = $ref->getValue();
         $this->assertTrue(in_array('d.multicall2', $methods), 'd.multicall2 is command-carrying');
         $this->assertTrue(in_array('t.multicall', $methods), 't.multicall is command-carrying');
@@ -627,7 +631,9 @@ class XMLRPCProxyTest extends TestCase
     public function testLoadUriListDoesNotCoverTheRawMethods()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'uriLoadMethods');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $methods = $ref->getValue();
         $this->assertTrue(in_array('load.start', $methods), 'load.start takes a URI');
         $this->assertTrue(
@@ -656,7 +662,9 @@ class XMLRPCProxyTest extends TestCase
     public function testRefusalMatchesTheWholeFamily()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'denyPrefixes');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $this->assertTrue(
             in_array('execute', $ref->getValue()),
             'one entry covers every execute spelling',
@@ -796,7 +804,9 @@ class XMLRPCProxyTest extends TestCase
     public function testElevationListHoldsNoCommandCarryingMethod()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'elevate');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $elevated = array_keys($ref->getValue());
         foreach (['load.start', 'load.raw_start', 'd.multicall2', 't.multicall'] as $method) {
             $this->assertTrue(
@@ -937,7 +947,9 @@ class XMLRPCProxyTest extends TestCase
     public function testTheConfinedCommandsAreTheOnesThatWriteSomewhere()
     {
         $ref = new ReflectionProperty('XMLRPCProxy', 'directoryCommands');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $commands = $ref->getValue();
         $this->assertTrue(in_array('d.directory.set', $commands), 'd.directory.set is confined');
         $this->assertTrue(in_array('d.directory_base.set', $commands), 'd.directory_base.set is confined');

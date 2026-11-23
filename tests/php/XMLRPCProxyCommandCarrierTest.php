@@ -479,7 +479,9 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
     private function evaluators()
     {
         $property = new ReflectionProperty('XMLRPCProxy', 'evaluatorMethods');
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         return $property->getValue();
     }
 }
