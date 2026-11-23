@@ -808,24 +808,52 @@ class UnconfirmedEraseTest extends TestCase
     public function testAFileReachedByAPathRealpathCannotResolveIsKept()
     {
         $this->fresh();
-        $download = $this->download();
+        $download = $this->download('Download', ['one.bin' => 'one', 'sub/two.bin' => 'second']);
         // The file has a second hard link nobody seeds, and the other download
         // names the download's directory padded with "/." to a path of
-        // PHP_MAXPATHLEN - 1 bytes: stat() takes it, PHP's realpath() refuses
-        // a path that long. Whether it reaches the file through this name
-        // cannot be told, so the file is kept.
+        // PHP_MAXPATHLEN - 1 bytes, which the system takes. PHP's realpath()
+        // refuses a path that long, and so does stat() from PHP 8.6 on.
+        // Whether it reaches the file through this name cannot be told, so
+        // the file is kept.
         @mkdir($this->base . '/data/Spare', 0700, true);
         link($download['files'][0], $this->base . '/data/Spare/one.bin');
-        $pad = PHP_MAXPATHLEN - 1 - strlen($download['files'][0]);
-        $directory = $download['base'] . str_repeat('/.', intdiv($pad, 2)) . str_repeat('/', $pad % 2);
+        $directory = $this->padded($download['base'], 'one.bin');
         $path = $directory . '/one.bin';
         $this->startDaemon(
             [$this->pathsReply($download), $this->eraseReply()],
             [$this->loaded([self::OTHER => [$directory, ['one.bin' => 3]]])],
         );
         $this->assertTrue(
-            (strlen($path) === PHP_MAXPATHLEN - 1) && (@stat($path) !== false) && (realpath($path) === false),
-            'stat() takes the path, realpath() does not',
+            (strlen($path) === PHP_MAXPATHLEN - 1) && $this->systemTakes($path),
+            'the system takes the path',
+        );
+        $this->assertTrue(realpath($path) === false, 'realpath() does not');
+
+        $this->assertTrue($this->removeWithData() === 'erased', 'the removal happened');
+        $out = $this->collect();
+
+        $this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+        $this->assertTrue($this->isFile($download['files'][0]), 'the file the long path reaches is kept');
+        $this->assertTrue(!$this->isFile($download['files'][1]), 'and the file of another size is deleted');
+    }
+
+    public function testAFileReachedByAPathPhpCannotStatIsKept()
+    {
+        $this->fresh();
+        $download = $this->download('Download', ['one.bin' => 'one', 'sub/two.bin' => 'second']);
+        // The same data seeded under another hash, its directory named with
+        // "/." padding to a path of PHP_MAXPATHLEN - 1 bytes. The system takes
+        // it; PHP 8.6 refuses it in stat() and lstat() alike, where earlier
+        // versions take it. The file it may reach is kept either way.
+        $directory = $this->padded($download['base'], 'one.bin');
+        $path = $directory . '/one.bin';
+        $this->startDaemon(
+            [$this->pathsReply($download), $this->eraseReply()],
+            [$this->loaded([self::OTHER => [$directory, ['one.bin' => 3]]])],
+        );
+        $this->assertTrue(
+            (strlen($path) === PHP_MAXPATHLEN - 1) && $this->systemTakes($path),
+            'the system takes the path',
         );
 
         $this->assertTrue($this->removeWithData() === 'erased', 'the removal happened');
@@ -833,7 +861,58 @@ class UnconfirmedEraseTest extends TestCase
 
         $this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
         $this->assertTrue($this->isFile($download['files'][0]), 'the file the long path reaches is kept');
-        $this->assertTrue(!$this->isFile($download['files'][1]), 'and the other file is deleted');
+        $this->assertTrue(!$this->isFile($download['files'][1]), 'and the file of another size is deleted');
+        $this->assertTrue(
+            strpos($this->logged(), 'erasedata: kept 1 file(s) of ' . self::HASH) !== false,
+            'and the log says so: ' . $this->logged(),
+        );
+    }
+
+    public function testAFileReachedThroughADirectoryThatCannotBeSearchedIsKept()
+    {
+        $this->fresh();
+        $download = $this->download('Download', ['one.bin' => 'one', 'sub/two.bin' => 'second']);
+        // The other download's file is a symlink to this one's, in a
+        // directory the collector may not search: whether its path reaches a
+        // file of ours cannot be told, so the file of its size is kept.
+        $locked = $this->base . '/data/Locked';
+        @mkdir($locked, 0700, true);
+        symlink($download['files'][0], $locked . '/one.bin');
+        chmod($locked, 0);
+        $this->startDaemon(
+            [$this->pathsReply($download), $this->eraseReply()],
+            [$this->loaded([self::OTHER => [$locked, ['one.bin' => 3]]])],
+        );
+
+        $this->assertTrue($this->removeWithData() === 'erased', 'the removal happened');
+        $out = $this->collect();
+        chmod($locked, 0700);
+
+        $this->assertTrue($out === '', 'the collector runs without a diagnostic: ' . $out);
+        $this->assertTrue($this->isFile($download['files'][0]), 'the file of the size the path has is kept');
+        $this->assertTrue(!$this->isFile($download['files'][1]), 'and the file of another size is deleted');
+    }
+
+    public function testAFileAnotherDownloadHasNotCreatedYetKeepsNothing()
+    {
+        $this->fresh();
+        $download = $this->download();
+        // The other download has files of this one's sizes it has not
+        // created yet: one in its directory, one in a directory it has not
+        // created either, and one under a name a file of another download
+        // holds. Their paths reach no file, so nothing is kept.
+        @mkdir($this->base . '/data/Other', 0700, true);
+        file_put_contents($this->base . '/data/Other/sub', 'a file');
+        $this->startDaemon(
+            [$this->pathsReply($download), $this->eraseReply()],
+            [$this->loaded([self::OTHER => [
+                $this->base . '/data/Other',
+                ['one.bin' => 3, 'new/deeper/two.bin' => 3, 'sub/three.bin' => 3],
+            ]])],
+        );
+
+        $this->assertDeletedWhole($download);
+        $this->assertTrue($this->logged() === '', 'with nothing kept: ' . $this->logged());
     }
 
     public function testAFilePast2GiBIsComparedOnA32BitPhpToo()
@@ -1286,6 +1365,23 @@ class UnconfirmedEraseTest extends TestCase
             $named[] = str_replace('/data/pool/', '/data/link/', $path);
         }
         return ['base' => array_shift($named), 'files' => $named];
+    }
+
+    /**
+     * $dir padded with "/." so that $dir/$name is PHP_MAXPATHLEN - 1 bytes
+     * long, the longest path the system takes.
+     */
+    private function padded($dir, $name)
+    {
+        $pad = PHP_MAXPATHLEN - 2 - strlen($dir) - strlen($name);
+        return $dir . str_repeat('/.', intdiv($pad, 2)) . str_repeat('/', $pad % 2);
+    }
+
+    /** Whether the system, not PHP, finds a file at $path. */
+    private function systemTakes($path)
+    {
+        exec('test -f ' . escapeshellarg($path), $out, $code);
+        return $code === 0;
     }
 
     /**
