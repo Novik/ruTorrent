@@ -109,14 +109,16 @@ if (!function_exists('erasedataLoadedDownloads')) {
         return(sprintf('%.0f', fmod((float) $size + 4294967296.0, 4294967296.0)));
     }
 
-    // Asks for the paths of $files, each [hash, index of the file], and adds
-    // to $claimed which of $inodes they reach. False, with $why as
+    // Asks for the paths of $files, each [hash, index of the file, size
+    // key], and adds to $claimed which of $inodes they reach. A path that
+    // cannot be followed may reach any file of ours of its size, so all of
+    // those, of $bySize, are claimed. False, with $why as
     // erasedataLoadedDownloads() sets it, when rtorrent will not say.
-    function erasedataClaimPaths($files, $downloads, $inodes, &$claimed, &$why)
+    function erasedataClaimPaths($files, $downloads, $inodes, $bySize, &$claimed, &$why)
     {
         $req = new rXMLRPCRequest();
         foreach ($files as $file) {
-            $req->addCommand(new rXMLRPCCommand(getCmd("f.get_path"), $file));
+            $req->addCommand(new rXMLRPCCommand(getCmd("f.get_path"), [$file[0], $file[1]]));
         }
         $val = erasedataAnswer($req, $why);
         if ($val === null) {
@@ -137,6 +139,11 @@ if (!function_exists('erasedataLoadedDownloads')) {
                     $keys[$st['dev'] . ':' . $st['ino']] = true;
                 }
             }
+            if (!count($keys) && !erasedataLeadsNowhere($path)) {
+                foreach ($bySize[$file[2]] ?? [] as $own) {
+                    $claimed[$own][$hash] = true;
+                }
+            }
             foreach (array_keys($keys) as $key) {
                 foreach ($inodes[$key] ?? [] as $own => $nlink) {
                     if (($nlink == 1) || erasedataSameName($path, $own)) {
@@ -146,6 +153,27 @@ if (!function_exists('erasedataLoadedDownloads')) {
             }
         }
         return(true);
+    }
+
+    // Whether $path, which neither stat() nor lstat() takes, can be told to
+    // reach no file at all, whoever asks: the nearest directory above it that
+    // stat() takes can be searched, so the next name in it is missing, a
+    // dangling symlink or a loop; or that is not a directory. It cannot be
+    // told when a directory above it cannot be searched, or when PHP may be
+    // refusing a path the system takes: PHP 8.6 refuses one of
+    // PHP_MAXPATHLEN - 1 bytes, which earlier versions and the system take.
+    function erasedataLeadsNowhere($path)
+    {
+        if (strlen($path) >= PHP_MAXPATHLEN - 1) {
+            return(false);
+        }
+        for ($dir = dirname($path); @stat($dir) === false; $dir = $up) {
+            $up = dirname($dir);
+            if ($up === $dir) {
+                return(false);
+            }
+        }
+        return(!is_dir($dir) || is_executable($dir));
     }
 
     // Whether $path, which reaches the inode of $own, reaches it through
@@ -187,7 +215,7 @@ if (!function_exists('erasedataLoadedDownloads')) {
     function erasedataClaimedFiles($ownPaths, $downloads, &$sizes, &$why = null)
     {
         $inodes = [];
-        $ownSizes = [];
+        $bySize = [];
         foreach ($ownPaths as $own) {
             // The inode is the one unlink() removes; the size is the one a
             // download reading through the name sees, of a symlink the size
@@ -199,7 +227,7 @@ if (!function_exists('erasedataLoadedDownloads')) {
             $inodes[$st['dev'] . ':' . $st['ino']][$own] = $st['nlink'];
             $seen = @stat($own);
             if ($seen !== false) {
-                $ownSizes[erasedataSizeKey($seen['size'])] = true;
+                $bySize[erasedataSizeKey($seen['size'])][] = $own;
             }
         }
 
@@ -240,19 +268,20 @@ if (!function_exists('erasedataLoadedDownloads')) {
         foreach (array_keys($downloads) as $hash) {
             $list = $sizes[$hash];
             for ($i = 0, $at = 0; ($end = strpos($list, '/', $at)) !== false; $i++, $at = $end + 1) {
-                if (!isset($ownSizes[erasedataSizeKey(substr($list, $at, $end - $at))])) {
+                $key = erasedataSizeKey(substr($list, $at, $end - $at));
+                if (!isset($bySize[$key])) {
                     continue;
                 }
-                $files[] = [$hash, $i];
+                $files[] = [$hash, $i, $key];
                 if (count($files) == ERASEDATA_PATHS_PER_REQUEST) {
-                    if (!erasedataClaimPaths($files, $downloads, $inodes, $claimed, $why)) {
+                    if (!erasedataClaimPaths($files, $downloads, $inodes, $bySize, $claimed, $why)) {
                         return(null);
                     }
                     $files = [];
                 }
             }
         }
-        if (count($files) && !erasedataClaimPaths($files, $downloads, $inodes, $claimed, $why)) {
+        if (count($files) && !erasedataClaimPaths($files, $downloads, $inodes, $bySize, $claimed, $why)) {
             return(null);
         }
         return($claimed);
