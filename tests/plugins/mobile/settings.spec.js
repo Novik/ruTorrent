@@ -339,4 +339,52 @@ describe("mobile plugin settings", () => {
       expect($("#filterTrackersList .active").text()).toBe("0All");
     });
   });
+
+  describe("processTorrents with a restored label filter", () => {
+    const label = 'tv "4k" \\ archive';
+    const labelled = "A".repeat(40);
+    const other = "B".repeat(40);
+
+    beforeEach(() => {
+      window.dStatus = { started: 1, paused: 2, checking: 4, hashing: 8, error: 16 };
+      window.theWebUI.getStatusIcon = () => ["", "Seeding"];
+      window.theWebUI.sizeDecimalPlaces = () => 1;
+      // The desktop label panel is not filled yet on the first mobile paint
+      window.theWebUI.categoryList = { panelLabelAttribs: {} };
+      $("body").append(
+        '<div id="processTorrentsUi"><div id="torrentsList"><div id="list"><table><tbody></tbody></table></div></div>' +
+        '<span id="filterText"></span><span id="filterCount"></span><span id="filterTotals"></span></div>'
+      );
+      plugin.torrents = null;
+      plugin.rowsPrev = {};
+      plugin.rowsPrimed = false;
+      plugin.torrent = undefined;
+      plugin.searchPattern = null;
+      plugin.filters = { status: [], label: [label], tracker: [] };
+      // Trackers already fetched for this set of torrents
+      plugin.trackersCache = { key: [labelled, other].join(" "), data: {} };
+    });
+    afterEach(() => {
+      $("#processTorrentsUi").remove();
+      delete window.theWebUI.categoryList;
+      delete window.theWebUI.getStatusIcon;
+      delete window.theWebUI.sizeDecimalPlaces;
+    });
+
+    it("keeps the label filter and shows only that label's torrents", () => {
+      const torrent = (name, lbl) => ({
+        name: name, label: lbl, size: 1024, state: 1, done: 1000, ul: 0, dl: 0,
+        eta: -1, ratio: 0, msg: "", partially_done: 0,
+      });
+
+      plugin.processTorrents({
+        [labelled]: torrent("Labelled", label),
+        [other]: torrent("Other", "other"),
+      }, true);
+
+      expect(plugin.filters.label).toEqual([label]);
+      expect($("#" + labelled).css("display")).not.toBe("none");
+      expect($("#" + other).css("display")).toBe("none");
+    });
+  });
 });
