@@ -118,8 +118,11 @@ if (isset($HTTP_RAW_POST_DATA)) {
                         // Asked before the erase, not after. sendTorrent()
                         // refuses an addition list whole, and by the time it
                         // says so the download it would have reloaded is gone.
+                        $directory = rXMLRPCRequest::unescapeValue($req->val[6]);
                         if (!rTorrent::areValidAdditions($addition)) {
                             $errors[] = ['desc' => "theUILang.errorAddTorrent", 'prm' => $fname];
+                        } elseif (!rTorrent::acceptsReloadDirectory($directory, false)) {
+                            $errors[] = ['desc' => "theUILang.addTorrentFailedDirectory", 'prm' => ''];
                         } else {
                             $eReq = new rXMLRPCRequest(new rXMLRPCCommand("d.erase", $hash));
                             if ($eReq->run() && !$eReq->fault) {
@@ -128,7 +131,7 @@ if (isset($HTTP_RAW_POST_DATA)) {
                                     $torrent,
                                     $isStart,
                                     false,
-                                    rXMLRPCRequest::unescapeValue($req->val[6]),
+                                    $directory,
                                     $label,
                                     true,
                                     ($req->val[8] == 1),

@@ -43,6 +43,7 @@ function deleteTrackers(&$lst, $todelete)
 }
 
 $processed = false;
+$directoryRefused = false;
 $trks = rRetrackers::load();
 if (count($argv) > 1) {
     $hash = $argv[1];
@@ -114,15 +115,21 @@ if (count($argv) > 1) {
                         // refuses an addition list whole, and by then the
                         // download it would have reloaded is gone.
                         $reloadAddition = [getCmd("d.set_custom3") . "=1"];
-                        $eReq = rTorrent::areValidAdditions($reloadAddition)
-                            ? new rXMLRPCRequest(new rXMLRPCCommand("d.erase", $hash)) : null;
+                        $directory = rXMLRPCRequest::unescapeValue($req->val[4]);
+                        if (!rTorrent::acceptsReloadDirectory($directory, false)) {
+                            $directoryRefused = true;
+                            $eReq = null;
+                        } else {
+                            $eReq = rTorrent::areValidAdditions($reloadAddition)
+                                ? new rXMLRPCRequest(new rXMLRPCCommand("d.erase", $hash)) : null;
+                        }
                         if ($eReq && $eReq->success()) {
                             $label = rawurldecode(rXMLRPCRequest::unescapeValue($req->val[3]));
                             rTorrent::sendTorrent(
                                 $torrent,
                                 $isStart,
                                 false,
-                                rXMLRPCRequest::unescapeValue($req->val[4]),
+                                $directory,
                                 $label,
                                 true,
                                 false,
@@ -140,6 +147,9 @@ if (count($argv) > 1) {
         if (!$processed && $isStart) {
             $req = new rXMLRPCRequest(new rXMLRPCCommand("d.start", $hash));
             $req->run();
+        }
+        if ($directoryRefused) {
+            FileUtil::toLog('retrackers: directory-not-reusable: ' . $hash . '; trackers not updated');
         }
     }
 }
