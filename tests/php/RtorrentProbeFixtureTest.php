@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/PhpProcess.php');
 require_once(__DIR__ . '/TestTree.php');
 
@@ -8,7 +9,13 @@ class RtorrentProbeFixtureTest extends TestCase
 {
     public function testDisabledProcessCreationRemovesTheSetupTree()
     {
-        $result = $this->probe('proc_open');
+        // PHP 7.4 warns about a disabled function; PHP 8 throws instead.
+        $result = ExpectedDiagnostics::expect(
+            (PHP_VERSION_ID < 80000) ? ['/^Warning: proc_open\(\) has been disabled for security reasons /'] : [],
+            function () {
+                return $this->probe('proc_open');
+            },
+        );
         $this->assertTrue(
             isset($result['error']) && strpos(
                 $result['error'],
@@ -29,7 +36,12 @@ class RtorrentProbeFixtureTest extends TestCase
 
     public function testFailedDriverWriteRefusesAndStopsTheDaemon()
     {
-        $result = $this->probe('file_put_contents');
+        $result = ExpectedDiagnostics::expect(
+            (PHP_VERSION_ID < 80000) ? ['/^Warning: file_put_contents\(\) has been disabled for security reasons /'] : [],
+            function () {
+                return $this->probe('file_put_contents');
+            },
+        );
         $this->assertTrue(
             isset($result['error']) || $result['ok'] === false,
             'a failed driver write cannot manufacture a cache',

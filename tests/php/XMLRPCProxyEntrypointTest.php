@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/TestHttpServer.php');
 require_once(__DIR__ . '/TestTree.php');
 require_once(__DIR__ . '/../../php/scgitransport.php');
@@ -24,7 +25,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 
     public function testHttprpcUnreadableInputReturnsClassified400()
     {
-        $result = $this->runEntrypoint('action', 'unreadable', true);
+        $result = $this->runUnreadable('action', true);
         $this->assertHttp(
             $result,
             '400 Bad Request',
@@ -53,7 +54,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 
     public function testHttprpcInputFailuresDoNotLogWhenDisabled()
     {
-        $unreadable = $this->runEntrypoint('action', 'unreadable', false);
+        $unreadable = $this->runUnreadable('action', false);
         $this->assertHttp(
             $unreadable,
             '400 Bad Request',
@@ -125,7 +126,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 
     public function testRpc2UnreadableInputReturnsClassified400()
     {
-        $result = $this->runEntrypoint('rpc2', 'unreadable', true);
+        $result = $this->runUnreadable('rpc2', true);
         $this->assertHttp($result, '400 Bad Request', 'text/xml;charset=UTF-8');
         $this->assertTrue(
             strpos($result['body'], 'Could not read XMLRPC request.') !== false,
@@ -423,6 +424,18 @@ if(getenv('XMLRPC_ENTRYPOINT_UNREADABLE') === '1')
 	stream_wrapper_register('php', 'EntrypointUnreadableInput');
 }
 PHP,
+        );
+    }
+
+    // A request body that cannot be read is the case under test, and PHP
+    // warns about the failed open of php://input in the server it runs in.
+    private function runUnreadable($door, $log)
+    {
+        return ExpectedDiagnostics::expect(
+            ['/^Warning: file_get_contents\(php:\/\/input\): failed to open stream: /i'],
+            function () use ($door, $log) {
+                return $this->runEntrypoint($door, 'unreadable', $log);
+            },
         );
     }
 

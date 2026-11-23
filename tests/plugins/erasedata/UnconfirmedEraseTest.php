@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/../../php/PhpProcess.php');
 require_once(__DIR__ . '/LoadedDownloads.php');
@@ -1165,15 +1166,21 @@ class UnconfirmedEraseTest extends TestCase
 
         $this->assertTrue($this->removeWithData(60, self::HASH) === 'erased', 'the first removal happened');
         $this->assertTrue($this->removeWithData(60, self::FOURTH) === 'erased', 'and the second');
-        $out = $this->collect('', '-d memory_limit=16M', $code);
+        // Both the collector and the PHP it is compared with end on
+        // memory_limit, and PHP reports that as a fatal error.
+        $memory = ['/^Fatal error: Allowed memory size of [0-9]+ bytes exhausted /'];
+        ExpectedDiagnostics::expect($memory, function () use (&$code) {
+            $this->collect('', '-d memory_limit=16M', $code);
+        });
 
-        // Its own words are not repeated here: tests/php-test.sh takes them
-        // for a failure of this file. The collector's line comes from a
-        // shutdown function, which some builds do not run after memory_limit
-        // (PhpProcess::memoryExhaustion()): there the list waits without it.
-        $php = PhpProcess::memoryExhaustion(['-d', 'display_errors=1']);
+        // The collector's line comes from a shutdown function, which some
+        // builds do not run after memory_limit (PhpProcess::memoryExhaustion()):
+        // there the list waits without it.
+        $php = ExpectedDiagnostics::expect($memory, function () {
+            return PhpProcess::memoryExhaustion(['-d', 'display_errors=1']);
+        });
         $this->assertTrue(
-            (strpos($out, 'Allowed memory size') !== false) && ($code === $php['code']),
+            $code === $php['code'],
             'the collector stops on PHP\'s memory_limit as this PHP ends a script on it (exit ' . $php['code']
             . ($php['shutdown'] ? ', shutdown functions run' : ', no shutdown function runs') . '): exit ' . $code,
         );
