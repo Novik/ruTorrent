@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 
 /**
  * A move stays inside the directory it was given, and a move that stops part
@@ -492,9 +493,24 @@ class FileMoveContainmentTest extends TestCase
 			echo json_encode($out);
 		');
 
+        // A source file that is not there, and a directory that cannot be
+        // written to, fail on purpose, and each failure is reported where it
+        // happens.
+        $expected = [
+            '/^Warning: rename\(.*\): No such file or directory /',
+            '/^Warning: copy\(.*\): failed to open stream: No such file or directory /i',
+        ];
+        if ($this->modeStopsWrites()) {
+            $expected[] = '/^Warning: rename\(.*\): Permission denied /';
+            $expected[] = '/^Warning: copy\(.*\): failed to open stream: Permission denied /i';
+            $expected[] = '/^Warning: symlink\(\): Permission denied /';
+        }
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
-            . escapeshellarg($probe) . ' 2>&1', $output);
+        // A diagnostic goes to the log, not into the answer read from stdout.
+        ExpectedDiagnostics::expect($expected, function () use ($probe, &$output) {
+            exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 '
+                . escapeshellarg($probe) . ' 2>&1', $output);
+        });
         $printed = implode("\n", $output);
         $result = json_decode($printed, true);
         if (!is_array($result)) {
@@ -502,5 +518,20 @@ class FileMoveContainmentTest extends TestCase
         }
         $this->driven[$source] = $result;
         return $result;
+    }
+
+    /**
+     * Whether a directory at mode 0555 stops this user writing to it. Root
+     * ignores the mode, and then the cases that rely on it raise nothing.
+     */
+    private function modeStopsWrites()
+    {
+        $dir = $this->tree . '-mode';
+        @mkdir($dir, 0555, true);
+        @chmod($dir, 0555);
+        $stops = (@file_put_contents($dir . '/w', 'x') === false);
+        @unlink($dir . '/w');
+        @rmdir($dir);
+        return $stops;
     }
 }
