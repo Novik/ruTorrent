@@ -212,6 +212,8 @@ class FakeRtorrentDaemon
         // An argv command owns the PHP process directly, without a shell to orphan it.
         $command = [PHP_BINARY, '-d', 'display_errors=stderr', '-r', $source];
         $plan = serialize(['replies' => $replies, 'logFile' => $this->logFile]);
+        // PHP 7.4 runs a disabled proc_open() as a stub that never sets $pipes.
+        $pipes = [];
         $this->process = proc_open($command, [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],

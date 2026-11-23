@@ -188,6 +188,13 @@ class SCGITransportFixture
         ]));
         $script = "<?php\nrequire_once " . var_export(__DIR__ . '/SCGIRequest.php', true) . ";\n" . <<<'PHP'
 $config = json_decode(file_get_contents($argv[1]), true);
+// A client that stops reading before the reply is complete is a case the
+// tests provoke. The write that meets it fails, and the peer exits below
+// without a notice; any other diagnostic is reported as usual.
+set_error_handler(function($number, $message)
+{
+	return preg_match('/^fwrite\(\): send of [0-9]+ bytes failed with errno=(32|104) /i', $message) === 1;
+});
 $server = @stream_socket_server($config['listen'], $errno, $error);
 if($server === false)
 {
