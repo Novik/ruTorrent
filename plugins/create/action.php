@@ -229,7 +229,7 @@ if (isset($_REQUEST['cmd'])) {
                         $rt->piece_size = $_REQUEST['piece_size'];
                         $rt->start_seeding = $_REQUEST['start_seeding'];
                         $rt->private_torrent = $_REQUEST['private'];
-                        $rt->hybrid_torrent = $_REQUEST['hybrid'];
+                        $rt->hybrid_torrent = $_REQUEST['hybrid'] ?? null;
                         $rt->store();
 
                         $piece_size = 262144;
@@ -242,11 +242,10 @@ if (isset($_REQUEST['cmd'])) {
                         if ($useExternal == "mktorrent") {
                             $piece_size = log($piece_size, 2);
                         }
-                        if (isset($_REQUEST['hybrid'])) {
-                            $hybrid = true;
-                            if ($useExternal !== "torrenttools" && $_REQUEST['hybrid'] == 1) {
-                                $useExternal = "inner";
-                            }
+                        // The interface sends hybrid=0 for an unticked box.
+                        $hybrid = isset($_REQUEST['hybrid']) && ($_REQUEST['hybrid'] == 1);
+                        if ($hybrid && ($useExternal !== "torrenttools")) {
+                            $useExternal = "inner";
                         }
                         if ($useExternal === false) {
                             $useExternal = "inner";
@@ -265,7 +264,7 @@ if (isset($_REQUEST['cmd'])) {
                                 'start_seeding' => $_REQUEST['start_seeding'],
                                 'piece_size' => $_REQUEST['piece_size'],
                                 'private' => $_REQUEST['private'],
-                                'hybrid' => $_REQUEST['hybrid'],
+                                'hybrid' => $_REQUEST['hybrid'] ?? null,
                             ],
                         );
                         $commands = [];
@@ -278,7 +277,7 @@ if (isset($_REQUEST['cmd'])) {
                         . $piece_size . " "
                         . escapeshellarg(User::getUser()) . " "
                         . escapeshellarg(rTask::formatPath($task->id)) . " "
-                        . escapeshellarg($hybrid);
+                        . escapeshellarg($hybrid ? '1' : '');
 
                         $commands[] = '{';
                         $commands[] = 'chmod a+r "${dir}"/result.torrent';

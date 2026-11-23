@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 require_once(__DIR__ . '/../../../php/Torrent.php');
 
@@ -162,7 +163,22 @@ class CreateTopDirectoryTest extends TestCase
         // realpath() is not checked by the walk: rTorrent::isInsideTopDirectory()
         // has already refused the folder, or stopped the request, without it.
         foreach (['is_link', 'scandir', 'is_dir', 'realpath'] as $function) {
-            $a = $this->create($this->top . '/pack', ['disable' => $function, 'mayFail' => true]);
+            // is_link() and scandir() are only called once function_exists()
+            // has found them. PHP 7.4 warns that a disabled is_dir() or
+            // realpath() was called, and its null realpath() reaches strpos();
+            // PHP 8 has no such function, and the request stops at a call to it.
+            $expected = [];
+            if (in_array($function, ['is_dir', 'realpath']) && (PHP_VERSION_ID < 80000)) {
+                $expected[] = '/^Warning: ' . $function . '\(\) has been disabled for security reasons /';
+                if ($function === 'realpath') {
+                    $expected[] = '/^Deprecated: strpos\(\): Non-string needles will be interpreted as strings /';
+                }
+            } elseif (in_array($function, ['is_dir', 'realpath'])) {
+                $expected[] = '/^Fatal error: Uncaught Error: Call to undefined function ' . $function . '\(\)/';
+            }
+            $a = ExpectedDiagnostics::expect($expected, function () use ($function) {
+                return $this->create($this->top . '/pack', ['disable' => $function, 'mayFail' => true]);
+            });
             // PHP 8 stops at action.php's own is_dir() call, or at realpath()
             // in rTorrent::isInsideTopDirectory(), and prints nothing.
             $stopped = ($a['errors'] === null) && (PHP_MAJOR_VERSION >= 8)
@@ -210,7 +226,7 @@ class CreateTopDirectoryTest extends TestCase
         $this->assertEquals($this->top . '/outside', $request['path_edit'], 'the task holds the path that was checked');
         $output = [];
         exec('RU_PROFILE_PATH=' . escapeshellarg($this->base . '/profile') . ' ' . escapeshellarg(PHP_BINARY)
-            . ' -d error_reporting=0 -d variables_order=EGPCS '
+            . ' -d variables_order=EGPCS '
             . escapeshellarg(realpath(__DIR__ . '/../../..') . '/plugins/create/createtorrent.php') . ' '
             . escapeshellarg(basename(dirname($params[0]))) . ' 2>&1', $output);
         $result = dirname($params[0]) . '/result.torrent';
@@ -218,6 +234,39 @@ class CreateTopDirectoryTest extends TestCase
             !is_file($result) || (strpos(file_get_contents($result), 'secret.bin') === false),
             'and the built-in creator does not hash the file outside: ' . implode("\n", $output),
         );
+    }
+
+    public function testTorrenttoolsMakesAHybridTorrentOnlyWhenOneIsAskedFor()
+    {
+        // torrenttools.sh makes a hybrid (v1 and v2) torrent when its eighth
+        // argument is not empty, and the interface sends hybrid=0 for an
+        // unticked box.
+        foreach (['0' => "''", '1' => "'1'", 'absent' => "''"] as $hybrid => $expected) {
+            $options = ['creator' => 'torrenttools', 'daemon' => true];
+            if ($hybrid !== 'absent') {
+                $options['hybrid'] = (string) $hybrid;
+            }
+            $a = $this->create($this->top . '/pack/mine.txt', $options);
+            $this->assertTrue(!$this->refused($a), 'hybrid ' . $hybrid . ': the file is accepted: ' . json_encode($a['errors']));
+            $scripts = glob($this->base . '/profile/settings/tasks/*/start.sh') ?: [];
+            $line = '';
+            foreach ($scripts as $script) {
+                foreach (file($script) as $text) {
+                    // The command, without the redirections rTask adds to it.
+                    if ((strpos($text, '/plugins/create/torrenttools.sh') !== false)
+                        && (($end = strpos($text, ' 2>> "${dir}"/')) !== false)) {
+                        $line = substr($text, 0, $end);
+                    }
+                }
+                @unlink(dirname($script) . '/params');
+                @unlink($script);
+                @rmdir(dirname($script));
+            }
+            $this->assertTrue(
+                (strlen($line) > strlen($expected)) && (substr($line, -strlen($expected) - 1) === ' ' . $expected),
+                'hybrid ' . $hybrid . ': torrenttools.sh is given ' . $expected . ' as its hybrid argument: ' . $line,
+            );
+        }
     }
 
     public function testALinkOutInsideAFolderIsLeftOut()
@@ -280,7 +329,8 @@ class CreateTopDirectoryTest extends TestCase
      * it is read; 'disable', functions the child lacks; 'mayFail', to answer
      * null errors instead of throwing when nothing is printed; 'daemon', to
      * have a stand-in rtorrent accept the task, so its parameters stay while
-     * nothing runs.
+     * nothing runs; 'hybrid', the hybrid field of the request, left out
+     * when not given.
      */
     private function create($path, $options = [])
     {
@@ -308,12 +358,14 @@ class CreateTopDirectoryTest extends TestCase
             . ($daemon === null ? '' : '$scgi_host = "127.0.0.1"; $scgi_port = ' . $daemon->port() . ";\n")
             . '$_REQUEST = array("cmd" => "create", "path_edit" => ' . var_export($path, true)
                 . ', "piece_size" => "16", "start_seeding" => "0", "private" => "0", "trackers" => "",'
-                . ' "comment" => "", "source" => "");' . "\n"
+                . ' "comment" => "", "source" => ""'
+                . (isset($options['hybrid']) ? ', "hybrid" => ' . var_export($options['hybrid'], true) : '') . ');' . "\n"
             . 'chdir(' . var_export($root . '/plugins/create', true) . ");\n"
             . 'require(' . var_export($root . '/plugins/create/action.php', true) . ");\n");
         $output = [];
         $disable = isset($options['disable']) ? ' -d disable_functions=' . escapeshellarg($options['disable']) : '';
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 -d max_execution_time=30' . $disable . ' '
+        // A diagnostic goes to the log, not into the answer read from stdout.
+        exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -d max_execution_time=30' . $disable . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         if ($daemon !== null) {
             $daemon->stop();
