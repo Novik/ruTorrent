@@ -22,7 +22,8 @@ if(plugin.canChangeOptions())
 
 	theWebUI.cookiesWasChanged = function()
 	{
-		var arr = $('#hostcookies').val().split("\n");
+		// rCookies::set() skips blank lines, so they are left out here too.
+		var arr = $('#hostcookies').val().split("\n").filter(function(line) { return(line.trim().length>0); });
 		if(arr.length!=hostCookies.length)
 		{
 			return(true);
