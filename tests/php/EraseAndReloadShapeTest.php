@@ -246,7 +246,7 @@ class EraseAndReloadShapeTest extends TestCase
     private function run_($driver)
     {
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return implode("\n", $output);
     }

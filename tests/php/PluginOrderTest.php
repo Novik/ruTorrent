@@ -147,7 +147,7 @@ class PluginOrderTest extends TestCase
             . 'require("getplugins.php");' . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 -d display_errors=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 '
             . escapeshellarg($probe) . ' 2>&1', $output);
         $js = implode("\n", $output);
 

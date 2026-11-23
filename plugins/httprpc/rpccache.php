@@ -59,7 +59,10 @@ class rpcCache
         $result = serialize($torrents);
         if ($result !== false) {
             $cid = crc32($result);
-            if (file_put_contents($this->dir . '/' . dechex($cid), $result) != strlen($result)) {
+            // A cache directory that cannot be made or written to caches nothing,
+            // and every request lists in full.
+            if (is_dir($this->dir) && is_writable($this->dir)
+                && (file_put_contents($this->dir . '/' . dechex($cid), $result) != strlen($result))) {
                 @unlink($this->dir . '/' . dechex($cid));
             }
         }
@@ -84,7 +87,7 @@ class rpcCache
 
     protected function strip()
     {
-        if ($dh = opendir($this->dir)) {
+        if (is_dir($this->dir) && is_readable($this->dir) && ($dh = opendir($this->dir))) {
             $files = [];
             while (($file = readdir($dh)) !== false) {
                 $filename = $this->dir . '/' . $file;

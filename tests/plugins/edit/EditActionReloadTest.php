@@ -259,7 +259,7 @@ class EditActionReloadTest extends TestCase
             . 'require(' . var_export($root . '/plugins/edit/action.php', true) . ");\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return implode("\n", $output);
     }

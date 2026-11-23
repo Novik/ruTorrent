@@ -234,7 +234,7 @@ class SetDirRefusedMoveTest extends TestCase
             . '$rpcTimeOut = 10; $rpcLogCalls = false;' . "\n"
             . 'require(' . var_export($this->repoRoot() . '/plugins/datadir/setdir.php', true) . ");\n");
 
-        $cmd = escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver)
+        $cmd = escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($driver)
             . ' ' . escapeshellarg(self::HASH)
             . ' ' . escapeshellarg($this->base . '/dst')
             . ' 1 1 0 tester';

@@ -253,7 +253,7 @@ class FileMoveDestinationTest extends TestCase
 		');
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($probe) . ' 2>&1', $output);
         $printed = implode("\n", $output);
         $result = json_decode($printed, true);

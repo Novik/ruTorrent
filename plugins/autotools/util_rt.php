@@ -498,7 +498,8 @@ function rtOpFiles($files, $src, $dst, $op, $dbg = false)
             switch ($op) {
                 case "HardLink":
                     {
-                        if (link($source, $dest)) {
+                        // Across filesystems a hard link cannot be made, and the file is copied.
+                        if (@link($source, $dest)) {
                             $journal[] = [ 'unlink', $dest ];
                             break;
                         }

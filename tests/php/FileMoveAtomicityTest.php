@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 
 /**
  * A refused move leaves nothing behind: every rtOpFiles() in the tree decides
@@ -157,6 +158,22 @@ class FileMoveAtomicityTest extends TestCase
         }
     }
 
+    public function testAHardLinkToAnotherFilesystemIsACopyWithoutAWarning()
+    {
+        foreach ($this->sources() as $source) {
+            $r = $this->drive($source);
+            if (!isset($r['xdev'])) {
+                echo 'NOT CHECKED (no second filesystem at /dev/shm): a hard link across filesystems' . "\n";
+                return;
+            }
+            // A warning per file would fail this file through the suite's log.
+            $this->assertTrue(
+                $r['xdev']['ret'] === true && $r['xdev']['copied'] === true,
+                $source . ': a file that cannot be hard linked across filesystems is copied',
+            );
+        }
+    }
+
     private function wipe()
     {
         if (!is_dir($this->tree)) {
@@ -298,17 +315,60 @@ class FileMoveAtomicityTest extends TestCase
 				@chmod($dst, 0755);
 			}
 
+			// A hard link to another filesystem cannot be made, and the file
+			// is copied instead: an outcome, not a failure.
+			$other = "/dev/shm/rutorrent-moveatomic-" . getmypid();
+			if (@mkdir($other . "/src", 0777, true)) {
+				put($other . "/src/x.bin", "the download");
+				$dst = $root . "/xdev/dst";
+				@mkdir($dst, 0777, true);
+				$from = @stat($other . "/src"); $into = @stat($dst);
+				if ($from && $into && ($from["dev"] !== $into["dev"])) {
+					$ok = rtOpFiles(array("x.bin"), $other . "/src", $dst, "HardLink");
+					$out["xdev"] = array("ret" => $ok,
+						"copied" => (@file_get_contents($dst . "/x.bin") === "the download"));
+				}
+				@unlink($other . "/src/x.bin");
+				@rmdir($other . "/src");
+				@rmdir($other);
+			}
+
 			echo json_encode($out);
 		');
 
+        // The operations into a directory that cannot be written to fail on
+        // purpose, and each failure is reported where it happens.
+        $expected = $this->modeStopsWrites() ? [
+            '/^Warning: rename\(.*\): Permission denied /',
+            '/^Warning: copy\(.*\): failed to open stream: Permission denied /i',
+            '/^Warning: symlink\(\): Permission denied /',
+        ] : [];
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
-            . escapeshellarg($probe) . ' 2>&1', $output);
+        // A diagnostic goes to the log, not into the answer read from stdout.
+        ExpectedDiagnostics::expect($expected, function () use ($probe, &$output) {
+            exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 '
+                . escapeshellarg($probe) . ' 2>&1', $output);
+        });
         $printed = implode("\n", $output);
         $result = json_decode($printed, true);
         if (!is_array($result)) {
             throw new Exception('the probe for ' . $source . ' printed: ' . $printed);
         }
         return $result;
+    }
+
+    /**
+     * Whether a directory at mode 0555 stops this user writing to it. Root
+     * ignores the mode, and then the cases that rely on it raise nothing.
+     */
+    private function modeStopsWrites()
+    {
+        $dir = $this->tree . '-mode';
+        @mkdir($dir, 0555, true);
+        @chmod($dir, 0555);
+        $stops = (@file_put_contents($dir . '/w', 'x') === false);
+        @unlink($dir . '/w');
+        @rmdir($dir);
+        return $stops;
     }
 }

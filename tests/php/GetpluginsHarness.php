@@ -139,7 +139,7 @@ class GetpluginsHarness
         $script = $this->path('run.php');
         file_put_contents($script, $source);
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 -d display_errors=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 '
             . escapeshellarg($script) . ' 2>&1', $output);
         return implode("\n", $output);
     }

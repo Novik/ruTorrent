@@ -210,7 +210,7 @@ class SettingsColdCacheTest extends TestCase
             . 'echo (int)is_null(rTorrentSettings::get()->iVersion);' . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
 
         $this->assertEquals(
@@ -256,7 +256,7 @@ class SettingsColdCacheTest extends TestCase
             . 'echo (int)is_null(rTorrentSettings::get()->iVersion), " ", count($cmd->params);' . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
 
         $this->assertEquals(
@@ -321,7 +321,7 @@ class SettingsColdCacheTest extends TestCase
             . $code . "\n");
 
         $output = [];
-        exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 '
+        exec(escapeshellarg(PHP_BINARY) . ' '
             . escapeshellarg($driver) . ' 2>&1', $output);
         return implode("\n", $output);
     }
