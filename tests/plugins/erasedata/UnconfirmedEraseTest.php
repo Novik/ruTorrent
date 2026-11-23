@@ -1165,13 +1165,23 @@ class UnconfirmedEraseTest extends TestCase
 
         $this->assertTrue($this->removeWithData(60, self::HASH) === 'erased', 'the first removal happened');
         $this->assertTrue($this->removeWithData(60, self::FOURTH) === 'erased', 'and the second');
-        $out = $this->collect('', '-d memory_limit=16M', $code);
+        // Both the collector and the PHP it is compared with end on
+        // memory_limit. The fatal error is read from their output and kept
+        // out of the suite's log: the collector logs to stderr (php/util.php
+        // turns display off and logging on), and the builds that exit 1 at
+        // once (PhpProcess::memoryExhaustion()) write it to stderr and log
+        // nothing. Its words are not repeated here, as tests/php-test.sh
+        // takes them for a failure of this file.
+        $out = $this->collect('', '-d memory_limit=16M -d error_log=', $code);
+        $this->assertTrue(
+            preg_match('/^(PHP )?(Warning|Notice|Deprecated|Strict Standards): /m', $out) === 0,
+            'the collector raises nothing else before memory_limit',
+        );
 
-        // Its own words are not repeated here: tests/php-test.sh takes them
-        // for a failure of this file. The collector's line comes from a
-        // shutdown function, which some builds do not run after memory_limit
-        // (PhpProcess::memoryExhaustion()): there the list waits without it.
-        $php = PhpProcess::memoryExhaustion(['-d', 'display_errors=1']);
+        // The collector's line comes from a shutdown function, which some
+        // builds do not run after memory_limit (PhpProcess::memoryExhaustion()):
+        // there the list waits without it.
+        $php = PhpProcess::memoryExhaustion(['-d', 'display_errors=1', '-d', 'log_errors=0']);
         $this->assertTrue(
             (strpos($out, 'Allowed memory size') !== false) && ($code === $php['code']),
             'the collector stops on PHP\'s memory_limit as this PHP ends a script on it (exit ' . $php['code']

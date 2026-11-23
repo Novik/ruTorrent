@@ -17,6 +17,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: posix, dom, xml, mbstring, iconv, json, curl
+          coverage: none
       - name: PHP test suite
         run: bash php-test.sh
         working-directory: tests

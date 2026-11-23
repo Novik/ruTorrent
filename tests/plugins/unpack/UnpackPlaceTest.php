@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/../../php/TestHttpServer.php');
 require_once(__DIR__ . '/UnpackPlaceFixture.php');
 
@@ -244,7 +245,9 @@ class UnpackPlaceTest extends TestCase
             @unlink($this->base . '/errors.log');
             symlink($this->base . '/outside', $this->base . '/stage/d');
             file_put_contents($this->base . '/stage/f', 'NEW');
-            $run = $this->place(null, ['-d', 'disable_functions=' . $function]);
+            $run = ExpectedDiagnostics::expect(self::disabledInTheLog($function), function () use ($function) {
+                return $this->place(null, ['-d', 'disable_functions=' . $function]);
+            });
             $this->assertTrue($this->tree($this->base . '/out') === [], $function . ': nothing is placed');
             $this->assertTrue($run['code'] !== 0, $function . ': the placement fails');
             // The child's own diagnostics are not echoed: they name the
@@ -347,6 +350,24 @@ class UnpackPlaceTest extends TestCase
         $this->assertTrue(strpos($response['status'], ' 403 ') !== false, 'it is forbidden: ' . json_encode($response));
         $this->assertTrue($this->tree($this->base . '/stage') === ['f']
             && $this->tree($this->base . '/out') === [], 'and nothing is moved');
+    }
+
+    // What PHP raises when FileUtil::toLog() meets one of its own functions
+    // disabled: a warning on PHP 7.4 (and touch() then leaves no file for
+    // chmod()), an Error that ends the script on PHP 8.
+    private static function disabledInTheLog($function)
+    {
+        if (!in_array($function, ['file_exists', 'touch'], true)) {
+            return [];
+        }
+        if (PHP_VERSION_ID >= 80000) {
+            return ['/^Fatal error: Uncaught Error: Call to undefined function ' . $function . '\(\)/'];
+        }
+        $patterns = ['/^Warning: ' . $function . '\(\) has been disabled for security reasons /'];
+        if ($function === 'touch') {
+            $patterns[] = '/^Warning: chmod\(\): No such file or directory /';
+        }
+        return $patterns;
     }
 
     /** The runner calls setUp() once a class: each case starts with a tree of its own. */

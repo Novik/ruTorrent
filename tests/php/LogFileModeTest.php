@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/../../php/utility/fileutil.php');
 require_once(__DIR__ . '/PhpProcess.php');
 
@@ -163,7 +164,14 @@ echo (int)((microtime(true) - $start) * 1000);';
     // must not hand the log write bits back.
     public function testMaskIsAnUpperBoundNotAFloor()
     {
-        $log = $this->logAfterFirstWrite(0444, 'read-only.log');
+        // The 0444 log refuses the line, and toLog() warns that it could not
+        // open it.
+        $log = ExpectedDiagnostics::expect(
+            ['/^Warning: fopen\(.*\/read-only\.log\): failed to open stream: Permission denied /i'],
+            function () {
+                return $this->logAfterFirstWrite(0444, 'read-only.log');
+            },
+        );
         $this->assertEquals(
             0444,
             $this->modeOf($log),
@@ -511,7 +519,18 @@ echo (int)((microtime(true) - $start) * 1000);';
     public function testAThrowingWriteReleasesTheLock()
     {
         $log = $this->logAfterFirstWrite(0777, 'throwing-write.log');
-        $result = $this->logInChild($log, ['-d', 'disable_functions=fputs'], ['first', 'second']);
+        // PHP 7.4 warns for each call of the disabled fputs(). The warnings
+        // go to the log only, so the child's output is just the time it took.
+        $result = ExpectedDiagnostics::expect(
+            (PHP_VERSION_ID < 80000) ? ['/^Warning: fputs\(\) has been disabled for security reasons /'] : [],
+            function () use ($log) {
+                return $this->logInChild(
+                    $log,
+                    ['-d', 'display_errors=0', '-d', 'disable_functions=fputs'],
+                    ['first', 'second'],
+                );
+            },
+        );
         $this->assertTrue(!$result['timedOut'] && $result['code'] === 0, 'A second line after a throwing write does not hang');
         $this->assertTrue(
             (int) $result['out'] < FileUtil::LOG_LOCK_ATTEMPTS * FileUtil::LOG_LOCK_WAIT_US / 2000,

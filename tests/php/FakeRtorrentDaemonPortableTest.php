@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/ExpectedDiagnostics.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/PhpProcess.php');
 require_once(__DIR__ . '/RtorrentProbeFixture.php');
@@ -56,7 +57,13 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 
     public function testWorkerStartupFailureIsVisible()
     {
-        $this->child('startup-failure');
+        // The worker is asked to load a responder file that is not there.
+        ExpectedDiagnostics::expect([
+            '/^Warning: require_once\(.*\/missing-responder\.php\): failed to open stream: /i',
+            '/^Fatal error: .*Failed opening required \'.*\/missing-responder\.php\'/',
+        ], function () {
+            $this->child('startup-failure');
+        });
     }
 
     public function testClosureRepliesKeepTheirExistingForkSemantics()

@@ -6,7 +6,8 @@ scratch="$(mktemp -d "${TMPDIR:-/tmp}/rt-php-harness.XXXXXX")"
 trap 'rm -rf -- "$scratch"' EXIT
 mkdir -p "$scratch/tests/php" "$scratch/tests/plugins" "$scratch/bin"
 cp "$root/tests/php-test.sh" "$root/tests/php-test.ini" "$scratch/tests/"
-cp "$root/tests/php/TestCase.php" "$scratch/tests/php/"
+cp -a "$root/tests/php-test.d" "$scratch/tests/"
+cp "$root/tests/php/TestCase.php" "$root/tests/php/ExpectedDiagnostics.php" "$scratch/tests/php/"
 if [[ -f "$root/tests/php/TestCaseRunner.php" ]]; then
 	cp "$root/tests/php/TestCaseRunner.php" "$scratch/tests/php/"
 fi
@@ -416,6 +417,85 @@ PHP
 	check_run "child $diagnostic diagnostic fails a passing parent" fail "$diagnostic error:" 'ok - parent passed'
 done
 unset HARNESS_DIAGNOSTIC
+rm "$test_file"
+
+# Warnings, notices and deprecations fail a passing file, from the test or
+# from a PHP it starts, also when the test discards that PHP's output.
+cat > "$test_file" <<'PHP'
+<?php
+require_once(__DIR__ . '/../php/TestCase.php');
+class DiagnosticTest extends TestCase {
+    public function testPass() {
+        $code = 'trigger_error("planted diagnostic", ' . getenv('HARNESS_LEVEL') . ');';
+        if (getenv('HARNESS_WHERE') === 'child') {
+            shell_exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -r ' . escapeshellarg($code) . ' > /dev/null 2>&1');
+        } elseif (getenv('HARNESS_WHERE') === 'child-c') {
+            exec(escapeshellarg(PHP_BINARY) . ' -c ' . escapeshellarg(__DIR__ . '/../php-test.ini')
+                . ' -d display_errors=0 -r ' . escapeshellarg($code) . ' 2>&1', $output);
+        } else {
+            eval($code);
+        }
+        $this->assertTrue(true, 'the test itself passes');
+    }
+}
+PHP
+for where in self child child-c; do
+	for level in E_USER_WARNING E_USER_NOTICE E_USER_DEPRECATED; do
+		export HARNESS_WHERE="$where" HARNESS_LEVEL="$level"
+		check_run "$level in $where fails a passing file" fail 'Passed: the test itself passes' 'PHP diagnostics in' 'planted diagnostic'
+	done
+done
+unset HARNESS_WHERE HARNESS_LEVEL
+
+# A line that the code under test writes with error_log() is not a diagnostic.
+cat > "$test_file" <<'PHP'
+<?php
+require_once(__DIR__ . '/../php/TestCase.php');
+class ErrorLogTest extends TestCase {
+    public function testPass() {
+        error_log('a deliberate log line of the code under test');
+        shell_exec(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg('error_log("Warning: in a child");'));
+        $this->assertTrue(true, 'error_log() ran');
+    }
+}
+PHP
+check_run 'error_log() lines do not fail a file' pass 'Passed: error_log() ran'
+
+# A declared diagnostic must happen, and then does not count; one that is not
+# declared still does.
+cat > "$test_file" <<'PHP'
+<?php
+require_once(__DIR__ . '/../php/TestCase.php');
+require_once(__DIR__ . '/../php/ExpectedDiagnostics.php');
+class ExpectedTest extends TestCase {
+    public function testExpected() {
+        $raise = getenv('HARNESS_RAISE');
+        ExpectedDiagnostics::expect(['/^Warning: declared diagnostic in /'], function () use ($raise) {
+            $code = $raise === 'none' ? '' : 'trigger_error("declared diagnostic", E_USER_WARNING);';
+            if ($raise === 'extra') {
+                $code .= 'trigger_error("undeclared diagnostic", E_USER_WARNING);';
+            } elseif ($raise === 'twice') {
+                $code .= $code;
+            }
+            if ($raise === 'self') {
+                eval($code);
+            } else {
+                shell_exec(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -r ' . escapeshellarg($code));
+            }
+        });
+        $this->assertTrue(true, 'after the expectation');
+    }
+}
+PHP
+for raise in self child twice; do
+	export HARNESS_RAISE="$raise"
+	check_run "a declared diagnostic in $raise passes" pass 'Passed: after the expectation'
+done
+export HARNESS_RAISE=none
+check_run 'a declared diagnostic that does not happen fails' fail 'an expected PHP diagnostic did not happen'
+export HARNESS_RAISE=extra
+check_run 'an undeclared diagnostic beside a declared one fails' fail 'undeclared diagnostic'
+unset HARNESS_RAISE
 rm "$test_file"
 
 # The owner's bits of the caller's umask are cleared and the rest is kept.

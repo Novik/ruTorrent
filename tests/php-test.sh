@@ -8,12 +8,37 @@ cd -- "$script_dir" || exit 1
 # only those bits; the group and other bits of the caller's umask are kept.
 umask u=rwx
 
-# Exit non-zero if any test file fails, so the suite can gate CI. Two failure
-# signals are honoured: a non-zero exit and failure output, including child
-# PHP diagnostics. A positive completed result is also required in each file.
+# Every PHP the suite runs reads php-test.d/ (php-test.ini) after the system's
+# scan directory: the test itself, and every PHP a test starts through
+# shell_exec, exec, proc_open or php -S, with or without -c. The system
+# configuration is still read; the suite's settings are read last and win. An
+# empty entry in PHP_INI_SCAN_DIR stands for PHP's built-in scan directory.
+if [ -n "${PHP_INI_SCAN_DIR+set}" ] && [ -z "$PHP_INI_SCAN_DIR" ]; then
+	export PHP_INI_SCAN_DIR="$script_dir/php-test.d"
+else
+	export PHP_INI_SCAN_DIR="${PHP_INI_SCAN_DIR-}:$script_dir/php-test.d"
+fi
+
+# PHP's own diagnostics in log $1 that are not listed in $2, the lines a test
+# declared through ExpectedDiagnostics and saw. Only PHP's prefixes count: a
+# line the code under test writes with error_log() is not a diagnostic.
+unexpected_diagnostics() {
+	awk 'FILENAME == ARGV[1] { expected[$0]++; next }
+		/^\[[^]]*\] PHP (Fatal error|Recoverable fatal error|Parse error|Warning|Notice|Deprecated|Strict Standards|Unknown error): / {
+			if (expected[$0] > 0) { expected[$0]--; next }
+			print
+		}' "$2" "$1"
+}
+
+# Exit non-zero if any test file fails, so the suite can gate CI. A file fails
+# on a non-zero exit, on failure output, without a positive completed result,
+# and on any PHP diagnostic from the file or from a PHP it starts: every PHP
+# logs its diagnostics to the file's own log (php-test.ini), and a warning,
+# notice or deprecation printed in the file's output counts too.
 status=0
 test_manifest="$(mktemp "${TMPDIR:-/tmp}/rutorrent-php-tests.XXXXXX")" || exit 1
-trap 'rm -f -- "$test_manifest"' EXIT
+log_dir="$(mktemp -d "${TMPDIR:-/tmp}/rutorrent-php-test-logs.XXXXXX")" || exit 1
+trap 'rm -rf -- "$test_manifest" "$log_dir"' EXIT
 if ! find php plugins -type f -name '*Test.php' -print0 > "$test_manifest"; then
 	echo 'php-test.sh: cannot list PHP test files' >&2
 	exit 1
@@ -22,8 +47,14 @@ if [ ! -s "$test_manifest" ]; then
 	echo "php-test.sh: no *Test.php files under $PWD/php or $PWD/plugins" >&2
 	exit 1
 fi
+files=0
 while IFS= read -r -d '' t; do
 	printf '> php %s\n' "$t"
+	files=$((files + 1))
+	export PHP_TEST_ERROR_LOG="$log_dir/$files.log"
+	export PHP_TEST_EXPECTED_DIAGNOSTICS="$log_dir/$files.expected"
+	: > "$PHP_TEST_ERROR_LOG"
+	: > "$PHP_TEST_EXPECTED_DIAGNOSTICS"
 	out=$(RUTORRENT_PHP_TEST_RUNNER=1 php -c php-test.ini \
 		-d auto_append_file="$script_dir/php/TestCaseRunner.php" -f "$t" 2>&1)
 	code=$?
@@ -43,6 +74,17 @@ while IFS= read -r -d '' t; do
 	fi
 	if [ "$code" -ne 0 ] || [ "$checked" -eq 0 ] \
 		|| printf '%s\n' "$out" | grep -qE '^Failed:|^not ok|failed with error|(^|PHP )(Fatal|Parse) error|Uncaught'; then
+		status=1
+	fi
+	unexpected=$(unexpected_diagnostics "$PHP_TEST_ERROR_LOG" "$PHP_TEST_EXPECTED_DIAGNOSTICS")
+	if [ -n "$unexpected" ] \
+		|| printf '%s\n' "$out" | grep -qE '^(PHP )?(Warning|Notice|Deprecated|Strict Standards): '; then
+		printf 'php-test.sh: PHP diagnostics in %s:\n' "$t"
+		if [ -n "$unexpected" ]; then
+			printf '%s\n' "$unexpected"
+		else
+			printf '%s\n' "$out" | grep -E '^(PHP )?(Warning|Notice|Deprecated|Strict Standards): '
+		fi
 		status=1
 	fi
 done < "$test_manifest"
