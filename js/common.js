@@ -1020,6 +1020,25 @@ function noty(msg, status, noTime) {
 	log(msg, noTime, "std", force);
 }
 
+// The address to give fetch() for url, resolved against the page and with
+// no user name or password in it. A page opened as http://user:pass@host/
+// carries those credentials in its own address, so a relative url resolves
+// to an address that carries them too, and fetch() refuses any such address
+// with a TypeError before sending anything. The browser still sends the
+// credentials it was given for the page, as it does for every other request
+// to the same origin. An address that cannot be parsed is returned as it
+// is, for fetch() to report.
+function fetchURL(url) {
+	try {
+		const address = new URL(url, document.baseURI);
+		address.username = "";
+		address.password = "";
+		return(address.href);
+	} catch(e) {
+		return(url);
+	}
+}
+
 // The add-torrent forms of the desktop dialog and of the mobile plugin are
 // sent with uploadTorrentForm(). The form's own fields go as they are,
 // multipart when the form says so and url-encoded otherwise, with
@@ -1030,7 +1049,7 @@ function noty(msg, status, noTime) {
 function uploadTorrentForm(form, done) {
 	var data = new FormData(form);
 	data.append("json_results", "1");
-	return(fetch(form.action, {
+	return(fetch(fetchURL(form.action), {
 		method: "POST",
 		body: (form.enctype == "multipart/form-data") ? data : new URLSearchParams(data),
 		credentials: "same-origin",
