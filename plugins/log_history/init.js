@@ -3,7 +3,7 @@ function stripTimestamp(line) {
 }
 
 function fetchLogLines() {
-    fetch('plugins/log_history/action.php')
+    fetch(fetchURL('plugins/log_history/action.php'))
         .then(response => {
             if (response.status === 204) {
                 return Promise.reject({ disabled: true });
@@ -67,7 +67,7 @@ function fetchLogLines() {
 
 function sendLogToServer(msg, status) {
     var timestamp = Math.floor(Date.now() / 1000);
-    fetch('plugins/log_history/log_history.php', {
+    fetch(fetchURL('plugins/log_history/log_history.php'), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -98,7 +98,7 @@ plugin.init = function () {
 
     // Hook the log tab "Clear" button to also clear saved history
     $("#clear_log").on("click", function() {
-        fetch('plugins/log_history/log_history.php?clear=1').catch(function() {});
+        fetch(fetchURL('plugins/log_history/log_history.php?clear=1')).catch(function() {});
     });
 
     plugin.markLoaded();
