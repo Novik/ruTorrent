@@ -135,6 +135,7 @@ theSearchEngines.checkForIncorrectCurrent = function( refreshCats )
 			theWebUI.save();
 		}
 		else
+		if(theSearchEngines.current!==-1)
 		{
 			if((    (theSearchEngines.current!='all') &&
 				(theSearchEngines.current!='private') &&
