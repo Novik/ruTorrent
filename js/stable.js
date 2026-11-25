@@ -1403,7 +1403,11 @@ dxSTable.prototype.syncDOM = function()
 							.css(this.progressStyle(fmtVal));
 						textEl = td.firstChild;
 					}
+					// The first cell's <div> also holds the row's status icon,
+					// which .text() would discard along with the old value.
+					const icon = $(textEl).children(".stable-icon").detach();
 					$(textEl).text(fmtVal);
+					$(textEl).prepend(icon);
 					// The rows are built once and updated in place from here
 					// on, so a tooltip set only in createRow would freeze at
 					// whatever the message was when the row first appeared.
