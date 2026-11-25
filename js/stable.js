@@ -956,6 +956,20 @@ dxSTable.prototype.createIcon = function(icon) {
 	}
 }
 
+// Writes a formatted value into a cell's text element. createRow() and the
+// in-place update in syncDOM() both go through here, so a cell shows the same
+// thing however it was filled. The value is always text, except that in a
+// TYPE_STRING_LABEL column, once escaped, a trailing `label` (as
+// theNormalizer.normalize() appends it) is shown as <code>.
+dxSTable.prototype.setCellText = function(el, type, val)
+{
+	if (type === TYPE_PROGRESS)
+		return el.text(val);
+	if (type === TYPE_STRING_LABEL)
+		return el.html(escapeHTML(val || " ").replace(/`(.*?)`$/, '<code>$1</code>'));
+	return el.text(val || " ");
+}
+
 dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const attrs = { id: sId, title: cols[0] };
 	if (sId == null) {
@@ -972,21 +986,16 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 		const celldata = data[index] || '';
 		const rawvalue = cols[index] || '';
 		const isProgress = cdat.type === TYPE_PROGRESS;
-		const isLabel = cdat.type === TYPE_STRING_LABEL;
 		if (isProgress) {
 			td.attr({rawvalue:rawvalue}).append(
-				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
+				this.setCellText($("<span>").addClass("meter-text").css({overflow:"visible"}), cdat.type, celldata),
 				$("<div>")
 					.addClass("meter-value")
 					.css(this.progressStyle(celldata)),
 			);
-		} else if (isLabel) {
-			td.append(
-				$("<div>").html(escapeHTML(celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
-			);
 		} else {
 			td.append(
-				$("<div>").text(celldata || " "),
+				this.setCellText($("<div>"), cdat.type, celldata),
 			);
 			// The table is table-layout:fixed with white-space:nowrap and
 			// overflow:hidden, so a value wider than its column is cut off at
@@ -1404,9 +1413,9 @@ dxSTable.prototype.syncDOM = function()
 						textEl = td.firstChild;
 					}
 					// The first cell's <div> also holds the row's status icon,
-					// which .text() would discard along with the old value.
+					// which rewriting the value would discard along with it.
 					const icon = $(textEl).children(".stable-icon").detach();
-					$(textEl).text(fmtVal);
+					this.setCellText($(textEl), this.colsdata[c].type, fmtVal);
 					$(textEl).prepend(icon);
 					// The rows are built once and updated in place from here
 					// on, so a tooltip set only in createRow would freeze at
