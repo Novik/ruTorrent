@@ -292,7 +292,7 @@ class SetDirFastResumeSessionTest extends TestCase
         if ($refusal === 'overwrite') {
             file_put_contents($userFile, 'user-owned');
         }
-        $replies = [[$active ? '1' : '0', $active ? '1' : '0']];
+        $replies = [[$active ? '1' : '0', $active ? '1' : '0', $active ? '1' : '0']];
         if ($active) {
             $replies[] = ['0', '0'];
         }

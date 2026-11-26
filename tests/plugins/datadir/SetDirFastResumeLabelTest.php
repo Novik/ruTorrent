@@ -78,8 +78,8 @@ class SetDirFastResumeLabelTest extends TestCase
             'the settings cache is warmed',
         );
         $this->daemon = new FakeRtorrentDaemon([
-            // d.is_open, d.is_active
-            ['0', '0'],
+            // d.is_open, d.is_active, d.get_state
+            ['0', '0', '0'],
             // get_session, d.get_tied_to_file, d.get_custom1, d.get_connection_seed, d.get_throttle_name
             [$session, '', $label, '', ''],
             // d.set_directory, d.erase, the load, download_list

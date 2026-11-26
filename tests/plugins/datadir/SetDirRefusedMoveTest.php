@@ -198,7 +198,7 @@ class SetDirRefusedMoveTest extends TestCase
         }
 
         // One reply per request rtSetDataDir() makes, in order:
-        //   d.is_open + d.is_active
+        //   d.is_open + d.is_active + d.get_state
         //   d.open, but only for a download that was closed, so that the base
         //     path and the file list can be read at all
         //   d.get_name, d.get_base_path, d.get_base_filename,
@@ -207,7 +207,7 @@ class SetDirRefusedMoveTest extends TestCase
         //   d.stop and/or d.close
         // and then whatever it does after the move, which is what is under
         // test; the spares are so a run that does more is not cut off.
-        $replies = [ [$isOpen, $isActive] ];
+        $replies = [ [$isOpen, $isActive, $isActive] ];
         if (!$isOpen) {
             $replies[] = [0];
         }
