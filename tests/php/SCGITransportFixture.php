@@ -12,6 +12,16 @@ class SCGITransportFixture
     // sun_path holds 108 bytes, the last of them the terminating NUL.
     public const MAX_SOCKET_PATH = 107;
 
+    /**
+     * How long the test waits for a peer that is still running to publish its
+     * endpoint or capture a request. The peer is a new PHP process: on a busy
+     * CI runner, or with Xdebug loaded, its start alone can take most of a
+     * second. A peer that exits ends the wait at once, so the bound only
+     * matters for one that hangs. The peer waits as long for its client,
+     * which is often a new PHP process too.
+     */
+    public const PEER_WAIT_SECONDS = 30;
+
     /** Fixtures this process started and has not closed yet, by object id. */
     private static $open = [];
     private static $hooked = false;
@@ -69,19 +79,17 @@ class SCGITransportFixture
 
     public function request()
     {
-        for ($i = 0; $i < 200; $i++) {
-            if (is_file($this->capture)) {
-                $value = json_decode(file_get_contents($this->capture), true);
-                if (is_array($value) && isset($value['header']) && isset($value['payload'])) {
-                    return [
-                        'header' => base64_decode($value['header']),
-                        'payload' => base64_decode($value['payload']),
-                    ];
-                }
+        $capture = $this->capture;
+        return $this->waitForPeer('capture a complete request', function () use ($capture) {
+            $value = is_file($capture) ? json_decode(file_get_contents($capture), true) : null;
+            if (is_array($value) && isset($value['header']) && isset($value['payload'])) {
+                return [
+                    'header' => base64_decode($value['header']),
+                    'payload' => base64_decode($value['payload']),
+                ];
             }
-            usleep(5000);
-        }
-        throw new Exception('SCGI fixture did not capture a complete request: ' . $this->errors());
+            return null;
+        });
     }
 
     public function errors()
@@ -185,6 +193,7 @@ class SCGITransportFixture
             'chunks' => $configChunks,
             'repeat' => $repeatBytes,
             'readDelay' => max(0, (int) round($readDelay * 1000000)),
+            'accept' => self::PEER_WAIT_SECONDS,
         ]));
         $script = "<?php\nrequire_once " . var_export(__DIR__ . '/SCGIRequest.php', true) . ";\n" . <<<'PHP'
 $config = json_decode(file_get_contents($argv[1]), true);
@@ -201,13 +210,19 @@ if($server === false)
 	fwrite(STDERR, "server: $error\n");
 	exit(2);
 }
-file_put_contents($argv[2], stream_socket_get_name($server, false));
-$client = @stream_socket_accept($server, 5);
+// The test reads these files while the peer writes them: each appears whole.
+function publish($file, $data)
+{
+	file_put_contents($file . '.tmp', $data);
+	rename($file . '.tmp', $file);
+}
+publish($argv[2], stream_socket_get_name($server, false));
+$client = @stream_socket_accept($server, $config['accept']);
 if($client === false)
 	exit(3);
 if($config['readDelay'] > 0)
 	usleep($config['readDelay']);
-file_put_contents($argv[3], json_encode(array_map('base64_encode', SCGIRequest::read($client))));
+publish($argv[3], json_encode(array_map('base64_encode', SCGIRequest::read($client))));
 foreach($config['chunks'] as $chunk)
 {
 	if($chunk['delay'] > 0)
@@ -262,27 +277,54 @@ PHP;
             throw new Exception('could not start SCGI fixture peer');
         }
         fclose($pipes[0]);
-        for ($i = 0; $i < 200; $i++) {
-            if (is_file($endpointFile)) {
-                $endpoint = trim(file_get_contents($endpointFile));
-                if ($unix) {
-                    $this->host = $listen;
-                    $this->port = 0;
-                    return;
-                }
-                $position = strrpos($endpoint, ':');
-                $this->host = '127.0.0.1';
-                $this->port = ($position === false) ? 0 : intval(substr($endpoint, $position + 1));
-                if ($this->port > 0) {
-                    return;
-                }
+        $endpoint = $this->waitForPeer('publish an endpoint', function () use ($endpointFile) {
+            return is_file($endpointFile) ? trim(file_get_contents($endpointFile)) : null;
+        });
+        if ($unix) {
+            $this->host = $listen;
+            $this->port = 0;
+            return;
+        }
+        $position = strrpos($endpoint, ':');
+        $this->host = '127.0.0.1';
+        $this->port = ($position === false) ? 0 : intval(substr($endpoint, $position + 1));
+        if ($this->port <= 0) {
+            throw new Exception('SCGI fixture peer published no port: ' . json_encode($endpoint));
+        }
+    }
+
+    /**
+     * Polls $ready until it returns a value other than null, for as long as
+     * the peer runs and at most PEER_WAIT_SECONDS. A failure names what the
+     * peer did not do, how it ended and what it wrote to stderr.
+     */
+    private function waitForPeer($what, $ready)
+    {
+        $started = microtime(true);
+        while (true) {
+            $value = $ready();
+            if ($value !== null) {
+                return $value;
+            }
+            if (!is_resource($this->process)) {
+                throw new Exception('SCGI fixture is closed and did not ' . $what);
             }
             $status = proc_get_status($this->process);
-            if (isset($status['running']) && !$status['running']) {
-                throw new Exception('SCGI fixture peer exited: ' . $this->errors());
+            if (empty($status['running'])) {
+                // It may have finished its work just before it exited.
+                $value = $ready();
+                if ($value !== null) {
+                    return $value;
+                }
+                throw new Exception('SCGI fixture peer exited with code ' . $status['exitcode']
+                    . ' and did not ' . $what . ': ' . $this->errors());
+            }
+            $elapsed = microtime(true) - $started;
+            if ($elapsed >= self::PEER_WAIT_SECONDS) {
+                throw new Exception('SCGI fixture peer did not ' . $what . ' in '
+                    . round($elapsed, 1) . ' s and is still running: ' . $this->errors());
             }
             usleep(5000);
         }
-        throw new Exception('SCGI fixture peer did not publish an endpoint: ' . $this->errors());
     }
 }
