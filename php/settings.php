@@ -24,6 +24,9 @@ class rTorrentSettings
     public $version;
     public $libVersion;
     public $apiVersion = 0;
+    // Whether the daemon has load.edited, load.start_edited, load.raw_edited
+    // and load.raw_start_edited. See obtain().
+    public $editedLoads = false;
 
     public $socketAllocBudget = 0;
     public $socketHttpAllocMax = 0;
@@ -231,6 +234,18 @@ class rTorrentSettings
                     $this->apiVersion = $req->val[0];
                 }
             }
+            // rtorrent 0.16.29 discards the libtorrent_resume progress of a
+            // torrent any plain load.* command adds; only the command's
+            // *_edited form, new in that release, keeps it. Asked of the
+            // daemon by name rather than read off its version, because a
+            // daemon given a name it does not have loads nothing, and a build
+            // can carry these under an older version number.
+            $this->editedLoads = false;
+            $req = new rXMLRPCRequest(new rXMLRPCCommand("system.listMethods"));
+            $req->important = false;
+            if ($req->success()) {
+                $this->editedLoads = self::hasEditedLoads($req->val);
+            }
             // system.sockets.available_alloc is the total the configurable
             // categories may share. internal and rpc are not exposed on the
             // settings page, so what is left is what open files and HTTP
@@ -379,6 +394,18 @@ class rTorrentSettings
         }
         $cmd->addParameters($args);
         return($cmd);
+    }
+    /**
+     * Whether a system.listMethods answer holds the four *_edited loads
+     * rTorrent::sendTorrent() may send: all of them, or the daemon is treated
+     * as having none.
+     *
+     * @param array $methods the method names the daemon listed
+     */
+    public static function hasEditedLoads($methods)
+    {
+        return(is_array($methods)
+            && !array_diff(['load.edited', 'load.start_edited', 'load.raw_edited', 'load.raw_start_edited'], $methods));
     }
     /**
      * Whether the daemon reports its socket allocation limits at all.
