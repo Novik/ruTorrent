@@ -318,6 +318,7 @@ var theUILang = {
   showLabelTextOverflow: "Tillat etikettar å flyte over",
   showOpenStatus: "Vis open status i statuslinja",
   requiresAtLeastRtorrent: "Krev rTorrent >= {version}", // ... v0.9.7
+  ignoredByRtorrent: "Ignored by rTorrent >= {version}", // ... v0.16.12
   phpParameterUnavailable:
     "PHP-innstillinga register_argc_argv er sett til OFF. Set til ON, elles vil enkelte programutvidingar ikkje fungere som dei skal.",
   addTorrentFailedURL:

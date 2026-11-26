@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow	: "Hosszú címke megjelenítése",
  showOpenStatus		: "Nyitott kapcsolatok megjelenítése az állapotsorban",
  requiresAtLeastRtorrent		: "Szükséges rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "A register_argc_argv PHP-direktíva értéke OFF. Változtassa ON-ra, különben néhány bővítmény nem fog megfelelően működni.",
  addTorrentFailedURL		: "Nem sikerült torrentet hozzáadni. Nem tudja lekérdezni az URL-t.",
  addTorrentFailedFile		: "A torrentet nem sikerült hozzáadni. Nem érvényes torrent fájl.",

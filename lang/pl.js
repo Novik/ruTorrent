@@ -285,6 +285,7 @@ var theUILang =
  showLabelTextOverflow	: "Zezwalaj na przepełnienie tekstu etykiety",
  showOpenStatus		: "Pokaż otwarte połączenia na pasku stanu",
  requiresAtLeastRtorrent		: "Wymaga rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "Ustawienie PHP register_argc_argv jest wyłączone. Włącz je, inaczej niektóre wtyczki nie będą działać poprawnie.",
  addTorrentFailedURL		: "Torrent nie został dodany. Nie można pobrać adresu.",
  addTorrentFailedFile		: "Torrent nie został dodany. Pobrana zawartość nie jest poprawnym plikiem torrent.",

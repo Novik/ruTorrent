@@ -285,6 +285,7 @@ var theUILang =
  showLabelTextOverflow	: "Autorizza lo straripamento del testo delle etichette",
  showOpenStatus		: "Mostra lo stato di apertura nella barra di stato",
  requiresAtLeastRtorrent		: "Richiesto rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "La direttiva PHP register_argc_argv è impostata su OFF. Cambia su ON, altrimenti alcuni plugin non funzioneranno correttamente.",
  addTorrentFailedURL		: "Aggiunta torrent fallita. Impossibile elaborare l'URL.",
  addTorrentFailedFile		: "Aggiunta torrent fallita. Il contenuto elaborato non è un file torrent valido.",
