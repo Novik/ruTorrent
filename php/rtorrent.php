@@ -207,9 +207,11 @@ class rTorrent
         $torrent = $mustSave ? $fname : new Torrent($fname);
 
         if (!$torrent->errors()) {
+            $resumed = false;
             if ($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath))) {
                 $torrent = $resume;
                 $mustSave = true;
+                $resumed = true;
             } else {
                 if ($isNew && isset($torrent->{'libtorrent_resume'})) {
                     unset($torrent->{'libtorrent_resume'});
@@ -222,9 +224,9 @@ class rTorrent
             }
             $raw_value = base64_encode($torrent->__toString());
             $filename = is_object($fname) ? $torrent->getFileName() : $fname;
-            if (strlen($raw_value) < self::RTORRENT_PACKET_LIMIT) {
-                $cmd = new rXMLRPCCommand($isStart ? 'load_raw_start' : 'load_raw');
-                $cmd->addParameter($raw_value, "base64");
+            $isRaw = (strlen($raw_value) < self::RTORRENT_PACKET_LIMIT);
+            if ($isRaw) {
+                $load = $isStart ? 'load_raw_start' : 'load_raw';
                 if (!is_null($filename) && !$saveTorrent) {
                     @unlink($filename);
                 }
@@ -241,19 +243,17 @@ class rTorrent
                     // because torrent may be changed in memory
                     $torrent->save($filename);
                 }
-                $cmd = new rXMLRPCCommand($isStart ? 'load_start' : 'load');
-                $cmd->addParameter($filename);
+                $load = $isStart ? 'load_start' : 'load';
             }
-            if (!is_null($filename) && (rTorrentSettings::get()->iVersion >= 0x805)) {
-                $cmd->addParameter(getCmd("d.set_custom") . "=x-filename," . rawurlencode(FileUtil::getFileName($filename)));
-            }
-            $req = new rXMLRPCRequest();
+            // From rtorrent 0.16.29 a load discards the torrent's resume data
+            // unless it is the load's *_edited form, so resume data written by
+            // fastResume() goes with that form, where the daemon has it.
+            $loads = ($resumed && rTorrentSettings::get()->editedLoads)
+                ? [$load . '_edited', $load] : [$load];
+            $pre = new rXMLRPCRequest();
             $directory = self::parseDirectory($directory, $isAddPath);
-            if (self::hasDirectory($directory)) {
-                if (!self::prepareDirectory($directory, $isNew, $req)) {
-                    return(false);
-                }
-                $cmd->addParameter(getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=") . self::quoteCommandArg($directory));
+            if (self::hasDirectory($directory) && !self::prepareDirectory($directory, $isNew, $pre)) {
+                return(false);
             }
             $comment = $torrent->comment();
             if ($comment) {
@@ -262,25 +262,48 @@ class rTorrent
                 }
                 if (strlen($comment) > 0) {
                     $comment = "VRS24mrker" . rawurlencode($comment);
-                    if (strlen($comment) <= 4096) {
-                        $cmd->addParameter(getCmd("d.set_custom2=") . $comment);
-                    }
                 }
             }
             if ($label && (strlen($label) > 0)) {
                 $label = rawurlencode($label);
-                if (strlen($label) <= 4096) {
+            }
+            foreach ($loads as $name) {
+                $cmd = new rXMLRPCCommand($name);
+                if ($isRaw) {
+                    $cmd->addParameter($raw_value, "base64");
+                } else {
+                    $cmd->addParameter($filename);
+                }
+                if (!is_null($filename) && (rTorrentSettings::get()->iVersion >= 0x805)) {
+                    $cmd->addParameter(getCmd("d.set_custom") . "=x-filename," . rawurlencode(FileUtil::getFileName($filename)));
+                }
+                if (self::hasDirectory($directory)) {
+                    $cmd->addParameter(getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=") . self::quoteCommandArg($directory));
+                }
+                if ($comment && (strlen($comment) > 0) && (strlen($comment) <= 4096)) {
+                    $cmd->addParameter(getCmd("d.set_custom2=") . $comment);
+                }
+                if ($label && (strlen($label) > 0) && (strlen($label) <= 4096)) {
                     $cmd->addParameter(getCmd("d.set_custom1=") . $label);
                 }
-            }
-            if (is_array($addition)) {
-                foreach ($addition as $key => $prm) {
-                    $cmd->addParameter($prm, 'string');
+                if (is_array($addition)) {
+                    foreach ($addition as $key => $prm) {
+                        $cmd->addParameter($prm, 'string');
+                    }
                 }
-            }
-            $req->addCommand($cmd);
-            if ($req->run() && !$req->fault) {
-                $hash = $torrent->hash_info();
+                $req = clone $pre;
+                $req->addCommand($cmd);
+                if ($req->run() && !$req->fault) {
+                    $hash = $torrent->hash_info();
+                    break;
+                }
+                // A daemon probed as having the *_edited loads may since have
+                // been replaced by one without them. Nothing was loaded, so the
+                // same load is sent again under the plain name.
+                if (!$req->fault
+                    || (strpos($req->faultString, "Method '" . $cmd->command . "' not defined") === false)) {
+                    break;
+                }
             }
         }
         return($hash);

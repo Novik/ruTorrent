@@ -40,13 +40,23 @@ class XMLRPCProxy
     // through to the unknown-method path and is forwarded to rtorrent as the
     // caller wrote it.
     //
+    // rtorrent 0.16.29 adds a *_edited form of each of the eight, with the
+    // same arguments: a load that keeps the torrent's libtorrent_resume
+    // progress where the plain one now discards it. rtorrent refuses all
+    // eight on an untrusted connection, and they are rebuilt here exactly as
+    // the form each is spelled after.
+    //
     // The legacy spellings are the ones php/methods-0.9.4.php maps, so a
     // client written against them reaches the same rebuilding.
     private static $sanitizeMethods = [
         'load.normal', 'load.start', 'load.verbose', 'load.start_verbose',
         'load.raw', 'load.raw_start', 'load.raw_verbose', 'load.raw_start_verbose',
+        'load.edited', 'load.start_edited', 'load.verbose_edited', 'load.start_verbose_edited',
+        'load.raw_edited', 'load.raw_start_edited', 'load.raw_verbose_edited', 'load.raw_start_verbose_edited',
         'load', 'load_start', 'load_verbose', 'load_start_verbose',
         'load_raw', 'load_raw_start', 'load_raw_verbose', 'load_raw_start_verbose',
+        'load_edited', 'load_start_edited', 'load_verbose_edited', 'load_start_verbose_edited',
+        'load_raw_edited', 'load_raw_start_edited', 'load_raw_verbose_edited', 'load_raw_start_verbose_edited',
     ];
 
     // Of those, the ones whose parameter 1 is a URI rather than the torrent
@@ -61,6 +71,7 @@ class XMLRPCProxy
     // happen ties nothing, so there is nothing to protect there.
     private static $uriLoadMethods = [
         'load.start', 'load.normal', 'load.start_verbose', 'load.verbose',
+        'load.start_edited', 'load.edited', 'load.start_verbose_edited', 'load.verbose_edited',
     ];
 
     // Exactly the URIs rtorrent does not treat as a local path:

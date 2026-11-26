@@ -182,6 +182,16 @@ $this->aliases = array_merge($this->aliases, [
     "load_raw_verbose" => [ "name" => "load.raw_verbose", "prm" => 1 ],
     "load_start" => [ "name" => "load.start", "prm" => 1 ],
     "load_start_verbose" => [ "name" => "load.start_verbose", "prm" => 1 ],
+    // rtorrent 0.16.29: the forms that keep a torrent's resume data. Only
+    // sent to a daemon that lists them (rTorrentSettings::$editedLoads).
+    "load_edited" => [ "name" => "load.edited", "prm" => 1 ],
+    "load_start_edited" => [ "name" => "load.start_edited", "prm" => 1 ],
+    "load_verbose_edited" => [ "name" => "load.verbose_edited", "prm" => 1 ],
+    "load_start_verbose_edited" => [ "name" => "load.start_verbose_edited", "prm" => 1 ],
+    "load_raw_edited" => [ "name" => "load.raw_edited", "prm" => 1 ],
+    "load_raw_start_edited" => [ "name" => "load.raw_start_edited", "prm" => 1 ],
+    "load_raw_verbose_edited" => [ "name" => "load.raw_verbose_edited", "prm" => 1 ],
+    "load_raw_start_verbose_edited" => [ "name" => "load.raw_start_verbose_edited", "prm" => 1 ],
     "load_verbose" => [ "name" => "load.verbose", "prm" => 1 ],
     "p.get_address" => [ "name" => "p.address", "prm" => 0 ],
     "p.get_client_version" => [ "name" => "p.client_version", "prm" => 0 ],
