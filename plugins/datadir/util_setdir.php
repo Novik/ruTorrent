@@ -100,6 +100,23 @@ function rtDataDirCollision($hash, $dest_path, $add_path, $dbg = false)
 }
 
 //------------------------------------------------------------------------------
+// Whether rtorrent lists the $hash download: true or false from its own list,
+// null when it cannot tell
+//------------------------------------------------------------------------------
+function rtDataDirIsLoaded($hash, $dbg = false)
+{
+    try {
+        $req = rtExec("download_list", "", $dbg);
+        if (!$req || !is_array($req->val)) {
+            return null;
+        }
+        return in_array(strtoupper($hash), array_map('strtoupper', $req->val), true);
+    } catch (Throwable $error) {
+        return null;
+    }
+}
+
+//------------------------------------------------------------------------------
 // Move torrent data of $hash torrent to new location at $dest_path
 //------------------------------------------------------------------------------
 function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $dbg = false)
@@ -131,13 +148,14 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
         try {
             FileUtil::toLog($refused
                 ? 'datadir: fast resume refused (' . $message . ') ' . $hash
-                : 'datadir: recovery retained ' . $hash . ' ' . $message);
+                : $message);
         } catch (Throwable $error) {
         }
     };
 
     $copyRefusal = false;
     $retainedRecovery = null;
+    $retainedUnneeded = false;
     $is_ok = true;
     if ($dest_path == '') {
         $is_ok = false;
@@ -427,8 +445,12 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                             if ($dbg) {
                                 rtDbg(__FUNCTION__, "fail to erase old torrent");
                             }
-                            $retainedRecovery = $recovery;
-                            $recovery = null;
+                            // Still listed, the download keeps its own copy in
+                            // the session and this one is not needed.
+                            if (rtDataDirIsLoaded($hash, $dbg) !== true) {
+                                $retainedRecovery = $recovery;
+                                $recovery = null;
+                            }
                             $fast_resume = false;
                         } else {
                             $sent = false;
@@ -449,18 +471,25 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                                 if (!is_float($now)) {
                                     throw new RuntimeException('clock unavailable');
                                 }
-                                // A successful load reply alone does not confirm the hash was added.
-                                $deadline = $now + 5;
-                                for ($attempt = 0; $attempt < 50 && microtime(true) < $deadline; $attempt++) {
+                                // A successful load reply alone does not confirm the hash was added,
+                                // and a busy rtorrent can add it many seconds after replying. Ask
+                                // every 100 ms for 5 s, then every second up to a minute.
+                                $deadline = $now + 60;
+                                for ($attempt = 0; $attempt < 105 && microtime(true) < $deadline; $attempt++) {
                                     if (isset(rTorrent::loadedHashes()[strtoupper($hash)])) {
                                         $confirmed = true;
                                         break;
                                     }
                                     if (microtime(true) < $deadline) {
-                                        usleep(100000);
+                                        usleep($attempt < 50 ? 100000 : 1000000);
                                     }
                                 }
                             } catch (Throwable $error) {
+                            }
+                            // A poll cannot tell a failed request from an absent hash; this
+                            // can, and only a listed hash lets the copy go.
+                            if (!$confirmed && rtDataDirIsLoaded($hash, $dbg) === true) {
+                                $confirmed = true;
                             }
                             if (!$confirmed) {
                                 $retainedRecovery = $recovery;
@@ -480,9 +509,11 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                     try {
                         if (!@unlink($recovery)) {
                             $retainedRecovery = $recovery;
+                            $retainedUnneeded = true;
                         }
                     } catch (Throwable $error) {
                         $retainedRecovery = $recovery;
+                        $retainedUnneeded = true;
                     }
                 }
             }
@@ -516,7 +547,10 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
     }
 
     if ($retainedRecovery !== null) {
-        $logFastResume($retainedRecovery, false);
+        $logFastResume($retainedUnneeded
+            ? 'datadir: recovery copy for ' . $hash . ' could not be removed; delete ' . $retainedRecovery
+            : 'datadir: reload not confirmed for ' . $hash . '; recovery copy kept at ' . $retainedRecovery
+                . ' - delete it if the download is listed, or add the download again from it if not', false);
     }
 
     if ($copyRefusal) {

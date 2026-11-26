@@ -184,6 +184,26 @@ class SetDirFastResumeSessionTest extends TestCase
         $this->assertFastResumed('session', null, 'poll-deadline');
     }
 
+    public function testReloadListedOnlyAtTheFinalCheckRemovesCopy()
+    {
+        $this->assertFastResumed('session', null, 'late');
+    }
+
+    public function testReloadNotListedAtTheFinalCheckKeepsAndExplainsCopy()
+    {
+        $this->assertFastResumed('session', null, 'unlisted');
+    }
+
+    public function testFailedFinalCheckKeepsCopy()
+    {
+        $this->assertFastResumed('session', null, 'final-fault');
+    }
+
+    public function testEraseFaultWithTheDownloadStillLoadedRemovesCopy()
+    {
+        $this->assertFastResumed('session', null, 'erase-loaded', true);
+    }
+
     public function testDifferentTorrentIsNotErased()
     {
         $this->assertRefused('hash');
@@ -278,14 +298,39 @@ class SetDirFastResumeSessionTest extends TestCase
         }
         $replies[] = [$session, $tied, '', $refusal === 'addition' ? '$bad' : '', ''];
         $replies[] = ['0'];
-        $replies[] = $refusal === 'erase' ? FakeRtorrentDaemon::fault('erase refused') : ($refusal === 'erase-lost' ? null : ['0']);
-        $replies[] = $refusal === 'erase-lost' ? FakeRtorrentDaemon::fault('download missing') : ($refusal === 'send-false' ? FakeRtorrentDaemon::fault('load refused') : ['0', '0']);
-        $replies[] = in_array($refusal, ['unconfirmed', 'delayed', 'timed', 'poll-deadline'], true) ? [] : [self::HASH];
-        if ($refusal === 'delayed') {
-            $replies[] = [self::HASH];
-        }
-        if ($refusal === 'unconfirmed' || $refusal === 'timed') {
-            $replies = array_merge($replies, array_fill(0, 49, []));
+        // Polls in the whole confirmation window: 50 at 100 ms, then 55 at 1 s.
+        $window = ['unconfirmed', 'timed', 'late', 'unlisted', 'final-fault'];
+        if (in_array($refusal, ['erase', 'erase-lost', 'erase-exception', 'erase-loaded'], true)) {
+            // erase-exception throws before the erase is sent.
+            if ($refusal !== 'erase-exception') {
+                $replies[] = $refusal === 'erase-lost' ? null : FakeRtorrentDaemon::fault('erase refused');
+            }
+            // The final check, then the slow path's d.set_directory and d.open, d.start.
+            $replies[] = $refusal === 'erase-loaded'
+                ? ['0000000000000000000000000000000000000000', self::HASH]
+                : ($refusal === 'erase-lost' ? FakeRtorrentDaemon::fault('unreachable') : []);
+            $replies[] = $refusal === 'erase-lost' ? FakeRtorrentDaemon::fault('download missing') : ['0'];
+            $replies[] = ['0', '0'];
+        } else {
+            $replies[] = ['0'];
+            $replies[] = $refusal === 'send-false' ? FakeRtorrentDaemon::fault('load refused') : ['0', '0'];
+            if (in_array($refusal, $window, true)) {
+                $replies = array_merge($replies, array_fill(0, 105, []));
+            } elseif (in_array($refusal, ['delayed', 'poll-deadline'], true)) {
+                $replies[] = [];
+            }
+            // The final check; 'unconfirmed' finds the daemon gone.
+            if ($refusal === 'late') {
+                $replies[] = [self::HASH];
+            } elseif ($refusal === 'unlisted') {
+                $replies[] = ['0000000000000000000000000000000000000000'];
+            } elseif ($refusal === 'final-fault') {
+                $replies[] = FakeRtorrentDaemon::fault('busy');
+            } elseif (in_array($refusal, ['timed', 'poll-deadline', 'no-clock', 'null-clock', 'retained-log'], true)) {
+                $replies[] = [];
+            } elseif ($refusal !== 'unconfirmed') {
+                $replies[] = [self::HASH];
+            }
         }
         if (in_array($refusal, ['observe-copy', 'confirmed', 'overwrite'], true)) {
             $replies = new SetDirCopyObserver($replies, $uploads, $this->base . '/at-erase', $refusal === 'overwrite' ? $userFile : '');
@@ -299,7 +344,7 @@ class SetDirFastResumeSessionTest extends TestCase
         $bodies = implode("\n", $this->daemon->bodies());
         $this->daemon->stop();
         $this->daemon = null;
-        $this->assertEquals(in_array($refusal, ['unconfirmed', 'erase-lost', 'retained-log', 'no-clock', 'null-clock', 'send-false', 'timed', 'poll-deadline'], true) ? 'failed' : 'ok', $run['printed'], 'rtSetDataDir() returns the expected result: ' . $run['printed'] . $run['errors']);
+        $this->assertEquals(in_array($refusal, ['unconfirmed', 'unlisted', 'final-fault', 'erase-lost', 'retained-log', 'no-clock', 'null-clock', 'send-false', 'timed', 'poll-deadline'], true) ? 'failed' : 'ok', $run['printed'], 'rtSetDataDir() returns the expected result: ' . $run['printed'] . $run['errors']);
         if ($refusal === 'retained-log') {
             $this->assertEquals(1, count(glob($uploads . '/datadir-recovery-*.torrent')), 'recovery remains after a logging exception');
             return;
@@ -307,7 +352,7 @@ class SetDirFastResumeSessionTest extends TestCase
         if ($refusal === 'confirmed-no-unlink') {
             $recoveries = glob($uploads . '/datadir-recovery-*.torrent');
             $this->assertEquals(1, count($recoveries), 'confirmed reload retains the copy when unlink returns false');
-            $this->assertTrue(strpos((string) @file_get_contents($this->base . '/application.log'), $recoveries[0]) !== false, 'the retained path is logged');
+            $this->assertTrue(strpos((string) @file_get_contents($this->base . '/application.log'), 'datadir: recovery copy for ' . $hash . ' could not be removed; delete ' . $recoveries[0]) !== false, 'the retained path is logged as one to delete');
             return;
         }
         if ($refusal === 'erase-exception') {
@@ -324,33 +369,53 @@ class SetDirFastResumeSessionTest extends TestCase
         if (in_array($refusal, ['observe-copy', 'confirmed', 'overwrite'], true)) {
             $this->assertEquals($bytes, @file_get_contents($this->base . '/at-erase'), 'the full copy exists before erase');
         }
-        if ($refusal === 'confirmed' || $refusal === 'delayed') {
+        if (in_array($refusal, ['confirmed', 'delayed', 'late', 'erase-loaded'], true)) {
             $this->assertEquals([], glob($uploads . '/*.torrent'), 'confirmed reload removes the copy');
-            $this->assertTrue(!is_file($this->base . '/application.log'), 'confirmed reload is not logged');
+            if ($refusal === 'erase-loaded') {
+                // The refused erase is logged as a fault; the copy is not mentioned.
+                $this->assertTrue(strpos((string) @file_get_contents($this->base . '/application.log'), 'recovery') === false, 'a removed copy is not logged');
+            } else {
+                $this->assertTrue(!is_file($this->base . '/application.log'), 'confirmed reload is not logged');
+            }
             if ($refusal === 'delayed') {
                 $this->assertTrue(substr_count($bodies, '<methodName>download_list</methodName>') >= 2, 'reload is polled again');
             }
+            if ($refusal === 'late') {
+                $this->assertEquals(106, substr_count($bodies, '<methodName>download_list</methodName>'), 'the final check follows the whole window');
+            }
+            if ($refusal === 'erase-loaded') {
+                $this->assertTrue(strpos((string) @file_get_contents($this->base . '/application.log'), 'erase refused') !== false, 'the erase fault is what was logged');
+                $this->assertTrue(strpos($bodies, '<methodName>d.erase</methodName>') !== false, 'erase was attempted and refused');
+                $this->assertTrue(strpos($bodies, '<methodName>d.directory.set</methodName>') !== false && strpos($bodies, '<string>d.start</string>') !== false, 'slow path restores the running download');
+                $this->assertTrue(strpos($bodies, '<string>load.raw_start</string>') === false, 'a loaded download is not added again');
+                return;
+            }
         }
-        if (in_array($refusal, ['unconfirmed', 'erase-lost', 'no-clock', 'null-clock', 'timed', 'poll-deadline'], true)) {
+        if (in_array($refusal, ['unconfirmed', 'unlisted', 'final-fault', 'erase', 'erase-lost', 'no-clock', 'null-clock', 'timed', 'poll-deadline'], true)) {
             $recoveries = glob($uploads . '/datadir-recovery-*.torrent');
             $this->assertEquals(1, count($recoveries), 'one recovery is retained');
             $recovery = count($recoveries) === 1 ? $recoveries[0] : '';
             $this->assertEquals($bytes, $recovery === '' ? false : @file_get_contents($recovery), 'unconfirmed reload keeps the complete copy');
             $log = @file_get_contents($this->base . '/application.log');
             $this->assertTrue($log !== false && strpos($log, $hash) !== false && $recovery !== '' && strpos($log, $recovery) !== false, 'the log names the hash and copy');
+            $this->assertTrue(
+                $log !== false && $recovery !== ''
+                    && strpos($log, 'datadir: reload not confirmed for ' . $hash . '; recovery copy kept at ' . $recovery . ' - delete it if the download is listed') !== false,
+                'the log says what to do with the copy: ' . $log,
+            );
         }
         if ($refusal === 'erase-lost') {
             $this->assertTrue(strpos($bodies, '<methodName>d.erase</methodName>') !== false, 'erase was attempted before the reply was lost');
             return;
         }
         if ($refusal === 'poll-deadline') {
-            $this->assertEquals(1, substr_count($bodies, '<methodName>download_list</methodName>'), 'one poll before the deadline');
+            $this->assertEquals(2, substr_count($bodies, '<methodName>download_list</methodName>'), 'one poll before the deadline, then the final check');
             $this->assertTrue(!is_file($this->base . '/pauses'), 'no pause after the deadline');
             return;
         }
         if ($refusal === 'timed') {
-            $this->assertEquals(5, substr_count($bodies, '<methodName>download_list</methodName>'), 'polling stops at the deadline');
-            $this->assertEquals(str_repeat("100000\n", 5), file_get_contents($this->base . '/pauses'), 'polls are separated by 100 ms');
+            $this->assertEquals(106, substr_count($bodies, '<methodName>download_list</methodName>'), 'polling stops at the deadline, then the final check');
+            $this->assertEquals(str_repeat("100000\n", 50) . str_repeat("1000000\n", 55), file_get_contents($this->base . '/pauses'), 'polls are 100 ms apart for 5 s, then 1 s apart up to 60 s');
             return;
         }
         if ($refusal === 'send-false') {
@@ -359,7 +424,7 @@ class SetDirFastResumeSessionTest extends TestCase
             return;
         }
         if ($refusal === 'no-clock' || $refusal === 'null-clock') {
-            $this->assertTrue(strpos($bodies, '<methodName>download_list</methodName>') === false, 'unavailable clock prevents polling');
+            $this->assertEquals(1, substr_count($bodies, '<methodName>download_list</methodName>'), 'unavailable clock prevents polling; only the final check is made');
             return;
         }
         if ($refusal === 'overwrite') {
@@ -409,7 +474,7 @@ class SetDirFastResumeSessionTest extends TestCase
     private function driver($code, $port, $refusal = '')
     {
         $file = $this->base . '/drive.php';
-        $partial = in_array($refusal, ['partial', 'no-fopen', 'no-fwrite', 'partial-no-unlink', 'collision', 'no-random', 'no-clock', 'null-clock', 'close-failed', 'write-close', 'timed', 'poll-deadline', 'erase-exception', 'retained-log', 'confirmed-no-unlink'], true);
+        $partial = in_array($refusal, ['partial', 'no-fopen', 'no-fwrite', 'partial-no-unlink', 'collision', 'no-random', 'no-clock', 'null-clock', 'close-failed', 'write-close', 'timed', 'poll-deadline', 'erase-exception', 'retained-log', 'confirmed-no-unlink', 'unconfirmed', 'late', 'unlisted', 'final-fault'], true);
         if ($partial) {
             // Namespace only this plugin's functions so the copy write can be
             // shortened without also breaking the SCGI transport's fwrite.
@@ -421,12 +486,13 @@ class SetDirFastResumeSessionTest extends TestCase
             } elseif ($refusal === 'erase-exception') {
                 $source .= "\n" . 'function rtExec($cmds, $hash, $dbg) { if ($cmds === "d.erase") throw new \Error("erase"); return \rtExec($cmds, $hash, $dbg); }';
             } elseif ($refusal === 'poll-deadline') {
-                $source .= "\n" . '$GLOBALS["clock_calls"] = 0; function microtime($float) { return ++$GLOBALS["clock_calls"] < 3 ? 100.0 : 106.0; }'
+                $source .= "\n" . '$GLOBALS["clock_calls"] = 0; function microtime($float) { return ++$GLOBALS["clock_calls"] < 3 ? 100.0 : 161.0; }'
                     . ' function usleep($delay) { file_put_contents(' . var_export($this->base . '/pauses', true) . ', $delay); }';
-            } elseif ($refusal === 'timed') {
-                $source .= "\n" . '$GLOBALS["copy_clock"] = 100.0;'
-                    . ' function microtime($asFloat) { return $GLOBALS["copy_clock"]; }'
-                    . ' function usleep($delay) { file_put_contents(' . var_export($this->base . '/pauses', true) . ', $delay . "\\n", FILE_APPEND); $GLOBALS["copy_clock"] += 1.0; }';
+            } elseif (in_array($refusal, ['timed', 'unconfirmed', 'late', 'unlisted', 'final-fault'], true)) {
+                // A clock that only moves when the code pauses, by the pause.
+                $source .= "\n" . '$GLOBALS["copy_clock"] = 0;'
+                    . ' function microtime($asFloat) { return 100.0 + $GLOBALS["copy_clock"] / 1000000; }'
+                    . ' function usleep($delay) { file_put_contents(' . var_export($this->base . '/pauses', true) . ', $delay . "\\n", FILE_APPEND); $GLOBALS["copy_clock"] += $delay; }';
             } elseif ($refusal === 'close-failed') {
                 $source .= "\n" . 'function fclose($stream) { \\fclose($stream); return false; }';
             } elseif ($refusal === 'write-close') {
