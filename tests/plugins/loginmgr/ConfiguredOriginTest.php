@@ -156,6 +156,12 @@ if ($server === false) exit(2);
 $name = stream_socket_get_name($server, false);
 fwrite(STDOUT, substr($name, strrpos($name, ':') + 1) . "\n");
 fflush(STDOUT);
+// The test polls this file while the listener rewrites it, so each write
+// lands whole: a reader sees the old list or the new one, never an empty file.
+$record = function ($seen) use ($argv) {
+    file_put_contents($argv[2] . '.part', json_encode($seen));
+    rename($argv[2] . '.part', $argv[2]);
+};
 $seen = array();
 $deadline = microtime(true) + 10;
 while (microtime(true) < $deadline) {
@@ -175,14 +181,14 @@ while (microtime(true) < $deadline) {
         $body .= $part;
     }
     $seen[] = array('headers' => $headers, 'body' => $body);
-    file_put_contents($argv[2], json_encode($seen));
+    $record($seen);
     $page = '<html>welcome</html>';
     fwrite($socket, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "
         . strlen($page) . "\r\nConnection: close\r\n\r\n" . $page);
     fclose($socket);
     if (count($seen) >= (int)$argv[3]) break;
 }
-file_put_contents($argv[2], json_encode($seen));
+$record($seen);
 fclose($server);
 PHP;
 
@@ -209,16 +215,17 @@ function coArrived($listener, $expected)
 {
     list($process, $pipes, $port, $record) = $listener;
     // The listener stops at $expected connections; when fewer arrive it runs
-    // to its own deadline, so do not wait on it for the empty case.
+    // to its own deadline, so do not wait on it for the empty case. The answer
+    // is the read that met the count: the listener writes the file once more
+    // after its last connection.
     $deadline = microtime(true) + 12;
-    while (microtime(true) < $deadline) {
+    while (true) {
         $seen = json_decode((string) file_get_contents($record), true);
-        if (is_array($seen) && count($seen) >= $expected) {
+        if ((is_array($seen) && count($seen) >= $expected) || microtime(true) >= $deadline) {
             break;
         }
         usleep(100000);
     }
-    $seen = json_decode((string) file_get_contents($record), true);
     $arrived = [];
     foreach (is_array($seen) ? $seen : [] as $connection) {
         preg_match('@^([A-Z]+) ([^ ]+)@', $connection['headers'], $match);
@@ -402,7 +409,9 @@ $tests = [
                 coSame([
                     ['GET', $landing === '' ? '/' : $landing, ''],
                     ['POST', $post, $body],
-                ], coArrived($listener, 2), $name . ': the landing page then the credential POST arrive');
+                ], coArrived($listener, 2), $name . ': the landing page then the credential POST arrive'
+                    . ' (requests made: ' . json_encode($client->attempts) . ', client error: '
+                    . var_export($client->error, true) . ')');
                 coSame(1, $account->data->stored, $name . ': the renewed session is cached');
             } finally {
                 coStop($listener);
