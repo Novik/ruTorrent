@@ -36,6 +36,7 @@ unexpected_diagnostics() {
 # logs its diagnostics to the file's own log (php-test.ini), and a warning,
 # notice or deprecation printed in the file's output counts too.
 status=0
+failed_files=()
 test_manifest="$(mktemp "${TMPDIR:-/tmp}/rutorrent-php-tests.XXXXXX")" || exit 1
 log_dir="$(mktemp -d "${TMPDIR:-/tmp}/rutorrent-php-test-logs.XXXXXX")" || exit 1
 trap 'rm -rf -- "$test_manifest" "$log_dir"' EXIT
@@ -72,9 +73,18 @@ while IFS= read -r -d '' t; do
 	if [ "$checked" -eq 0 ]; then
 		printf 'php-test.sh: no nonempty completed passing result in %s\n' "$t"
 	fi
-	if [ "$code" -ne 0 ] || [ "$checked" -eq 0 ] \
-		|| printf '%s\n' "$out" | grep -qE '^Failed:|^not ok|failed with error|(^|PHP )(Fatal|Parse) error|Uncaught'; then
-		status=1
+	reasons=()
+	if [ "$code" -ne 0 ]; then
+		reasons+=("exit code $code")
+	fi
+	if [ "$checked" -eq 0 ]; then
+		reasons+=('no completed passing result')
+	fi
+	if printf '%s\n' "$out" | grep -qE '^Failed:|^not ok'; then
+		reasons+=('failed assertions')
+	fi
+	if printf '%s\n' "$out" | grep -qE 'failed with error|(^|PHP )(Fatal|Parse) error|Uncaught'; then
+		reasons+=('error output')
 	fi
 	unexpected=$(unexpected_diagnostics "$PHP_TEST_ERROR_LOG" "$PHP_TEST_EXPECTED_DIAGNOSTICS")
 	if [ -n "$unexpected" ] \
@@ -85,8 +95,29 @@ while IFS= read -r -d '' t; do
 		else
 			printf '%s\n' "$out" | grep -E '^(PHP )?(Warning|Notice|Deprecated|Strict Standards): '
 		fi
+		reasons+=('PHP diagnostics')
+	fi
+	# Every failing file is named with its reasons, so a log always says which
+	# file failed and why. Without a failure line of its own (an exit code or an
+	# unfinished run), the last lines show where the file stopped.
+	if [ "${#reasons[@]}" -gt 0 ]; then
 		status=1
+		reason=$(printf '%s, ' "${reasons[@]}")
+		reason=${reason%, }
+		printf 'php-test.sh: FAILED %s: %s\n' "$t" "$reason"
+		failed_files+=("$t")
+		if ! printf '%s\n' "$out" | grep -qE '^Failed:|^not ok'; then
+			if [ -n "$out" ]; then
+				printf 'php-test.sh: last lines of %s:\n' "$t"
+				printf '%s\n' "$out" | tail -n 10
+			else
+				printf 'php-test.sh: last lines of %s: (no output)\n' "$t"
+			fi
+		fi
 	fi
 done < "$test_manifest"
 
+if [ "${#failed_files[@]}" -gt 0 ]; then
+	printf 'php-test.sh: %s of %s test files failed: %s\n' "${#failed_files[@]}" "$files" "${failed_files[*]}"
+fi
 exit $status
