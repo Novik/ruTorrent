@@ -29,6 +29,14 @@ check_run() {
 		failures=$((failures + 1))
 		return
 	fi
+	# A failing run that ran a file names every file it failed and why.
+	if [[ "$expected_status" == fail ]] && grep -q '^> php ' "$scratch/output" \
+		&& ! grep -Eq '^php-test\.sh: FAILED [^:]+: .' "$scratch/output"; then
+		printf 'not ok - %s (no php-test.sh: FAILED line)\n' "$name" >&2
+		cat "$scratch/output" >&2
+		failures=$((failures + 1))
+		return
+	fi
 	for expected in "$@"; do
 		if ! grep -Fq -- "$expected" "$scratch/output"; then
 			printf 'not ok - %s (missing %s)\n' "$name" "$expected" >&2
@@ -101,7 +109,33 @@ cat > "$test_file" <<'PHP'
 echo "ok - deliberate nonzero status\n1 tests, 0 failures\n";
 exit(7);
 PHP
-check_run 'nonzero status overrides a passing summary' fail 'ok - deliberate nonzero status'
+check_run 'nonzero status overrides a passing summary' fail 'ok - deliberate nonzero status' \
+	'php-test.sh: FAILED plugins/FixtureTest.php: exit code 7' \
+	'php-test.sh: last lines of plugins/FixtureTest.php:' \
+	'php-test.sh: 1 of 1 test files failed: plugins/FixtureTest.php'
+
+# A file that exits non-zero with no output still says so.
+cat > "$test_file" <<'PHP'
+<?php
+exit(3);
+PHP
+check_run 'silent nonzero exit is reported' fail \
+	'php-test.sh: FAILED plugins/FixtureTest.php: exit code 3, no completed passing result' \
+	'php-test.sh: last lines of plugins/FixtureTest.php: (no output)'
+
+# Only the failing file is listed when others pass.
+cat > "$scratch/tests/plugins/GoodTest.php" <<'PHP'
+<?php
+require_once(__DIR__ . '/../php/TestCase.php');
+class GoodTest extends TestCase { public function testGood() { $this->assertTrue(true, 'good file'); } }
+PHP
+check_run 'summary lists only failing files' fail 'Passed: good file' \
+	'php-test.sh: 1 of 2 test files failed: plugins/FixtureTest.php'
+if grep -q '^php-test\.sh: FAILED plugins/GoodTest\.php' "$scratch/output"; then
+	echo 'not ok - a passing file was reported as failed' >&2
+	failures=$((failures + 1))
+fi
+rm "$scratch/tests/plugins/GoodTest.php"
 
 for error in Exception Error; do
 	for phase in constructor setUp test tearDown; do
