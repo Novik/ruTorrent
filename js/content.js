@@ -468,6 +468,21 @@ function correctContent()
 		$("#port_open").closest(".col-md-6").remove();
 		$("#port_random").closest(".col-md-6").after($("<div>").addClass("col-md-6"));
 	}
+	// Settings rTorrent still answers for but no longer acts on: the setter
+	// accepts any value and changes nothing. Keep showing what the daemon
+	// reports, read-only, and say why. linked() leaves these disabled.
+	[
+		["dht_port", 0x1001, "v0.16.1"],		// dht.override_port.set replaces dht.port.set
+		["use_udp_trackers", 0x100c, "v0.16.12"],	// UDP trackers are always used
+		["timeout_safe_sync", 0x1012, "v0.16.18"],
+	].forEach(([id, since, version]) => {
+		if(theWebUI.systemInfo.rTorrent.iVersion>=since)
+		{
+			const title = theUILang.ignoredByRtorrent.replace('{version}', version);
+			$(`#${id}`).prop("disabled", true).attr({title, "data-ignored-by-rtorrent": ""});
+			$(`label[for="${id}"]`).attr({title}).addClass("disabled");
+		}
+	});
 	if(!(theWebUI.showFlags & showEnum.showBittorentPage))
 		rPlugin.prototype.removePageFromOptions("st_bt");
 	if(!(theWebUI.showFlags & showEnum.showAdvancedPage))
@@ -547,8 +562,11 @@ function correctContent()
 		}
 		if(theWebUI.systemInfo.rTorrent.iVersion>=0x900)
 		{
-			for (let i = 0; i < 3; i++) {
-				$("#st_ao_h div.row:first").remove();
+			// rTorrent 0.9.0 dropped the hash_* commands, and the aliases below
+			// send them to "cat". Each has a label cell and a field cell.
+			for (const id of ["hash_interval", "hash_max_tries", "hash_read_ahead"]) {
+				$(`#st_ao_h label[for="${id}"]`).parent().remove();
+				$(`#${id}`).parent().remove();
 			}
 			$.extend(theRequestManager.aliases,
 			{

@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow	: "Permitir que o texto do rótulo transborde",
  showOpenStatus		: "Mostrar status aberto na barra de status",
  requiresAtLeastRtorrent		: "Requer rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "A diretiva PHP register_argc_argv está definida como OFF. Altere para ON, caso contrário, alguns plugins não funcionarão corretamente.",
  addTorrentFailedURL		: "Falha ao adicionar torrent. Não foi possível recuperar a URL.",
  addTorrentFailedFile		: "Falha ao adicionar torrent. O conteúdo recuperado não é um arquivo torrent válido.",

@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow	: "Etiket metninin taşmasına izin ver",
  showOpenStatus		: "Durum çubuğunda açık durumunu göster",
  requiresAtLeastRtorrent		: "En az rTorrent {version} sürümü gerekir", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "register_argc_argv PHP direktifi OFF olarak ayarlanmış. ON olarak değiştirin. Aksi halde bazı eklentiler düzgün çalışmayacaktır.",
  addTorrentFailedURL : "Torrent eklenemedi. URL alınamıyor.",
  addTorrentFailedFile : "Torrent eklenemedi. Alınan içerik geçerli bir torrent dosyası değil.",

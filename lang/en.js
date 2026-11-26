@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in the status bar",
  requiresAtLeastRtorrent		: "Requires rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "The PHP directive register_argc_argv is set to OFF. Change it to ON; otherwise, some plugins won't work correctly.",
  addTorrentFailedURL		: "Failed to add torrent. Can't retrieve URL.",
  addTorrentFailedFile		: "Failed to add torrent. The retrieved content is not a valid torrent file.",

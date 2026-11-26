@@ -269,6 +269,9 @@ function linked(obj, _33, lst) {
 		return;
 	}
 	lst.forEach(id => {
+		// Disabled for good when rTorrent ignores the setting, see correctContent().
+		if ($(`#${id}`).is("[data-ignored-by-rtorrent]"))
+			return;
 		$(`#${id}`).prop({disabled:d});
 		d ? $(`#lbl_${id}`).addClass("disabled") : $(`#lbl_${id}`).removeClass("disabled");
 	});

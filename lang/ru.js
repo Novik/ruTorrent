@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow		: "Не обрезать метки",
  showOpenStatus			: "Показывать используемые ресурсы в статусе",
  requiresAtLeastRtorrent	: "Требуется rTorrent >= {version}", // ... v0.9.7
+ ignoredByRtorrent	: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно.",
  addTorrentFailedURL		: "Ошибка добавления закачки. Невозможно получить файл по заданному URL.",
  addTorrentFailedFile		: "Ошибка добавления закачки. Полученный контент не является корректным torrent файлом.",

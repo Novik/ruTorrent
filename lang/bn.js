@@ -284,6 +284,7 @@ var theUILang =
  showLabelTextOverflow	: "লেবেল পাঠ্যের ওভারফ্লো অনুমতি দিন",
  showOpenStatus		: "স্ট্যাটাস বারে খোলা অবস্থা দেখান",
  requiresAtLeastRtorrent		: "rTorrent প্রয়োজন >= {version}", // ... v0.9.7
+ ignoredByRtorrent		: "Ignored by rTorrent >= {version}", // ... v0.16.12
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে। URL পুনরুদ্ধার করা যাচ্ছে না।",
  addTorrentFailedFile		: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে। পুনরুদ্ধার করা বিষয়বস্তু একটি বৈধ টরেন্ট ফাইল নয়।",
