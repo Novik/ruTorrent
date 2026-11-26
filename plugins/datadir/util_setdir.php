@@ -127,6 +127,17 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
     $base_path = '';
     $base_file = '';
 
+    $logFastResume = function ($message, $refused) use ($hash) {
+        try {
+            FileUtil::toLog($refused
+                ? 'datadir: fast resume refused (' . $message . ') ' . $hash
+                : 'datadir: recovery retained ' . $hash . ' ' . $message);
+        } catch (Throwable $error) {
+        }
+    };
+
+    $copyRefusal = false;
+    $retainedRecovery = null;
     $is_ok = true;
     if ($dest_path == '') {
         $is_ok = false;
@@ -361,7 +372,43 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                 } else {
                     $refusal = rTorrent::reloadRefusal($torrent, $hash, $dest_path, $add_path, $addition);
                     if ($refusal !== false) {
-                        FileUtil::toLog('datadir: fast resume refused (' . $refusal . ') ' . $hash);
+                        $logFastResume($refusal, true);
+                        $fast_resume = false;
+                    }
+                }
+                $recovery = null;
+                if ($fast_resume) {
+                    $stream = false;
+                    $written = false;
+                    try {
+                        $nonce = random_bytes(16);
+                        if (!is_string($nonce)) {
+                            throw new RuntimeException('random bytes unavailable');
+                        }
+                        // Do not overwrite an uploaded torrent, even when overwrite is enabled.
+                        $candidate = FileUtil::getUniqueFilename(
+                            FileUtil::getUploadsPath() . '/datadir-recovery-' . $hash . '-' . bin2hex($nonce) . '.torrent',
+                        );
+                        // sendTorrent may modify and save the object; serialize it first.
+                        $bytes = (string) $torrent;
+                        $stream = @fopen($candidate, 'xb');
+                        if ($stream) {
+                            $recovery = $candidate;
+                            $written = @fwrite($stream, $bytes) === strlen($bytes);
+                            $written = @fclose($stream) && $written;
+                            $stream = false;
+                        }
+                    } catch (Throwable $error) {
+                        $written = false;
+                    }
+                    if (is_resource($stream)) {
+                        try {
+                            @fclose($stream);
+                        } catch (Throwable $error) {
+                        }
+                    }
+                    if (!$written) {
+                        $copyRefusal = true;
                         $fast_resume = false;
                     }
                 }
@@ -371,23 +418,55 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                         : rtExec("d.set_directory_base", [ $hash, $dest_path ], $dbg);	// for erasedata plugin
 
                     if ($is_ok) {
-                        if (!rtExec("d.erase", $hash, $dbg)) {
+                        try {
+                            $erased = rtExec("d.erase", $hash, $dbg);
+                        } catch (Throwable $error) {
+                            $erased = false;
+                        }
+                        if (!$erased) {
                             if ($dbg) {
                                 rtDbg(__FUNCTION__, "fail to erase old torrent");
                             }
+                            $retainedRecovery = $recovery;
+                            $recovery = null;
                             $fast_resume = false;
                         } else {
-                            if (!rTorrent::sendTorrent(
-                                $torrent,	// $fname or $torrent
-                                true, 		// $isStart
-                                $add_path, 	// $isAddPath
-                                $dest_path, 	// $directory
-                                $label,		// $label
-                                true, 		// $saveTorrent
-                                true, 		// $isFast
-                                false,		// $isNew
-                                $addition,	// $addition
-                            )) {
+                            $sent = false;
+                            $confirmed = false;
+                            try {
+                                $sent = rTorrent::sendTorrent(
+                                    $torrent,	// $fname or $torrent
+                                    true, 		// $isStart
+                                    $add_path, 	// $isAddPath
+                                    $dest_path, 	// $directory
+                                    $label,		// $label
+                                    true, 		// $saveTorrent
+                                    true, 		// $isFast
+                                    false,		// $isNew
+                                    $addition,	// $addition
+                                );
+                                $now = microtime(true);
+                                if (!is_float($now)) {
+                                    throw new RuntimeException('clock unavailable');
+                                }
+                                // A successful load reply alone does not confirm the hash was added.
+                                $deadline = $now + 5;
+                                for ($attempt = 0; $attempt < 50 && microtime(true) < $deadline; $attempt++) {
+                                    if (isset(rTorrent::loadedHashes()[strtoupper($hash)])) {
+                                        $confirmed = true;
+                                        break;
+                                    }
+                                    if (microtime(true) < $deadline) {
+                                        usleep(100000);
+                                    }
+                                }
+                            } catch (Throwable $error) {
+                            }
+                            if (!$confirmed) {
+                                $retainedRecovery = $recovery;
+                                $recovery = null;
+                            }
+                            if (!$sent || !$confirmed) {
                                 if ($dbg) {
                                     rtDbg(__FUNCTION__, "fail to add new torrent");
                                 }
@@ -395,6 +474,15 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                                 $is_ok = false;
                             }
                         }
+                    }
+                }
+                if ($recovery !== null) {
+                    try {
+                        if (!@unlink($recovery)) {
+                            $retainedRecovery = $recovery;
+                        }
+                    } catch (Throwable $error) {
+                        $retainedRecovery = $recovery;
                     }
                 }
             }
@@ -425,6 +513,14 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                 }
             }
         }
+    }
+
+    if ($retainedRecovery !== null) {
+        $logFastResume($retainedRecovery, false);
+    }
+
+    if ($copyRefusal) {
+        $logFastResume('copy', true);
     }
 
     if ($dbg) {
