@@ -137,10 +137,10 @@ class SetDirSpecialNamesMoveTest extends TestCase
         $name = $multi ? $top : $files[0];
         $basePath = $multi ? $srcDir : $srcDir . '/' . $files[0];
 
-        // d.is_open + d.is_active; d.get_name, d.get_base_path,
+        // d.is_open + d.is_active + d.get_state; d.get_name, d.get_base_path,
         // d.get_base_filename, d.is_multi_file, d.get_complete; f.multicall;
         // d.close; then whatever follows the move.
-        $replies = [['1', '0'], [$name, $basePath, $name, $multi ? 1 : 0, 1], $files, ['0']];
+        $replies = [['1', '0', '0'], [$name, $basePath, $name, $multi ? 1 : 0, 1], $files, ['0']];
         for ($i = 0; $i < 6; $i++) {
             $replies[] = ['0'];
         }

@@ -147,14 +147,18 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
 
     // Check if torrent is open or active
     if ($is_ok) {
-        $req = rtExec([ "d.is_open", "d.is_active" ], $hash, $dbg);
+        $req = rtExec([ "d.is_open", "d.is_active", "d.get_state" ], $hash, $dbg);
         if (!$req) {
             $is_ok = false;
         } else {
             $is_open = ($req->val[0] != 0);
-            $is_active = ($req->val[1] != 0);
+            // A started download that is not active yet, queued for or in its
+            // hash check, is stopped and started like an active one: d.close
+            // ends the check but leaves it started, and d.start does nothing
+            // to a download that is already started.
+            $is_active = ($req->val[1] != 0) || ($req->val[2] != 0);
             if ($dbg) {
-                rtDbg(__FUNCTION__, "is_open=" . $req->val[0] . ", is_active=" . $req->val[1]);
+                rtDbg(__FUNCTION__, "is_open=" . $req->val[0] . ", is_active=" . $req->val[1] . ", state=" . $req->val[2]);
             }
         }
     }
@@ -510,6 +514,17 @@ function rtSetDataDir($hash, $dest_path, $add_path, $move_files, $fast_resume, $
                 // Refresh torrent info after d.set_directory
                 else {
                     $is_ok = rtExec([ "d.open", "d.close" ], $hash, $dbg);
+                }
+                // rTorrent can report a download it is still adding as
+                // stopped and start it a moment later. A start that landed
+                // during this run was ended by its d.close, which leaves the
+                // download started but neither active nor checking; it is
+                // stopped and started like one that was started all along.
+                if ($is_ok && !$is_active) {
+                    $req = rtExec([ "d.get_state", "d.is_active", "d.get_hashing" ], $hash, $dbg);
+                    if ($req && $req->val[0] != 0 && $req->val[1] == 0 && $req->val[2] == 0) {
+                        $is_ok = rtExec([ "d.stop", "d.start" ], $hash, $dbg);
+                    }
                 }
             }
         }
