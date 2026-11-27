@@ -938,6 +938,17 @@ plugin.setSort = function() {
     // points at anything meaningful, so go back to the top
     plugin.scrollTop = 0;
     plugin.update(true);
+    var statusEl = document.getElementById('sortLiveStatus');
+    if (statusEl) {
+      var sortField = (sort[0] === '-') ? sort.substr(1) : sort;
+      var sortDir = (sort[0] === '-') ? (theUILang.decs || 'Descending') : (theUILang.acs || 'Ascending');
+      var langKey = '';
+      $.each(plugin.sortFields, function(i, f) {
+        if (f[0] === sortField) langKey = f[1];
+      });
+      var fieldName = langKey ? (theUILang[langKey] || sortField) : sortField;
+      statusEl.textContent = (theUILang.SortTorrents || 'Sort') + ': ' + fieldName + ' (' + sortDir + ')';
+    }
   }
   plugin.goBack();
 };
@@ -1832,6 +1843,32 @@ plugin.loadSeedingTime = function () {
 };
 
 /*** Torrent list rendering and updates ***/
+plugin.reorderRows = function(container, orderedNodes, movedNodes) {
+  var moveNode = (typeof container.moveBefore === 'function')
+    ? function(node) { container.moveBefore(node, null); }
+    : function(node) { container.appendChild(node); };
+
+  for (var i = 0; i < orderedNodes.length; i++) {
+    moveNode(orderedNodes[i]);
+  }
+
+  if (movedNodes && movedNodes.length) {
+    for (var j = 0; j < movedNodes.length; j++) {
+      var cell = $(movedNodes[j]).children('td');
+      cell.removeClass('rank-highlight');
+      if (cell[0]) {
+        void cell[0].offsetWidth;
+      }
+      cell.addClass('rank-highlight');
+    }
+    setTimeout(function() {
+      for (var k = 0; k < movedNodes.length; k++) {
+        $(movedNodes[k]).children('td').removeClass('rank-highlight');
+      }
+    }, 1500);
+  }
+};
+
 plugin.dynamicSort = function (property) {
   var sortOrder = 1;
   if(property[0] === "-") {
@@ -1840,29 +1877,38 @@ plugin.dynamicSort = function (property) {
   }
   return function (a,b) {
     var result;
-    if (typeof a[property] == 'string' || a[property] instanceof String) {
-      if (parseInt(a[property])) {
-        if (parseInt(b[property])) {
-          result = (parseInt(a[property]) < parseInt(b[property])) ? -1 : (parseInt(a[property]) > parseInt(b[property])) ? 1 : 0;
-        } else {
-          result = -1;
-        }
-      } else if (parseInt(b[property])) {
-        result = 1;
-      } else {
-        result = (a[property].toLowerCase() < b[property].toLowerCase()) ? -1 : (a[property].toLowerCase() > b[property].toLowerCase()) ? 1 : 0;
-      }
+    var valA = a[property];
+    var valB = b[property];
+    if (typeof valA == 'string' && property !== 'ul' && property !== 'dl' &&
+        property !== 'size' && property !== 'uploaded' && property !== 'downloaded' &&
+        property !== 'done' && property !== 'eta' && property !== 'ratio' &&
+        property !== 'addtime' && property !== 'seedingtime') {
+      var strA = valA.toLowerCase();
+      var strB = (valB || '').toLowerCase();
+      result = (strA < strB) ? -1 : (strA > strB) ? 1 : 0;
     } else {
-      result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      var numA = (valA === undefined || valA === null) ? 0 : Number(valA);
+      var numB = (valB === undefined || valB === null) ? 0 : Number(valB);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        result = (numA < numB) ? -1 : (numA > numB) ? 1 : 0;
+      } else {
+        result = (valA < valB) ? -1 : (valA > valB) ? 1 : 0;
+      }
     }
-    if (result == 0 && property != 'name') {
-      // Tie-break by name (always ascending), so e.g. sorting by status
-      // lists same-status torrents alphabetically like the desktop does
-      return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0;
+    if (result == 0) {
+      if (property != 'name') {
+        var nameA = (a.name || '').toLowerCase();
+        var nameB = (b.name || '').toLowerCase();
+        var nameResult = (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+        if (nameResult != 0) {
+          return nameResult;
+        }
+      }
+      return (a.hash < b.hash) ? -1 : (a.hash > b.hash) ? 1 : 0;
     }
     return result * sortOrder;
-  }
-}
+  };
+};
 
 // Only the fields the torrent row rendering depends on; comparing these
 // (instead of whole torrent objects) avoids redrawing rows whose visible
@@ -2096,6 +2142,46 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       plugin.applyFilters();
       if ($('#torrentFilter').is(':visible')) {
         plugin.renderFilterPage();
+      }
+    }
+
+    // Reorder DOM rows to match the current sort order when new data arrived
+    if (!listHtmlString && torrentArray.length) {
+      var tbody = listHtml[0];
+      if (tbody) {
+        var currentChildren = tbody.children;
+        var orderChanged = false;
+        var orderedRows = [];
+        var prevIndex = {};
+        var rIdx;
+        for (rIdx = 0; rIdx < currentChildren.length; rIdx++) {
+          prevIndex[currentChildren[rIdx].id] = rIdx;
+        }
+        for (rIdx = 0; rIdx < torrentArray.length; rIdx++) {
+          var rowEl = document.getElementById(torrentArray[rIdx].hash);
+          if (rowEl) {
+            orderedRows.push(rowEl);
+          }
+        }
+        var movedRows = [];
+        if (currentChildren.length !== orderedRows.length) {
+          orderChanged = true;
+        } else {
+          for (rIdx = 0; rIdx < orderedRows.length; rIdx++) {
+            var r = orderedRows[rIdx];
+            if (currentChildren[rIdx] !== r) {
+              orderChanged = true;
+            }
+            if (prevIndex[r.id] !== undefined && prevIndex[r.id] !== rIdx) {
+              movedRows.push(r);
+            }
+          }
+        }
+        if (orderChanged) {
+          var isVisible = (plugin.currentPage == 'torrentsList') && ($('#torrentsList').css('display') != 'none');
+          var highlightMoved = plugin.rowsPrimed && isVisible ? movedRows : [];
+          plugin.reorderRows(tbody, orderedRows, highlightMoved);
+        }
       }
     }
 
