@@ -144,7 +144,7 @@ function loadLangFile(lang, onLoad, onError)
 	langScript.onload = onLoad;
 	if (onError)
 		langScript.onerror = onError;
-	langScript.src = `./lang/${lang}.js?v=5326`;
+	langScript.src = `./lang/${lang}.js?v=5327`;
 	document.head.appendChild(langScript);
 }
 
